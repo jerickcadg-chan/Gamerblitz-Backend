@@ -1,0 +1,21 @@
+<?php
+
+use Illuminate\Database\Seeder;
+use App\Models\{{modelName}};
+
+class {{modelNamePlural}}TableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+        \Illuminate\Support\Facades\DB::table('{{modelNamePluralLowerCase}}')->truncate();
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+
+        factory({{modelName}}::class, 10)->create();
+    }
+}
