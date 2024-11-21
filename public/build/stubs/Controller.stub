@@ -1,0 +1,89 @@
+<?php
+
+namespace {{namespace}};
+
+use App\Http\Requests\{{modelName}}Request;
+use App\Models\{{modelName}};
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+
+class {{modelName}}Controller extends Controller
+{
+    private $title;
+
+    public function __construct()
+    {
+        $this->title = '{{modelNameTitleCase}}';
+
+        $this->middleware(['permission:View {{modelNameTitleCase}}'])->only('index', 'show');
+        $this->middleware(['permission:Create {{modelNameTitleCase}}'])->only(['create', 'store']);
+        $this->middleware(['permission:Edit {{modelNameTitleCase}}'])->only('edit', 'update');
+        $this->middleware(['permission:Delete {{modelNameTitleCase}}'])->only('destroy');
+    }
+
+    public function index()
+    {
+        ${{modelNamePluralCamelCase}} = {{modelName}}::latest()->paginate();
+
+        $createLink = route('{{modelNameSingularLowerCase}}.create');
+
+        $title = $this->title;
+
+        return view('{{modelNamePluralLowerCase}}.index', compact('{{modelNamePluralCamelCase}}', 'createLink', 'title'));
+    }
+
+    public function create()
+    {
+        $storeLink = route('{{modelNameSingularLowerCase}}.store');
+        $indexLink = route('{{modelNameSingularLowerCase}}.index');
+
+        $title = $this->title;
+
+        return view('{{modelNamePluralLowerCase}}.create', compact('storeLink', 'indexLink', 'title'));
+    }
+
+    public function show({{modelName}} ${{modelNameSingularCamelCase}})
+    {
+        $editLink = route('{{modelNameSingularLowerCase}}.edit', ${{modelNameSingularCamelCase}});
+        $deleteLink = route('{{modelNameSingularLowerCase}}.destroy', ${{modelNameSingularCamelCase}});
+        $indexLink = route('{{modelNameSingularLowerCase}}.index');
+
+        $title = $this->title;
+
+        return view('{{modelNamePluralLowerCase}}.show', compact('{{modelNameSingularCamelCase}}', 'editLink', 'indexLink', 'deleteLink', 'title'));
+    }
+
+    public function store({{modelName}}Request $request)
+    {
+        {{modelName}}::create($request->all());
+
+        toast(alert_created_text($this->title),'success');
+        return redirect()->route('{{modelNameSingularLowerCase}}.index');
+    }
+
+    public function edit({{modelName}} ${{modelNameSingularCamelCase}})
+    {
+        $updateLink = route('{{modelNameSingularLowerCase}}.update', ${{modelNameSingularCamelCase}});
+        $indexLink = route('{{modelNameSingularLowerCase}}.index');
+
+        $title = $this->title;
+
+        return view('{{modelNamePluralLowerCase}}.edit', compact('updateLink', 'indexLink', '{{modelNameSingularCamelCase}}', 'title'));
+    }
+
+    public function update({{modelName}}Request $request, {{modelName}} ${{modelNameSingularCamelCase}})
+    {
+        ${{modelNameSingularCamelCase}}->update($request->all());
+
+        toast(alert_updated_text($this->title),'success');
+        return redirect()->route('{{modelNameSingularLowerCase}}.index');
+    }
+
+    public function destroy({{modelName}} ${{modelNameSingularCamelCase}})
+    {
+        ${{modelNameSingularCamelCase}}->delete();
+
+        toast(alert_deleted_text($this->title),'success');
+        return redirect()->route('{{modelNameSingularLowerCase}}.index');
+    }
+}

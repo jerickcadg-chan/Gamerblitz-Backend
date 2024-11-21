@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
+use App\Constants\DefaultRole;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use App\Constants\DefaultRole;
 
 class AuthServiceProvider extends ServiceProvider
 {

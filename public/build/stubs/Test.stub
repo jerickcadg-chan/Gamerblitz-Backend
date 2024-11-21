@@ -1,0 +1,77 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\{{modelName}};
+use Tests\TestCase;
+
+class {{modelName}}ResourceTest extends TestCase
+{
+    public function testCanShowDataTablePage()
+    {
+        $response = $this->actingAs($this->user)->get(route('{{modelNameSingularLowerCase}}.index'));
+        $response->assertStatus(200);
+        $response->assertViewIs('{{module}}::{{modelNamePluralLowerCase}}.index');
+    }
+
+    public function testCanShowCreate{{modelName}}Form()
+    {
+        $response = $this->actingAs($this->user)->get(route('{{modelNameSingularLowerCase}}.create'));
+        $response->assertStatus(200);
+        $response->assertViewIs('{{module}}::{{modelNamePluralLowerCase}}.create');
+    }
+
+    public function testCanStoreNew{{modelName}}()
+    {
+        ${{modelNameSingularLowerCase}} = factory({{modelName}}::class)->make();
+        $response = $this->actingAs($this->user)->post(route('{{modelNameSingularLowerCase}}.store'), ${{modelNameSingularLowerCase}}->toArray());
+
+        $response->assertSessionHasNoErrors();
+
+        $response->assertStatus(302);
+
+        $this->assertDatabaseHas('{{modelNamePluralLowerCase}}', ${{modelNameSingularLowerCase}}->toArray());
+        $response->assertRedirect(route('{{modelNameSingularLowerCase}}.index'));
+    }
+
+    public function testCanShow{{modelName}}DetailPage()
+    {
+        ${{modelNameSingularLowerCase}} = factory({{modelName}}::class)->create();
+        $response = $this->actingAs($this->user)->get(route('{{modelNameSingularLowerCase}}.show', ${{modelNameSingularLowerCase}}));
+        $response->assertStatus(200);
+        $response->assertViewIs('{{module}}::{{modelNamePluralLowerCase}}.show');
+    }
+
+    public function testCanShowUpdate{{modelName}}Form()
+    {
+        ${{modelNameSingularLowerCase}} = factory({{modelName}}::class)->create();
+        $response = $this->actingAs($this->user)->get(route('{{modelNameSingularLowerCase}}.edit', ${{modelNameSingularLowerCase}}));
+
+        $response->assertSessionHasNoErrors();
+
+        $response->assertStatus(200);
+        $response->assertViewIs('{{module}}::{{modelNamePluralLowerCase}}.edit');
+    }
+
+    public function testCanUpdate{{modelName}}()
+    {
+        ${{modelNameSingularLowerCase}} = factory({{modelName}}::class)->create();
+        $newData = factory({{modelName}}::class)->make();
+        $response = $this->actingAs($this->user)->put(route('{{modelNameSingularLowerCase}}.update', ${{modelNameSingularLowerCase}}), $newData->toArray());
+
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(302);
+        $this->assertDatabaseHas('{{modelNamePluralLowerCase}}', $newData->toArray());
+        $response->assertRedirect(route('{{modelNameSingularLowerCase}}.index'));
+    }
+
+    public function testCanDelete{{modelName}}()
+    {
+        ${{modelNameSingularLowerCase}} = factory({{modelName}}::class)->create();
+        $response = $this->actingAs($this->user)->delete(route('{{modelNameSingularLowerCase}}.destroy', ${{modelNameSingularLowerCase}}));
+        $response->assertStatus(302);
+        $this->assertDatabaseMissing('{{modelNamePluralLowerCase}}', ${{modelNameSingularLowerCase}}->toArray());
+
+        $response->assertRedirect(route('{{modelNameSingularLowerCase}}.index'));
+    }
+}

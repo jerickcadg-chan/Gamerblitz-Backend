@@ -1,17 +1,18 @@
 <?php
 
 use App\Http\Controllers\DepositController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductItemController;
-use App\Http\Controllers\VoucherController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\ReportController;
+use App\Http\Controllers\VoucherController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------

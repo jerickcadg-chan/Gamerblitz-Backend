@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DepositController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SliderController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\OrderController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +18,7 @@ use App\Http\Controllers\Api\OrderController;
 |
 */
 
-Route::fallback(function(){
+Route::fallback(function () {
     return api_status_warning('The route or data is Not Found!', 404);
 });
 
