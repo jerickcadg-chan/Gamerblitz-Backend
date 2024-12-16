@@ -1,6 +1,6 @@
 before_script:
   - echo "Before script"
-  - cd /www/wwwroot/backend.mg.vexatechno.com #your project path
+  - cd /www/wwwroot/client-admin.mg.vexatechno.com #your project path
 building:
   stage: build
   script:
