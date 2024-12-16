@@ -2,34 +2,27 @@
 
 namespace App\Transformers;
 
-use League\Fractal\TransformerAbstract;
-use App\Transformers\VoucherTransformer;
 use App\Models\Order;
+use League\Fractal\TransformerAbstract;
 
 class OrderTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
-     *
-     * @var array
      */
-    protected $defaultIncludes = [
-        'productItem', 'product', 'user'
+    protected array $defaultIncludes = [
+        'productItem', 'product', 'user',
     ];
 
     /**
      * List of resources possible to include
-     *
-     * @var array
      */
-    protected $availableIncludes = [
-        'vouchers'
+    protected array $availableIncludes = [
+        'vouchers',
     ];
 
     /**
      * A Fractal transformer.
-     *
-     * @return array
      */
     public function transform($order): array
     {

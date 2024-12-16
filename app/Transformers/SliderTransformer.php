@@ -2,26 +2,22 @@
 
 namespace App\Transformers;
 
-use League\Fractal\TransformerAbstract;
 use App\Models\Slider;
+use League\Fractal\TransformerAbstract;
 
 class SliderTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
-     *
-     * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
 
     /**
      * List of resources possible to include
-     *
-     * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         //
     ];
 
@@ -36,7 +32,7 @@ class SliderTransformer extends TransformerAbstract
             'id' => $slider->id,
             'name' => $slider->name,
             'url' => $slider->url,
-            'picture' => $slider->picture->url
+            'picture' => $slider->picture->url,
         ];
     }
 }

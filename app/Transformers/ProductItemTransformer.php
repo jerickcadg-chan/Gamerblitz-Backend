@@ -2,27 +2,22 @@
 
 namespace App\Transformers;
 
-use App\Constants\DefaultRole;
-use League\Fractal\TransformerAbstract;
 use App\Models\ProductItem;
+use League\Fractal\TransformerAbstract;
 
 class ProductItemTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
-     *
-     * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
     ];
 
     /**
      * List of resources possible to include
-     *
-     * @var array
      */
-    protected $availableIncludes = [
-        'product'
+    protected array $availableIncludes = [
+        'product',
     ];
 
     /**
@@ -39,7 +34,7 @@ class ProductItemTransformer extends TransformerAbstract
             'original_price' => rp_format($productItem->real_price),
             'discount_price' => rp_format($productItem->discount_price),
             'total_price' => rp_format($productItem->total_price),
-            'original_price_raw' => (int)$productItem->real_price,
+            'original_price_raw' => (int) $productItem->real_price,
             'discount_price_raw' => $productItem->discount_price,
             'total_price_raw' => $productItem->total_price,
         ];

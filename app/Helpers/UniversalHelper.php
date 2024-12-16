@@ -1,18 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use App\Models\Discount;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
-if (!function_exists('calc_discount')) {
-    function calc_discount($price, $type, $nominal) {
+if (! function_exists('calc_discount')) {
+    function calc_discount($price, $type, $nominal)
+    {
         return $type == 'percentage'
             ? $price * ($nominal / 100)
             : $nominal;
     }
 }
 
-if (!function_exists('get_active_discount')) {
+if (! function_exists('get_active_discount')) {
     function get_active_discount($price, $productId, $productItemId): array
     {
         $discounts = Discount::active()->where('code', '')->orWhere('code', null)->get();
@@ -22,81 +23,82 @@ if (!function_exists('get_active_discount')) {
                 case Discount::ALL:
                     return [
                         'disc_id' => $discount->id,
-                        'nominal' => calc_discount($price, $discount->disc_type, $discount->nominal)
+                        'nominal' => calc_discount($price, $discount->disc_type, $discount->nominal),
                     ];
-                break;
+                    break;
 
                 case Discount::PRODUCT_TYPE:
                     $disc = DB::table('discount_product')
-                    ->where('productable_id', $productId)
-                    ->where('discount_id', $discount->id)
-                    ->where('productable_type', 'App\Models\Product')
-                    ->first();
+                        ->where('productable_id', $productId)
+                        ->where('discount_id', $discount->id)
+                        ->where('productable_type', 'App\Models\Product')
+                        ->first();
 
                     if ($disc) {
                         return [
                             'disc_id' => $discount->id,
-                            'nominal' => calc_discount($price, $discount->disc_type, $discount->nominal)
+                            'nominal' => calc_discount($price, $discount->disc_type, $discount->nominal),
                         ];
                     }
-                break;
+                    break;
 
                 case Discount::PRODUCT_ITEM:
                     $disc = DB::table('discount_product')
-                    ->where('productable_id', $productItemId)
-                    ->where('discount_id', $discount->id)
-                    ->where('productable_type', 'App\Models\ProductItem')
-                    ->first();
+                        ->where('productable_id', $productItemId)
+                        ->where('discount_id', $discount->id)
+                        ->where('productable_type', 'App\Models\ProductItem')
+                        ->first();
 
                     if ($disc) {
                         return [
                             'disc_id' => $discount->id,
-                            'nominal' => calc_discount($price, $discount->disc_type, $discount->nominal)
+                            'nominal' => calc_discount($price, $discount->disc_type, $discount->nominal),
                         ];
                     }
-                break;
+                    break;
             }
         }
 
         return [
             'disc_id' => null,
-            'nominal' => 0
+            'nominal' => 0,
         ];
     }
 }
 
-if (!function_exists('convert_to_62')) {
-    function convert_to_62($phone_number) {
+if (! function_exists('convert_to_62')) {
+    function convert_to_62($phone_number)
+    {
         $hp = $phone_number;
         // kadang ada penulisan no hp 0811 239 345
-        $phone_number = str_replace(" ","",$phone_number);
+        $phone_number = str_replace(' ', '', $phone_number);
         // kadang ada penulisan no hp (0274) 778787
-        $phone_number = str_replace("(","",$phone_number);
+        $phone_number = str_replace('(', '', $phone_number);
         // kadang ada penulisan no hp (0274) 778787
-        $phone_number = str_replace(")","",$phone_number);
+        $phone_number = str_replace(')', '', $phone_number);
         // kadang ada penulisan no hp 0811.239.345
-        $phone_number = str_replace(".","",$phone_number);
+        $phone_number = str_replace('.', '', $phone_number);
         // kadang ada penulisan no hp +62857 121231
-        $phone_number = str_replace("+","",$phone_number);
+        $phone_number = str_replace('+', '', $phone_number);
         // kadang ada penulisan no hp +0812-1212-1212
-        $phone_number = str_replace("-","",$phone_number);
+        $phone_number = str_replace('-', '', $phone_number);
 
         // cek apakah no hp mengandung karakter + dan 0-9
-        if(!preg_match('/[^+0-9]/', trim($phone_number))){
+        if (! preg_match('/[^+0-9]/', trim($phone_number))) {
             // cek apakah no hp karakter 1-3 adalah 62
-            if(substr(trim($phone_number), 0, 3)=='62'){
+            if (substr(trim($phone_number), 0, 3) == '62') {
                 $phone_number = trim($phone_number);
             }
             // cek apakah no hp karakter 1-4 adalah 620
-            elseif(substr(trim($phone_number), 0, 3)=='620'){
+            elseif (substr(trim($phone_number), 0, 3) == '620') {
                 $phone_number = '62'.substr(trim($phone_number), 3);
             }
             // cek apakah no hp karakter 1 adalah 0
-            elseif(substr(trim($phone_number), 0, 1)=='0'){
+            elseif (substr(trim($phone_number), 0, 1) == '0') {
                 $phone_number = '62'.substr(trim($phone_number), 1);
             }
             // cek apakah no hp karakter 1 adalah 8
-            elseif(substr(trim($phone_number), 0, 1)=='8'){
+            elseif (substr(trim($phone_number), 0, 1) == '8') {
                 $phone_number = '62'.substr(trim($phone_number), 0);
             }
         }
@@ -105,40 +107,43 @@ if (!function_exists('convert_to_62')) {
     }
 }
 
-if (!function_exists('throw_custom_exception')) {
-    function throw_custom_exception(Exception $exception) {
-        if(app()->environment('production')) {
+if (! function_exists('throw_custom_exception')) {
+    function throw_custom_exception(Exception $exception)
+    {
+        if (app()->environment('production')) {
             $url = url()->full();
             $method = request()->getMethod();
             $reqData = json_encode(request()->all());
 
-            $error = "The legendary wild bug has appeared!";
+            $error = 'The legendary wild bug has appeared!';
             $error .= "\n";
-            $error .= "```";
+            $error .= '```';
             $error .= "\n Message        : {$exception->getMessage()}";
             $error .= "\n File           : {$exception->getFile()}";
             $error .= "\n Line           : {$exception->getLine()}";
             $error .= "\n Route          : {$url}";
             $error .= "\n Method         : {$method}";
             $error .= "\n Request        : {$reqData}";
-            $error .= "```";
+            $error .= '```';
             Log::critical($error);
         }
     }
 }
 
-if (!function_exists('set_env')) {
-    function set_env($key, $value) {
-    	file_put_contents(app()->environmentFilePath(), str_replace(
-    		$key . '=' . env($key),
-    		$key . '=' . $value,
-    		file_get_contents(app()->environmentFilePath())
-    	));
+if (! function_exists('set_env')) {
+    function set_env($key, $value)
+    {
+        file_put_contents(app()->environmentFilePath(), str_replace(
+            $key.'='.env($key),
+            $key.'='.$value,
+            file_get_contents(app()->environmentFilePath())
+        ));
     }
 }
 
-if (!function_exists('http_post_request')) {
-    function http_post_request($url, $headers, $body) {
+if (! function_exists('http_post_request')) {
+    function http_post_request($url, $headers, $body)
+    {
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_POST, true);
@@ -151,8 +156,9 @@ if (!function_exists('http_post_request')) {
     }
 }
 
-if (!function_exists('slugify')) {
-    function slugify($text, string $divider = '-') {
+if (! function_exists('slugify')) {
+    function slugify($text, string $divider = '-')
+    {
         // replace non letter or digits by divider
         $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
 
@@ -179,8 +185,9 @@ if (!function_exists('slugify')) {
     }
 }
 
-if (!function_exists('transformer')) {
-    function transformer($query, $transformer, $includes = [], $method = 'toArray') {
+if (! function_exists('transformer')) {
+    function transformer($query, $transformer, $includes = [], $method = 'toArray')
+    {
         return fractal($query, $transformer)
             ->serializeWith(new App\Serializers\Serializer)
             ->parseIncludes($includes)
@@ -188,8 +195,9 @@ if (!function_exists('transformer')) {
     }
 }
 
-if (!function_exists('paginateTransformer')) {
-    function paginateTransformer($query, $transformer, $includes = [], $perPage = 15, $method = 'toArray') {
+if (! function_exists('paginateTransformer')) {
+    function paginateTransformer($query, $transformer, $includes = [], $perPage = 15, $method = 'toArray')
+    {
         $paginator = $query->paginate($perPage)->appends(request()->except('page'));
 
         return [
@@ -212,12 +220,10 @@ if (!function_exists('paginateTransformer')) {
                         'next' => $paginator->nextPageUrl(),
                         'current' => $paginator->url($paginator->currentPage()),
                         'first' => $paginator->url(1),
-                        'last' => $paginator->url($paginator->lastPage())
-                    ]
-                ]
-            ]
+                        'last' => $paginator->url($paginator->lastPage()),
+                    ],
+                ],
+            ],
         ];
     }
 }
-
-?>

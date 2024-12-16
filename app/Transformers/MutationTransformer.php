@@ -7,10 +7,16 @@ use League\Fractal\TransformerAbstract;
 
 class MutationTransformer extends TransformerAbstract
 {
+    protected array $defaultIncludes = [
+        //
+    ];
+
+    protected array $availableIncludes = [
+        //
+    ];
+
     /**
      * A Fractal transformer.
-     *
-     * @return array
      */
     public function transform(BalanceHistory $mutation): array
     {
@@ -18,7 +24,7 @@ class MutationTransformer extends TransformerAbstract
             'created_at' => parse_date_time($mutation->created_at),
             'description' => $mutation->description,
             'amount' => rp_format($mutation->amount),
-            'latest_balance' => rp_format($mutation->latest_balance)
+            'latest_balance' => rp_format($mutation->latest_balance),
         ];
     }
 }

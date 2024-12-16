@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Balance;
 use App\Models\User;
-use App\Serializers\Serializer;
+use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
-use App\Transformers\UserTransformer;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -19,7 +18,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -28,28 +27,26 @@ class AuthController extends Controller
 
         $credentials = [
             'email' => $request->username,
-            'password' => $request->password
+            'password' => $request->password,
         ];
 
         try {
-            if (!Auth::attempt($credentials)) {
+            if (! Auth::attempt($credentials)) {
                 $credentials = [
                     'phone_number' => convert_to_62($request->username),
-                    'password' => $request->password
+                    'password' => $request->password,
                 ];
 
-                if (!Auth::attempt($credentials)) {
+                if (! Auth::attempt($credentials)) {
                     return api_status_warning(trans('auth.failed'));
                 }
             }
 
             return api_status_ok([
                 'token' => $request->user()->createToken('access_token')->plainTextToken,
-                'user' => transformer($request->user(), UserTransformer::class)
+                'user' => transformer($request->user(), UserTransformer::class),
             ]);
-        }
-
-        catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return api_status_error($exception);
         }
     }
@@ -77,18 +74,16 @@ class AuthController extends Controller
             $user->assignRole($role);
 
             $user->balance()->create([
-                'amount' => 0
+                'amount' => 0,
             ]);
 
             DB::commit();
 
             return api_status_ok([
                 'token' => $user->createToken('access_token')->plainTextToken,
-                'user' => transformer($user, UserTransformer::class)
+                'user' => transformer($user, UserTransformer::class),
             ]);
-        }
-
-        catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             return api_status_error($exception);
         }
     }

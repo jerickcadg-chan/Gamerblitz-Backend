@@ -2,26 +2,16 @@
 
 namespace App\Transformers;
 
-use League\Fractal\TransformerAbstract;
 use App\Models\User;
+use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
-    /**
-     * List of resources to automatically include
-     *
-     * @var array
-     */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
 
-    /**
-     * List of resources possible to include
-     *
-     * @var array
-     */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         //
     ];
 
