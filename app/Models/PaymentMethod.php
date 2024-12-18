@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 
+/**
+ * @mixin IdeHelperPaymentMethod
+ */
 class PaymentMethod extends Model
 {
     use WithPictures;
