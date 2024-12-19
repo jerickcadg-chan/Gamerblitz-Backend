@@ -14,7 +14,7 @@ class SetExpiredOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'expired:order';
+    protected $signature = 'set:expired';
 
     /**
      * The console command description.
@@ -49,7 +49,7 @@ class SetExpiredOrder extends Command
                 $orderService->updateStatus($order, null, Order::EXPIRED);
 
                 if ($order->cust_email) {
-                    // \Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
+                    \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
                 }
 
                 $this->info($order->code);

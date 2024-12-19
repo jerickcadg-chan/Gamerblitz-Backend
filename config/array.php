@@ -88,7 +88,11 @@ return [
         ],
     ],
     'setting' => [
-        'pin' => '$2a$12$ZfmtR2QbolbXYIcW556KF.fQOcM/4xJX4X7hI1.jAO4lqhoMvRAbS'
+        'pin' => '$2a$12$ZfmtR2QbolbXYIcW556KF.fQOcM/4xJX4X7hI1.jAO4lqhoMvRAbS',
+    ],
+    'vexa' => [
+        'token' => env('VEXA_TOKEN'),
+        'url' => env('VEXA_URL')
     ],
     'payment_method' => [
         'admin_fee' => [
@@ -99,5 +103,18 @@ return [
             'gopay' => '1.4%',
             'dana' => '2%',
         ]
-    ]
+    ],
+    'xendit' => [
+        'token' => env('XENDIT_TOKEN'),
+        'url' => env('XENDIT_URL'),
+        'callback_token' => env('XENDIT_CALLBACK_TOKEN')
+
+    ],
+    'agen' => [
+        'callback_token' => env('AGEN_CALLBACK_TOKEN')
+    ],
+    'mail_no_reply' => env('MAIL_NO_REPLY'),
+    'mail_notification' => env('MAIL_NOTIFICATION'),
+    'expired_hours' => env('EXPIRED_HOURS'),
+    'store_url' => env('STORE_URL')
 ];

@@ -7,12 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @mixin IdeHelperProductItem
+ */
 class ProductItem extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'product_id', 'name', 'code', 'stock', 'price', 'price_reseller', 'capital'
+    ];
+
+    protected $appends = [
+        'real_price',
+        'total_price',
     ];
 
     public function product()

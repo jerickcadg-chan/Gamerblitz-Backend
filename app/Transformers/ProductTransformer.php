@@ -2,11 +2,25 @@
 
 namespace App\Transformers;
 
-use League\Fractal\TransformerAbstract;
 use App\Models\Product;
+use League\Fractal\TransformerAbstract;
 
 class ProductTransformer extends TransformerAbstract
 {
+    /**
+     * List of resources to automatically include
+     */
+    protected array $defaultIncludes = [
+        //
+    ];
+
+    /**
+     * List of resources possible to include
+     */
+    protected array $availableIncludes = [
+        'productItems',
+    ];
+
     /**
      * A Fractal transformer.
      *
@@ -26,5 +40,14 @@ class ProductTransformer extends TransformerAbstract
             'status' => $product->status,
             'picture' => $product->picture->url,
         ];
+    }
+
+    public function includeProductItems(Product $product)
+    {
+        if (is_null($product->productItems)) {
+            return $this->null();
+        }
+
+        return $this->collection($product->productItems, new ProductItemTransformer);
     }
 }

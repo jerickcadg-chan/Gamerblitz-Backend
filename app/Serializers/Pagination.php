@@ -8,7 +8,6 @@
 
 namespace App\Serializers;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use League\Fractal\Pagination\PaginatorInterface;
 
@@ -29,7 +28,6 @@ class Pagination implements PaginatorInterface
     /**
      * Create a new illuminate pagination adapter.
      *
-     * @param \Illuminate\Contracts\Pagination\Paginator $paginator
      *
      * @return void
      */
@@ -40,10 +38,8 @@ class Pagination implements PaginatorInterface
 
     /**
      * Get the current page.
-     *
-     * @return int
      */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         return $this->paginator->currentPage();
     }
@@ -53,37 +49,31 @@ class Pagination implements PaginatorInterface
      *
      * @return int
      */
-    public function getLastPage()
+    public function getLastPage(): int
     {
         return $this->paginator->hasMorePages() ? $this->getCurrentPage() + 1 : $this->getCurrentPage();
     }
 
     /**
      * Get the total.
-     *
-     * @return int
      */
-    public function getTotal()
+    public function getTotal(): int
     {
         return $this->paginator->total();
     }
 
     /**
      * Get the count.
-     *
-     * @return int
      */
-    public function getCount()
+    public function getCount(): int
     {
         return $this->paginator->count();
     }
 
     /**
      * Get the number per page.
-     *
-     * @return int
      */
-    public function getPerPage()
+    public function getPerPage(): int
     {
         return $this->paginator->perPage();
     }
@@ -91,11 +81,9 @@ class Pagination implements PaginatorInterface
     /**
      * Get the url for the given page.
      *
-     * @param int $page
-     *
-     * @return string
+     * @param  int  $page
      */
-    public function getUrl($page)
+    public function getUrl($page): string
     {
         return $this->paginator->url($page);
     }

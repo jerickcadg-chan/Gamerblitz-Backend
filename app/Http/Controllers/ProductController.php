@@ -24,7 +24,8 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::when(request('name'), function ($query) {
+        $products = Product::latest()
+            ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'. request('name') .'%');
             })
             ->paginate();

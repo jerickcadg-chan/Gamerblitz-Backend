@@ -7,14 +7,6 @@ use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
-    protected array $defaultIncludes = [
-        //
-    ];
-
-    protected array $availableIncludes = [
-        //
-    ];
-
     /**
      * A Fractal transformer.
      *

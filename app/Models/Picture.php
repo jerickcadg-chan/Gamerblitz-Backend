@@ -13,7 +13,7 @@ class Picture extends Model
         'path',
         'file_name',
         'caption',
-        'is_local',
+        'is_local'
     ];
 
     public function pictureable()
@@ -24,10 +24,11 @@ class Picture extends Model
     public function getUrlAttribute()
     {
         if (is_null($this->path)) {
-            return asset('build/img/logo_watermark.jpg');
+            return asset('img/logo_watermark.jpg');
         }
 
         return asset($this->path.'/'.$this->file_name);
 
     }
+
 }

@@ -3,21 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Balance;
 use App\Models\Discount;
 use App\Models\Order;
+use App\Models\ProductItem;
+use App\Models\Voucher;
 use App\Models\PaymentMethod;
+use App\Models\DigiTransaction;
 use App\Constants\ProductConstant;
-use App\Models\Product;
-use App\Services\BalanceService;
-use Exception;
-use Illuminate\Database\Eloquent\Builder;
+use App\Services\CustAccountService;
+use App\Transformers\DiscountTransformer;
 use Illuminate\Http\Request;
 use App\Services\OrderService;
 use App\Http\Requests\OrderRequest;
 use App\Mail\SendOrderNotif;
+use App\Models\Balance;
+use App\Models\Product;
+use App\Services\BalanceService;
 use App\Transformers\OrderTransformer;
 use App\Transformers\PaymentMethodTransformer;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
@@ -80,13 +84,7 @@ class OrderController extends Controller
 
     public function getPaymentMethods()
     {
-        $paymentMethods = PaymentMethod::when(request('vendor'), function (Builder $query) {
-            return $query->where('vendor', request('vendor'));
-        })
-        ->orderBy('id')
-        ->get();
-
-        return api_status_ok(transformer($paymentMethods, new PaymentMethodTransformer));
+        return api_status_ok(transformer(PaymentMethod::orderBy('created_at', 'asc')->get(), new PaymentMethodTransformer));
     }
 
     public function getDiscount(Request $request)
@@ -101,15 +99,13 @@ class OrderController extends Controller
             return api_status_warning('Kode voucher tidak ditemukan', 201);
         }
 
-        return api_status_ok($promo);
+        return api_status_ok(transformer($promo, new DiscountTransformer));
     }
 
-    /**
-     * @throws Exception
-     */
+
     public function xenditCallback(Request $request, OrderService $orderService)
     {
-        if ($request->header('x-callback-token') != config('array.xendit.callback_token')) {
+        if ($request->header('x-callback-token') && $request->header('x-callback-token') != config('array.xendit.callback_token')) {
             return api_status_warning('Invalid token !!!');
         }
 
@@ -121,22 +117,10 @@ class OrderController extends Controller
             return api_status_warning('Order not found');
         }
 
-        if ($order->payment_status === Order::SETTLEMENT) {
-            return api_status_warning('Order already success');
-        }
-
-        if ($order->payment_status === Order::EXPIRED) {
-            return api_status_warning('Order already expired');
-        }
-
         switch ($request->status) {
             case 'COMPLETED':
             case 'PAID':
-                $orderService->createBangJeffOrder($order);
-
-                $orderService->setOrderSettlement($order);
-
-                return api_status_ok($order);
+                return $this->setOrderSettlement($order, $orderService);
 
             case 'EXPIRED':
                 return $this->setOrderExpired($order, $orderService);
@@ -156,7 +140,7 @@ class OrderController extends Controller
 //            return api_status_warning('Invalid IP !!!');
 //        }
 
-        $order = Order::where('bangjeff_invoice', $request->invoice_number)->first();
+        $order = Order::where('vexa_invoice', $request->invoice_number)->first();
 
         if (empty($order)) {
             return api_status_warning("Wrong number!");
@@ -199,12 +183,36 @@ class OrderController extends Controller
         return api_status_ok($order);
     }
 
+
+    public function setOrderSettlement($order, $orderService)
+    {
+        if ($order->payment_status != Order::SETTLEMENT) {
+            $orderService->updateStatus($order, Order::SETTLEMENT, Order::INPROCESS);
+
+            if ($order->productItem->product->category == ProductConstant::VOUCHER) {
+              $orderService->sendVoucher($order);
+            } else {
+              if ($order->cust_email) {
+                \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
+              }
+            }
+
+            $orderService->createVexaOrder($order);
+
+            $orderService->sendSettlementNotif($order);
+
+            return \api_status_ok(transformer($order, new OrderTransformer));
+        }
+
+        return \api_status_ok('Order sudah terbayar');
+    }
+
     public function setOrderFailed($order, $orderService)
     {
         $orderService->updateStatus($order, null, Order::CANCELED);
 
         if ($order->cust_email) {
-            // \Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
+            \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
         }
 
         return \api_status_ok(transformer($order, new OrderTransformer));
@@ -215,9 +223,44 @@ class OrderController extends Controller
         $orderService->updateStatus($order, null, Order::EXPIRED);
 
         if ($order->cust_email) {
-            // \Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
+            \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
         }
 
         return \api_status_ok(transformer($order, new OrderTransformer));
+    }
+
+    public function checkNickname()
+    {
+        $productItem = ProductItem::find(request('product_item_id'));
+
+        if (!$productItem) {
+            return "product not found";
+        }
+
+        if (in_array($productItem->product->name, ['Free Fire', 'Mobile Legends'])) {
+            $checkNickname = Http::get(config('array.vexa.url').'/check-nickname', [
+                'customer_no' => CustAccountService::idExtractor($productItem->product->name, request('cust_account')),
+                'game' => $productItem->product->name
+            ]);
+
+            $checkNickname = json_decode($checkNickname->collect());
+
+            if (empty($checkNickname->name)) {
+                return api_status_ok([
+                    'nickname' => null,
+                    'error' => 'ID yang anda masukkan salah, cek kembali ID anda atau baca petunjuk pengisian ID yang berada bawah ini'
+                ]);
+            }
+
+            return api_status_ok([
+                'nickname' => $checkNickname->name,
+                'error' => null
+            ]);
+        }
+
+        return api_status_ok([
+            'nickname' => null,
+            'error' => null
+        ]);
     }
 }

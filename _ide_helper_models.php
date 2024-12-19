@@ -395,7 +395,6 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItem> $productItems
  * @property-read int|null $product_items_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product active()
- * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product onlyTrashed()
@@ -435,18 +434,14 @@ namespace App\Models{
  * @property string $price
  * @property float|null $price_reseller
  * @property string $capital
- * @property string $percentage_margin
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $discount_price
- * @property-read mixed $real_price
  * @property-read mixed $total_price
- * @property-read mixed $margin_price
  * @property-read \App\Models\Product $product
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Voucher> $vouchers
  * @property-read int|null $vouchers_count
- * @method static \Database\Factories\ProductItemFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem onlyTrashed()
@@ -457,7 +452,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem wherePercentageMargin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem wherePriceReseller($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereProductId($value)
@@ -518,7 +512,6 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Balance|null $balance
  * @property-read mixed $role
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count

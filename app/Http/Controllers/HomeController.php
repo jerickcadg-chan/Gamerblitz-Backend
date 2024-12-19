@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {

@@ -30,9 +30,8 @@ class ProductRequest extends FormRequest
                     'category' => 'required|string',
                     'description' => 'required|string',
                     'how_to_order' => 'required|string',
-                    'input_format' => 'required|string',
                     'status' => 'required',
-                    'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+//                    'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ];
             case 'PUT':
             case 'PATCH':
@@ -41,8 +40,7 @@ class ProductRequest extends FormRequest
                     'category' => 'required|string',
                     'description' => 'required|string',
                     'how_to_order' => 'required|string',
-                    'input_format' => 'required|string',
-                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+//                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ];
 
             default:
