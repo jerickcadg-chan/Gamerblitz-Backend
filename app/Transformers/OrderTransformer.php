@@ -2,28 +2,23 @@
 
 namespace App\Transformers;
 
-use League\Fractal\TransformerAbstract;
-use App\Transformers\VoucherTransformer;
 use App\Models\Order;
+use League\Fractal\TransformerAbstract;
 
 class OrderTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
-     *
-     * @var array
      */
-    protected $defaultIncludes = [
-        'productItem', 'product', 'user'
+    protected array $defaultIncludes = [
+        'productItem', 'product', 'user',
     ];
 
     /**
      * List of resources possible to include
-     *
-     * @var array
      */
-    protected $availableIncludes = [
-        'vouchers'
+    protected array $availableIncludes = [
+        'vouchers',
     ];
 
     /**
@@ -31,7 +26,7 @@ class OrderTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($order): array
+    public function transform($order)
     {
         return [
             'id' => $order->id,
@@ -40,7 +35,7 @@ class OrderTransformer extends TransformerAbstract
             'created_at_simple' => parse_date($order->created_at),
             'cust_email' => $order->cust_email,
             'cust_phone_number' => $order->cust_phone_number,
-            'cust_account' => $order->cust_account_format,
+            'cust_account' => $order->productItem->product->slug !== 'mobile-legends-joki-rank' ? $order->cust_account_format : '',
             'payment_method' => $order->payment_method,
             'payment_status' => $order->payment_status_translated,
             'order_status' => $order->order_status_translated,

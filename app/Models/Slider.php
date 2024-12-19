@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 
+/**
+ * @mixin IdeHelperSlider
+ */
 class Slider extends Model
 {
     use WithPictures;

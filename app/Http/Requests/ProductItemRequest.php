@@ -24,13 +24,19 @@ class ProductItemRequest extends FormRequest
     public function rules()
     {
         switch ($this->method()) {
-            case 'PATCH':
-            case 'PUT':
             case 'POST':
                 return [
                     'name' => 'required|string',
                     'price' => 'required',
                     'price_reseller' => 'required',
+                    'capital' => 'required',
+                    'stock' => 'required|integer',
+                ];
+            case 'PUT':
+            case 'PATCH':
+                return [
+                    'name' => 'required|string',
+                    'price' => 'required',
                     'capital' => 'required',
                     'stock' => 'required|integer',
                 ];

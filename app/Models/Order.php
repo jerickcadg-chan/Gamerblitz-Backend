@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
+/**
+ * @mixin IdeHelperOrder
+ */
 class Order extends Model
 {
     use HasFactory;
@@ -22,7 +25,7 @@ class Order extends Model
     protected $fillable = [
         'code', 'user_id', 'cust_email', 'cust_phone_number', 'product_item_id', 'cust_account', 'payment_method',
         'payment_status', 'order_status', 'qty', 'price', 'admin_fee', 'total_price', 'total_income', 'note',
-        'expired_at', 'bangjeff_invoice'
+        'expired_at', 'vexa_invoice'
     ];
 
     protected static function boot()

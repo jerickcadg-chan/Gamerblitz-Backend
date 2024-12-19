@@ -42,7 +42,7 @@ class IntegrateExpiredDate extends Command
         $orders = Order::whereNull('expired_at')->get();
 
         foreach ($orders as $order) {
-            $order->expired_at = Carbon::parse($order->created_at)->addHours(env('EXPIRED_HOURS'));
+            $order->expired_at = Carbon::parse($order->created_at)->addHours(config('array.expired_hours'));
             $order->save();
 
             $this->info($order->code);

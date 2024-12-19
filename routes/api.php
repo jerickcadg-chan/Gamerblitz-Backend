@@ -27,6 +27,8 @@ Route::post('register', [AuthController::class, 'register']);
 
 Route::get('slider', [SliderController::class, 'index']);
 
+Route::get('check-nickname', [OrderController::class, 'checkNickname']);
+
 Route::get('product', [ProductController::class, 'index']);
 Route::get('product/{product}', [ProductController::class, 'showProduct']);
 Route::get('product-items/{productId}', [ProductController::class, 'getProductItems']);

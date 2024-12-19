@@ -6,17 +6,23 @@ use League\Fractal\Serializer\DataArraySerializer;
 
 class Serializer extends DataArraySerializer
 {
-    public function collection($resourceKey, array $data)
+    public function collection(?string $resourceKey, array $data): array
     {
         return $data;
     }
 
-    public function item($resourceKey, array $data)
+    /**
+     * {@inheritDoc}
+     */
+    public function item(?string $resourceKey, array $data): array
     {
         return $data;
     }
 
-    public function null()
+    /**
+     * {@inheritDoc}
+     */
+    public function null(): ?array
     {
         return null;
     }
