@@ -20,15 +20,18 @@
             <div class="card-body table-responsive">
                 <div class="row mb-2">
                     <div class="col-md-12 text-lg-end">
+                        <button class="btn btn-warning" id="toggleBulkAction">Atur margin harga</button>
                         <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
                     </div>
                 </div>
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th> <input type="checkbox" name="update_all" value="true"/> </th>
                             <th> # </th>
                             <th> Produk </th>
                             <th> Kode </th>
+                            <th> Margin </th>
                             <th> Harga </th>
                             <th> Stok </th>
                             <th> Modal </th>
@@ -36,12 +39,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($productItems as $index => $productItem)
+                        @forelse ($productItems as $productItem)
                         <tr>
-                            <td>{{ $productItems->firstItem() + $index }}</td>
+                            <th> <input type="checkbox" name="product_item_ids" value="{{ $productItem->id }}"/> </th>
+                            <td>{{ $loop->index + 1 }}</td>
                             <td>{{ $productItem->product->name }} {{ $productItem->name }}</td>
                             <td>{{ $productItem->code }}</td>
-                            <td>{{ rp_format($productItem->price) }}</td>
+                            <td>{{ $productItem->margin_percentage ?? 0 }} %</td>
+                            <td>{{ rp_format($productItem->margin_price) }}</td>
                             <td>{{ $productItem->stock }}</td>
                             <td>{{ rp_format($productItem->capital) }}</td>
                             <td>
@@ -71,3 +76,46 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+  <script>
+    document.querySelector('input[name="update_all"]').addEventListener('change', function() {
+      document.querySelectorAll('input[name="product_item_ids"]').forEach(function(checkbox) {
+        checkbox.checked = this.checked;
+      }, this);
+    });
+
+   //const togglebulkAction = () => {
+   //  const updateAll = document.querySelector('input[name="update_all"]');
+   //  // updateAll.style.display = updateAll.style.display === 'none' ? 'block' : 'none';
+   //  updateAll.checked = false;
+   //  updateAll.parentElement.style.display = updateAll.parentElement.style.display === 'none' ? 'table-cell' : 'none';
+   //  const checkboxes = document.querySelectorAll('input[name="product_item_ids"]');
+   //  checkboxes.forEach(function(checkbox) {
+   //    // checkbox.style.display = checkbox.style.display === 'none' ? 'block' : 'none';
+   //    checkbox.checked = false;
+   //    checkbox.parentElement.style.display = checkbox.parentElement.style.display === 'none' ? 'table-cell' : 'none';
+   //  });
+   //};
+
+    document.querySelector('#toggleBulkAction').addEventListener('click', function(event) {
+      event.preventDefault();
+      const checkboxes = document.querySelectorAll('input[name="product_item_ids"]');
+      if (document.querySelectorAll('input[name="product_item_ids"]:checked').length === 0) {
+        Swal.fire({
+          title: 'Yakin ingin menghapus data?',
+          text: "You won't be able to revert this !",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $(`[data-penguji=${id_penguji}]`).parents('.raised.card').remove()
+          }
+        })
+      }
+    });
+  </script>
+@endpush

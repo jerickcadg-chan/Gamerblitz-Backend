@@ -23,4 +23,54 @@ abstract class TestCase extends BaseTestCase
 
         return $user;
     }
+
+    public function generateSuperAdminUser(): User
+    {
+        Artisan::call('db:seed', ['--class' => 'RolesTableSeeder']);
+        $user = User::factory()
+            ->create();
+        $user->assignRole('Super Admin');
+        $this->user = $user;
+
+        return $user;
+    }
+
+    public function assertToast(\Illuminate\Testing\TestResponse $response, array $config = []): void
+    {
+        $config = array_merge([
+            'title' => '',
+            'text' => '',
+            'timer' => config('sweetalert.timer'),
+            'background' => config('sweetalert.background'),
+            'width' => config('sweetalert.width'),
+            'padding' => config('sweetalert.padding'),
+            'showConfirmButton' => false,
+            'showCloseButton' => true,
+            'confirmButtonText' => __(config('sweetalert.button_text.confirm')),
+            'cancelButtonText' => __(config('sweetalert.button_text.cancel')),
+            'timerProgressBar' => config('sweetalert.timer_progress_bar'),
+            'customClass' => [
+                'container' => config('sweetalert.customClass.container'),
+                'popup' => config('sweetalert.customClass.popup'),
+                'header' => config('sweetalert.customClass.header'),
+                'title' => config('sweetalert.customClass.title'),
+                'closeButton' => config('sweetalert.customClass.closeButton'),
+                'icon' => config('sweetalert.customClass.icon'),
+                'image' => config('sweetalert.customClass.image'),
+                'content' => config('sweetalert.customClass.content'),
+                'input' => config('sweetalert.customClass.input'),
+                'actions' => config('sweetalert.customClass.actions'),
+                'confirmButton' => config('sweetalert.customClass.confirmButton'),
+                'cancelButton' => config('sweetalert.customClass.cancelButton'),
+                'footer' => config('sweetalert.customClass.footer')
+            ],
+            'toast' => true,
+            'icon' => 'error',
+            'position' => 'top-end'
+        ], $config);
+
+        $response->assertSessionHas('alert', [
+            'config' => json_encode($config)
+        ]);
+    }
 }

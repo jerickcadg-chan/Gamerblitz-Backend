@@ -19,4 +19,14 @@ class Client extends Model
         'description',
         'user_token',
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function productItemClients()
+    {
+        return $this->hasMany(ProductItemClient::class);
+    }
 }

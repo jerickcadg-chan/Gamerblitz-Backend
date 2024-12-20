@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\DefaultRole;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -58,5 +59,36 @@ class ProductItem extends Model
     public function clients()
     {
         return $this->belongsToMany(Client::class, ProductItemClient::class);
+    }
+
+    public function productItemClients()
+    {
+        return $this->hasMany(ProductItemClient::class);
+    }
+
+    public function marginPrice(): Attribute
+    {
+        return Attribute::make(
+            get: function (): float {
+                if ($productItemClient = $this->productItemClients->firstWhere('client_id', auth()->user()->client->id)) {
+                    return (float) $this->price + ($this->price * $productItemClient->margin / 100);
+                }
+
+                return $this->price;
+            },
+        );
+    }
+
+    public function marginPercentage(): Attribute
+    {
+        return Attribute::make(
+            get: function (): float {
+                if ($productItemClient = $this->productItemClients->firstWhere('client_id', auth()->user()->client->id)) {
+                    return (float)$productItemClient->margin;
+                }
+
+                return 0;
+            },
+        );
     }
 }

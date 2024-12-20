@@ -17,7 +17,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('build/vendors/mdi/css/materialdesignicons.min.css') }}" rel="stylesheet">
-    @vite(['resources/js/app.js', 'resources/css/style.css'])
+    <link href="{{ mix('css/style.css') }}" rel="stylesheet">
 
     <!-- Select2 -->
     <link href="{{ asset('build/vendors/select2/select2.min.css') }}" rel="stylesheet">

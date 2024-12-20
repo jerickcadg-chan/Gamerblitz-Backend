@@ -24,7 +24,15 @@ class ProductItemController extends Controller
 
     public function index()
     {
-        $productItems = ProductItem::latest()->with('product')
+        /** @var \App\Models\Client $client */
+        $client = auth()->user()->client;
+        $productItems = ProductItem::query()
+            ->with([
+                'productItemClients' => function ($query) use ($client) {
+                    $query->where('client_id', $client->id);
+                },
+            ])
+            ->latest()->with('product')
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'.request("name").'%');
             })

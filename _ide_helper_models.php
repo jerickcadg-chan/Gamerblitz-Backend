@@ -80,6 +80,10 @@ namespace App\Models{
  * @property string $user_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemClient> $productItemClients
+ * @property-read int|null $product_item_clients_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
  * @method static \Database\Factories\ClientFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newQuery()
@@ -157,6 +161,7 @@ namespace App\Models{
  * @property int $used
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client|null $client
  * @property-read mixed $discount
  * @property-read mixed $product_type_desc
  * @property-read string $status
@@ -164,6 +169,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DiscountProduct> $products
  * @property-read int|null $products_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount active()
+ * @method static \Database\Factories\DiscountFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount query()
@@ -510,7 +516,10 @@ namespace App\Models{
  * @property-read mixed $discount_price
  * @property-read mixed $real_price
  * @property-read mixed $total_price
+ * @property-read float $margin_price
  * @property-read \App\Models\Product $product
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemClient> $productItemClients
+ * @property-read int|null $product_item_clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Voucher> $vouchers
  * @property-read int|null $vouchers_count
  * @method static \Database\Factories\ProductItemFactory factory($count = null, $state = [])
