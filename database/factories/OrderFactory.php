@@ -2,9 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Order;
 use App\Models\ProductItem;
+use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class OrderFactory extends Factory
 {
@@ -22,11 +27,12 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
-        $productItem = ProductItem::find(rand(1, 5));
+        $productItem = ProductItem::factory()->create();
 
         return [
-            'user_id' => rand(1,40),
-            'cust_phone_number' => '62'. rand(1000000000, 9999999999),
+            'user_id' => User::factory(),
+            'client_id' => Client::factory(),
+            'cust_phone_number' => '62' . rand(1000000000, 9999999999),
             'product_item_id' => $productItem->id,
             'cust_account' => collect([
                 'player_id' => rand(100000, 999999),
@@ -46,5 +52,22 @@ class OrderFactory extends Factory
             'created_at' => now(),
             'updated_at' => \Carbon\Carbon::parse(now())->addMinutes(12)
         ];
+    }
+
+    public function customerUser()
+    {
+        Artisan::call('db:seed', ['--class' => 'RolesTableSeeder']);
+        $user = User::factory()->create([
+            'email' => $this->faker->unique()->safeEmail,
+            'password' => bcrypt('password')
+        ]);
+
+        $user->assignRole('Customer');
+
+        return $this->state(function (array $attributes) use ($user) {
+            return [
+                'user_id' => $user->id
+            ];
+        });
     }
 }

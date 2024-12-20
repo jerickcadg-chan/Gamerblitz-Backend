@@ -74,6 +74,34 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $name
+ * @property string $logo
+ * @property string|null $description
+ * @property string $user_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\ClientFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereLogo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUserToken($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperClient {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property string $code
  * @property int $user_id
  * @property int $payment_method_id
@@ -115,6 +143,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int|null $client_id
  * @property string $name
  * @property string|null $code
  * @property string|null $description
@@ -138,6 +167,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereDescription($value)
@@ -190,6 +220,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int|null $client_id
  * @property string $code
  * @property int|null $user_id
  * @property int $product_item_id
@@ -210,11 +241,12 @@ namespace App\Models{
  * @property string|null $payment_url
  * @property string|null $payment_code
  * @property string|null $payment_id
- * @property string|null $bangjeff_invoice
+ * @property string|null $vexa_invoice
  * @property string|null $note
  * @property string|null $expired_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client|null $client
  * @property-read \App\Models\Discount|null $discount
  * @property-read mixed $cust_account_format
  * @property-read mixed $order_status_raw
@@ -236,8 +268,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order settlement()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereAdminFee($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereBangjeffInvoice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCapital($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCustAccount($value)
@@ -261,6 +293,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereTotalPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereVexaInvoice($value)
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
@@ -347,6 +380,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $url
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $pictureable
+ * @method static \Database\Factories\PictureFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Picture newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Picture newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Picture query()
@@ -395,6 +429,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItem> $productItems
  * @property-read int|null $product_items_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product active()
+ * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product onlyTrashed()
@@ -428,6 +463,38 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $product_id
+ * @property int $client_id
+ * @property int $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Picture $picture
+ * @property-read \App\Models\Picture $picture_order
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures
+ * @property-read int|null $pictures_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
+ * @property-read int|null $pictures_order_count
+ * @method static \Database\Factories\ProductClientFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperProductClient {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $product_id
  * @property string $name
  * @property string|null $code
  * @property int $stock
@@ -437,11 +504,16 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ProductItemClient|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Client> $clients
+ * @property-read int|null $clients_count
  * @property-read mixed $discount_price
+ * @property-read mixed $real_price
  * @property-read mixed $total_price
  * @property-read \App\Models\Product $product
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Voucher> $vouchers
  * @property-read int|null $vouchers_count
+ * @method static \Database\Factories\ProductItemFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem onlyTrashed()
@@ -470,21 +542,55 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int $product_item_id
+ * @property int $client_id
+ * @property string $margin
+ * @property int $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client $client
+ * @property-read \App\Models\ProductItem $productItem
+ * @method static \Database\Factories\ProductItemClientFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereMargin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereProductItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperProductItemClient {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int|null $client_id
  * @property string $name
  * @property string $url
  * @property string $start_date
  * @property string $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client|null $client
  * @property-read \App\Models\Picture $picture
  * @property-read \App\Models\Picture $picture_order
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures
  * @property-read int|null $pictures_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
  * @property-read int|null $pictures_order_count
+ * @method static \Database\Factories\SliderFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereEndDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereId($value)
@@ -503,6 +609,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int|null $client_id
  * @property string $name
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
@@ -512,6 +619,8 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Balance|null $balance
+ * @property-read \App\Models\Client|null $client
  * @property-read mixed $role
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
@@ -530,6 +639,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User role($roles, $guard = null, $without = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)

@@ -2,7 +2,7 @@
 
 namespace App\Constants;
 
-class ProductConstant
+class ProductConstant extends ConstanstAbstraction
 {
     const GAME = 'game';
     const VOUCHER = 'voucher';

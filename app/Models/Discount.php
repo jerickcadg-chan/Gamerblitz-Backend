@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
@@ -11,6 +13,9 @@ use Illuminate\Support\Facades\DB;
  */
 class Discount extends Model
 {
+    /** @use HasFactory<\Database\Factories\DiscountFactory> */
+    use HasFactory;
+
     const ALL = 'all';
     const PRODUCT_TYPE = 'product_type';
     const PRODUCT_ITEM = 'product_item';
@@ -99,5 +104,10 @@ class Discount extends Model
                 $this->product_type;
                 break;
         }
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 }

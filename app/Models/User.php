@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,6 +16,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
@@ -26,7 +28,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone_number'
+        'phone_number',
+        'client_id',
     ];
 
     /**
@@ -77,11 +80,6 @@ class User extends Authenticatable
         $this->attributes['email'] = strtolower($value);
     }
 
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
-    }
-
     public function setPhoneNumberAttribute($value)
     {
         $this->attributes['phone_number'] = convert_to_62($value);
@@ -94,5 +92,10 @@ class User extends Authenticatable
         return count($role) > 1
             ? ($this->hasRole('Super Admin') ? $role->where('name', '!=', 'Super Admin')->first()->name : $role->first()->name)
             : ($role->first()->name ?? null);
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 }

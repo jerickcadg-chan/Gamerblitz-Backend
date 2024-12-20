@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\DefaultRole;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ProductItem extends Model
 {
+    /** @use HasFactory<\Database\Factories\ProductItemFactory> */
+    use HasFactory;
     use SoftDeletes;
 
     protected $fillable = [
@@ -50,5 +53,10 @@ class ProductItem extends Model
     public function vouchers()
     {
         return $this->hasMany(Voucher::class);
+    }
+
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class, ProductItemClient::class);
     }
 }
