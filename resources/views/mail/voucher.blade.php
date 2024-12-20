@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>KayeStore - Voucher Receipt</title>
+        <title>MitraGamers - Voucher Receipt</title>
         <style>
             body {
                 background: #000;
@@ -48,7 +48,7 @@
             </div>
             <p>Email dibuat secara otomatis</p>
             <p>Apabila kamu membutuhkan bantuan silahkan <a href="https://kayestore.com/contact" target="_blank">Hubungi Kami</a> </p>
-            <a href="https://kayestore.com" target="_blank">KayeStore.com</a>
+            <a href="https://kayestore.com" target="_blank">MitraGamers.com</a>
         </center>
     </body>
 </html>

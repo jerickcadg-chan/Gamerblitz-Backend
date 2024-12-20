@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>KayeStore - Error Notif</title>
+        <title>MitraGamers - Error Notif</title>
         <style>
             body {
                 background: #000;
@@ -49,7 +49,7 @@
                 </table>
             </div>
             <p>Email dibuat secara otomatis</p>
-            <a href="https://kayestore.com" target="_blank">KayeStore.com</a>
+            <a href="https://kayestore.com" target="_blank">MitraGamers.com</a>
         </center>
     </body>
 </html>

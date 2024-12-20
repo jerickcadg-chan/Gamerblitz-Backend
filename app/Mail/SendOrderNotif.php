@@ -30,6 +30,6 @@ class SendOrderNotif extends Mailable
      */
     public function build()
     {
-        return $this->subject('KayeStore - Order Invoice #'.$this->order->code)->view('mail.order-notif');
+        return $this->subject('MitraGamers - Order Invoice #'.$this->order->code)->view('mail.order-notif');
     }
 }
