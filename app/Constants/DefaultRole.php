@@ -2,7 +2,7 @@
 
 namespace App\Constants;
 
-class DefaultRole
+class DefaultRole extends ConstanstAbstraction
 {
     const SUPER_ADMIN = 'Super Admin';
     const CUSTOMER = 'Customer';

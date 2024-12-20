@@ -2,7 +2,7 @@
 
 namespace App\Constants;
 
-class StatusConst
+class StatusConst extends ConstanstAbstraction
 {
     const PENDING = 'pending';
     const PAID = 'paid';

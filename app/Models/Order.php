@@ -5,12 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @mixin IdeHelperOrder
  */
 class Order extends Model
 {
+    /**
+    * @use HasFactory<OrderFactory>
+     */
     use HasFactory;
 
     const PENDING = 'pending';
@@ -200,5 +205,10 @@ class Order extends Model
                 return $this->payment_status;
                 break;
         }
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 }
