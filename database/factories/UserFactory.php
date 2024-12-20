@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -24,7 +25,7 @@ class UserFactory extends Factory
             'client_id' => Client::factory(),
             'email_verified_at' => now(),
             'phone_number' => '62'. rand(1000000000, 9999999999),
-            'password' => bcrypt('password'), // password
+            'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
         ];
     }

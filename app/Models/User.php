@@ -80,11 +80,6 @@ class User extends Authenticatable
         $this->attributes['email'] = strtolower($value);
     }
 
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
-    }
-
     public function setPhoneNumberAttribute($value)
     {
         $this->attributes['phone_number'] = convert_to_62($value);
