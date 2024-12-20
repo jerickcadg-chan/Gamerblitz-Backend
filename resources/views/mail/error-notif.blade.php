@@ -21,7 +21,7 @@
     </head>
     <body>
         <center>
-            <img src="{{ config('array.store.url') }}/img/kayestore-logo.png" width="200px" alt="kayestore-logo">
+            <img src="{{ config('array.store.url') }}/img/mitragamers-logo.png" width="200px" alt="mitragamers-logo">
             <div class="card">
                 <h1>Ada Transaksi Error 🙈</h1>
                 <h3>{{ $errMessage }}</h3>
@@ -49,7 +49,7 @@
                 </table>
             </div>
             <p>Email dibuat secara otomatis</p>
-            <a href="https://kayestore.com" target="_blank">MitraGamers.com</a>
+            <a href="https://mitragamers.com" target="_blank">MitraGamers.com</a>
         </center>
     </body>
 </html>

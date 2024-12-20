@@ -21,7 +21,7 @@ class UsersTableSeeder extends Seeder
 
         $superAdmin = User::create([
             'name' => 'Administrator',
-            'email' => 'admin@kayestore.com',
+            'email' => 'admin@mitragamers.com',
             'email_verified_at' => now(),
             'password' => '12345678',
         ]);

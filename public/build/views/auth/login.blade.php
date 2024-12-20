@@ -8,7 +8,7 @@
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left p-5">
                             <div class="text-center">
-                                <img src="{{ asset('build/img/header.png') }}" alt="header image kayestore" class="w-75 text-center">
+                                <img src="{{ asset('build/img/header.png') }}" alt="header image mitragamers" class="w-75 text-center">
                             </div>
                             <form class="pt-3" action="{{ route('login') }}" method="POST">
                                 @csrf

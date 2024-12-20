@@ -21,7 +21,7 @@
     </head>
     <body>
         <center>
-            <img src="{{ config('array.store.url') }}/img/kayestore-logo.png" width="200px" alt="kayestore-logo">
+            <img src="{{ config('array.store.url') }}/img/mitragamers-logo.png" width="200px" alt="mitragamers-logo">
             <div class="card">
                 <h1>Terimakasih Atas Pembelian Anda 😊</h1>
                 <table>
@@ -47,8 +47,8 @@
                 </table>
             </div>
             <p>Email dibuat secara otomatis</p>
-            <p>Apabila kamu membutuhkan bantuan silahkan <a href="https://kayestore.com/contact" target="_blank">Hubungi Kami</a> </p>
-            <a href="https://kayestore.com" target="_blank">MitraGamers.com</a>
+            <p>Apabila kamu membutuhkan bantuan silahkan <a href="https://mitragamers.com/contact" target="_blank">Hubungi Kami</a> </p>
+            <a href="https://mitragamers.com" target="_blank">MitraGamers.com</a>
         </center>
     </body>
 </html>
