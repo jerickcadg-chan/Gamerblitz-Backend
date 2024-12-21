@@ -77,7 +77,7 @@ class Product extends Model
             get: fn (): string => $this->productClient
                 ->first()
                 ?->picture
-                ?->url ?? asset('images/no-image.png'),
+                ?->url ?? $this->default_picture_url ?? asset('images/no-image.png')
         );
     }
 }

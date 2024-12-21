@@ -16,13 +16,31 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::orderBy('created_at')->active()
+        $products = Product::active()
+            ->orderBy('created_at')
+            ->when(request('category'), function ($query) {
+                return $query->where('category', request('category'));
+            })
             ->when(\request('name'), function ($query) {
                 return $query->where('name', 'like', '%'. \request('name') .'%');
             })
             ->get();
 
         return api_status_ok(transformer($products, new ProductTransformer));
+    }
+
+    public function paginate()
+    {
+        $products = Product::active()
+            ->orderBy('created_at')
+            ->when(request('category'), function ($query) {
+                return $query->where('category', request('category'));
+            })
+            ->when(\request('name'), function ($query) {
+                return $query->where('name', 'like', '%'. \request('name') .'%');
+            });
+
+        return api_status_ok(paginateTransformer($products, new ProductTransformer));
     }
 
     public function showProduct($product)

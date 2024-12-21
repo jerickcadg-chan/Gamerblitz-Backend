@@ -487,6 +487,7 @@ namespace App\Models{
  * @property string $status
  * @property float $markup_reseller
  * @property float $markup_user
+ * @property string|null $default_picture_url
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -513,6 +514,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCompany($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDefaultPictureUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereHowToOrder($value)
