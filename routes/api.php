@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DepositController;
 use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\OrderController;
@@ -31,7 +32,9 @@ Route::get('slider', [SliderController::class, 'index']);
 
 Route::get('check-nickname', [OrderController::class, 'checkNickname']);
 
+Route::get('category', CategoryController::class);
 Route::get('product', [ProductController::class, 'index']);
+Route::get('product/paginate', [ProductController::class, 'paginate']);
 Route::get('product/{product}', [ProductController::class, 'showProduct']);
 Route::get('product-items/{productId}', [ProductController::class, 'getProductItems']);
 Route::get('product-item/{id}', [ProductController::class, 'showProductItem']);
