@@ -42,7 +42,7 @@
     @endauth
 
     @stack('js')
-    @include('sweetalert::alert')
+    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
     <script>
         $('.select2').select2();
         $('form').submit(function(){

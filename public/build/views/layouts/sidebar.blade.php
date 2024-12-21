@@ -38,9 +38,6 @@
                         <a class="nav-link {{ in_array($activePage, ['product_item', 'voucher']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>
                     </li>
                     @endcan
-                    <li class="nav-item">
-                        <a class="nav-link {{ in_array($activePage, ['product_item_price', 'voucher']) ? 'active' : null }}" href="{{ route('product_item_price.index') }}">Atur harga</a>
-                    </li>
                 </ul>
             </div>
         </li>

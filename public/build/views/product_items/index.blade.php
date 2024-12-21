@@ -15,12 +15,39 @@
 
     @include('product_items.filter')
 
+    <div class="modal fade" id="updateMarginActionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <form method="POST" id="form-update-margin">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button type="button" class="close" onclick="$('#updateMarginActionModal').modal('hide')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              @csrf
+              <div class="form-group">
+                <label for="marginInput">Margin</label>
+                <input type="number" class="form-control" id="marginInput" placeholder="Masukkan margin (%)">
+                <small id="marginHelp" class="form-text text-muted"></small>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Update margin harga</button>
+              <button type="button" class="btn btn-secondary" onclick="$('#updateMarginActionModal').modal('hide')">Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body table-responsive">
                 <div class="row mb-2">
                     <div class="col-md-12 text-lg-end">
-                        <button class="btn btn-warning" id="toggleBulkAction">Atur margin harga</button>
+                        <button class="btn btn-warning" id="updateMarginAction">Atur margin harga</button>
                         <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
                     </div>
                 </div>
@@ -85,37 +112,62 @@
       }, this);
     });
 
-   //const togglebulkAction = () => {
-   //  const updateAll = document.querySelector('input[name="update_all"]');
-   //  // updateAll.style.display = updateAll.style.display === 'none' ? 'block' : 'none';
-   //  updateAll.checked = false;
-   //  updateAll.parentElement.style.display = updateAll.parentElement.style.display === 'none' ? 'table-cell' : 'none';
-   //  const checkboxes = document.querySelectorAll('input[name="product_item_ids"]');
-   //  checkboxes.forEach(function(checkbox) {
-   //    // checkbox.style.display = checkbox.style.display === 'none' ? 'block' : 'none';
-   //    checkbox.checked = false;
-   //    checkbox.parentElement.style.display = checkbox.parentElement.style.display === 'none' ? 'table-cell' : 'none';
-   //  });
-   //};
-
-    document.querySelector('#toggleBulkAction').addEventListener('click', function(event) {
+    document.querySelector('#updateMarginAction').addEventListener('click', function(event) {
       event.preventDefault();
       const checkboxes = document.querySelectorAll('input[name="product_item_ids"]');
       if (document.querySelectorAll('input[name="product_item_ids"]:checked').length === 0) {
         Swal.fire({
-          title: 'Yakin ingin menghapus data?',
-          text: "You won't be able to revert this !",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $(`[data-penguji=${id_penguji}]`).parents('.raised.card').remove()
-          }
+          title: 'Error!',
+          text: 'Pilih minimal satu produk item',
+          icon: 'error',
         })
+      } else {
+        $('#updateMarginActionModal').modal('show')
       }
+    });
+
+    const form = document.querySelector('#form-update-margin');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const margin = document.querySelector('#marginInput').value;
+      const productItemIds = document.querySelectorAll('input[name="product_item_ids"]:checked');
+      const updateAll = document.querySelector('input[name="update_all"]').checked;
+      const data = new FormData();
+      data.append('margin', margin);
+      if (updateAll) {
+        data.append('update_all', updateAll);
+      } else {
+        productItemIds.forEach(function(checkbox) {
+          data.append('product_item_ids[]', checkbox.value);
+        });
+      }
+      fetch('{{ route('product_item_price.store') }}', {
+        method: 'POST',
+        body: data,
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire({
+              title: 'Success!',
+              text: data.message,
+              icon: 'success',
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              title: data.message,
+              text: data.errors.margin[0],
+              icon: 'error',
+            });
+
+            this.querySelector('button[type="submit"]').removeAttribute('disabled');
+          }
+        });
     });
   </script>
 @endpush
