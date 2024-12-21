@@ -73,10 +73,10 @@ class ProductItem extends Model
                 $client_id = client()->id;
 
                 if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-                    return (float) $this->price + ($this->price * $productItemClient->margin / 100);
+                    return (float) $this->capital + ($this->capital * $productItemClient->margin / 100);
                 }
 
-                return $this->price;
+                return $this->capital;
             },
         );
     }
@@ -100,13 +100,14 @@ class ProductItem extends Model
     {
         return Attribute::make(
             get: function (): float {
+                // TODO: Implement marginPriceReseller() method.
                 $client_id = client()->id;
 
                 if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-                    return (float) $this->price_reseller + ($this->price_reseller * $productItemClient->margin / 100);
+                    return (float) $this->capital + ($this->capital * $productItemClient->margin / 100);
                 }
 
-                return $this->price_reseller;
+                return $this->capital;
             },
         );
     }
