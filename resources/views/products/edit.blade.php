@@ -37,14 +37,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="markup_user_input" class="required">Markup User (%)</label>
-                                <input type="number" min="0" class="form-control {{ $errors->has('markup_user') ? ' is-invalid' : '' }}" name="markup_user" id="markup_user_input" value="{{ old('markup_user', $product->markup_user) }}" placeholder="Markup Harga Untuk User" required>
+                                <input type="number" step="0.01" class="form-control {{ $errors->has('markup_user') ? ' is-invalid' : '' }}" name="markup_user" id="markup_user_input" value="{{ old('markup_user', $product->markup_user) }}" placeholder="Markup Harga Untuk User" required>
                                 @include('alerts.feedback', ['field' => 'markup_user'])
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="markup_reseller_input" class="required">Markup Reseller (%)</label>
-                                <input type="number" min="0" class="form-control {{ $errors->has('markup_reseller') ? ' is-invalid' : '' }}" name="markup_reseller" id="markup_reseller_input" value="{{ old('markup_reseller', $product->markup_reseller) }}" placeholder="Markup Harga Untuk Reseller" required>
+                                <input type="number" step="0.01" min="0" class="form-control {{ $errors->has('markup_reseller') ? ' is-invalid' : '' }}" name="markup_reseller" id="markup_reseller_input" value="{{ old('markup_reseller', $product->markup_reseller) }}" placeholder="Markup Harga Untuk Reseller" required>
                                 @include('alerts.feedback', ['field' => 'markup_reseller'])
                             </div>
                         </div>

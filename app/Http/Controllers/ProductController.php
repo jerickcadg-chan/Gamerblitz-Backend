@@ -61,8 +61,15 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = Product::create($request->all());
+        $product->productClient()
+            ->create([
+                'client_id' => client()->id,
+            ]);
 
-        insert_picture($request->picture, $product);
+        $productClient = $product->productClient
+            ->firstWhere('client_id', client()->id);
+
+        insert_picture($request->picture, $productClient);
 
         toast(alert_created_text($this->title),'success');
         return redirect()->route('product.index');
@@ -81,9 +88,16 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $product->update($request->all());
+        $product->productClient()
+            ->create([
+                'client_id' => client()->id,
+            ]);
 
         if ($request->picture) {
-            insert_picture($request->picture, $product);
+            $productClient = $product->productClient
+                ->firstWhere('client_id', client()->id);
+
+            insert_picture($request->picture, $productClient);
         }
 
         toast(alert_updated_text($this->title),'success');
