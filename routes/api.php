@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DepositController;
+use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SliderController;
+use App\Models\FlashSale;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +35,7 @@ Route::get('product', [ProductController::class, 'index']);
 Route::get('product/{product}', [ProductController::class, 'showProduct']);
 Route::get('product-items/{productId}', [ProductController::class, 'getProductItems']);
 Route::get('product-item/{id}', [ProductController::class, 'showProductItem']);
+Route::get('flash-sale', FlashSaleController::class);
 
 Route::get('payment-method', [OrderController::class, 'getPaymentMethods']);
 Route::post('discount', [OrderController::class, 'getDiscount']);

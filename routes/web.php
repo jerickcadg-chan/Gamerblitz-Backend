@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -60,6 +61,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     // Resource router
     Route::resources([
         'product' => ProductController::class,
+        'flash_sale' => FlashSaleController::class,
         'product_item' => ProductItemController::class,
         'product_item_price' => ProductItemPriceController::class,
         'voucher' => VoucherController::class,

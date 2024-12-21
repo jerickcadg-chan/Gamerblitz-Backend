@@ -228,6 +228,70 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int $client_id
+ * @property string|null $name
+ * @property \Illuminate\Support\Carbon $start_date
+ * @property \Illuminate\Support\Carbon $end_date
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client $client
+ * @property-read mixed $is_active
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FlashSaleProductItem> $items
+ * @property-read int|null $items_count
+ * @property-read mixed $status_view
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale active()
+ * @method static \Database\Factories\FlashSaleFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperFlashSale {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $flash_sale_id
+ * @property int $product_item_id
+ * @property float $stock
+ * @property string $price
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\FlashSale $flashSale
+ * @property-read \App\Models\ProductItem $productItem
+ * @method static \Database\Factories\FlashSaleProductItemFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem whereFlashSaleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem whereProductItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem whereStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSaleProductItem whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperFlashSaleProductItem {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property int|null $client_id
  * @property string $code
  * @property int|null $user_id
@@ -434,6 +498,9 @@ namespace App\Models{
  * @property-read int|null $pictures_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
  * @property-read int|null $pictures_order_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductClient> $productClient
+ * @property-read int|null $product_client_count
+ * @property-read string $product_cover
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItem> $productItems
  * @property-read int|null $product_items_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product active()
