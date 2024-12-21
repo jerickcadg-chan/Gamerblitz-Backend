@@ -103,7 +103,7 @@
                         @foreach (\App\Models\ProductItem::all() as $product_item)
                             <div class="item">
                                 <input type="checkbox" name="product_item_id[]" value="{{ $product_item->id }}" class="my-2" {{ (is_array(old('product_item_id')) && in_array($product->id, old('product_item_id'))) ? ' checked' : '' }}>
-                                <span>{{ $product_item->product->name }} - {{ $product_item->name }}</span>
+                                <span>{{ $product_item?->product?->name }} - {{ $product_item?->name }}</span>
                             <br></div>
                         @endforeach
                         <hr>

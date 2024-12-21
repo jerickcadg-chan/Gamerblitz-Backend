@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -62,5 +63,21 @@ class Product extends Model
     {
         $this->attributes['name'] = $value;
         $this->attributes['slug'] = \slugify($value);
+    }
+
+    public function productClient()
+    {
+        return $this->hasMany(ProductClient::class)
+            ->where('client_id', client()?->id);
+    }
+
+    public function productCover(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->productClient
+                ->first()
+                ?->picture
+                ?->url ?? asset('images/no-image.png'),
+        );
     }
 }

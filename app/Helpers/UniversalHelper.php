@@ -230,7 +230,7 @@ if (!function_exists('paginateTransformer')) {
 }
 
 if (!function_exists('client')) {
-    function client(): Client
+    function client(): ?Client
     {
         if ($auth = auth()->user()) {
             return $auth->client;

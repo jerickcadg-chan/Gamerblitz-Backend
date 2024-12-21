@@ -73,4 +73,34 @@ abstract class TestCase extends BaseTestCase
             'config' => json_encode($config)
         ]);
     }
+
+    public function response_status_ok($data, int $code = 200, $message = 'data successfully retrieved'): array
+    {
+        $response = [
+            'url' => url()->full(),
+            'method' => request()->getMethod(),
+            'code' => $code,
+            'message' => $message,
+            'payload' => $data,
+        ];
+
+        return $response;
+    }
+
+    public function response_status_warning($message, int $code = 400, ?array $data = null): array
+    {
+        $response = [
+            'url' => url()->full(),
+            'method' => request()->getMethod(),
+            'code' => $code,
+            'message' => $message,
+            'request' => request()->except(['password']),
+        ];
+
+        if ($data) {
+            $response['payload'] = $data;
+        }
+
+        return $response;
+    }
 }
