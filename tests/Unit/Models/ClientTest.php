@@ -17,12 +17,13 @@ class ClientTest extends TestCase
         $this->assertNotEmpty($client->logo);
         $this->assertNotEmpty($client->description);
         $this->assertNotEmpty($client->user_token);
+        $this->assertNotEmpty($client->host);
     }
 
     public function testFillable()
     {
         $client = new Client();
-        $this->assertEquals(['name', 'logo', 'description', 'user_token'], $client->getFillable());
+        $this->assertEquals(['name', 'logo', 'description', 'user_token', 'host'], $client->getFillable());
     }
 
     public function testDates()
@@ -40,6 +41,7 @@ class ClientTest extends TestCase
         $this->assertSame(array_keys($array), [
             'id',
             'name',
+            'host',
             'logo',
             'description',
             'user_token',

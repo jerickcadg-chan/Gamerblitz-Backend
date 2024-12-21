@@ -18,6 +18,7 @@ class ClientFactory extends Factory
     {
         return [
             'name' => $this->faker->company(),
+            'host' => $this->faker->domainName(),
             'logo' => $this->faker->imageUrl(),
             'description' => $this->faker->sentence(),
             'user_token' => $this->faker->uuid(),

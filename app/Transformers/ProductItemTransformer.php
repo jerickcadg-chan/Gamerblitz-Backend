@@ -25,7 +25,7 @@ class ProductItemTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($productItem)
+    public function transform(ProductItem $productItem)
     {
         return [
             'id' => $productItem->id,

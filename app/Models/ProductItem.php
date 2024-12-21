@@ -47,8 +47,8 @@ class ProductItem extends Model
     public function getRealPriceAttribute()
     {
         return auth()->user() && auth()->user()->role === DefaultRole::RESELLER
-            ? ($this->price_reseller ?? $this->price)
-            : $this->price;
+            ? ($this->margin_price_reseller ?? $this->margin_price)
+            : $this->margin_price;
     }
 
     public function vouchers()
@@ -70,7 +70,9 @@ class ProductItem extends Model
     {
         return Attribute::make(
             get: function (): float {
-                if ($productItemClient = $this->productItemClients->firstWhere('client_id', auth()->user()->client->id)) {
+                $client_id = client()->id;
+
+                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
                     return (float) $this->price + ($this->price * $productItemClient->margin / 100);
                 }
 
@@ -83,11 +85,28 @@ class ProductItem extends Model
     {
         return Attribute::make(
             get: function (): float {
-                if ($productItemClient = $this->productItemClients->firstWhere('client_id', auth()->user()->client->id)) {
+                $client_id = client()->id;
+
+                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
                     return (float)$productItemClient->margin;
                 }
 
                 return 0;
+            },
+        );
+    }
+
+    public function marginPriceReseller(): Attribute
+    {
+        return Attribute::make(
+            get: function (): float {
+                $client_id = client()->id;
+
+                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
+                    return (float) $this->price_reseller + ($this->price_reseller * $productItemClient->margin / 100);
+                }
+
+                return $this->price_reseller;
             },
         );
     }

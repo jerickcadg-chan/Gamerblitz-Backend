@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureHostIsValid;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,6 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'not_customer' => \App\Http\Middleware\EnsureNotCustomer::class,
         ]);
+
+        $middleware->appendToGroup('api', EnsureHostIsValid::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

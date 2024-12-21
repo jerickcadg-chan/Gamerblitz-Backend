@@ -75,6 +75,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $name
+ * @property string $host
  * @property string $logo
  * @property string|null $description
  * @property string $user_token
@@ -90,6 +91,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereHost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereLogo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereName($value)
@@ -516,7 +518,9 @@ namespace App\Models{
  * @property-read mixed $discount_price
  * @property-read mixed $real_price
  * @property-read mixed $total_price
+ * @property-read float $margin_percentage
  * @property-read float $margin_price
+ * @property-read float $margin_price_reseller
  * @property-read \App\Models\Product $product
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemClient> $productItemClients
  * @property-read int|null $product_item_clients_count

@@ -18,6 +18,7 @@ class Client extends Model
         'logo',
         'description',
         'user_token',
+        'host',
     ];
 
     public function users()

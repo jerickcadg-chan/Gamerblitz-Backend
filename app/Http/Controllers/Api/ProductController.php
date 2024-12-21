@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Client;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Services\OrderService;
@@ -33,7 +34,13 @@ class ProductController extends Controller
 
     public function getProductItems($productId)
     {
-        $productItems = ProductItem::where('product_id', $productId)
+        $productItems = ProductItem::query()
+            ->with([
+                'productItemClients' => function ($query) {
+                    $query->where('client_id', client()->id);
+                }
+            ])
+            ->where('product_id', $productId)
             ->orderByRaw("CASE
                 WHEN name RLIKE '^[A-Za-z]' THEN 1
                 WHEN name RLIKE '^[0-9]' THEN 2

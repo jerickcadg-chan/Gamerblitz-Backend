@@ -1,10 +1,11 @@
 <?php
 
+use App\Models\Client;
 use App\Models\Discount;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-if (! function_exists('calc_discount')) {
+if (!function_exists('calc_discount')) {
     function calc_discount($price, $type, $nominal)
     {
         return $type == 'percentage'
@@ -13,7 +14,7 @@ if (! function_exists('calc_discount')) {
     }
 }
 
-if (! function_exists('get_active_discount')) {
+if (!function_exists('get_active_discount')) {
     function get_active_discount($price, $productId, $productItemId): array
     {
         $discounts = Discount::active()->where('code', '')->orWhere('code', null)->get();
@@ -66,7 +67,7 @@ if (! function_exists('get_active_discount')) {
     }
 }
 
-if (! function_exists('convert_to_62')) {
+if (!function_exists('convert_to_62')) {
     function convert_to_62($phone_number)
     {
         $hp = $phone_number;
@@ -84,22 +85,22 @@ if (! function_exists('convert_to_62')) {
         $phone_number = str_replace('-', '', $phone_number);
 
         // cek apakah no hp mengandung karakter + dan 0-9
-        if (! preg_match('/[^+0-9]/', trim($phone_number))) {
+        if (!preg_match('/[^+0-9]/', trim($phone_number))) {
             // cek apakah no hp karakter 1-3 adalah 62
             if (substr(trim($phone_number), 0, 3) == '62') {
                 $phone_number = trim($phone_number);
             }
             // cek apakah no hp karakter 1-4 adalah 620
             elseif (substr(trim($phone_number), 0, 3) == '620') {
-                $phone_number = '62'.substr(trim($phone_number), 3);
+                $phone_number = '62' . substr(trim($phone_number), 3);
             }
             // cek apakah no hp karakter 1 adalah 0
             elseif (substr(trim($phone_number), 0, 1) == '0') {
-                $phone_number = '62'.substr(trim($phone_number), 1);
+                $phone_number = '62' . substr(trim($phone_number), 1);
             }
             // cek apakah no hp karakter 1 adalah 8
             elseif (substr(trim($phone_number), 0, 1) == '8') {
-                $phone_number = '62'.substr(trim($phone_number), 0);
+                $phone_number = '62' . substr(trim($phone_number), 0);
             }
         }
 
@@ -107,7 +108,7 @@ if (! function_exists('convert_to_62')) {
     }
 }
 
-if (! function_exists('throw_custom_exception')) {
+if (!function_exists('throw_custom_exception')) {
     function throw_custom_exception(Exception $exception)
     {
         if (app()->environment('production')) {
@@ -130,18 +131,18 @@ if (! function_exists('throw_custom_exception')) {
     }
 }
 
-if (! function_exists('set_env')) {
+if (!function_exists('set_env')) {
     function set_env($key, $value)
     {
         file_put_contents(app()->environmentFilePath(), str_replace(
-            $key.'='.env($key),
-            $key.'='.$value,
+            $key . '=' . env($key),
+            $key . '=' . $value,
             file_get_contents(app()->environmentFilePath())
         ));
     }
 }
 
-if (! function_exists('http_post_request')) {
+if (!function_exists('http_post_request')) {
     function http_post_request($url, $headers, $body)
     {
         $curl = curl_init($url);
@@ -156,7 +157,7 @@ if (! function_exists('http_post_request')) {
     }
 }
 
-if (! function_exists('slugify')) {
+if (!function_exists('slugify')) {
     function slugify($text, string $divider = '-')
     {
         // replace non letter or digits by divider
@@ -185,7 +186,7 @@ if (! function_exists('slugify')) {
     }
 }
 
-if (! function_exists('transformer')) {
+if (!function_exists('transformer')) {
     function transformer($query, $transformer, $includes = [], $method = 'toArray')
     {
         return fractal($query, $transformer)
@@ -195,7 +196,7 @@ if (! function_exists('transformer')) {
     }
 }
 
-if (! function_exists('paginateTransformer')) {
+if (!function_exists('paginateTransformer')) {
     function paginateTransformer($query, $transformer, $includes = [], $perPage = 15, $method = 'toArray')
     {
         $paginator = $query->paginate($perPage)->appends(request()->except('page'));
@@ -225,5 +226,16 @@ if (! function_exists('paginateTransformer')) {
                 ],
             ],
         ];
+    }
+}
+
+if (!function_exists('client')) {
+    function client(): Client
+    {
+        if ($auth = auth()->user()) {
+            return $auth->client;
+        }
+
+        return request('client');
     }
 }
