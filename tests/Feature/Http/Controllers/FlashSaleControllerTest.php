@@ -215,7 +215,7 @@ class FlashSaleControllerTest extends TestCase
             });
 
         $data = [
-            'name' => 'Flash sale sukess',
+            'name' => 'Flash sale sukess buat',
             'start_date' => now()->format('Y-m-d H:i:s'),
             'end_date' => now()->addDays(1)->format('Y-m-d H:i:s'),
         ];
@@ -371,7 +371,7 @@ class FlashSaleControllerTest extends TestCase
             $this->assertSame([
                 'flash_sale_id' => $productItem->flash_sale_id,
                 'product_item_id' => $productItem->product_item_id,
-                'price' => "100.00",
+                'price' => '100.00',
                 'stock' => 10.0,
             ], $productItem->only(['flash_sale_id', 'product_item_id', 'price', 'stock']));
         }

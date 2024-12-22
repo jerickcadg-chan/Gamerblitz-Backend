@@ -4,8 +4,8 @@ namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Models\FlashSale;
 use App\Models\FlashSaleProductItem;
-use App\Models\ProductClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class FlashSaleControllerTest extends TestCase
@@ -52,6 +52,12 @@ class FlashSaleControllerTest extends TestCase
 
     public function test_it_should_return_empty_flash_sales()
     {
+        if (FlashSale::active()->exists()) {
+            FlashSale::active()->update([
+                'start_date' => now()->subDays(2),
+                'end_date' => now()->subDays(1),
+            ]);
+        }
         $this->generateSuperAdminUser();
         $fs = FlashSale::factory()->create([
             'client_id' => $this->user->client_id,
