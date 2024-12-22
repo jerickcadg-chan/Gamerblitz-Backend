@@ -24,9 +24,10 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::latest()
+        $products = Product::active()
+            ->latest()
             ->when(request('name'), function ($query) {
-                return $query->where('name', 'like', '%'. request('name') .'%');
+                return $query->where('name', 'like', '%' . request('name') . '%');
             })
             ->paginate();
 
@@ -61,10 +62,20 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = Product::create($request->all());
+        $product->productClient()
+            ->create([
+                'client_id' => client()->id,
+            ]);
 
-        insert_picture($request->picture, $product);
+        if ($request->picture) {
+            $productClient = $product->productClient
+                ->firstWhere('client_id', client()->id);
 
-        toast(alert_created_text($this->title),'success');
+            insert_picture($request->picture, $productClient);
+        }
+
+        toast(alert_created_text($this->title), 'success');
+
         return redirect()->route('product.index');
     }
 
@@ -81,12 +92,22 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $product->update($request->all());
+        $product->productClient()
+            ->updateOrCreate([
+                'client_id' => client()->id,
+            ]);
 
         if ($request->picture) {
-            insert_picture($request->picture, $product);
+            $productClient = $product->productClient
+                ->firstWhere('client_id', client()->id);
+            if ($productClient->picture) {
+                delete_picture($productClient->picture);
+            } else {
+                insert_picture($request->picture, $productClient);
+            }
         }
 
-        toast(alert_updated_text($this->title),'success');
+        toast(alert_updated_text($this->title), 'success');
         return redirect()->route('product.index');
     }
 
@@ -97,9 +118,12 @@ class ProductController extends Controller
             ->where('productable_type', 'App\Models\Product')
             ->delete();
 
+        $product->productClient->first()?->picture()?->delete();
+
         $product->delete();
 
-        toast(alert_deleted_text($this->title),'success');
+        toast(alert_deleted_text($this->title), 'success');
+
         return redirect()->route('product.index');
     }
 }

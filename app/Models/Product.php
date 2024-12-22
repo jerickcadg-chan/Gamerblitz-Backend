@@ -39,17 +39,17 @@ class Product extends Model
 
     public function getStatusViewAttribute()
     {
-        switch ($this->status) {
-            case self::ACTIVE:
+        switch ($this->productClient->first()?->is_active) {
+            case 1:
                 return '<label class="badge badge-success">Aktif</label>';
                 break;
 
-            case self::INACTIVE:
+            case 0:
                 return '<label class="badge badge-danger">Tidak aktif</label>';
                 break;
 
             default:
-                return $this->status;
+                return '<label class="badge badge-warning">Klaim!</label>';
                 break;
         }
     }

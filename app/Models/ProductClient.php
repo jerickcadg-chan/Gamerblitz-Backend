@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @mixin IdeHelperProductClient
@@ -20,4 +21,9 @@ class ProductClient extends Model
         'client_id',
         'is_active',
     ];
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

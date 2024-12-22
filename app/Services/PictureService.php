@@ -21,4 +21,10 @@ class PictureService extends Controller
 
         return $picture;
     }
+
+    public function delete($picture)
+    {
+        Storage::delete($picture->path . '/' . $picture->file_name);
+        $picture->delete();
+    }
 }
