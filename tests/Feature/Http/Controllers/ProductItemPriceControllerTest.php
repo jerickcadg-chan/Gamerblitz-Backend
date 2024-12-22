@@ -82,7 +82,11 @@ class ProductItemPriceControllerTest extends TestCase
         $MARGIN = 12;
         $PRODUCT_ITEM_COUNT = 10;
 
-        $product_items = ProductItem::factory($PRODUCT_ITEM_COUNT)->create();
+        if (ProductItem::count() == 0) {
+            $product_items = ProductItem::factory($PRODUCT_ITEM_COUNT)->create()->fresh();
+        } else {
+            $product_items = ProductItem::all();
+        }
 
         $user = $this->generateSuperAdminUser();
         $client = $user->client;
@@ -101,8 +105,9 @@ class ProductItemPriceControllerTest extends TestCase
 
         $this->assertTrue($client->productItemClients->isNotEmpty());
 
-        foreach ($client->productItemClients as $productItemClient) {
+        foreach ($client->productItemClients->fresh() as $productItemClient) {
             $this->assertSame($client->id, $productItemClient->client_id);
+            // dump($product_items->pluck('id')->toArray(), $productItemClient->product_item_id);
             $this->assertTrue(in_array($productItemClient->product_item_id, $product_items->pluck('id')->toArray()));
             $this->assertEquals($MARGIN, $productItemClient->margin);
         }
