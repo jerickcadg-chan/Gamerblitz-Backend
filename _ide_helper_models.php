@@ -81,6 +81,8 @@ namespace App\Models{
  * @property string $user_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductClient> $productClients
+ * @property-read int|null $product_clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemClient> $productItemClients
  * @property-read int|null $product_item_clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
@@ -487,6 +489,7 @@ namespace App\Models{
  * @property string $status
  * @property float $markup_reseller
  * @property float $markup_user
+ * @property string|null $default_picture_url
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -513,6 +516,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCompany($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDefaultPictureUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereHowToOrder($value)
@@ -548,6 +552,7 @@ namespace App\Models{
  * @property-read int|null $pictures_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
  * @property-read int|null $pictures_order_count
+ * @property-read \App\Models\Product $product
  * @method static \Database\Factories\ProductClientFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductClient newQuery()
