@@ -68,6 +68,9 @@ class AuthController extends Controller
 
         try {
             DB::beginTransaction();
+            $request->merge([
+                'password' => bcrypt($request->password),
+            ]);
             $user = User::create($request->all());
 
             $role = Role::where('name', 'Customer')->first();

@@ -75,16 +75,6 @@ class User extends Authenticatable
         $this->attributes['name'] = ucwords(strtolower($value));
     }
 
-    public function setEmailAttribute($value)
-    {
-        $this->attributes['email'] = strtolower($value);
-    }
-
-    public function setPhoneNumberAttribute($value)
-    {
-        $this->attributes['phone_number'] = convert_to_62($value);
-    }
-
     public function getRoleAttribute()
     {
         $role = $this->roles;
