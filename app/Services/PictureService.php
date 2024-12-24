@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Controllers\Controller;
+use App\Models\Picture;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,9 +24,9 @@ class PictureService extends Controller
         return $modelPicture;
     }
 
-    public function delete($picture)
+    public function delete(Picture $picture)
     {
-        Storage::delete($picture->path . '/' . $picture->file_name);
+        Storage::disk('s3')->delete($picture->path . '/' . $picture->file_name);
         $picture->delete();
     }
 }
