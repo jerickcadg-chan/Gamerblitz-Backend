@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Http\UploadedFile;
+
 if (!function_exists('insert_picture')) {
-    function insert_picture($picture, $model, $caption = null, $base64 = false)
+    function insert_picture(UploadedFile $picture, $model, $caption = null, $base64 = false)
     {
         $service = new \App\Services\PictureService();
         $folder = strtolower(class_basename($model));
