@@ -102,6 +102,7 @@ class ProductController extends Controller
                 ->firstWhere('client_id', client()->id);
             if ($productClient->picture) {
                 delete_picture($productClient->picture);
+                insert_picture($request->picture, $productClient);
             } else {
                 insert_picture($request->picture, $productClient);
             }
