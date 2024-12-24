@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin IdeHelperPicture
@@ -33,7 +34,7 @@ class Picture extends Model
             return asset('img/logo_watermark.jpg');
         }
 
-        return asset($this->path.'/'.$this->file_name);
+        return Storage::disk('s3')->url($this->path.'/'.$this->file_name);
 
     }
 
