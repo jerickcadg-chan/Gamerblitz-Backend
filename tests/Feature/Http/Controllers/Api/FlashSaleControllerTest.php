@@ -39,6 +39,7 @@ class FlashSaleControllerTest extends TestCase
                         'flash_price' => $item->price,
                         'stock' => $item->stock,
                         'real_price' => $item->productItem->real_price,
+                        'product_name' => $item->productItem->product->name,
                         'product_item' => [
                             'id' => $item->productItem->id,
                             'name' => $item->productItem->name,
