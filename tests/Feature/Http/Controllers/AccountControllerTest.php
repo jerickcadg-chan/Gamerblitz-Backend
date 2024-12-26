@@ -893,7 +893,7 @@ class AccountControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson([
-            'data' => $account->information,
+            'data' => decrypt($account->information),
         ]);
     }
 

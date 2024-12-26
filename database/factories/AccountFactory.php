@@ -20,7 +20,7 @@ class AccountFactory extends Factory
             'product_item_id' => \App\Models\ProductItem::factory(),
             'client_id' => \App\Models\Client::factory(),
             'title' => $this->faker->word(),
-            'information' => $this->faker->sentence(),
+            'information' => encrypt($this->faker->sentence()),
             'description' => $this->faker->sentence(),
             'slug' => $this->faker->slug(),
             'code' => $this->faker->unique()->numerify('ACC-#####'),
