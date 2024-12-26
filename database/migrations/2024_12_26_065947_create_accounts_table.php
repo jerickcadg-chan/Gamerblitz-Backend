@@ -23,6 +23,8 @@ return new class extends Migration
             $table->double('winrate')->default(0);
             $table->integer('skin')->default(0);
             $table->integer('heroes')->default(0);
+            $table->enum('discount_type', ['percentage', 'nominal'])->nullable();
+            $table->decimal('discount_amount', 10, 2)->nullable();
             $table->timestamps();
         });
     }

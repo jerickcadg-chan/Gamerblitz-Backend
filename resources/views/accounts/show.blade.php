@@ -51,7 +51,11 @@
           </tr>
           <tr>
             <th>Harga</th>
-            <td>{{ rp_format($account->productItem->price) }}</td>
+            <td>{{ rp_format($account->price) }}</td>
+          </tr>
+          <tr>
+            <th>Diskon</th>
+            <td>{{ $account->discount }}</td>
           </tr>
           <tr>
             <th>Informasi</th>

@@ -27,6 +27,8 @@ class AccountFactory extends Factory
             'winrate' => $this->faker->randomFloat(2, 0, 1),
             'skin' => $this->faker->randomFloat(2, 0, 1),
             'heroes' => $this->faker->randomFloat(2, 0, 1),
+            'discount_type' => $this->faker->randomElement(['percentage', 'nominal']),
+            'discount_amount' => $this->faker->randomFloat(2, 0, 1),
         ];
     }
 }

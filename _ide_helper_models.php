@@ -19,16 +19,19 @@ namespace App\Models{
  * @property int $product_item_id
  * @property int $client_id
  * @property string $title
+ * @property string $information
  * @property string $slug
  * @property string $code
  * @property string $description
  * @property float $winrate
- * @property float $stock
  * @property int $skin
  * @property int $heroes
+ * @property string|null $discount_type
+ * @property string|null $discount_amount
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Client $client
+ * @property-read mixed $discount
  * @property-read mixed $full_slug
  * @property-read \App\Models\Picture $picture
  * @property-read \App\Models\Picture $picture_order
@@ -36,6 +39,7 @@ namespace App\Models{
  * @property-read int|null $pictures_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
  * @property-read int|null $pictures_order_count
+ * @property-read mixed $price
  * @property-read \App\Models\ProductItem $productItem
  * @method static \Database\Factories\AccountFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newModelQuery()
@@ -46,12 +50,14 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereDiscountAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereDiscountType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereHeroes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereInformation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereProductItemId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSkin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereWinrate($value)

@@ -342,6 +342,89 @@ class AccountControllerTest extends TestCase
             ->assertSessionHasErrors('information');
     }
 
+    public function test_store_failed_when_discount_type_required()
+    {
+        $response = $this
+            ->actingAs($this->generateSuperAdminUser())
+            ->post(route('account.store'), [
+                'title' => 'Title Test',
+                'code' => 'ACC-12345',
+                'description' => 'Description Test',
+                'winrate' => 10,
+                'skin' => 10,
+                'heroes' => -1,
+                'stock' => 10,
+                'price' => 1000,
+                'information' => 'email=mail.test password=password',
+                'discount' => true,
+            ]);
+        $response
+            ->assertSessionHasErrors('discount_type');
+    }
+
+    public function test_store_failed_when_discount_amount_required()
+    {
+        $response = $this
+            ->actingAs($this->generateSuperAdminUser())
+            ->post(route('account.store'), [
+                'title' => 'Title Test',
+                'code' => 'ACC-12345',
+                'description' => 'Description Test',
+                'winrate' => 10,
+                'skin' => 10,
+                'heroes' => -1,
+                'stock' => 10,
+                'price' => 1000,
+                'information' => 'email=mail.test password=password',
+                'discount' => true,
+            ]);
+        $response
+            ->assertSessionHasErrors('discount_amount');
+    }
+
+    public function test_store_failed_when_discount_type_not_percentage_and_nominal()
+    {
+        $response = $this
+            ->actingAs($this->generateSuperAdminUser())
+            ->post(route('account.store'), [
+                'title' => 'Title Test',
+                'code' => 'ACC-12345',
+                'description' => 'Description Test',
+                'winrate' => 10,
+                'skin' => 10,
+                'heroes' => -1,
+                'stock' => 10,
+                'price' => 1000,
+                'information' => 'email=mail.test password=password',
+                'discount' => true,
+                'discount_type' => 'invalid',
+            ]);
+        $response
+            ->assertSessionHasErrors('discount_type');
+    }
+
+    public function test_store_failed_when_discount_amount_max_100()
+    {
+        $response = $this
+            ->actingAs($this->generateSuperAdminUser())
+            ->post(route('account.store'), [
+                'title' => 'Title Test',
+                'code' => 'ACC-12345',
+                'description' => 'Description Test',
+                'winrate' => 10,
+                'skin' => 10,
+                'heroes' => -1,
+                'stock' => 10,
+                'price' => 1000,
+                'information' => 'email=mail.test password=password',
+                'discount' => true,
+                'discount_type' => 'percentage',
+                'discount_amount' => 101,
+            ]);
+        $response
+            ->assertSessionHasErrors('discount_amount');
+    }
+
     public function test_store_success(): void
     {
         $admin = $this->generateSuperAdminUser();
@@ -391,6 +474,7 @@ class AccountControllerTest extends TestCase
         $productItem = $account->productItem;
 
         $this->assertSame($productItem->product->category, ProductConstant::ACCOUNT, 'Product category is not correct');
+        $this->assertSame($productItem->type, 'account', 'Product item type is not account');
         $this->assertSame($productItem->name, $data['title'], 'Product item name is not correct');
         $this->assertSame($productItem->code, $data['code'], 'Product item code is not correct');
         $this->assertSame($productItem->stock, $data['stock'], 'Product item stock is not correct');
@@ -403,6 +487,37 @@ class AccountControllerTest extends TestCase
         $productClientItem = $productItem->productItemClients->firstWhere('client_id', $admin->client->id);
 
         $this->assertNotEmpty($productClientItem, 'Product client item is not found');
+    }
+
+    public function test_store_with_discount(): void
+    {
+        $admin = $this->generateSuperAdminUser();
+        $mockImage = \Illuminate\Http\UploadedFile::fake()->image('mock-image.jpg');
+        $data = [
+            'title' => 'Title Test',
+            'code' => 'ACCUNIQUE-12345',
+            'description' => 'Description Test',
+            'winrate' => 10,
+            'skin' => 10,
+            'heroes' => 10,
+            'stock' => 10,
+            'price' => 1000,
+            'information' => 'email=mail.test password=password',
+            'cover_picture' => $mockImage,
+            'discount' => true,
+            'discount_type' => 'percentage',
+            'discount_amount' => 20.0,
+        ];
+        $response = $this
+            ->actingAs($admin)
+            ->post(route('account.store'), $data);
+
+        $response->assertSessionHasNoErrors();
+
+        /** @var Account $account */
+        $account = Account::whereSlug('title-test-accunique-12345')->first();
+        $this->assertSame($account->discount_type, $data['discount_type'], 'Discount type is not the same');
+        $this->assertSame((float)$account->discount_amount, $data['discount_amount'], 'Discount amount is not the same');
     }
 
     public function test_store_with_product_category_account_exist()

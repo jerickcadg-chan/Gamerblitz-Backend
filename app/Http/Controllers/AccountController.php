@@ -27,6 +27,9 @@ class AccountController extends Controller
     {
         $accounts = Account::whereByClient()
             ->latest()
+            ->whereHas('productItem', function ($query) {
+                $query->where('type', 'account');
+            })
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%' . request('name') . '%');
             })

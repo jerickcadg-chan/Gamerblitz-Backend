@@ -30,6 +30,8 @@ class AccountTest extends TestCase
             'skin',
             'heroes',
             'information',
+            'discount_type',
+            'discount_amount',
         ], $account->getFillable());
     }
 
@@ -55,9 +57,12 @@ class AccountTest extends TestCase
             "winrate",
             "skin",
             "heroes",
+            "discount_type",
+            "discount_amount",
             "updated_at",
             "created_at",
             "id",
+            "product_item",
         ]);
     }
 

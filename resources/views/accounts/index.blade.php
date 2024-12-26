@@ -28,6 +28,7 @@
                         <tr>
                             <th> # </th>
                             <th> Title </th>
+                            <th> Price </th>
                             <th> Kode </th>
                             <th> Winrate </th>
                             <th> Skin </th>
@@ -40,6 +41,7 @@
                         <tr>
                             <td>{{ $accounts->firstItem() + $index }}</td>
                             <td><a href="{{ $account->full_slug }}" target="_blank">{{ $account->title }}</a></td>
+                            <td>{{ rp_format($account->price) }}</td>
                             <td>{{ $account->code }}</td>
                             <td>{{ $account->winrate }}</td>
                             <td>{{ $account->skin }}</td>

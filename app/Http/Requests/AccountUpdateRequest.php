@@ -21,7 +21,7 @@ class AccountUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => 'required',
             'code' => ['required', 'unique:accounts,code,' . $this->route('account')->id],
             'description' => ['required'],
@@ -32,5 +32,16 @@ class AccountUpdateRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0'],
             'cover_picture' => ['nullable', 'image'],
         ];
+
+        if ($this->input('discount') === "1" || $this->input('discount') === 1 || $this->input('discount') === true) {
+            $rules['discount_type'] = ['required', 'in:percentage,nominal'];
+            $rules['discount_amount'] = ['required', 'numeric', 'min:0'];
+            if ($this->input('discount_type') === 'percentage') {
+                $rules['discount_amount'][] = 'max:100';
+            }
+        }
+
+
+        return $rules;
     }
 }

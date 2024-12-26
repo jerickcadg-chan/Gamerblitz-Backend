@@ -21,7 +21,7 @@ class AccountStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => 'required',
             'code' => ['required', 'unique:accounts,code'],
             'description' => ['required'],
@@ -33,5 +33,15 @@ class AccountStoreRequest extends FormRequest
             'information' => ['required'],
             'cover_picture' => ['required', 'image'],
         ];
+
+        if ($this->input('discount') === "1" || $this->input('discount') === 1 || $this->input('discount') === true) {
+            $rules['discount_type'] = ['required', 'in:percentage,nominal'];
+            $rules['discount_amount'] = ['required', 'numeric', 'min:0'];
+            if ($this->input('discount_type') === 'percentage') {
+                $rules['discount_amount'][] = 'max:100';
+            }
+        }
+
+        return $rules;
     }
 }

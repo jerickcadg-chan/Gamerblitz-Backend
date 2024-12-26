@@ -6,7 +6,6 @@ use App\Constants\ProductConstant;
 use App\Http\Requests\AccountStoreRequest;
 use App\Http\Requests\AccountUpdateRequest;
 use App\Models\Account;
-use App\Models\Client;
 use App\Models\Product;
 use App\Models\ProductItem;
 use Exception;
@@ -134,6 +133,7 @@ class AccountService
             'stock' => $request->stock,
             'price' => $request->price,
             'price_reseller' => 0,
+            'type' => ProductConstant::ACCOUNT,
             'capital' => 0,
         ]);
     }
@@ -157,7 +157,19 @@ class AccountService
 
     private function updateAccount(AccountUpdateRequest $request, Account $account, $productItem): Account
     {
-        $account->fill($request->validated());
+        $data = $request->validated();
+        if ($request->information != decrypt($account->information)) {
+            $data = array_merge($request->validated(), [
+                'information' => encrypt($request->information),
+            ]);
+        }
+        if ($request->has('discount') && $request->get('discount')) {
+            array_merge($data, [
+                'discount_type' => $request->discount_type,
+                'discount_amount' => $request->discount_amount,
+            ]);
+        }
+        $account->fill($data);
         $account->productItem()->associate($productItem);
         $account->save();
 
@@ -166,8 +178,15 @@ class AccountService
 
     private function createAccount(AccountStoreRequest $request, $productItem, $productClient): Account
     {
+        $data = $request->validated();
         $account = new Account();
-        $account = $account->fill(array_merge($request->validated(), [
+        if ($request->has('discount') && $request->get('discount')) {
+            array_merge($data, [
+                'discount_type' => $request->discount_type,
+                'discount_amount' => $request->discount_amount,
+            ]);
+        }
+        $account = $account->fill(array_merge($data, [
             'information' => encrypt($request->information),
         ]));
         $account->productItem()->associate($productItem);

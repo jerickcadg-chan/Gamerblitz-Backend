@@ -64,9 +64,31 @@
             @include('alerts.feedback', ['field' => 'information'])
           </div>
           <div class="form-group">
-            <label for="picture" class="required">Cover picture</label>
+            <label for="picture" class="required">Gambar kover</label>
             <input type="file" name="cover_picture" class="form-control" accept="image/*" value="{{ old('cover_picture') }}">
             @include('alerts.feedback', ['field' => 'cover_picture'])
+          </div>
+          <div class="form-group">
+            <label class="form-check-label" for="discount_checkbox">
+            <input class="form-check-input" type="checkbox" id="discount_checkbox" name="discount" value="1" {{ old('discount') ? 'checked' : '' }}>
+              Tambahkan harga coret (harga ini akan muncul di halaman produk akun)
+            </label>
+          </div>
+          <div id="discount_form" style="display: none;">
+            <div class="form-group">
+              <label for="discount_type" class="required">Tipe diskon</label>
+              <select class="form-control {{ $errors->has('discount_type') ? ' is-invalid' : '' }}" name="discount_type" id="discount_type">
+                <option value="">Pilih tipe diskon</option>
+                <option value="percentage" {{ old('discount_type') == 'percentage' ? 'selected' : '' }}>Percentage</option>
+                <option value="nominal" {{ old('discount_type') == 'nominal' ? 'selected' : '' }}>Nominal</option>
+              </select>
+              @include('alerts.feedback', ['field' => 'discount_type'])
+            </div>
+            <div class="form-group">
+              <label for="discount_amount" class="required">Jumlah diskon</label>
+              <input type="number" step="0.1" class="form-control {{ $errors->has('discount_amount') ? ' is-invalid' : '' }}" name="discount_amount" id="discount_amount" placeholder="Enter Discount Amount" value="{{ old('discount_amount') }}">
+              @include('alerts.feedback', ['field' => 'discount_amount'])
+            </div>
           </div>
           <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
           <a href="{{ $indexLink }}" class="btn btn-light">Cancel</a>
@@ -78,5 +100,22 @@
 
 @push('js')
   <script src="https://cdn.tiny.cloud/1/wejmk4ubc4t2ncovd3risw07yelp0dwzbvdxjq1ilyoizq6p/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const discountCheckbox = document.getElementById('discount_checkbox');
+      const discountForm = document.getElementById('discount_form');
+
+      function toggleDiscountForm() {
+        if (discountCheckbox.checked) {
+          discountForm.style.display = 'block';
+        } else {
+          discountForm.style.display = 'none';
+        }
+      }
+
+      discountCheckbox.addEventListener('change', toggleDiscountForm);
+      toggleDiscountForm(); // Initial check
+    });
+  </script>
 @endpush
 
