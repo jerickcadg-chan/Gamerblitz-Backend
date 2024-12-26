@@ -86,4 +86,22 @@ class AccountTest extends TestCase
         ]);
         $this->assertEquals('account-title-1234', $account->slug);
     }
+
+    public function test_price()
+    {
+        $account = Account::factory()->create();
+        $this->assertNotNull($account->price);
+    }
+
+    public function test_price_discount_type_percentage()
+    {
+        $account = Account::factory()->create([
+            'discount_type' => 'percentage',
+            'discount_amount' => 10,
+        ]);
+
+        $price = $account->productItem->price - ($account->productItem->price * 10 / 100);
+
+        $this->assertEquals($price, $account->price);
+    }
 }
