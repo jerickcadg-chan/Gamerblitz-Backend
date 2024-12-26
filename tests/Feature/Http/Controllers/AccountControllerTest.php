@@ -345,6 +345,7 @@ class AccountControllerTest extends TestCase
     public function test_store_success(): void
     {
         $admin = $this->generateSuperAdminUser();
+        $mockImage = \Illuminate\Http\UploadedFile::fake()->image('mock-image.jpg');
         $data = [
             'title' => 'Title Test',
             'code' => 'ACC-12345',
@@ -355,10 +356,13 @@ class AccountControllerTest extends TestCase
             'stock' => 10,
             'price' => 1000,
             'information' => 'email=mail.test password=password',
+            'cover_picture' => $mockImage,
         ];
         $response = $this
             ->actingAs($admin)
             ->post(route('account.store'), $data);
+
+        $response->assertSessionHasNoErrors();
 
         /** @var Account $account */
         $account = Account::whereSlug('title-test-acc-12345')->first();
@@ -373,6 +377,7 @@ class AccountControllerTest extends TestCase
         $this->assertSame($account->skin, $data['skin'], 'skin is not the same');
         $this->assertSame($account->heroes, $data['heroes'], 'heroes is not the same');
         $this->assertSame($account->information, $data['information'], 'information is not the same');
+        $this->assertNotNull($account->picture, 'Image is not found');
 
         $response->assertRedirect(route('account.show', $account));
 
@@ -452,6 +457,14 @@ class AccountControllerTest extends TestCase
             'skin' => 10,
             'heroes' => 10,
         ]);
+        $picutre = $account->picture()
+            ->create([
+                'path' => 'old-path',
+                'file_name' => 'old-filename',
+                'url' => 'old-url',
+            ]);
+
+        $coverPicture = \Illuminate\Http\UploadedFile::fake()->image('new-image.jpg');
 
         $data = [
             'title' => 'New Title',
@@ -462,11 +475,14 @@ class AccountControllerTest extends TestCase
             'heroes' => 20,
             'stock' => 20,
             'price' => 2000,
+            'cover_picture' => $coverPicture,
         ];
 
         $response = $this
             ->actingAs($admin)
             ->put(route('account.update', $account), $data);
+
+        $response->assertSessionHasNoErrors();
 
         $account->refresh();
 
@@ -476,6 +492,8 @@ class AccountControllerTest extends TestCase
         $this->assertSame($data['skin'], $account->skin, 'Skin is not the same');
         $this->assertSame($data['heroes'], $account->heroes, 'Heroes is not the same');
         $this->assertEquals((float) $data['price'], $account->productItem->price, 'Price is not the same');
+
+        $this->assertNotSame($account->picture->url, $picutre->url, 'Picture url is the same');
 
         $response->assertRedirect(route('account.show', $account));
 

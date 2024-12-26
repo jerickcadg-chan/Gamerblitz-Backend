@@ -31,6 +31,7 @@ class AccountStoreRequest extends FormRequest
             'stock' => ['required', 'numeric', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
             'information' => ['required'],
+            'cover_picture' => ['required', 'image'],
         ];
     }
 }

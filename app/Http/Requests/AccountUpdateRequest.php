@@ -30,6 +30,7 @@ class AccountUpdateRequest extends FormRequest
             'heroes' => ['required', 'numeric', 'min:0'],
             'stock' => ['required', 'numeric', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
+            'cover_picture' => ['nullable', 'image'],
         ];
     }
 }

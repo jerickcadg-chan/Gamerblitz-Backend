@@ -18,6 +18,10 @@
       <div class="card-body table-responsive">
         <table class="table table-nospace">
           <tr>
+            <th>Gambar kover</th>
+            <td><img src="{{ $account->picture->url }}" alt="Gambar kover" style="width: 200px; height: 200px;"></td>
+          </tr>
+          <tr>
             <th>Nama Akun</th>
             <td>{{ $account->title }}</td>
           </tr>

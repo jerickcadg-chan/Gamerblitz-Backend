@@ -26,6 +26,8 @@ class AccountService
 
             $account = $this->createAccount($request, $productItem, $productClient);
 
+            insert_picture($request->cover_picture, $account);
+
             DB::commit();
 
             return $account;
@@ -42,6 +44,10 @@ class AccountService
         try {
             $productItem = $this->updateProductItem($account->productItem, $request);
             $account = $this->updateAccount($request, $account, $productItem);
+            if ($request->hasFile('cover_picture')) {
+                delete_picture($account->picture);
+                insert_picture($request->cover_picture, $account);
+            }
 
             DB::commit();
 

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Client;
 use App\Models\Product;
 use App\Models\ProductClient;
+use App\Models\ProductItemClient;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -18,6 +19,9 @@ class GenerateClient extends Command
     {
         $clients = Client::all();
         $clientErrors = [];
+
+        ProductClient::truncate();
+        ProductItemClient::truncate();
 
         foreach ($clients as $client) {
             $this->info($client->name);

@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-'activePage' => 'account',
+  'activePage' => 'account',
 ])
 
 @section('content')
@@ -63,6 +63,12 @@
             <label for="information_input">Informasi</label>
             <textarea class="form-control tinymce {{ $errors->has('information') ? ' is-invalid' : '' }}" name="information" id="information_input" placeholder="Masukkan Informasi">{{ old('information', 'xxxxxxxxxxxxxxxxxxxxxxx') }}</textarea>
             @include('alerts.feedback', ['field' => 'information'])
+          </div>
+          <div class="form-group">
+            <label for="picture" class="required">Gambar kover</label>
+            <input type="file" name="cover_picture" class="form-control" accept="image/*" value="{{ old('cover_picture') }}">
+            <small><i>Kosongi apabila tidak merubah cover</i></small>
+            @include('alerts.feedback', ['field' => 'cover_picture'])
           </div>
           <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
           <a href="{{ $indexLink }}" class="btn btn-light">Cancel</a>

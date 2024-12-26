@@ -12,7 +12,7 @@ return [
     ],
     'menu' => [
         'dashboard',
-        'product' => ['product', 'product_item', 'voucher'],
+        'product' => ['product', 'product_item', 'voucher', 'account'],
         'order',
         'report',
         'promo' => ['discount', 'slider'],
