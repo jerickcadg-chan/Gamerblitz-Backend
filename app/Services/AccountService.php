@@ -167,7 +167,9 @@ class AccountService
     private function createAccount(AccountStoreRequest $request, $productItem, $productClient): Account
     {
         $account = new Account();
-        $account = $account->fill($request->validated());
+        $account = $account->fill(array_merge($request->validated(), [
+            'information' => encrypt($request->information),
+        ]));
         $account->productItem()->associate($productItem);
         $account->client()->associate($productClient->client);
         $account->save();

@@ -376,7 +376,7 @@ class AccountControllerTest extends TestCase
         $this->assertSame($account->winrate, (float) $data['winrate'], 'winrate is not the same');
         $this->assertSame($account->skin, $data['skin'], 'skin is not the same');
         $this->assertSame($account->heroes, $data['heroes'], 'heroes is not the same');
-        $this->assertSame($account->information, $data['information'], 'information is not the same');
+        $this->assertSame(decrypt($account->information), $data['information'], 'information is not the same');
         $this->assertNotNull($account->picture, 'Image is not found');
 
         $response->assertRedirect(route('account.show', $account));

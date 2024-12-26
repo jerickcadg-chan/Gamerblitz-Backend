@@ -112,7 +112,7 @@ class AccountController extends Controller
         ]);
         if ($response->ok()) {
             return response()->json([
-                'data' => $account->information
+                'data' => decrypt($account->information),
             ]);
         }
 
