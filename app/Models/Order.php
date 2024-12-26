@@ -211,4 +211,9 @@ class Order extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function scopeWhereClient($query)
+    {
+        return $query->where('client_id', client()->id);
+    }
 }

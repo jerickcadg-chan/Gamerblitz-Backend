@@ -6,6 +6,7 @@ use App\Constants\DefaultRole;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,7 +20,7 @@ class ProductItem extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'product_id', 'name', 'code', 'stock', 'price', 'price_reseller', 'capital'
+        'product_id', 'name', 'code', 'stock', 'price', 'price_reseller', 'capital', 'type'
     ];
 
     protected $appends = [
@@ -63,7 +64,15 @@ class ProductItem extends Model
 
     public function productItemClients()
     {
-        return $this->hasMany(ProductItemClient::class);
+        return $this->hasMany(ProductItemClient::class)
+            ->when(client()?->id, function ($query) {
+                $query->where('client_id', client()?->id);
+            });
+    }
+
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class);
     }
 
     public function marginPrice(): Attribute

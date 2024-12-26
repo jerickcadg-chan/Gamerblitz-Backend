@@ -82,9 +82,19 @@ class PermissionsTableSeeder extends Seeder
             'Create Role',
             'Edit Role',
             'Delete Role',
+
+            'View Flash Sales',
+            'Create Flash Sales',
+            'Edit Flash Sales',
+            'Delete Flash Sales',
+
+            'View Account',
+            'Create Account',
+            'Edit Account',
+            'Delete Account',
         ];
 
-        foreach ($permissions as $key => $permission){
+        foreach ($permissions as $permission){
             \Spatie\Permission\Models\Permission::firstOrCreate([
                 'name' => $permission,
                 'guard_name' => 'web',

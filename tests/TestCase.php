@@ -24,7 +24,7 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
-    public function generateSuperAdminUser(): User
+    public function generateSuperAdminUser($data = []): User
     {
         Artisan::call('db:seed', ['--class' => 'RolesTableSeeder']);
         $user = User::factory()

@@ -38,6 +38,11 @@
                         <a class="nav-link {{ in_array($activePage, ['product_item', 'voucher']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>
                     </li>
                     @endcan
+                    @can ('View Account')
+                    <li class="nav-item">
+                        <a class="nav-link {{ in_array($activePage, ['account']) ? 'active' : null }}" href="{{ route('account.index') }}">Akun</a>
+                    </li>
+                    @endcan
                 </ul>
             </div>
         </li>

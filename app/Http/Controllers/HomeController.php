@@ -27,20 +27,22 @@ class HomeController extends Controller
         $month = today()->format('m');
         $year = today()->format('Y');
 
-        $order = Order::whereMonth('created_at', $month)
+        $order = Order::whereClient()
+            ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
             ->get();
 
-        $progress = Order::select(
-            DB::raw('DATE(created_at) as date'),
-            DB::raw('SUM(total_income) as total_income'),
-            DB::raw('count(*) as count')
-        )
-        ->settlement()
-        ->whereMonth('created_at', $month)
-        ->whereYear('created_at', $year)
-        ->groupBy('date')
-        ->get();
+        $progress = Order::whereClient()
+            ->select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('SUM(total_income) as total_income'),
+                DB::raw('count(*) as count')
+            )
+            ->settlement()
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->groupBy('date')
+            ->get();
 
         $orderSum = [
             'total' => $order->count(),

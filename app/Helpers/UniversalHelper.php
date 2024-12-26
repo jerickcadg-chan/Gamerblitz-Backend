@@ -2,6 +2,7 @@
 
 use App\Models\Client;
 use App\Models\Discount;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -109,7 +110,7 @@ if (!function_exists('convert_to_62')) {
 }
 
 if (!function_exists('throw_custom_exception')) {
-    function throw_custom_exception(Exception $exception)
+    function throw_custom_exception(Exception|GuzzleException $exception)
     {
         if (app()->environment('production')) {
             $url = url()->full();
