@@ -28,7 +28,6 @@ class AccountUpdateRequest extends FormRequest
             'winrate' => ['required', 'numeric', 'min:0', 'max:100'],
             'skin' => ['required', 'numeric', 'min:0'],
             'heroes' => ['required', 'numeric', 'min:0'],
-            'stock' => ['required', 'numeric', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
             'cover_picture' => ['nullable', 'image'],
         ];

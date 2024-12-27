@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\WhereByClient;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -17,6 +18,7 @@ class Order extends Model
     * @use HasFactory<OrderFactory>
      */
     use HasFactory;
+    use WhereByClient;
 
     const PENDING = 'pending';
     const SETTLEMENT = 'settlement';
@@ -210,10 +212,5 @@ class Order extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
-    }
-
-    public function scopeWhereClient($query)
-    {
-        return $query->where('client_id', client()->id);
     }
 }

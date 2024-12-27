@@ -8,4 +8,9 @@ trait WhereByClient
     {
         return $query->where('client_id', client()->id);
     }
+
+    public function scopeWhereClient($query)
+    {
+        return $query->where('client_id', client()->id);
+    }
 }
