@@ -42,6 +42,7 @@ namespace App\Models{
  * @property-read mixed $price
  * @property-read \App\Models\ProductItem $productItem
  * @method static \Database\Factories\AccountFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account filter(array $filters, ?\IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList $allowedFilterList = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account query()

@@ -223,8 +223,8 @@ class FlashSaleControllerTest extends TestCase
         $response = $this
             ->actingAs($admin)
             ->post(route('flash_sale.store'), array_merge($data, [
-                'product_item_ids' => $productItems->map(fn ($productItem) => [
-                    'product_item_id' => $productItem->product_id,
+                'product_item_ids' => $productItems->map(fn (ProductItem $productItem) => [
+                    'product_item_id' => $productItem->id,
                     'price' => 1000,
                     'stock' => 10,
                 ])->toArray(),
@@ -353,8 +353,8 @@ class FlashSaleControllerTest extends TestCase
         $response = $this
             ->actingAs($admin)
             ->put(route('flash_sale.update', $flashSale), array_merge($data, [
-                'product_item_ids' => $productItems->map(fn ($productItem) => [
-                    'product_item_id' => $productItem->product_id,
+                'product_item_ids' => $productItems->map(fn (ProductItem $productItem) => [
+                    'product_item_id' => $productItem->id,
                     'price' => 100,
                     'stock' => 10,
                 ])->toArray(),

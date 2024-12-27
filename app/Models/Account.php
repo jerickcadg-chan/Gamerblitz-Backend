@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
+use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
+use IndexZer0\EloquentFiltering\Filter\FilterType;
+use IndexZer0\EloquentFiltering\Filter\Traits\Filterable;
+use IndexZer0\EloquentFiltering\Target\Target;
 
 /**
  * @mixin IdeHelperAccount
@@ -18,6 +23,7 @@ class Account extends Model
     use HasFactory;
     use WhereByClient;
     use WithPictures;
+    use Filterable;
 
     public $fillable = [
         'title',
@@ -78,9 +84,25 @@ class Account extends Model
     {
         return Attribute::make(
             get: fn () => $this->discount_type == 'percentage'
-            ? $this->discount_amount . '%'
-            : rp_format($this->discount_amount)
+                ? ((float) $this->discount_amount). '%'
+                : rp_format($this->discount_amount)
+        );
+    }
+
+    public function allowedFilters(): AllowedFilterList
+    {
+        return Filter::only(
+            Filter::relation(
+                'productItem',
+                [FilterType::HAS],
+                Filter::only(
+                    Filter::field('price', [FilterType::GREATER_THAN_EQUAL_TO]),
+                    Filter::field('price', [FilterType::LESS_THAN_EQUAL_TO]),
+                )
+            ),
+            Filter::field('heroes',[FilterType::EQUAL]),
+            Filter::field('skin',[FilterType::EQUAL]),
+            Filter::field('winrate',[FilterType::GREATER_THAN_EQUAL_TO]),
         );
     }
 }
-

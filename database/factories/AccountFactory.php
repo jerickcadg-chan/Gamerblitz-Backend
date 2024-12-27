@@ -25,8 +25,8 @@ class AccountFactory extends Factory
             'slug' => $this->faker->slug(),
             'code' => $this->faker->unique()->numerify('ACC-#####'),
             'winrate' => $this->faker->randomFloat(2, 0, 1),
-            'skin' => $this->faker->randomFloat(2, 0, 1),
-            'heroes' => $this->faker->randomFloat(2, 0, 1),
+            'skin' => $this->faker->randomNumber(),
+            'heroes' => $this->faker->randomNumber(),
             'discount_type' => $this->faker->randomElement(['percentage', 'nominal']),
             'discount_amount' => $this->faker->randomFloat(2, 0, 1),
         ];
