@@ -239,56 +239,6 @@ class AccountControllerTest extends TestCase
             ->assertSessionHasErrors('code');
     }
 
-    public function test_store_failed_cause_the_stock_is_required()
-    {
-        $response = $this
-            ->actingAs($this->generateSuperAdminUser())
-            ->post(route('account.store'), [
-                'title' => 'Title Test',
-                'code' => 'ACC-12345',
-                'description' => 'Description Test',
-                'winrate' => 10,
-                'skin' => 10,
-                'heroes' => -1,
-            ]);
-        $response
-            ->assertSessionHasErrors('stock');
-    }
-
-    public function test_store_failed_cause_the_stock_must_be_numeric()
-    {
-        $response = $this
-            ->actingAs($this->generateSuperAdminUser())
-            ->post(route('account.store'), [
-                'title' => 'Title Test',
-                'code' => 'ACC-12345',
-                'description' => 'Description Test',
-                'winrate' => 10,
-                'skin' => 10,
-                'heroes' => -1,
-                'stock' => 'not-numeric',
-            ]);
-        $response
-            ->assertSessionHasErrors('stock');
-    }
-
-    public function test_store_failed_cause_the_stock_must_be_greater_than_or_equal_to_0()
-    {
-        $response = $this
-            ->actingAs($this->generateSuperAdminUser())
-            ->post(route('account.store'), [
-                'title' => 'Title Test',
-                'code' => 'ACC-12345',
-                'description' => 'Description Test',
-                'winrate' => 10,
-                'skin' => 10,
-                'heroes' => -1,
-                'stock' => -1,
-            ]);
-        $response
-            ->assertSessionHasErrors('stock');
-    }
-
     public function test_store_failed_cause_the_price_is_required()
     {
         $response = $this
@@ -300,7 +250,6 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
             ]);
         $response
             ->assertSessionHasErrors('price');
@@ -317,7 +266,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
                 'price' => 'not-numeric',
             ]);
         $response
@@ -335,7 +284,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
                 'price' => 1000,
             ]);
         $response
@@ -353,7 +302,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
                 'price' => 1000,
                 'information' => 'email=mail.test password=password',
                 'discount' => true,
@@ -373,7 +322,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
                 'price' => 1000,
                 'information' => 'email=mail.test password=password',
                 'discount' => true,
@@ -393,7 +342,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
                 'price' => 1000,
                 'information' => 'email=mail.test password=password',
                 'discount' => true,
@@ -414,7 +363,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
                 'price' => 1000,
                 'information' => 'email=mail.test password=password',
                 'discount' => true,
@@ -436,7 +385,6 @@ class AccountControllerTest extends TestCase
             'winrate' => 10,
             'skin' => 10,
             'heroes' => 10,
-            'stock' => 10,
             'price' => 1000,
             'information' => 'email=mail.test password=password',
             'cover_picture' => $mockImage,
@@ -477,7 +425,6 @@ class AccountControllerTest extends TestCase
         $this->assertSame($productItem->type, 'account', 'Product item type is not account');
         $this->assertSame($productItem->name, $data['title'], 'Product item name is not correct');
         $this->assertSame($productItem->code, $data['code'], 'Product item code is not correct');
-        $this->assertSame($productItem->stock, $data['stock'], 'Product item stock is not correct');
         $this->assertSame($productItem->price, $data['price'] . '.00', 'Product item price is not correct');
 
         $productClient = $productItem->product->productClient->firstWhere('client_id', $admin->client->id);
@@ -500,7 +447,7 @@ class AccountControllerTest extends TestCase
             'winrate' => 10,
             'skin' => 10,
             'heroes' => 10,
-            'stock' => 10,
+
             'price' => 1000,
             'information' => 'email=mail.test password=password',
             'cover_picture' => $mockImage,
@@ -538,7 +485,6 @@ class AccountControllerTest extends TestCase
             'company' => '-',
             'how_to_order' => '-',
             'status' => Product::ACTIVE,
-
         ]);
 
         $this
@@ -550,7 +496,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => 10,
-                'stock' => 10,
+
                 'price' => 1000,
             ]);
 
@@ -588,7 +534,7 @@ class AccountControllerTest extends TestCase
             'winrate' => 20,
             'skin' => 20,
             'heroes' => 20,
-            'stock' => 20,
+
             'price' => 2000,
             'cover_picture' => $coverPicture,
         ];
@@ -801,64 +747,11 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => 0,
-                'stock' => 10,
+
                 'price' => 1000,
             ]);
         $response
             ->assertSessionHasErrors('code');
-    }
-
-    public function test_update_failed_cause_the_stock_is_required()
-    {
-        $account = Account::factory()->create();
-        $response = $this
-            ->actingAs($this->generateSuperAdminUser())
-            ->put(route('account.update', $account), [
-                'title' => 'Title Test',
-                'code' => 'ACC-12345',
-                'description' => 'Description Test',
-                'winrate' => 10,
-                'skin' => 10,
-                'heroes' => -1,
-            ]);
-        $response
-            ->assertSessionHasErrors('stock');
-    }
-
-    public function test_update_failed_cause_the_stock_must_be_numeric()
-    {
-        $account = Account::factory()->create();
-        $response = $this
-            ->actingAs($this->generateSuperAdminUser())
-            ->put(route('account.update', $account), [
-                'title' => 'Title Test',
-                'code' => 'ACC-12345',
-                'description' => 'Description Test',
-                'winrate' => 10,
-                'skin' => 10,
-                'heroes' => -1,
-                'stock' => 'not-numeric',
-            ]);
-        $response
-            ->assertSessionHasErrors('stock');
-    }
-
-    public function test_update_failed_cause_the_stock_must_be_greater_than_or_equal_to_0()
-    {
-        $account = Account::factory()->create();
-        $response = $this
-            ->actingAs($this->generateSuperAdminUser())
-            ->put(route('account.update', $account), [
-                'title' => 'Title Test',
-                'code' => 'ACC-12345',
-                'description' => 'Description Test',
-                'winrate' => 10,
-                'skin' => 10,
-                'heroes' => -1,
-                'stock' => -1,
-            ]);
-        $response
-            ->assertSessionHasErrors('stock');
     }
 
     public function test_update_failed_cause_the_price_is_required()
@@ -873,7 +766,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
             ]);
         $response
             ->assertSessionHasErrors('price');
@@ -891,7 +784,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
                 'price' => 'not-numeric',
             ]);
         $response
@@ -910,7 +803,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => -1,
-                'stock' => 10,
+
                 'price' => -1,
             ]);
         $response
@@ -929,7 +822,7 @@ class AccountControllerTest extends TestCase
                 'winrate' => 10,
                 'skin' => 10,
                 'heroes' => 10,
-                'stock' => 10,
+
                 'price' => 1000,
             ]);
         $response->assertSessionDoesntHaveErrors('code');

@@ -50,11 +50,6 @@
             @include('alerts.feedback', ['field' => 'heroes'])
           </div>
           <div class="form-group">
-            <label for="stock_input">Stok</label>
-            <input type="number" class="form-control {{ $errors->has('stock') ? ' is-invalid' : '' }}" name="stock" id="stock_input" placeholder="Masukkan Stok" value="{{ old('stock', $account->productItem->stock) }}">
-            @include('alerts.feedback', ['field' => 'stock'])
-          </div>
-          <div class="form-group">
             <label for="price_input">Harga</label>
             <input type="number" step="0.1" class="form-control {{ $errors->has('price') ? ' is-invalid' : '' }}" name="price" id="price_input" placeholder="Masukkan Harga" value="{{ old('price', $account->productItem->price) }}">
             @include('alerts.feedback', ['field' => 'price'])

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
 use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
 use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
 use IndexZer0\EloquentFiltering\Filter\FilterType;
@@ -17,7 +18,7 @@ use IndexZer0\EloquentFiltering\Target\Target;
 /**
  * @mixin IdeHelperAccount
  */
-class Account extends Model
+class Account extends Model implements IsFilterable
 {
     /** @use HasFactory<\Database\Factories\AccountFactory> */
     use HasFactory;

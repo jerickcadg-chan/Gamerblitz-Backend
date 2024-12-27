@@ -116,7 +116,7 @@ class AccountService
         $productItem->update([
             'name' => $request->title,
             'code' => $request->code,
-            'stock' => $request->stock,
+            'stock' => 1,
             'price' => $request->price,
             'price_reseller' => 0,
             'capital' => 0,
@@ -130,7 +130,7 @@ class AccountService
         return $product->productItems()->create([
             'name' => $request->title,
             'code' => $request->code,
-            'stock' => $request->stock,
+            'stock' => 1,
             'price' => $request->price,
             'price_reseller' => 0,
             'type' => ProductConstant::ACCOUNT,
