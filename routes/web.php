@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\FlashSaleController;
@@ -58,6 +59,8 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::post('report/order', [ReportController::class, 'getOrder'])->name('report.get.order');
     Route::post('report/user', [ReportController::class, 'getUser'])->name('report.get.user');
 
+    Route::resource('account', AccountController::class);
+    Route::post('account/{account}/show-information', [AccountController::class, 'showTheInformation'])->name('account.show-information');
     // Resource router
     Route::resources([
         'product' => ProductController::class,

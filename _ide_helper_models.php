@@ -16,6 +16,63 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int $product_item_id
+ * @property int $client_id
+ * @property string $title
+ * @property string $information
+ * @property string $slug
+ * @property string $code
+ * @property string $description
+ * @property float $winrate
+ * @property int $skin
+ * @property int $heroes
+ * @property string|null $discount_type
+ * @property string|null $discount_amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client $client
+ * @property-read mixed $discount
+ * @property-read mixed $full_slug
+ * @property-read \App\Models\Picture $picture
+ * @property-read \App\Models\Picture $picture_order
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures
+ * @property-read int|null $pictures_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
+ * @property-read int|null $pictures_order_count
+ * @property-read mixed $price
+ * @property-read \App\Models\ProductItem $productItem
+ * @method static \Database\Factories\AccountFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account filter(array $filters, ?\IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList $allowedFilterList = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereByClient()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereDiscountAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereDiscountType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereHeroes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereInformation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereProductItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSkin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereWinrate($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperAccount {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property int $user_id
  * @property float $amount
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -343,6 +400,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order settlement()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereAdminFee($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCapital($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCreatedAt($value)
@@ -546,6 +604,7 @@ namespace App\Models{
  * @property int $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client $client
  * @property-read \App\Models\Picture $picture
  * @property-read \App\Models\Picture $picture_order
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures
@@ -581,9 +640,12 @@ namespace App\Models{
  * @property string $price
  * @property float|null $price_reseller
  * @property string $capital
+ * @property string $type
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Account> $accounts
+ * @property-read int|null $accounts_count
  * @property-read \App\Models\ProductItemClient|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Client> $clients
  * @property-read int|null $clients_count
@@ -613,6 +675,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem wherePriceReseller($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem withoutTrashed()

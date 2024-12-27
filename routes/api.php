@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DepositController;
@@ -7,7 +8,6 @@ use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SliderController;
-use App\Models\FlashSale;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +33,8 @@ Route::get('slider', [SliderController::class, 'index']);
 Route::get('check-nickname', [OrderController::class, 'checkNickname']);
 
 Route::get('category', CategoryController::class);
+Route::get('product/account', [AccountController::class, 'index'])->name('product.account');
+Route::get('product/{account:slug}/account', [AccountController::class, 'show'])->name('product.account.show');
 Route::get('product', [ProductController::class, 'index']);
 Route::get('product/paginate', [ProductController::class, 'paginate']);
 Route::get('product/{product}', [ProductController::class, 'showProduct']);

@@ -12,7 +12,7 @@ return [
     ],
     'menu' => [
         'dashboard',
-        'product' => ['product', 'product_item', 'voucher'],
+        'product' => ['product', 'product_item', 'voucher', 'account'],
         'order',
         'report',
         'promo' => ['discount', 'slider'],
@@ -90,9 +90,9 @@ return [
     'setting' => [
         'pin' => '$2a$12$ZfmtR2QbolbXYIcW556KF.fQOcM/4xJX4X7hI1.jAO4lqhoMvRAbS',
     ],
-    'vexa' => [
-        'token' => env('VEXA_TOKEN'),
-        'url' => env('VEXA_URL')
+    'mitra-gamers' => [
+        'token' => env('MITRA_GAMERS_TOKEN'),
+        'url' => env('MITRA_GAMERS_URL')
     ],
     'payment_method' => [
         'admin_fee' => [
