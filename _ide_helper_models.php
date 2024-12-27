@@ -47,6 +47,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereByClient()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
@@ -80,6 +81,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BalanceHistory> $histories
  * @property-read int|null $histories_count
  * @property-read \App\Models\User $user
+ * @method static \Database\Factories\BalanceFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Balance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Balance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Balance query()
@@ -136,6 +138,7 @@ namespace App\Models{
  * @property string $logo
  * @property string|null $description
  * @property string $user_token
+ * @property string|null $xendit_callback_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductClient> $productClients
@@ -156,6 +159,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUserToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereXenditCallbackToken($value)
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
@@ -399,6 +403,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order settlement()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereAdminFee($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereByClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCapital($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereClientId($value)
@@ -480,6 +485,7 @@ namespace App\Models{
  * @property-read int|null $pictures_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
  * @property-read int|null $pictures_order_count
+ * @method static \Database\Factories\PaymentMethodFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod query()

@@ -146,7 +146,7 @@ if (! function_exists('parse_date_time_full')) {
 
         $date = \Carbon\Carbon::parse($date);
 
-        return $date->format('d').' '.get_month_name($date->format('m')).' '.$date->format('Y').', '.\Carbon\Carbon::parse($date)->formatLocalized('%H:%M:%S');
+        return $date->format('d').' '.get_month_name($date->format('m')).' '.$date->format('Y').', '.\Carbon\Carbon::parse($date)->format('%H:%M:%S');
     }
 }
 

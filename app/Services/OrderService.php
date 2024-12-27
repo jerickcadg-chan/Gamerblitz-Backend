@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Constants\ProductConstant;
+use App\Http\Requests\OrderRequest;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendSettlementNotif;
 use App\Models\Balance;
@@ -11,22 +11,17 @@ use App\Models\Voucher;
 use App\Models\Discount;
 use App\Models\PaymentMethod;
 use App\Models\ProductItem;
-use App\Mail\SendOrderNotif;
-use App\Transformers\OrderTransformer;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client as GuzzleClient;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class OrderService
 {
-    /**
-     * @throws Exception
-     */
-    public function store($request)
+    public function store(OrderRequest $request): Order|string
     {
         try {
             DB::beginTransaction();
@@ -37,14 +32,31 @@ class OrderService
 
             $price = $this->calculatePrice($request, $productItem, $paymentMethod);
 
-            if ($productItem->stock == 0) return trans('order.out_of_stock');
+            if ($productItem->stock == 0) {
+                DB::commit();
+
+                return trans('order.out_of_stock');
+            };
 
             if ($request->payment_method === PaymentMethod::SALDO) {
-                if (!auth()->user()) return trans('order.no_balance');
+                if (!auth()->user()) {
+                    DB::commit();
 
-                $balance = Balance::lockForUpdate()->where('user_id', auth()->user()->id)->first() ?? 0;
+                    return trans('order.no_balance');
+                }
 
-                if ($balance->amount < $price['total_price']) return trans('order.no_balance');
+                $balance = Balance::query()
+                    ->lockForUpdate()
+                    ->where(
+                        'user_id',
+                        auth()->user()->id
+                    )->first() ?? new Balance(['amount' => 0]);
+
+                if ($balance->amount < $price['total_price']) {
+                    DB::commit();
+
+                    return trans('order.no_balance');
+                };
             }
 
             $paymentStatus = $request->payment_method === PaymentMethod::SALDO ? Order::SETTLEMENT : Order::PENDING;
@@ -102,25 +114,25 @@ class OrderService
                     'amount' => -$order->total_price,
                     'description' => "Transaksi $order->code"
                 ]);
-
-                $this->createBangJeffOrder($order);
             }
 
             DB::commit();
 
             return $order;
         } catch (Exception $e) {
+            dd($e->getMessage());
             DB::rollback();
             throw_custom_exception($e);
             throw new Exception($e->getMessage());
         } catch (GuzzleException $e) {
+            dd($e->getMessage());
             DB::rollback();
             throw_custom_exception($e);
             throw new Exception($e->getMessage());
         }
     }
 
-    public function calculatePrice($request, $productItem, $paymentMethod): array
+    public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod): array
     {
         if ($request->discount_code) {
             $discount = Discount::active()->where('code', $request->discount_code)->first();
@@ -133,22 +145,22 @@ class OrderService
             $disc = get_active_discount($productItem->real_price, $productItem->product_id, $productItem->id);
         }
 
-        $adminFee = $this->calculateAdminFee($productItem, $paymentMethod);
+        $xenditFee = $this->calculateXenditFee($productItem, $paymentMethod);
         $forAdmin = 0;
 
-        if ($adminFee == 'no-admin' && $paymentMethod->name != PaymentMethod::SALDO) {
-            $adminFee = rand(30,100);
-            $forAdmin = $adminFee;
+        if ($xenditFee == 'no-admin' && $paymentMethod->name != PaymentMethod::SALDO) {
+            $xenditFee = rand(30, 100);
+            $forAdmin = $xenditFee;
         }
 
-        $totalPrice = $productItem->real_price - $disc['nominal'] + $adminFee;
+        $totalPrice = $productItem->real_price - $disc['nominal'] + $xenditFee;
 
         $totalIncome = $productItem->real_price - $disc['nominal'] + $forAdmin - $productItem->capital;
 
         return [
             'price' => $productItem->real_price,
             'capital' => $productItem->capital,
-            'admin_fee' => $adminFee,
+            'admin_fee' => $xenditFee,
             'discount_price' => $disc['nominal'],
             'total_price' => $totalPrice,
             'total_income' => $totalIncome,
@@ -156,7 +168,7 @@ class OrderService
         ];
     }
 
-    public function calculateAdminFee($productItem, $paymentMethod)
+    public function calculateXenditFee(ProductItem $productItem, PaymentMethod $paymentMethod)
     {
         switch ($paymentMethod->admin_type) {
             case 'percentage':
@@ -182,7 +194,7 @@ class OrderService
 
         switch ($order->payment_method) {
             case PaymentMethod::QRIS:
-                $r = $client->request('POST', config('array.xendit.url').'/qr_codes', [
+                $r = $client->request('POST', config('array.xendit.url') . '/qr_codes', [
                     'body' => json_encode([
                         'external_id' => $order->code,
                         'type' => 'DYNAMIC',
@@ -194,12 +206,12 @@ class OrderService
                 break;
 
             default:
-                $r = $client->request('POST', config('array.xendit.url').'/v2/invoices', [
+                $r = $client->request('POST', config('array.xendit.url') . '/v2/invoices', [
                     'body' => json_encode([
                         'external_id' => $order->code,
                         'amount' => (int) $order->total_price,
                         'payer_email' => $order->cust_email ?? config('array.mail.no_reply'),
-                        'description' => $order->productItem->name ." ". $order->productItem->product->name
+                        'description' => $order->productItem->name . " " . $order->productItem->product->name
                     ])
                 ]);
 
@@ -210,7 +222,7 @@ class OrderService
     }
 
     /**
-     * @throws Exception
+     * @deprecated will be removed
      */
     public function createBangJeffOrder(Order $order)
     {
@@ -219,9 +231,9 @@ class OrderService
         }
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer '. config('array.bangjeff.api_key'),
+            'Authorization' => 'Bearer ' . config('array.bangjeff.api_key'),
             'Accept' => 'application/json'
-        ])->post(config('array.bangjeff.url').'/api/v3/checkout', [
+        ])->post(config('array.bangjeff.url') . '/api/v3/checkout', [
             'code' => $order->productItem->code,
             'referenceNumber' => $order->code,
             'qty' => $order->qty,
@@ -234,7 +246,7 @@ class OrderService
             if ($response['message'] === "Invalid ID") {
                 throw new Exception($response['message']);
             } else {
-                 \Mail::to(config('array.mail.notification'))->queue(new SendErrorNotif($order, $response['message']));
+                \Mail::to(config('array.mail.notification'))->queue(new SendErrorNotif($order, $response['message']));
             }
         } else {
             $order->bangjeff_invoice = $response['data']['invoiceNumber'];
@@ -254,12 +266,11 @@ class OrderService
             }
         }
 
-//            if ($order->productItem->product->category == ProductConstant::VOUCHER) {
-//                $this->sendVoucher($order);
-//            }
+        //            if ($order->productItem->product->category == ProductConstant::VOUCHER) {
+        //                $this->sendVoucher($order);
+        //            }
 
         $this->sendSettlementNotif($order);
-
     }
 
     public function updateStatus(Order $order, $paymentStatus = null, $orderStatus = null, $note = null)
@@ -277,7 +288,6 @@ class OrderService
 
             $this->createHistory($order->id, $orderStatus, 'order', $note);
         }
-
     }
 
     public function createHistory($orderId, $status, $type, $note = null): bool
@@ -321,7 +331,7 @@ class OrderService
 
     public function sendSettlementNotif($order)
     {
-         \Mail::to(config('array.mail.notification'))->queue(new SendSettlementNotif($order));
+        Mail::to(config('array.mail.notification'))->queue(new SendSettlementNotif($order));
     }
 
     public function updateVoucherStock($productItem)

@@ -48,7 +48,7 @@ Route::post('discount', [OrderController::class, 'getDiscount']);
 Route::post('order', [OrderController::class, 'store']);
 Route::get('order/{order}', [OrderController::class, 'show']);
 Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('callback.xendit');
-Route::post('order/bangjeff', [OrderController::class, 'bangJeffCallback'])->name('callback.bangjeff');
+Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->name('callback.bangjeff');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
