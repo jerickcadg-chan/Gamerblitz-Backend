@@ -22,6 +22,8 @@ class ClientFactory extends Factory
             'logo' => $this->faker->imageUrl(),
             'description' => $this->faker->sentence(),
             'user_token' => $this->faker->uuid(),
+            'xendit_callback_token' => $this->faker->uuid(),
+            'xendit_token' => $this->faker->uuid(),
         ];
     }
 }

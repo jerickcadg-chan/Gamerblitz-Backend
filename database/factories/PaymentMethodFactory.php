@@ -30,11 +30,24 @@ class PaymentMethodFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'vendor' => PaymentMethod::QRIS,
-                'name' => 'xendit',
-                'admin_fee' => 0,
+                'vendor' => 'xendit',
+                'name' => 'qris',
+                'admin_fee' => 2.0,
                 'admin_type' => 'percentage',
                 'slug' => '#qris',
+            ];
+        });
+    }
+
+    public function va(): PaymentMethodFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'vendor' => 'xendit',
+                'name' => 'va',
+                'admin_fee' => 5000.00,
+                'admin_type' => 'nominal',
+                'slug' => '#va',
             ];
         });
     }

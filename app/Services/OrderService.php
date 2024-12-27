@@ -120,12 +120,10 @@ class OrderService
 
             return $order;
         } catch (Exception $e) {
-            dd($e->getMessage());
             DB::rollback();
             throw_custom_exception($e);
             throw new Exception($e->getMessage());
         } catch (GuzzleException $e) {
-            dd($e->getMessage());
             DB::rollback();
             throw_custom_exception($e);
             throw new Exception($e->getMessage());
@@ -185,40 +183,35 @@ class OrderService
     /**
      * @throws GuzzleException
      */
-    public function createXenditInvoice($order)
+    public function createXenditInvoice(Order $order)
     {
-        $client = new GuzzleClient([
-            'headers' => ['Content-Type' => 'application/json'],
-            'auth' => [config('array.xendit.token'), null]
-        ]);
+        $xenditToken = client()->xendit_token;
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Basic ' . base64_encode($xenditToken . ':')
+        ];
 
         switch ($order->payment_method) {
             case PaymentMethod::QRIS:
-                $r = $client->request('POST', config('array.xendit.url') . '/qr_codes', [
-                    'body' => json_encode([
-                        'external_id' => $order->code,
-                        'type' => 'DYNAMIC',
-                        'amount' => (int) $order->total_price,
-                        'callback_url' => route('callback.xendit'),
-                    ])
+                $response = Http::withHeaders($headers)->post(config('array.xendit.url') . '/qr_codes', [
+                    'external_id' => $order->code,
+                    'type' => 'DYNAMIC',
+                    'amount' => (int) $order->total_price,
+                    'callback_url' => route('callback.xendit'),
                 ]);
-
                 break;
 
             default:
-                $r = $client->request('POST', config('array.xendit.url') . '/v2/invoices', [
-                    'body' => json_encode([
-                        'external_id' => $order->code,
-                        'amount' => (int) $order->total_price,
-                        'payer_email' => $order->cust_email ?? config('array.mail.no_reply'),
-                        'description' => $order->productItem->name . " " . $order->productItem->product->name
-                    ])
+                $response = Http::withHeaders($headers)->post(config('array.xendit.url') . '/v2/invoices', [
+                    'external_id' => $order->code,
+                    'amount' => (int) $order->total_price,
+                    'payer_email' => $order->cust_email ?? config('array.mail.no_reply'),
+                    'description' => $order->productItem->name . " " . $order->productItem->product->name
                 ]);
-
                 break;
         }
 
-        return json_decode($r->getBody());
+        return json_decode($response->getBody());
     }
 
     /**

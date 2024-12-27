@@ -20,6 +20,7 @@ class Client extends Model
         'description',
         'user_token',
         'xendit_callback_token',
+        'xendit_token',
         'host',
     ];
 
