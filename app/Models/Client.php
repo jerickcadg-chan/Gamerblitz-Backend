@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @mixin IdeHelperClient
@@ -37,5 +38,14 @@ class Client extends Model
     public function productClients(): HasMany
     {
         return $this->hasMany(ProductClient::class);
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class)
+            ->where('client_id', $this->id)
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'Super Admin');
+            });
     }
 }

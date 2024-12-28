@@ -18,5 +18,6 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'no_permission' => 'You do not have permission!!!.',
     'loged_out' => 'Logged out!',
+    'you_should_login' => 'You should login first!',
 
 ];

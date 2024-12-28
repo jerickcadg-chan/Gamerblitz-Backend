@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @mixin IdeHelperOrder
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Order extends Model
 {
     /**
-    * @use HasFactory<OrderFactory>
+     * @use HasFactory<OrderFactory>
      */
     use HasFactory;
     use WhereByClient;
@@ -38,9 +39,8 @@ class Order extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(function ($model)
-        {
-            $model->attributes['code'] = 'KY'.date('ymd').strtoupper(substr(uniqid(), -5));
+        static::creating(function ($model) {
+            $model->attributes['code'] = 'KY' . date('ymd') . strtoupper(substr(uniqid(), -5));
         });
     }
 
@@ -108,8 +108,8 @@ class Order extends Model
                     return $this->cust_account;
                 } else {
                     $custAccount = '';
-                    foreach (json_decode($this->cust_account) as $account) {
-                        $custAccount .= "<p>{$account->name} = {$account->value}</p>";
+                    foreach (json_decode($this->cust_account) as $key => $value) {
+                        $custAccount .= "<p>{$key} = {$value}</p>";
                     }
                     return $custAccount;
                 }
@@ -212,5 +212,11 @@ class Order extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class, 'client_id', 'client_id')
+            ->where('product_item_id', $this->product_item_id);
     }
 }

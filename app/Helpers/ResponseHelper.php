@@ -53,7 +53,7 @@ if (!function_exists('api_status_warning')) {
         $response = [
             'url' => url()->full(),
             'method' => request()->getMethod(),
-            'request' => request()->except(['password']),
+            'request' => request()->except(['password', 'client']),
             'code' => $code,
             'message' => $message,
         ];
@@ -70,7 +70,7 @@ if (!function_exists('api_status_error')) {
         $response = [
             'url' => url()->full(),
             'method' => request()->getMethod(),
-            'request' => request()->except(['password', 'file']),
+            'request' => request()->except(['password', 'file', 'client']),
             'code' => $exception->getCode()
         ];
 

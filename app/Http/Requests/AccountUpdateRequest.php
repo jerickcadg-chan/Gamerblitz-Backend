@@ -29,7 +29,8 @@ class AccountUpdateRequest extends FormRequest
             'skin' => ['required', 'numeric', 'min:0'],
             'heroes' => ['required', 'numeric', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
-            'cover_picture' => ['nullable', 'image'],
+            'cover_picture' => ['nullable', 'array'],
+            'cover_picture.*' => ['nullable', 'image', 'max:2048'],
         ];
 
         if ($this->input('discount') === "1" || $this->input('discount') === 1 || $this->input('discount') === true) {

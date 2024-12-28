@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 
 if (!function_exists('insert_picture')) {
@@ -66,5 +67,15 @@ if (!function_exists('delete_picture')) {
     {
         $service = new \App\Services\PictureService();
         $service->delete($picture);
+    }
+}
+
+if (!function_exists('delete_pictures')) {
+    function delete_pictures(array|Collection $picture)
+    {
+        foreach ($picture as $pic) {
+            $service = new \App\Services\PictureService();
+            $service->delete($pic);
+        }
     }
 }

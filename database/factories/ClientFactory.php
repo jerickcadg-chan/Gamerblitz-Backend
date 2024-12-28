@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,5 +26,15 @@ class ClientFactory extends Factory
             'xendit_callback_token' => $this->faker->uuid(),
             'xendit_token' => $this->faker->uuid(),
         ];
+    }
+
+    public function firstOrCreate(string $domain)
+    {
+        return $this->state(function (array $attributes) use ($domain) {
+            return Client::firstOrCreate(
+                ['host' => $domain],
+                $attributes
+            )->toArray();
+        });
     }
 }

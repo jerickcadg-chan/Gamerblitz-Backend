@@ -67,10 +67,13 @@ class ProductItemTest extends TestCase
 
     public function test_product_item_can_have_account()
     {
+        $user = $this->generateSuperAdminUser();
+        $this->actingAs($user);
         $productItem = ProductItem::factory()->create();
         $pic = ProductItemClient::factory()
             ->create([
-                'product_item_id' => $productItem->id
+                'product_item_id' => $productItem->id,
+                'client_id' => $user->client_id,
             ]);
         Account::factory()
             ->create([

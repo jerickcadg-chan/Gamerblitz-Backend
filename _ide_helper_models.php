@@ -145,6 +145,7 @@ namespace App\Models{
  * @property-read int|null $product_clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemClient> $productItemClients
  * @property-read int|null $product_item_clients_count
+ * @property-read \App\Models\User|null $user
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
  * @method static \Database\Factories\ClientFactory factory($count = null, $state = [])
@@ -381,6 +382,8 @@ namespace App\Models{
  * @property string|null $expired_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Account> $accounts
+ * @property-read int|null $accounts_count
  * @property-read \App\Models\Client|null $client
  * @property-read \App\Models\Discount|null $discount
  * @property-read mixed $cust_account_format

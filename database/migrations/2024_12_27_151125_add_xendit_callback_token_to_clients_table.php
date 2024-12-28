@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->string('xendit_callback_token')->nullable()->after('user_token');
+            $table->string('xendit_callback_token')->nullable()->unique()->after('user_token');
         });
     }
 

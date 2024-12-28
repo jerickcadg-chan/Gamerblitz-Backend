@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Order;
 use App\Models\ProductItem;
 use App\Models\User;
+use App\Services\OrderService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -52,6 +53,28 @@ class OrderFactory extends Factory
             'created_at' => now(),
             'updated_at' => \Carbon\Carbon::parse(now())->addMinutes(12)
         ];
+    }
+
+    public function qris()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'payment_method' => 'qris',
+                'admin_fee' => 2000
+            ];
+        });
+    }
+
+    public function va()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'payment_id' => '598d91b1191029596846047f',
+                'payment_method' => 'va',
+                'payment_status' => Order::PENDING,
+                'admin_fee' => 5000,
+            ];
+        });
     }
 
     public function customerUser()

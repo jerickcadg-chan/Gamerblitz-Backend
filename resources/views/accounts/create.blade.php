@@ -60,7 +60,7 @@
           </div>
           <div class="form-group">
             <label for="picture" class="required">Gambar kover</label>
-            <input type="file" name="cover_picture" class="form-control" accept="image/*" value="{{ old('cover_picture') }}">
+            <input type="file" name="cover_picture[]" class="form-control" accept="image/*" value="{{ old('cover_picture') }}" multiple>
             @include('alerts.feedback', ['field' => 'cover_picture'])
           </div>
           <div class="form-group">

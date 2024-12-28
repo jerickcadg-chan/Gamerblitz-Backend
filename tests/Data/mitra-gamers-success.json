@@ -1,0 +1,56 @@
+{
+  "request": {
+    "ref_id": "KY24122899EEA",
+    "code": "ML14",
+    "qty": 1,
+    "payment_method": "balance",
+    "platform": "api",
+    "customer_no": "9730467047",
+    "selling_price": 5000,
+    "note": null
+  },
+  "code": 200,
+  "message": "Transaksi berhasil",
+  "payload": {
+    "id": "354066",
+    "code": "KY24122899EEA",
+    "customer_no": "9730467047",
+    "qty": 1,
+    "price": "Rp 5.000",
+    "description": null,
+    "serial_number": null,
+    "status": "Dalam Proses",
+    "payment_method": "Saldo",
+    "created_at": "28 Des 2024, 11:43:20 WIB",
+    "updated_at": "28 Des 2024, 11:43:20 WIB",
+    "expired_at": "-",
+    "created_at_simple": "28 Des 2024",
+    "detail": null,
+    "qr_code": null,
+    "productItem": {
+      "id": 209,
+      "name": "14 Diamond (13 + 1 Bonus)",
+      "product_name": "Mobile Legends",
+      "full_name": "Mobile Legends 14 Diamond (13 + 1 Bonus)",
+      "sub_category": null,
+      "category": "Game",
+      "category_picture_url": "https://backend.test/production/images/ProductCategory/ebd10fe40-game.png",
+      "code": "ML14",
+      "status": "active",
+      "stock": "∞",
+      "price": "Rp 4.155",
+      "price_raw": 4155,
+      "description": "Mobile Legends 14 Diamond (13 + 1 Bonus)",
+      "min": 1,
+      "max": 1
+    },
+    "statuses": [
+      {
+        "id": 383675,
+        "status": "Dalam Proses",
+        "type": null,
+        "created_at": "28 Des 2024, 11:43:20 WIB"
+      }
+    ]
+  }
+}

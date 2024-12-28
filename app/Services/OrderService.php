@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Constants\ProductItemTypeConstant;
 use App\Http\Requests\OrderRequest;
+use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendSettlementNotif;
 use App\Models\Balance;
@@ -14,7 +16,6 @@ use App\Models\ProductItem;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\DB;
-use GuzzleHttp\Client as GuzzleClient;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -26,6 +27,7 @@ class OrderService
         try {
             DB::beginTransaction();
 
+            /** @var ProductItem $productItem */
             $productItem = ProductItem::find($request->product_item_id);
 
             $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
@@ -42,7 +44,7 @@ class OrderService
                 if (!auth()->user()) {
                     DB::commit();
 
-                    return trans('order.no_balance');
+                    return trans('auth.you_should_login');
                 }
 
                 $balance = Balance::query()
@@ -61,7 +63,11 @@ class OrderService
 
             $paymentStatus = $request->payment_method === PaymentMethod::SALDO ? Order::SETTLEMENT : Order::PENDING;
 
-            $orderStatus = $request->payment_method === PaymentMethod::SALDO ? Order::INPROCESS : Order::WAITING_PAYMENT;
+            if ($request->payment_method === PaymentMethod::SALDO) {
+                $orderStatus = $productItem->type == ProductItemTypeConstant::ACCOUNT ? Order::DONE : Order::INPROCESS;
+            } else {
+                $orderStatus = Order::WAITING_PAYMENT;
+            }
 
             $order = new Order;
             $order->productItem()->associate($productItem);
@@ -106,6 +112,9 @@ class OrderService
             $this->createHistory($order->id, $orderStatus, 'order');
 
             if ($paymentMethod->name == PaymentMethod::SALDO) {
+                if ($productItem->type == ProductItemTypeConstant::ACCOUNT) {
+                    $this->sentAccountCredentialsToUser($order);
+                }
                 $this->setOrderSettlement($order);
 
                 BalanceService::update($balance, [
@@ -239,7 +248,7 @@ class OrderService
             if ($response['message'] === "Invalid ID") {
                 throw new Exception($response['message']);
             } else {
-                \Mail::to(config('array.mail.notification'))->queue(new SendErrorNotif($order, $response['message']));
+                Mail::to(config('array.mail.notification'))->queue(new SendErrorNotif($order, $response['message']));
             }
         } else {
             $order->bangjeff_invoice = $response['data']['invoiceNumber'];
@@ -249,7 +258,7 @@ class OrderService
         return $response;
     }
 
-    public function setOrderSettlement($order)
+    public function setOrderSettlement(Order $order)
     {
         if ($order->payment_status === Order::PENDING) {
             $this->updateStatus($order, Order::SETTLEMENT, Order::INPROCESS);
@@ -322,9 +331,9 @@ class OrderService
         $this->updateStatus($order, null, Order::DONE);
     }
 
-    public function sendSettlementNotif($order)
+    public function sendSettlementNotif(Order $order)
     {
-        Mail::to(config('array.mail.notification'))->queue(new SendSettlementNotif($order));
+        Mail::queue(new SendSettlementNotif($order));
     }
 
     public function updateVoucherStock($productItem)
@@ -353,5 +362,60 @@ class OrderService
             $order->productItem->capital = $capital;
             $order->save();
         }
+    }
+
+
+    /**
+     * @throws \Exception
+     */
+    public function createMitraGamersOrder(Order $order)
+    {
+        if (empty($order->productItem->code)) {
+            return false;
+        }
+
+        $path = str(config('array.mitra-gamers.url'))->replaceEnd("/", "")->append('/api/v2/transaction')->value();
+
+        $response = Http::withHeaders([
+            'Valid-token' => base64_encode("b72ec94c-8884-4f46-8ba0-fa8363a48ddf"),
+            'Accept' => 'application/json'
+        ])->post($path, [
+            'ref_id' => $order->code,
+            'code' => $order->productItem->code,
+            'qty' => $order->qty,
+            'payment_method' => 'balance',
+            'platform' => 'api',
+            'customer_no' => CustAccountService::idExtractor($order->productItem->product->name, $order->cust_account),
+            'selling_price' => $order->price - $order->discount_price,
+            'note' => $order->note
+        ]);
+
+        if (!$response->ok()) {
+            // $this->updateStatus(
+            //     order: $order,
+            //     orderStatus: Order::INPROCESS,
+            // );
+            // Mail::to(config('array.mail.notification'))->queue(new SendErrorNotif($order, $response->json("message")));
+
+            return json_decode($response->collect());
+        }
+        $response = json_decode($response->collect());
+
+        if ($response->payload) {
+            $order->vexa_invoice = $response->payload->id;
+            $order->save();
+        }
+
+        return $response;
+    }
+
+    public function sentAccountCredentialsToUser(Order $order)
+    {
+        $this->updateStatus(
+            order: $order,
+            orderStatus: Order::DONE,
+        );
+
+        Mail::to($order->cust_email)->queue(new OrderAccountSucceed($order));
     }
 }

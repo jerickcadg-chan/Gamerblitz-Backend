@@ -2,12 +2,16 @@
 
 namespace Tests;
 
+use App\Models\Client;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Artisan;
 
 abstract class TestCase extends BaseTestCase
 {
+    use RefreshDatabase;
+
     protected ?User $user;
 
     public function generateCustomerUser(): User
@@ -18,6 +22,11 @@ abstract class TestCase extends BaseTestCase
             ->create();
         $user->assignRole('Customer');
 
+        // EXPERIMENTAL: because this is not the best practice
+        if (Client::count() > 0) {
+            $user->client()->associate(Client::first());
+            $user->save();
+        }
 
         $this->user = $user;
 

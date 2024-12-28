@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\ProductItem;
 use App\Models\PaymentMethod;
 use App\Constants\ProductConstant;
+use App\Constants\ProductItemTypeConstant;
+use App\Http\Middleware\EnsureHostIsValid;
 use App\Services\CustAccountService;
 use App\Transformers\DiscountTransformer;
 use Illuminate\Http\Request;
@@ -15,11 +17,13 @@ use App\Services\OrderService;
 use App\Http\Requests\OrderRequest;
 use App\Mail\SendOrderNotif;
 use App\Models\Balance;
+use App\Models\Client;
 use App\Models\Product;
 use App\Services\BalanceService;
 use App\Transformers\OrderTransformer;
 use App\Transformers\PaymentMethodTransformer;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -102,9 +106,10 @@ class OrderController extends Controller
 
     public function xenditCallback(Request $request, OrderService $orderService)
     {
-        $xenditCallbackToken = client()->xendit_callback_token;
-        if ($request->header('x-callback-token') && $request->header('x-callback-token') != $xenditCallbackToken) {
-            return api_status_warning('Invalid token !!!');
+        $hCallbackToken = $request->header('x-callback-token');
+        $client = client()?->xendit_callback_token == $hCallbackToken;
+        if (!$client) {
+            return api_status_warning("callback token didn't register yet, or invalid token!!!!");
         }
 
         $code = isset($request->qr_code) ? $request->qr_code['external_id'] : $request->external_id;
@@ -175,14 +180,14 @@ class OrderController extends Controller
         }
 
         if ($order->cust_email) {
-            // \Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
+            // Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
         }
 
         return api_status_ok($order);
     }
 
 
-    public function setOrderSettlement($order, $orderService)
+    public function setOrderSettlement(Order $order, OrderService $orderService)
     {
         if ($order->payment_status != Order::SETTLEMENT) {
             $orderService->updateStatus($order, Order::SETTLEMENT, Order::INPROCESS);
@@ -191,18 +196,24 @@ class OrderController extends Controller
                 $orderService->sendVoucher($order);
             } else {
                 if ($order->cust_email) {
-                    \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
+                    Mail::to($order->cust_email)->send(new SendOrderNotif($order));
                 }
             }
 
-            $orderService->createVexaOrder($order);
+            if ($order->productItem->type == ProductItemTypeConstant::TOPUP) {
+                $orderService->createMitraGamersOrder($order);
+            }
+
+            if ($order->productItem->type == ProductItemTypeConstant::ACCOUNT) {
+                $orderService->sentAccountCredentialsToUser($order);
+            }
 
             $orderService->sendSettlementNotif($order);
 
-            return \api_status_ok(transformer($order, new OrderTransformer));
+            return api_status_ok(transformer($order, new OrderTransformer));
         }
 
-        return \api_status_ok('Order sudah terbayar');
+        return api_status_ok('Order sudah terbayar');
     }
 
     public function setOrderFailed($order, $orderService)
@@ -210,21 +221,21 @@ class OrderController extends Controller
         $orderService->updateStatus($order, null, Order::CANCELED);
 
         if ($order->cust_email) {
-            \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
+            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
         }
 
-        return \api_status_ok(transformer($order, new OrderTransformer));
+        return api_status_ok(transformer($order, new OrderTransformer));
     }
 
-    public function setOrderExpired($order, $orderService)
+    public function setOrderExpired($order, OrderService $orderService)
     {
         $orderService->updateStatus($order, null, Order::EXPIRED);
 
         if ($order->cust_email) {
-            \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
+            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
         }
 
-        return \api_status_ok(transformer($order, new OrderTransformer));
+        return api_status_ok(transformer($order, new OrderTransformer));
     }
 
     public function checkNickname()

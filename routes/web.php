@@ -34,6 +34,10 @@ Auth::routes([
     'verify' => false,
 ]);
 
+Route::get('/email/test', function () {
+    return new \App\Mail\SendSettlementNotif(\App\Models\Order::query()->has('client')->first());
+});
+
 Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
