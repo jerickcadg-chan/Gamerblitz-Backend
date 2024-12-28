@@ -411,6 +411,8 @@ class OrderService
 
     public function sentAccountCredentialsToUser(Order $order)
     {
+        $order->productItem->stock = 0;
+        $order->productItem->save();
         $this->updateStatus(
             order: $order,
             orderStatus: Order::DONE,

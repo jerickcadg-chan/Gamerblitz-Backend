@@ -257,7 +257,8 @@ class OrderControllerTest extends TestCase
                     'price' => 0,
                     'capital' => 5000,
                     'price_reseller' => 0,
-                    'type' => ProductItemTypeConstant::ACCOUNT
+                    'type' => ProductItemTypeConstant::ACCOUNT,
+                    'stock' => 1
                 ])
                 ->each(function (ProductItem $productItem) {
                     $productItem->productItemClients()->save(ProductItemClient::factory()->make([
@@ -282,6 +283,7 @@ class OrderControllerTest extends TestCase
 
             /** @var ProductItem $productItem */
             $productItem = ProductItem::whereId($productItemId)->first();
+            $this->assertSame(0, $productItem->stock, 'Stock shouldbe 0');
 
             /** @var Order $order */
             $order = Order::whereProductItemId($productItemId)->first();
@@ -705,7 +707,8 @@ class OrderControllerTest extends TestCase
                 'price' => 0,
                 'capital' => 5000,
                 'price_reseller' => 0,
-                'type' => ProductItemTypeConstant::ACCOUNT
+                'type' => ProductItemTypeConstant::ACCOUNT,
+                'stock' => 1
             ]);
 
         $productItem->productItemClients()
@@ -736,6 +739,11 @@ class OrderControllerTest extends TestCase
 
         $response->assertOk();
 
+        /** @var ProductItem $productItem */
+        $productItem = $productItem->fresh();
+        $this->assertSame(0, $productItem->stock, 'Stock shouldbe 0');
+
+        /** @var Order $order */
         $order = $order->refresh();
         $this->assertSame($order->vexa_invoice, null);
         $this->assertSame(Order::DONE, $order->order_status);

@@ -85,8 +85,25 @@ class Account extends Model implements IsFilterable
     {
         return Attribute::make(
             get: fn () => $this->discount_type == 'percentage'
-                ? ((float) $this->discount_amount). '%'
+                ? ((float) $this->discount_amount) . '%'
                 : rp_format($this->discount_amount)
+        );
+    }
+
+    public function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->productItem->order->isNotEmpty()
+        );
+    }
+
+    public function statusView(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $status = $this->status;
+                return $status ? 'Terjual' : 'Tersedia';
+            }
         );
     }
 
@@ -101,9 +118,9 @@ class Account extends Model implements IsFilterable
                     Filter::field('price', [FilterType::LESS_THAN_EQUAL_TO]),
                 )
             ),
-            Filter::field('heroes',[FilterType::EQUAL]),
-            Filter::field('skin',[FilterType::EQUAL]),
-            Filter::field('winrate',[FilterType::GREATER_THAN_EQUAL_TO]),
+            Filter::field('heroes', [FilterType::EQUAL]),
+            Filter::field('skin', [FilterType::EQUAL]),
+            Filter::field('winrate', [FilterType::GREATER_THAN_EQUAL_TO]),
         );
     }
 }

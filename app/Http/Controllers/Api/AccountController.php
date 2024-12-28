@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Transformers\SalesAccountTransformer;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
 class AccountController extends Controller
@@ -28,8 +28,9 @@ class AccountController extends Controller
         $accounts = Account::whereByClient()
             ->filter($filter)
             ->latest()
-            ->whereHas('productItem', function ($query) {
-                $query->where('type', 'account');
+            ->whereHas('productItem', function (Builder $query) {
+                $query->where('type', 'account')
+                    ->where('stock', '>', 0);
             });
 
         return api_status_ok(paginateTransformer(

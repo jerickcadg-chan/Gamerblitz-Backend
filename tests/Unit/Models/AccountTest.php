@@ -104,4 +104,10 @@ class AccountTest extends TestCase
 
         $this->assertEquals($price, $account->price);
     }
+
+    public function test_status_account_1_when_has_order()
+    {
+        $account = Account::factory()->create();
+        $this->assertFalse($account->status);
+    }
 }

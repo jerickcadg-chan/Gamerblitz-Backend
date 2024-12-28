@@ -387,4 +387,32 @@ class AccountControllerTest extends TestCase
         $response->assertStatus(200);
         $this->assertSame($responseData, $response->json('payload'));
     }
+
+    public function test_user_only_see_list_account_that_has_stock_more_than_0(): void
+    {
+        $client = $this->createClient();
+        Account::truncate();
+        Account::factory()->count(5)->create([
+            'client_id' => $client->id,
+        ])->each(function (Account $account) {
+            if ($account->id === 1) {
+                $account->productItem()->update([
+                    'type' => 'account',
+                    'stock' => 0,
+                ]);
+            } else {
+                $account->productItem()->update([
+                    'type' => 'account',
+                    'stock' => 1,
+                ]);
+            }
+            $account->picture()->create([
+                'path' => 'account.jpg',
+                'type' => 'cover',
+                'file_name' => 'account.jpg',
+            ]);
+        });
+        $response = $this->get($this->setIndexUrl());
+        $this->assertCount(4, $response->json('payload.data'));
+    }
 }

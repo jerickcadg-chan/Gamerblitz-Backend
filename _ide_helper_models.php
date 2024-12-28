@@ -41,6 +41,8 @@ namespace App\Models{
  * @property-read int|null $pictures_order_count
  * @property-read mixed $price
  * @property-read \App\Models\ProductItem $productItem
+ * @property-read mixed $status
+ * @property-read mixed $status_view
  * @method static \Database\Factories\AccountFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account filter(array $filters, ?\IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList $allowedFilterList = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newModelQuery()
@@ -664,6 +666,8 @@ namespace App\Models{
  * @property-read float $margin_percentage
  * @property-read float $margin_price
  * @property-read float $margin_price_reseller
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $order
+ * @property-read int|null $order_count
  * @property-read \App\Models\Product $product
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemClient> $productItemClients
  * @property-read int|null $product_item_clients_count

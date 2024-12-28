@@ -121,4 +121,9 @@ class ProductItem extends Model
             },
         );
     }
+
+    public function order(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
 }

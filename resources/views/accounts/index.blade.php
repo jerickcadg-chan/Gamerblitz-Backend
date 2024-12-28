@@ -33,6 +33,7 @@
                             <th> Winrate </th>
                             <th> Skin </th>
                             <th> Heroes </th>
+                            <th> Status </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -46,6 +47,7 @@
                             <td>{{ $account->winrate }}</td>
                             <td>{{ $account->skin }}</td>
                             <td>{{ $account->heroes }}</td>
+                            <td>{{ $account->status_view }}</td>
                             <td>
                                 @include('master.action', [
                                     'view_url' => route('account.show', $account),
