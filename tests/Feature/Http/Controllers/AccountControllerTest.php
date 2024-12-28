@@ -374,10 +374,32 @@ class AccountControllerTest extends TestCase
             ->assertSessionHasErrors('discount_amount');
     }
 
+    public function test_store_failed_the_cover_image_should_be_an_array()
+    {
+        $response = $this
+            ->actingAs($this->generateSuperAdminUser())
+            ->post(route('account.store'), [
+                'title' => 'Title Test',
+                'code' => 'ACC-12345',
+                'description' => 'Description Test',
+                'winrate' => 10,
+                'skin' => 10,
+                'heroes' => -1,
+                'price' => 1000,
+                'information' => 'email=mail.test password=password',
+                'discount' => true,
+                'discount_type' => 'percentage',
+                'discount_amount' => 10,
+                'cover_picture' => 'not-array',
+            ]);
+
+        $response->assertSessionHasErrors('cover_picture');
+    }
+
     public function test_store_success(): void
     {
         $admin = $this->generateSuperAdminUser();
-        $mockImage = \Illuminate\Http\UploadedFile::fake()->image('mock-image.jpg');
+        $mockImage = [\Illuminate\Http\UploadedFile::fake()->image('mock-image.jpg')];
         $data = [
             'title' => 'Title Test',
             'code' => 'ACC-12345',
@@ -409,6 +431,7 @@ class AccountControllerTest extends TestCase
         $this->assertSame($account->heroes, $data['heroes'], 'heroes is not the same');
         $this->assertSame(decrypt($account->information), $data['information'], 'information is not the same');
         $this->assertNotNull($account->picture, 'Image is not found');
+        $this->assertNotEmpty($account->pictures, 'Image is not empty');
 
         $response->assertRedirect(route('account.show', $account));
 
@@ -439,7 +462,7 @@ class AccountControllerTest extends TestCase
     public function test_store_with_discount(): void
     {
         $admin = $this->generateSuperAdminUser();
-        $mockImage = \Illuminate\Http\UploadedFile::fake()->image('mock-image.jpg');
+        $mockImage = [\Illuminate\Http\UploadedFile::fake()->image('mock-image.jpg')];
         $data = [
             'title' => 'Title Test',
             'code' => 'ACCUNIQUE-12345',
@@ -525,7 +548,7 @@ class AccountControllerTest extends TestCase
                 'url' => 'old-url',
             ]);
 
-        $coverPicture = \Illuminate\Http\UploadedFile::fake()->image('new-image.jpg');
+        $coverPicture = [\Illuminate\Http\UploadedFile::fake()->image('new-image.jpg')];
 
         $data = [
             'title' => 'New Title',

@@ -19,7 +19,11 @@
         <table class="table table-nospace">
           <tr>
             <th>Gambar kover</th>
-            <td><img src="{{ $account->picture->url }}" alt="Gambar kover" style="width: 200px; height: 200px;"></td>
+            <td>
+              @foreach ($account->pictures as $picture)
+                <img src="{{ $picture->url }}" alt="Gambar kover" style="width: 200px; height: 200px;">
+              @endforeach
+            </td>
           </tr>
           <tr>
             <th>Nama Akun</th>

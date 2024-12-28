@@ -30,7 +30,8 @@ class AccountStoreRequest extends FormRequest
             'heroes' => ['required', 'numeric', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
             'information' => ['required'],
-            'cover_picture' => ['required', 'image'],
+            'cover_picture' => ['required', 'array'],
+            'cover_picture.*' => ['required', 'image', 'max:2048'],
         ];
 
         if ($this->input('discount') === "1" || $this->input('discount') === 1 || $this->input('discount') === true) {

@@ -59,7 +59,7 @@ class AccountControllerTest extends TestCase
                     'discount' => $account->discount,
                     'real_price' => (float) $account->productItem->price,
                     'discount_price' => $account->price,
-                    'cover_image' => $account->picture->url,
+                    'cover_images' => $account->pictures->map(fn ($picture) => $picture->url)->toArray(),
                 ];
             })->toArray();
 
@@ -382,7 +382,7 @@ class AccountControllerTest extends TestCase
             'discount' => $account->discount,
             'real_price' => (float) $account->productItem->price,
             'discount_price' => $account->price,
-            'cover_image' => $account->picture->url,
+            'cover_images' => $account->pictures->map(fn ($picture) => $picture->url)->toArray(),
         ];
         $response->assertStatus(200);
         $this->assertSame($responseData, $response->json('payload'));

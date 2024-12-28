@@ -23,7 +23,15 @@ class ClientTest extends TestCase
     public function testFillable()
     {
         $client = new Client();
-        $this->assertEquals(['name', 'logo', 'description', 'user_token', 'host'], $client->getFillable());
+        $this->assertEquals([
+            'name',
+            'logo',
+            'description',
+            'user_token',
+            'xendit_callback_token',
+            'xendit_token',
+            'host'
+        ], $client->getFillable());
     }
 
     public function testDates()
@@ -45,6 +53,8 @@ class ClientTest extends TestCase
             'logo',
             'description',
             'user_token',
+            'xendit_callback_token',
+            'xendit_token',
             'created_at',
             'updated_at',
         ]);

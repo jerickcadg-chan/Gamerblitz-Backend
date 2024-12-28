@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @mixin IdeHelperPaymentMethod
  */
 class PaymentMethod extends Model
 {
+    /** @use HasFactory<\Database\Factories\PaymentMethodFactory> */
+    use HasFactory;
     use WithPictures;
 
     const QRIS = 'qris';

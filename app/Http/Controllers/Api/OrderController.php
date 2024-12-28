@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Discount;
 use App\Models\Order;
 use App\Models\ProductItem;
-use App\Models\Voucher;
 use App\Models\PaymentMethod;
-use App\Models\DigiTransaction;
 use App\Constants\ProductConstant;
+use App\Constants\ProductItemTypeConstant;
+use App\Http\Middleware\EnsureHostIsValid;
 use App\Services\CustAccountService;
 use App\Transformers\DiscountTransformer;
 use Illuminate\Http\Request;
@@ -17,12 +17,13 @@ use App\Services\OrderService;
 use App\Http\Requests\OrderRequest;
 use App\Mail\SendOrderNotif;
 use App\Models\Balance;
+use App\Models\Client;
 use App\Models\Product;
 use App\Services\BalanceService;
 use App\Transformers\OrderTransformer;
 use App\Transformers\PaymentMethodTransformer;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -42,7 +43,7 @@ class OrderController extends Controller
         $orders = Order::with('user', 'productItem.product')->latest()
             ->where('user_id', $this->userId)
             ->when(request('order_code'), function ($query) {
-                return $query->where('code', 'like', '%'. request('order_code') .'%');
+                return $query->where('code', 'like', '%' . request('order_code') . '%');
             });
 
         return api_status_ok(paginateTransformer($orders, new OrderTransformer));
@@ -105,8 +106,10 @@ class OrderController extends Controller
 
     public function xenditCallback(Request $request, OrderService $orderService)
     {
-        if ($request->header('x-callback-token') && $request->header('x-callback-token') != config('array.xendit.callback_token')) {
-            return api_status_warning('Invalid token !!!');
+        $hCallbackToken = $request->header('x-callback-token');
+        $client = client()?->xendit_callback_token == $hCallbackToken;
+        if (!$client) {
+            return api_status_warning("callback token didn't register yet, or invalid token!!!!");
         }
 
         $code = isset($request->qr_code) ? $request->qr_code['external_id'] : $request->external_id;
@@ -130,15 +133,15 @@ class OrderController extends Controller
         }
     }
 
-    public function bangJeffCallback(Request $request, OrderService $orderService)
+    public function agenCallback(Request $request, OrderService $orderService)
     {
-        if (config('array.enable_log')) {
-            Log::info("BANGJEFF LOG - IP {$request->ip()} - REQUEST ". json_encode($request->all()) . " - HEADERS ". json_encode($request->header()));
-        }
+        // if (config('array.enable_log')) {
+        //     Log::info("BANGJEFF LOG - IP {$request->ip()} - REQUEST ". json_encode($request->all()) . " - HEADERS ". json_encode($request->header()));
+        // }
 
-//        if ($request->ip() != config('array.bangjeff.ip')) {
-//            return api_status_warning('Invalid IP !!!');
-//        }
+        //        if ($request->ip() != config('array.bangjeff.ip')) {
+        //            return api_status_warning('Invalid IP !!!');
+        //        }
 
         $order = Order::where('vexa_invoice', $request->invoice_number)->first();
 
@@ -177,34 +180,40 @@ class OrderController extends Controller
         }
 
         if ($order->cust_email) {
-            // \Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
+            // Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
         }
 
         return api_status_ok($order);
     }
 
 
-    public function setOrderSettlement($order, $orderService)
+    public function setOrderSettlement(Order $order, OrderService $orderService)
     {
         if ($order->payment_status != Order::SETTLEMENT) {
             $orderService->updateStatus($order, Order::SETTLEMENT, Order::INPROCESS);
 
             if ($order->productItem->product->category == ProductConstant::VOUCHER) {
-              $orderService->sendVoucher($order);
+                $orderService->sendVoucher($order);
             } else {
-              if ($order->cust_email) {
-                \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
-              }
+                if ($order->cust_email) {
+                    Mail::to($order->cust_email)->send(new SendOrderNotif($order));
+                }
             }
 
-            $orderService->createVexaOrder($order);
+            if ($order->productItem->type == ProductItemTypeConstant::TOPUP) {
+                $orderService->createMitraGamersOrder($order);
+            }
+
+            if ($order->productItem->type == ProductItemTypeConstant::ACCOUNT) {
+                $orderService->sentAccountCredentialsToUser($order);
+            }
 
             $orderService->sendSettlementNotif($order);
 
-            return \api_status_ok(transformer($order, new OrderTransformer));
+            return api_status_ok(transformer($order, new OrderTransformer));
         }
 
-        return \api_status_ok('Order sudah terbayar');
+        return api_status_ok('Order sudah terbayar');
     }
 
     public function setOrderFailed($order, $orderService)
@@ -212,21 +221,21 @@ class OrderController extends Controller
         $orderService->updateStatus($order, null, Order::CANCELED);
 
         if ($order->cust_email) {
-            \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
+            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
         }
 
-        return \api_status_ok(transformer($order, new OrderTransformer));
+        return api_status_ok(transformer($order, new OrderTransformer));
     }
 
-    public function setOrderExpired($order, $orderService)
+    public function setOrderExpired($order, OrderService $orderService)
     {
         $orderService->updateStatus($order, null, Order::EXPIRED);
 
         if ($order->cust_email) {
-            \Mail::to($order->cust_email)->send(new SendOrderNotif($order));
+            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
         }
 
-        return \api_status_ok(transformer($order, new OrderTransformer));
+        return api_status_ok(transformer($order, new OrderTransformer));
     }
 
     public function checkNickname()
@@ -238,7 +247,7 @@ class OrderController extends Controller
         }
 
         if (in_array($productItem->product->name, ['Free Fire', 'Mobile Legends'])) {
-            $checkNickname = Http::get(config('array.vexa.url').'/check-nickname', [
+            $checkNickname = Http::get(config('array.vexa.url') . '/check-nickname', [
                 'customer_no' => CustAccountService::idExtractor($productItem->product->name, request('cust_account')),
                 'game' => $productItem->product->name
             ]);

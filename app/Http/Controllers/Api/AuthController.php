@@ -42,9 +42,16 @@ class AuthController extends Controller
                 }
             }
 
+            /** @var User $user */
+            $user = $request->user();
+
+            if ($user->client_id == null || $user->client_id != client()->id) {
+                return api_status_warning('User not found', 404);
+            }
+
             return api_status_ok([
-                'token' => $request->user()->createToken('access_token')->plainTextToken,
-                'user' => transformer($request->user(), UserTransformer::class),
+                'token' => $user->createToken('access_token')->plainTextToken,
+                'user' => transformer($user, UserTransformer::class),
             ]);
         } catch (\Exception $exception) {
             return api_status_error($exception);

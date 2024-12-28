@@ -2,12 +2,16 @@
 
 namespace Tests;
 
+use App\Models\Client;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Artisan;
 
 abstract class TestCase extends BaseTestCase
 {
+    use RefreshDatabase;
+
     protected ?User $user;
 
     public function generateCustomerUser(): User
@@ -18,6 +22,11 @@ abstract class TestCase extends BaseTestCase
             ->create();
         $user->assignRole('Customer');
 
+        // EXPERIMENTAL: because this is not the best practice
+        if (Client::count() > 0) {
+            $user->client()->associate(Client::first());
+            $user->save();
+        }
 
         $this->user = $user;
 
@@ -26,13 +35,15 @@ abstract class TestCase extends BaseTestCase
 
     public function generateSuperAdminUser($data = []): User
     {
-        Artisan::call('db:seed', ['--class' => 'RolesTableSeeder']);
-        $user = User::factory()
-            ->create();
-        $user->assignRole('Super Admin');
-        $this->user = $user;
-
-        return $user;
+        try {
+            Artisan::call('db:seed', ['--class' => 'RolesTableSeeder']);
+            $user = User::factory()->create($data);
+            $user->assignRole('Super Admin');
+            $this->user = $user;
+            return $user;
+        } catch (\Exception $e) {
+            $this->fail('Failed to generate super admin user: ' . $e->getMessage());
+        }
     }
 
     public function assertToast(\Illuminate\Testing\TestResponse $response, array $config = []): void
@@ -92,9 +103,9 @@ abstract class TestCase extends BaseTestCase
         $response = [
             'url' => url()->full(),
             'method' => request()->getMethod(),
+            'request' => request()->except(['password']),
             'code' => $code,
             'message' => $message,
-            'request' => request()->except(['password']),
         ];
 
         if ($data) {

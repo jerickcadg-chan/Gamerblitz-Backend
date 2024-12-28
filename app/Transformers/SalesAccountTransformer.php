@@ -47,7 +47,7 @@ class SalesAccountTransformer extends TransformerAbstract
             'discount' => $account->discount,
             'real_price' => (float) $account->productItem->price,
             'discount_price' => $account->price,
-            'cover_image' => $account->picture->url,
+            'cover_images' => $account->pictures->map(fn ($picture) => $picture->url),
         ];
     }
 }

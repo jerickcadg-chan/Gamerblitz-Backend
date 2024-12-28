@@ -72,7 +72,8 @@ class ProductItem extends Model
 
     public function accounts(): HasMany
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany(Account::class)
+            ->where('client_id', client()?->id);
     }
 
     public function marginPrice(): Attribute

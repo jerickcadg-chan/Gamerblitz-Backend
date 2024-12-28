@@ -2,15 +2,15 @@
 
 namespace App\Mail;
 
+use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-use App\Models\Order;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
 
-class SendSettlementNotif extends Mailable
+class OrderAccountSucceed extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -32,9 +32,9 @@ class SendSettlementNotif extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: config('mail.from.address'),
-            to: $this->order->client->user->email,
-            subject: 'Ada Orderan Dibayar Lunas #'.$this->order->code,
+            from: $this->order->client->user->email,
+            to: $this->order->cust_email,
+            subject: "Pembelian akun anda di {$this->order->client->name} berhasil #{$this->order->code}",
         );
     }
 
@@ -44,7 +44,7 @@ class SendSettlementNotif extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.settlement-notif',
+            view: 'mail.order-account-succeed',
         );
     }
 
