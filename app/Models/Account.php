@@ -118,8 +118,8 @@ class Account extends Model implements IsFilterable
                     Filter::field('price', [FilterType::LESS_THAN_EQUAL_TO]),
                 )
             ),
-            Filter::field('heroes', [FilterType::EQUAL]),
-            Filter::field('skin', [FilterType::EQUAL]),
+            Filter::field('heroes', [FilterType::EQUAL, FilterType::GREATER_THAN_EQUAL_TO]),
+            Filter::field('skin', [FilterType::EQUAL, FilterType::GREATER_THAN_EQUAL_TO]),
             Filter::field('winrate', [FilterType::GREATER_THAN_EQUAL_TO]),
         );
     }

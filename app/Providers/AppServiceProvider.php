@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Mail\SentVerificationLink;
 use App\Models\FlashSaleProductItem;
+use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +44,23 @@ class AppServiceProvider extends ServiceProvider
             });
 
             return $div;
+        });
+
+
+        VerifyEmail::toMailUsing(function (User $notifiable) {
+            $url = URL::temporarySignedRoute(
+                name: 'verification',
+                expiration: now()->addMinutes(config('auth.verification.expire')),
+                parameters: [
+                    'id' => $notifiable->getKey(),
+                    'mailhash' => sha1($notifiable->getEmailForVerification()),
+                ]
+            );
+
+            return (new SentVerificationLink(
+                user: $notifiable,
+                url: $url,
+            ));
         });
     }
 }

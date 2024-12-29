@@ -14,28 +14,38 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+
+Route::get('/email/verify/{id}/mail/{mailhash}', function ($id, $mailhash) {
+    $user = \App\Models\User::query()->findOrFail($id);
+    if (!hash_equals(sha1($user->getEmailForVerification()), (string) $mailhash)) {
+        return abort(401);
+    }
+    if (!$user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+
+        event(new Verified($user));
+    }
+
+    return redirect(config('array.store.url'));
+})->middleware('signed')->name('verification');
+
 
 Auth::routes([
     'register' => false,
     'reset' => false,
-    'verify' => false,
+    'verify' => true,
 ]);
 
+
 Route::get('/email/test', function () {
-    return new \App\Mail\SendSettlementNotif(\App\Models\Order::query()->has('client')->first());
+    return new \App\Mail\SentVerificationLink(
+        user: \App\Models\User::query()->has('client')->first(),
+        url: 'https://client-admin.test/email/verify/78/f99f902b40e9db817eb01e2bbb8bff6c697d4116?expires=1735435546&signature=1db807130bef166003562e0affa1bc29d88b8ed3aca144fa049b837583ed1659'
+    );
 });
 
 Route::middleware(['web', 'auth', 'not_customer'])->group(function () {

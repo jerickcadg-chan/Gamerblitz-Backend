@@ -49,7 +49,7 @@
                 </table>
             </div>
             <p>Email dibuat secara otomatis</p>
-            <a href="https://mitragamers.com" target="_blank">MitraGamers.com</a>
+            <a href="{{$order->client->host}}" target="_blank">{{$order->client->host}}</a>
         </center>
     </body>
 </html>

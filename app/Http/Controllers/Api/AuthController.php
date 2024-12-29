@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Mail\SentVerificationLink;
 use App\Models\Balance;
 use App\Models\User;
 use App\Transformers\UserTransformer;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -49,6 +51,10 @@ class AuthController extends Controller
                 return api_status_warning('User not found', 404);
             }
 
+            if ($user->email_verified_at == null) {
+                return api_status_warning(trans('auth.unverified'), 400);
+            }
+
             return api_status_ok([
                 'token' => $user->createToken('access_token')->plainTextToken,
                 'user' => transformer($user, UserTransformer::class),
@@ -78,14 +84,20 @@ class AuthController extends Controller
             $request->merge([
                 'password' => bcrypt($request->password),
             ]);
+
+            /** @var User $user */
             $user = User::create($request->all());
 
             $role = Role::where('name', 'Customer')->first();
             $user->assignRole($role);
+            $user->client()->associate(client());
+            $user->save();
 
             $user->balance()->create([
                 'amount' => 0,
             ]);
+
+            $user->sendEmailVerificationNotification();
 
             DB::commit();
 
