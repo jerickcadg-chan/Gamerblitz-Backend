@@ -108,4 +108,8 @@ return [
 
     'password_timeout' => 10800,
 
+    'verification' => [
+        'expire' => env('VERIFICATION_EXPIRE', 60),
+    ],
+
 ];

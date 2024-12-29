@@ -50,7 +50,7 @@ Route::get('order/{order}', [OrderController::class, 'show']);
 Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('callback.xendit');
 Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->name('callback.bangjeff');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::get('balance', [AuthController::class, 'myBalance']);
     Route::post('logout', [AuthController::class, 'logout']);

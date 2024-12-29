@@ -88,8 +88,7 @@
                 <p><a href="{{ $order->payment_url_full }}" class="button" target="_blank">Bayar Sekarang</a></p>
             @endif
             <p>Email dibuat secara otomatis</p>
-            <p>Apabila kamu membutuhkan bantuan silahkan <a href="https://mitragamers.com/contact" target="_blank">Hubungi Kami</a> </p>
-            <a href="https://mitragamers.com" target="_blank">MitraGamers.com</a>
+            <a href="{{$order->client->host}}" target="_blank">{{$order->client->host}}</a>
         </center>
     </body>
 </html>
