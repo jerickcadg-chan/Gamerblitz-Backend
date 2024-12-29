@@ -36,6 +36,7 @@ class FlashSaleControllerTest extends TestCase
                 'items' => $data->items->map(function (FlashSaleProductItem $item) {
                     return [
                         'id' => $item->id,
+                        'slug' => $item->productItem->product->slug,
                         'flash_price' => $item->price,
                         'stock' => $item->stock,
                         'real_price' => $item->productItem->real_price,
