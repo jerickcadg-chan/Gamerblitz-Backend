@@ -85,7 +85,9 @@ class OrderController extends Controller
 
     public function getPaymentMethods()
     {
-        return api_status_ok(transformer(PaymentMethod::orderBy('created_at', 'asc')->get(), new PaymentMethodTransformer));
+        $paymentMethod = PaymentMethod::orderBy('created_at', 'asc')->get();
+
+        return api_status_ok(transformer($paymentMethod, new PaymentMethodTransformer));
     }
 
     public function getDiscount(Request $request)

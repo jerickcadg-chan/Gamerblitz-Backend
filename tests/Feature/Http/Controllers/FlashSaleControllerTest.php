@@ -50,7 +50,7 @@ class FlashSaleControllerTest extends TestCase
                 'end_date' => now()->addDays(1),
             ]);
 
-        $response->assertSessionHasErrors('start_date');
+        $response->assertRedirect(302)->assertSessionHasErrors('start_date');
     }
 
     public function test_failed_because_end_date_required()
