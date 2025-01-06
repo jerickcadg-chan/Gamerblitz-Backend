@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SliderController;
+use App\Models\Client;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,12 @@ Route::post('register', [AuthController::class, 'register']);
 Route::get('slider', [SliderController::class, 'index']);
 
 Route::get('check-nickname', [OrderController::class, 'checkNickname']);
+
+Route::get('/clients/all', function() {
+    $clients = Client::select('id', 'host')->get();
+
+    return api_status_ok($clients);
+})->middleware('basic_auth');
 
 Route::get('category', CategoryController::class);
 Route::get('product/account', [AccountController::class, 'index'])->name('product.account');

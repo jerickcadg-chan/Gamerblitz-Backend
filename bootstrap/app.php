@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'not_customer' => \App\Http\Middleware\EnsureNotCustomer::class,
             'only_verified' => \App\Http\Middleware\OnlyVerifiedUserCan::class,
+            'basic_auth' => \App\Http\Middleware\BasicAuth::class,
         ]);
 
         $middleware->appendToGroup('api', EnsureHostIsValid::class);

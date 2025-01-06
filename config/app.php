@@ -192,4 +192,9 @@ return [
 
     ],
 
+
+    'basic_auth' => [
+        'username' => env('BASIC_AUTH_USERNAME', 'mitra-gamers'),
+        'password' => env('BASIC_AUTH_PASSWORD', 'mitragamers123'),
+    ],
 ];

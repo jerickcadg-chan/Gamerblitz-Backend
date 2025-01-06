@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Client;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureHostIsValid
+class BasicAuth
 {
     /**
      * Handle an incoming request.
@@ -16,16 +16,14 @@ class EnsureHostIsValid
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->is('api/clients/all')) {
-            return $next($request);
+        $authToken = $request->header('Authorization');
+        if (!$authToken) {
+            return api_status_warning('Unauthorized', 401);
         }
-        $host = $request->getHost();
-        $client = Client::whereHost($host)->first();
-        if (!$client) {
-            return api_status_warning('Host is invalid', 401);
+        $decoded = base64_decode(str_replace('Basic ', '', $authToken));
+        if ($decoded !== Arr::join(config('app.basic_auth'),':')) {
+            return api_status_warning('Unauthorized', 401);
         }
-
-        $request->merge(['client' => $client]);
 
         return $next($request);
     }
