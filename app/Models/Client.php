@@ -59,4 +59,24 @@ class Client extends Model
 
         return $this->hasOne(ClientTheme::class)->withDefault($defaultColumn);
     }
+
+    public function clientAbout(): HasOne
+    {
+        $attributes = (new ClientAbout())->getFillable();
+        $defaultColumn = [];
+        foreach ($attributes as $attribute) {
+            $defaultColumn[$attribute] = null;
+            if ($attribute === 'app_logo_url') {
+                $defaultColumn[$attribute] = $this->logo;
+            }
+            if ($attribute === 'app_name') {
+                $defaultColumn[$attribute] = $this->name;
+            }
+            if ($attribute === 'app_description') {
+                $defaultColumn[$attribute] = $this->description;
+            }
+        }
+
+        return $this->hasOne(ClientAbout::class)->withDefault($defaultColumn);
+    }
 }

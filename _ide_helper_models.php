@@ -141,8 +141,11 @@ namespace App\Models{
  * @property string|null $description
  * @property string $user_token
  * @property string|null $xendit_callback_token
+ * @property string|null $xendit_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ClientAbout $clientAbout
+ * @property-read \App\Models\ClientTheme $clientTheme
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductClient> $productClients
  * @property-read int|null $product_clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemClient> $productItemClients
@@ -163,10 +166,121 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUserToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereXenditCallbackToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereXenditToken($value)
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
 	class IdeHelperClient {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $client_id
+ * @property string|null $app_name
+ * @property string|null $app_logo_url
+ * @property string|null $app_description
+ * @property string|null $contact_email
+ * @property string|null $contact_whatsapp
+ * @property string|null $contact_telegram
+ * @property string|null $social_youtube
+ * @property string|null $social_facebook
+ * @property string|null $social_instagram
+ * @property string|null $social_tiktok
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereAppDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereAppLogoUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereAppName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereContactEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereContactTelegram($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereContactWhatsapp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereSocialFacebook($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereSocialInstagram($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereSocialTiktok($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereSocialYoutube($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperClientAbout {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $client_id
+ * @property string|null $mg_bg
+ * @property string|null $mg_fg
+ * @property string|null $mg_fg_alt
+ * @property string|null $mg_fg_error
+ * @property string|null $mg_accent_1
+ * @property string|null $mg_accent_2
+ * @property string|null $mg_accent_3
+ * @property string|null $mg_accent_4
+ * @property string|null $mg_accent_5
+ * @property string|null $mg_accent_6
+ * @property string|null $mg_border
+ * @property string|null $mg_scrollbar
+ * @property string|null $mg_status_waiting
+ * @property string|null $fg_btn
+ * @property string|null $fg_btn_secondary
+ * @property string|null $fg_btn_outline
+ * @property string|null $mg_bg_1
+ * @property string|null $mg_bg_2
+ * @property string|null $mg_bg_3
+ * @property string|null $mg_bg_4
+ * @property string|null $mg_bg_5
+ * @property string|null $mg_bg_accent_1
+ * @property string|null $bg_btn
+ * @property string|null $bg_btn_secondary
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereBgBtn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereBgBtnSecondary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereFgBtn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereFgBtnOutline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereFgBtnSecondary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent3($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent4($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent5($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent6($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg3($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg4($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg5($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBgAccent1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBorder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgFg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgFgAlt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgFgError($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgScrollbar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgStatusWaiting($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperClientTheme {}
 }
 
 namespace App\Models{
@@ -479,6 +593,7 @@ namespace App\Models{
  * @property string $admin_fee
  * @property string $admin_type
  * @property string|null $vendor
+ * @property string|null $category
  * @property string $slug
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -496,6 +611,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereAdminFee($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereAdminType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereCategory($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereName($value)

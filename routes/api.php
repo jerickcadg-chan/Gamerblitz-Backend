@@ -36,10 +36,9 @@ Route::get('slider', [SliderController::class, 'index']);
 Route::get('check-nickname', [OrderController::class, 'checkNickname']);
 
 Route::get('/clients/all', function() {
-    $clients = Client::with('clientTheme')
-        ->select('id', 'host')->get();
+    $clients = Client::get();
 
-    return api_status_ok($clients);
+    return api_status_ok(transformer($clients, \App\Transformers\ClientConfigurationTransformer::class));
 })->middleware('basic_auth');
 
 Route::get('category', CategoryController::class);
