@@ -64,7 +64,7 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::put('clients/configuration', function(Request $request) {
         ClientTheme::query()
             ->where('client_id', client()->id)
-            ->updateOrInsert($request->merge(['client_id' => client()->id])->except('client'));
+            ->updateOrInsert(['client_id' => client()->id], $request->merge(['client_id' => client()->id])->except('client'));
 
         return api_status_ok([], 'Client configuration updated');
     });
