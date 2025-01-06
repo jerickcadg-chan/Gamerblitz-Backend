@@ -47,7 +47,7 @@ class AuthController extends Controller
             /** @var User $user */
             $user = $request->user();
 
-            if ($user->client_id == null || $user->client_id != client()->id) {
+            if ($user?->client_id == null || $user?->client_id != client()?->id) {
                 return api_status_warning('User not found', 404);
             }
 

@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SliderController;
 use App\Models\Client;
+use App\Models\ClientTheme;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +36,8 @@ Route::get('slider', [SliderController::class, 'index']);
 Route::get('check-nickname', [OrderController::class, 'checkNickname']);
 
 Route::get('/clients/all', function() {
-    $clients = Client::select('id', 'host')->get();
+    $clients = Client::with('clientTheme')
+        ->select('id', 'host')->get();
 
     return api_status_ok($clients);
 })->middleware('basic_auth');
@@ -58,6 +61,14 @@ Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('c
 Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->name('callback.bangjeff');
 
 Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
+    Route::put('clients/configuration', function(Request $request) {
+        ClientTheme::query()
+            ->where('client_id', client()->id)
+            ->updateOrInsert($request->merge(['client_id' => client()->id])->except('client'));
+
+        return api_status_ok([], 'Client configuration updated');
+    });
+
     Route::get('me', [AuthController::class, 'me']);
     Route::get('balance', [AuthController::class, 'myBalance']);
     Route::post('logout', [AuthController::class, 'logout']);

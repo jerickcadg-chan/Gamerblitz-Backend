@@ -48,4 +48,15 @@ class Client extends Model
                 $query->where('name', 'Super Admin');
             });
     }
+
+    public function clientTheme(): HasOne
+    {
+        $attributes = (new ClientTheme())->getFillable();
+        $defaultColumn = [];
+        foreach ($attributes as $attribute) {
+            $defaultColumn[$attribute] = null;
+        }
+
+        return $this->hasOne(ClientTheme::class)->withDefault($defaultColumn);
+    }
 }
