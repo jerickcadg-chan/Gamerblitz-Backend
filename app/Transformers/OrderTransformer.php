@@ -35,7 +35,7 @@ class OrderTransformer extends TransformerAbstract
             'created_at_simple' => parse_date($order->created_at),
             'cust_email' => $order->cust_email,
             'cust_phone_number' => $order->cust_phone_number,
-            'cust_account' => $order->productItem->product->slug !== 'mobile-legends-joki-rank' ? $order->cust_account_format : '',
+            'cust_account' => $order->productItem->product->slug !== 'mobile-legends-joki-rank' ? json_decode($order->cust_account ): '',
             'payment_method' => $order->payment_method,
             'payment_status' => $order->payment_status_translated,
             'order_status' => $order->order_status_translated,
