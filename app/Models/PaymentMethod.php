@@ -19,7 +19,7 @@ class PaymentMethod extends Model
     const SALDO = 'saldo';
 
     protected $fillable = [
-        'name', 'admin_fee', 'admin_type', 'slug', 'vendor'
+        'name', 'admin_fee', 'admin_type', 'slug', 'vendor', 'category'
     ];
 
     public function getDisplayNameAttribute()

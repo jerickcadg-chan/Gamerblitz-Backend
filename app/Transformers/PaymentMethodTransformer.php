@@ -16,6 +16,7 @@ class PaymentMethodTransformer extends TransformerAbstract
     {
         return [
             'id' => $paymentMethod->id,
+            'category' => $paymentMethod->category,
             'name' => $paymentMethod->name,
             'display_name' => $paymentMethod->display_name,
             'admin_fee' => $paymentMethod->admin_fee_translated,
