@@ -48,6 +48,8 @@ class SalesAccountTransformer extends TransformerAbstract
             'real_price' => (float) $account->productItem->price,
             'discount_price' => $account->price,
             'cover_images' => $account->pictures->map(fn ($picture) => $picture->url),
+            'created_at' => $account->created_at,
+            'updated_at' => $account->updated_at,
         ];
     }
 }
