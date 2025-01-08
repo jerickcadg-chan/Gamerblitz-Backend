@@ -20,7 +20,8 @@ class Picture extends Model
         'path',
         'file_name',
         'caption',
-        'is_local'
+        'is_local',
+        'type',
     ];
 
     public function pictureable()

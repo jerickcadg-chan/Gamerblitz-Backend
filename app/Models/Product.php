@@ -76,6 +76,16 @@ class Product extends Model
         return Attribute::make(
             get: fn (): string => $this->productClient
                 ->first()
+                ?->cover
+                ?->url ?? $this->default_picture_url ?? asset('images/no-image.png')
+        );
+    }
+
+    public function productPicture(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->productClient
+                ->first()
                 ?->picture
                 ?->url ?? $this->default_picture_url ?? asset('images/no-image.png')
         );

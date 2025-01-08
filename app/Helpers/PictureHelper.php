@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 
 if (!function_exists('insert_picture')) {
-    function insert_picture(UploadedFile $picture, $model, $caption = null, $base64 = false)
+    function insert_picture(UploadedFile $picture, $model, $caption = null, $base64 = false, $type = null)
     {
         $service = new \App\Services\PictureService();
         $folder = strtolower(class_basename($model));
@@ -32,7 +32,7 @@ if (!function_exists('insert_picture')) {
             return $picture;
         }
 
-        return $service->upload($picture, $model, $location, $caption);
+        return $service->upload($picture, $model, $location, $caption, $type);
     }
 }
 

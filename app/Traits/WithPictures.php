@@ -13,12 +13,12 @@ trait WithPictures
 
     public function picture(): MorphOne
     {
-        return $this->morphOne(Picture::class, 'pictureable')->latest()->withDefault();
+        return $this->morphOne(Picture::class, 'pictureable')->latest()->where('type', null)->withDefault();
     }
 
     public function pictureExist()
     {
-        return $this->morphMany(Picture::class, 'pictureable')->count() > 0;
+        return $this->morphMany(Picture::class, 'pictureable')->where('type', null)->count() > 0;
     }
 
     public function pictures(): MorphMany

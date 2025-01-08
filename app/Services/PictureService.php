@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Storage;
 
 class PictureService extends Controller
 {
-    public function upload(UploadedFile $picture, $model, $location, $caption)
+    public function upload(UploadedFile $picture, $model, $location, $caption, $type)
     {
+        dump($type);
         $imageName = substr(uniqid(), -9).'-'.$picture->getClientOriginalName();
 
         Storage::disk('s3')->putFileAs($location, $picture, $imageName);
@@ -19,6 +20,7 @@ class PictureService extends Controller
             'path' => $location,
             'file_name' => $imageName,
             'caption' => $caption,
+            'type' => $type,
         ]);
 
         return $modelPicture;

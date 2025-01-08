@@ -75,7 +75,12 @@
                         @include('alerts.feedback', ['field' => 'how_to_order'])
                     </div>
                     <div class="form-group">
-                        <label for="picture" class="required">Cover</label>
+                        <label for="cover" class="required">Cover</label>
+                        <input type="file" name="cover" class="form-control" accept="image/*" value="{{ old('cover') }}">
+                        @include('alerts.feedback', ['field' => 'cover'])
+                    </div>
+                    <div class="form-group">
+                        <label for="picture" class="required">Gambar</label>
                         <input type="file" name="picture" class="form-control" accept="image/*" value="{{ old('picture') }}">
                         @include('alerts.feedback', ['field' => 'picture'])
                     </div>

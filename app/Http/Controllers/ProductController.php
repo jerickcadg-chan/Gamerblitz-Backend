@@ -67,6 +67,13 @@ class ProductController extends Controller
                 'client_id' => client()->id,
             ]);
 
+        if ($request->cover) {
+            $productClient = $product->productClient
+                ->firstWhere('client_id', client()->id);
+
+            insert_picture($request->cover, $productClient);
+        }
+
         if ($request->picture) {
             $productClient = $product->productClient
                 ->firstWhere('client_id', client()->id);
@@ -96,6 +103,25 @@ class ProductController extends Controller
             ->updateOrCreate([
                 'client_id' => client()->id,
             ]);
+
+        if ($request->cover) {
+            $productClient = $product->productClient
+                ->firstWhere('client_id', client()->id);
+            if ($productClient->cover) {
+                delete_picture($productClient->cover);
+                insert_picture(
+                    picture: $request->cover,
+                    model: $productClient,
+                    type: 'cover'
+                );
+            } else {
+                insert_picture(
+                    picture: $request->cover,
+                    model: $productClient,
+                    type: 'cover',
+                );
+            }
+        }
 
         if ($request->picture) {
             $productClient = $product->productClient

@@ -691,6 +691,7 @@ namespace App\Models{
  * @property-read string $product_cover
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItem> $productItems
  * @property-read int|null $product_items_count
+ * @property-read string $product_picture
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product active()
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
@@ -732,6 +733,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Client $client
+ * @property-read \App\Models\Picture|null $cover
  * @property-read \App\Models\Picture $picture
  * @property-read \App\Models\Picture $picture_order
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures
