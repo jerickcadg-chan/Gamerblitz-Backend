@@ -11,7 +11,6 @@ class PictureService extends Controller
 {
     public function upload(UploadedFile $picture, $model, $location, $caption, $type)
     {
-        dump($type);
         $imageName = substr(uniqid(), -9).'-'.$picture->getClientOriginalName();
 
         Storage::disk('s3')->putFileAs($location, $picture, $imageName);
