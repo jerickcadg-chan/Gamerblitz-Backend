@@ -13,7 +13,6 @@ class ClientTheme extends Model
         'mg_bg',
         'mg_fg',
         'mg_fg_alt',
-        'mg_fg_error',
         'mg_accent_1',
         'mg_accent_2',
         'mg_accent_3',
@@ -22,7 +21,6 @@ class ClientTheme extends Model
         'mg_accent_6',
         'mg_border',
         'mg_scrollbar',
-        'mg_status_waiting',
         'fg_btn',
         'fg_btn_secondary',
         'fg_btn_outline',
@@ -34,5 +32,8 @@ class ClientTheme extends Model
         'mg_bg_accent_1',
         'bg_btn',
         'bg_btn_secondary',
+        'mg-accent-success',
+        'mg-accent-error',
+        'mg-accent-warning',
     ];
 }
