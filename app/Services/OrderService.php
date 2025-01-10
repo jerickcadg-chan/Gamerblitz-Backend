@@ -420,4 +420,143 @@ class OrderService
 
         Mail::to($order->cust_email)->queue(new OrderAccountSucceed($order));
     }
+
+    public function calculateJokiMLPrice($startRankLabel, $startGrade, $startStars, $endRankLabel, $endGrade, $endStars): array
+    {
+        $rankOptions = $this->rankOptions();
+
+        $price = 0;
+        $capital = 0;
+
+        $startRank = collect($rankOptions)->firstWhere('label', $startRankLabel);
+        $endRank = collect($rankOptions)->firstWhere('label', $endRankLabel);
+
+        if (!$startRank || !$endRank) {
+            throw new \Exception("Invalid rank label provided.");
+        }
+
+        $position = 1;
+
+        for ($i = $startRank['index']; $i <= $endRank['index']; $i++) {
+            $rank = $rankOptions[$i - 1];
+
+            if (!empty($rank['grades'])) {
+                $firstLoop = $i == $startRank['index'] ? $startGrade : $rank['grades'][0];
+                $endGradeLoop = $endRank['index'] > $i ? 1 : $endGrade;
+
+                for ($grade = $firstLoop; $grade >= $endGradeLoop; $grade--) {
+                    $endLoop = ($grade == $endGrade && $endRank['index'] == $i) ? $endStars : $rank['maxStars'];
+                    $currentStar = $position == 1 ? $startStars : 1;
+
+                    for ($star = $currentStar; $star <= $endLoop; $star++) {
+                        if ($position > 1 && $star > 0) {
+                            $price += $rank['price'];
+                            $capital += $rank['capital'];
+                        }
+                        $position++;
+                    }
+                }
+            } else {
+                $currentStar = $position == 1 ? $startStars : $rank['minStars'];
+                $maxLoop = $endRank['index'] == $i ? $endStars : $rank['maxStars'];
+
+                for ($star = $currentStar; $star <= $maxLoop; $star++) {
+                    if ($position > 1 && $star > 0) {
+                        $price += $rank['price'];
+                        $capital += $rank['capital'];
+                    }
+                    $position++;
+                }
+            }
+        }
+
+        return [
+            'price' => $price,
+            'capital' => $capital
+        ];
+    }
+
+    private function rankOptions(): array
+    {
+        $items = ProductItem::where('product_id', 15)->orderBy('price')->get()->toArray();
+
+        return [
+            [
+                'index' => 1,
+                'label' => 'Master',
+                'price' => $items[0]['total_price'],
+                'capital' => $items[0]['capital'],
+                'product_item_id' => $items[0]['id'],
+                'grades' => [4, 3, 2, 1],
+                'minStars' => 0,
+                'maxStars' => 4,
+            ],
+            [
+                'index' => 2,
+                'label' => 'Grand Master',
+                'price' => $items[1]['total_price'],
+                'capital' => $items[1]['capital'],
+                'product_item_id' => $items[1]['id'],
+                'grades' => [5, 4, 3, 2, 1],
+                'minStars' => 0,
+                'maxStars' => 5,
+            ],
+            [
+                'index' => 3,
+                'label' => 'Epic',
+                'price' => $items[2]['total_price'],
+                'capital' => $items[2]['capital'],
+                'product_item_id' => $items[2]['id'],
+                'grades' => [5, 4, 3, 2, 1],
+                'minStars' => 0,
+                'maxStars' => 5,
+            ],
+            [
+                'index' => 4,
+                'label' => 'Legend',
+                'price' => $items[3]['total_price'],
+                'capital' => $items[3]['capital'],
+                'product_item_id' => $items[3]['id'],
+                'grades' => [5, 4, 3, 2, 1],
+                'minStars' => 0,
+                'maxStars' => 5,
+            ],
+            [
+                'index' => 5,
+                'label' => 'Mythic',
+                'price' => $items[4]['total_price'],
+                'capital' => $items[4]['capital'],
+                'product_item_id' => $items[4]['id'],
+                'minStars' => 0,
+                'maxStars' => 24,
+            ],
+            [
+                'index' => 6,
+                'label' => 'Mythical Honor',
+                'price' => $items[5]['total_price'],
+                'capital' => $items[5]['capital'],
+                'product_item_id' => $items[5]['id'],
+                'minStars' => 25,
+                'maxStars' => 49,
+            ],
+            [
+                'index' => 7,
+                'label' => 'Mythical Glory',
+                'price' => $items[6]['total_price'],
+                'capital' => $items[6]['capital'],
+                'product_item_id' => $items[6]['id'],
+                'minStars' => 50,
+                'maxStars' => 99,
+            ],
+            [
+                'index' => 8,
+                'label' => 'Mythical Immortal',
+                'price' => $items[7]['total_price'],
+                'capital' => $items[7]['capital'],
+                'product_item_id' => $items[7]['id'],
+                'minStars' => 100,
+                'maxStars' => 5000,
+            ],
+        ];
+    }
 }

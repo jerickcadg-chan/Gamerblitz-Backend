@@ -245,7 +245,7 @@ class OrderController extends Controller
         $productItem = ProductItem::find(request('product_item_id'));
 
         if (!$productItem) {
-            return "product not found";
+            return api_status_warning('Product item not found');
         }
 
         if (in_array($productItem->product->name, ['Free Fire', 'Mobile Legends'])) {
