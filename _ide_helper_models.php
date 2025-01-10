@@ -11,7 +11,7 @@
  */
 
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -68,10 +68,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperAccount {}
+	class IdeHelperAccount
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -95,10 +97,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperBalance {}
+	class IdeHelperBalance
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -127,10 +131,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperBalanceHistory {}
+	class IdeHelperBalanceHistory
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -170,10 +176,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperClient {}
+	class IdeHelperClient
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -211,10 +219,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperClientAbout {}
+	class IdeHelperClientAbout
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -223,7 +233,6 @@ namespace App\Models{
  * @property string|null $mg_bg
  * @property string|null $mg_fg
  * @property string|null $mg_fg_alt
- * @property string|null $mg_fg_error
  * @property string|null $mg_accent_1
  * @property string|null $mg_accent_2
  * @property string|null $mg_accent_3
@@ -232,7 +241,6 @@ namespace App\Models{
  * @property string|null $mg_accent_6
  * @property string|null $mg_border
  * @property string|null $mg_scrollbar
- * @property string|null $mg_status_waiting
  * @property string|null $fg_btn
  * @property string|null $fg_btn_secondary
  * @property string|null $fg_btn_outline
@@ -244,6 +252,9 @@ namespace App\Models{
  * @property string|null $mg_bg_accent_1
  * @property string|null $bg_btn
  * @property string|null $bg_btn_secondary
+ * @property string|null $mg_accent_success
+ * @property string|null $mg_accent_error
+ * @property string|null $mg_accent_warning
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme newModelQuery()
@@ -280,10 +291,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperClientTheme {}
+	class IdeHelperClientTheme
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -321,10 +334,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperDeposit {}
+	class IdeHelperDeposit
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -373,10 +388,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperDiscount {}
+	class IdeHelperDiscount
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -400,10 +417,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperDiscountProduct {}
+	class IdeHelperDiscountProduct
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -434,10 +453,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperFlashSale {}
+	class IdeHelperFlashSale
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -464,10 +485,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperFlashSaleProductItem {}
+	class IdeHelperFlashSaleProductItem
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -553,10 +576,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperOrder {}
+	class IdeHelperOrder
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -581,10 +606,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperOrderHistory {}
+	class IdeHelperOrderHistory
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -621,10 +648,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperPaymentMethod {}
+	class IdeHelperPaymentMethod
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -655,10 +684,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperPicture {}
+	class IdeHelperPicture
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -719,10 +750,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperProduct {}
+	class IdeHelperProduct
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -754,10 +787,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperProductClient {}
+	class IdeHelperProductClient
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -813,10 +848,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperProductItem {}
+	class IdeHelperProductItem
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -843,10 +880,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperProductItemClient {}
+	class IdeHelperProductItemClient
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -880,10 +919,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperSlider {}
+	class IdeHelperSlider
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -933,10 +974,12 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperUser {}
+	class IdeHelperUser
+{
+}
 }
 
-namespace App\Models{
+namespace App\Models {
 /**
  * 
  *
@@ -972,6 +1015,8 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperVoucher {}
+	class IdeHelperVoucher
+{
+}
 }
 

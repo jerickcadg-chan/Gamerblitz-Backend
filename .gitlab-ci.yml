@@ -8,6 +8,9 @@ building:
     - composer install
     - php artisan migrate
     - php artisan optimize
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
 testing:
   stage: test
   script:
