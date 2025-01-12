@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DepositController;
 use App\Http\Controllers\Api\FlashSaleController;
+use App\Http\Controllers\Api\ForgotPassword;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SliderController;
@@ -30,6 +31,8 @@ Route::fallback(function () {
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
+Route::post('forgot-password', [ForgotPassword::class, 'forgot']);
+Route::post('reset-password', [ForgotPassword::class, 'reset']);
 
 Route::get('slider', [SliderController::class, 'index']);
 

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Mail\SentVerificationLink;
 use App\Models\FlashSaleProductItem;
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -33,11 +34,11 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
         Blade::directive('loadProductFlashSaleItem', function ($productFlashSaleItems) {
             $div = '';
-            \App\Models\ProductItem::with('product')->chunk(200, function($product_item) use (&$div) {
+            \App\Models\ProductItem::with('product')->chunk(200, function ($product_item) use (&$div) {
                 foreach ($product_item as $item) {
                     $div .= '<div class="item">';
-                    $div .= '<input type="checkbox" name="product_item_ids[]" value="'.$item->id.'" class="my-2" '.(is_array(old('product_item_id')) && in_array($item->id, old('product_item_ids')) ? ' checked' : '').'>';
-                    $div .= '<span> '.$item?->product?->name.' - '.$item?->name.'</span>';
+                    $div .= '<input type="checkbox" name="product_item_ids[]" value="' . $item->id . '" class="my-2" ' . (is_array(old('product_item_id')) && in_array($item->id, old('product_item_ids')) ? ' checked' : '') . '>';
+                    $div .= '<span> ' . $item?->product?->name . ' - ' . $item?->name . '</span>';
                     $div .= '<br>';
                     $div .= '</div>';
                 }
@@ -61,6 +62,13 @@ class AppServiceProvider extends ServiceProvider
                 user: $notifiable,
                 url: $url,
             ));
+        });
+
+
+        ResetPassword::createUrlUsing(function (User $user, string $token) {
+            $resetUrl = env('RESET_PASSWORD_URL', 'https://example.com/reset-password');
+
+            return $resetUrl.'?token='.$token.'&email='.$user->email;
         });
     }
 }
