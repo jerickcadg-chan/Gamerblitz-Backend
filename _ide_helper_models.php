@@ -11,7 +11,7 @@
  */
 
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -68,12 +68,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperAccount
-{
-}
+	class IdeHelperAccount {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -97,12 +95,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperBalance
-{
-}
+	class IdeHelperBalance {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -131,12 +127,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperBalanceHistory
-{
-}
+	class IdeHelperBalanceHistory {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -176,12 +170,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperClient
-{
-}
+	class IdeHelperClient {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -219,12 +211,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperClientAbout
-{
-}
+	class IdeHelperClientAbout {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -252,11 +242,11 @@ namespace App\Models {
  * @property string|null $mg_bg_accent_1
  * @property string|null $bg_btn
  * @property string|null $bg_btn_secondary
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $mg_accent_success
  * @property string|null $mg_accent_error
  * @property string|null $mg_accent_warning
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme query()
@@ -274,6 +264,9 @@ namespace App\Models {
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent4($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent5($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccent6($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccentError($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccentSuccess($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgAccentWarning($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg1($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBg2($value)
@@ -284,19 +277,15 @@ namespace App\Models {
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgBorder($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgFg($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgFgAlt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgFgError($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgScrollbar($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereMgStatusWaiting($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientTheme whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperClientTheme
-{
-}
+	class IdeHelperClientTheme {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -334,12 +323,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperDeposit
-{
-}
+	class IdeHelperDeposit {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -388,12 +375,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperDiscount
-{
-}
+	class IdeHelperDiscount {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -417,12 +402,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperDiscountProduct
-{
-}
+	class IdeHelperDiscountProduct {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -453,12 +436,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperFlashSale
-{
-}
+	class IdeHelperFlashSale {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -485,12 +466,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperFlashSaleProductItem
-{
-}
+	class IdeHelperFlashSaleProductItem {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -576,12 +555,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperOrder
-{
-}
+	class IdeHelperOrder {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -606,12 +583,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperOrderHistory
-{
-}
+	class IdeHelperOrderHistory {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -648,12 +623,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperPaymentMethod
-{
-}
+	class IdeHelperPaymentMethod {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -684,12 +657,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperPicture
-{
-}
+	class IdeHelperPicture {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -750,12 +721,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperProduct
-{
-}
+	class IdeHelperProduct {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -787,12 +756,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperProductClient
-{
-}
+	class IdeHelperProductClient {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -848,12 +815,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperProductItem
-{
-}
+	class IdeHelperProductItem {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -880,12 +845,38 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperProductItemClient
-{
-}
+	class IdeHelperProductItemClient {}
 }
 
-namespace App\Models {
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string|null $whatsapp_number
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\ProfileFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Profile whereWhatsappNumber($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperProfile {}
+}
+
+namespace App\Models{
 /**
  * 
  *
@@ -919,12 +910,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperSlider
-{
-}
+	class IdeHelperSlider {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -946,6 +935,7 @@ namespace App\Models {
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
+ * @property-read \App\Models\Profile|null $profile
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read int|null $roles_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
@@ -974,12 +964,10 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperUser
-{
-}
+	class IdeHelperUser {}
 }
 
-namespace App\Models {
+namespace App\Models{
 /**
  * 
  *
@@ -1015,8 +1003,6 @@ namespace App\Models {
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-	class IdeHelperVoucher
-{
-}
+	class IdeHelperVoucher {}
 }
 

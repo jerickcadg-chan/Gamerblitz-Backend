@@ -88,4 +88,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class);
+    }
 }

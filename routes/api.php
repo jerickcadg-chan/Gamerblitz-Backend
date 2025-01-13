@@ -71,6 +71,7 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
         return api_status_ok([], 'Client configuration updated');
     });
 
+    Route::put('me', [AuthController::class, 'updateMe']);
     Route::get('me', [AuthController::class, 'me']);
     Route::get('balance', [AuthController::class, 'myBalance']);
     Route::post('logout', [AuthController::class, 'logout']);

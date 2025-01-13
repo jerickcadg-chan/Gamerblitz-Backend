@@ -33,13 +33,13 @@ class AuthController extends Controller
         ];
 
         try {
-            if (! Auth::attempt($credentials)) {
+            if (!Auth::attempt($credentials)) {
                 $credentials = [
                     'phone_number' => convert_to_62($request->username),
                     'password' => $request->password,
                 ];
 
-                if (! Auth::attempt($credentials)) {
+                if (!Auth::attempt($credentials)) {
                     return api_status_warning(trans('auth.failed'));
                 }
             }
@@ -113,6 +113,35 @@ class AuthController extends Controller
     public function me()
     {
         return api_status_ok(transformer(auth()->user(), UserTransformer::class));
+    }
+
+    public function updateMe(Request $request)
+    {
+        $validatedData = $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['string', 'email', 'max:255', 'unique:users,email,' . auth()->id()],
+            'whatsapp_number' => ['required', 'numeric'],
+        ]);
+
+        try {
+            /** @var User $user */
+            $user = auth()->user();
+            $user->update([
+                'email' => $validatedData['email'] ?? $user->email,
+            ]);
+
+            $validatedData['whatsapp_number'] = convert_to_62($validatedData['whatsapp_number']);
+
+            $user->profile()->updateOrCreate(
+                ['user_id' => $user->id],
+                $validatedData
+            );
+
+            return api_status_ok(transformer($user, UserTransformer::class), 'Profile updated');
+        } catch (\Exception $exception) {
+            return api_status_error($exception);
+        }
     }
 
     public function logout()
