@@ -28,6 +28,7 @@ class AccountController extends Controller
         $accounts = Account::whereByClient()
             ->filter($filter)
             ->latest()
+            ->with('productItem.product', 'pictures')
             ->whereHas('productItem', function (Builder $query) {
                 $query->where('type', 'account')
                     ->where('stock', '>', 0);

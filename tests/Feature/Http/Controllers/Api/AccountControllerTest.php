@@ -60,6 +60,9 @@ class AccountControllerTest extends TestCase
                     'real_price' => (float) $account->productItem->price,
                     'discount_price' => $account->price,
                     'cover_images' => $account->pictures->map(fn ($picture) => $picture->url)->toArray(),
+                    'how_to_order' => $account->productItem->product->how_to_order,
+                    'created_at' => (string) $account->created_at,
+                    'updated_at' => $account->updated_at,
                 ];
             })->toArray();
 
