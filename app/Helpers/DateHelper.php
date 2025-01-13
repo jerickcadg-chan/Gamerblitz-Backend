@@ -127,12 +127,8 @@ if (! function_exists('parse_date_time')) {
         if ($date == null) {
             return '-';
         }
-        \Carbon\Carbon::setLocale('id');
-        //        $date = \Carbon\Carbon::parse($date)->formatLocalized("%d %B %Y, %I:%M:%S %p");
-        $date = \Carbon\Carbon::parse($date);
 
-        return $date->format('d').'-'.get_month_simple($date->format('m')).'-'.$date->format('Y').', '.Carbon::parse($date)->format('%H:%M:%S');
-        //        return $date;
+        return $date;
     }
 }
 
