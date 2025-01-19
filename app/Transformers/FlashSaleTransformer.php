@@ -51,6 +51,7 @@ class FlashSaleTransformer extends TransformerAbstract
                         'name' => $item->productItem->name,
                         'code' => $item->productItem->code,
                         'cover' => $item->productItem->product->product_cover,
+                        'picture' => $item->productItem->product->product_picture,
                     ],
                 ];
             })->toArray(),

@@ -138,11 +138,8 @@ if (! function_exists('parse_date_time_full')) {
         if ($date == null) {
             return '-';
         }
-        \Carbon\Carbon::setLocale('id');
 
-        $date = \Carbon\Carbon::parse($date);
-
-        return $date->format('d').' '.get_month_name($date->format('m')).' '.$date->format('Y').', '.\Carbon\Carbon::parse($date)->format('%H:%M:%S');
+        return $date;
     }
 }
 
