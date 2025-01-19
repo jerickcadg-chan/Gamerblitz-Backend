@@ -32,8 +32,8 @@ class ClientTheme extends Model
         'mg_bg_accent_1',
         'bg_btn',
         'bg_btn_secondary',
-        'mg-accent-success',
-        'mg-accent-error',
-        'mg-accent-warning',
+        'mg_accent_success',
+        'mg_accent_error',
+        'mg_accent_warning',
     ];
 }

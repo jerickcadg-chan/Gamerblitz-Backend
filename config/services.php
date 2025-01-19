@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'gitlab' => [
+        'token' => env('GITLAB_TOKEN'),
+        'url' => env('GITLAB_URL'),
+        'project_id' => env('GITLAB_PROJECT_ID'),
+    ],
+
 ];
