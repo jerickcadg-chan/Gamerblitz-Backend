@@ -12,7 +12,7 @@ class CategoryController extends Controller
         return api_status_ok(
             array_values(collect(ProductConstant::all())
                 ->filter(function ($item) {
-                    return $item != ProductConstant::getTitle('account');
+                    return $item != ProductConstant::getTitle('account') && $item != ProductConstant::getTitle('joki');
                 })
                 ->map(function ($item, $key) {
                     return [

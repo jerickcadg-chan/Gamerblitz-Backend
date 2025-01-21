@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\ProductConstant;
 use App\Constants\ProductItemTypeConstant;
 use App\Http\Requests\OrderRequest;
 use App\Mail\OrderAccountSucceed;
@@ -12,6 +13,7 @@ use App\Models\Order;
 use App\Models\Voucher;
 use App\Models\Discount;
 use App\Models\PaymentMethod;
+use App\Models\Product;
 use App\Models\ProductItem;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -32,7 +34,7 @@ class OrderService
 
             $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
 
-            $price = $this->calculatePrice($request, $productItem, $paymentMethod);
+            $price = $this->calculatePrice($request, $productItem, $paymentMethod, $request->qty);
 
             if ($productItem->stock == 0) {
                 DB::commit();
@@ -139,8 +141,33 @@ class OrderService
         }
     }
 
-    public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod): array
+    public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, $qty = 1): array
     {
+        if ($productItem->product->category == ProductConstant::JOKI) {
+            $joki = json_decode($request->note);
+            $jokiResult = $this->calculateJokiMLPrice(
+                $joki->startRank,
+                $joki->startRankGrade,
+                $joki->startStars,
+                $joki->targetRank,
+                $joki->targetRankGrade,
+                $joki->targetStars
+            );
+
+            $price = $jokiResult['price'];
+            $capital = $jokiResult['capital'];
+
+            $disc = [
+                'disc_id' => null,
+                'nominal' => 0
+            ];
+        } else {
+            $price = $productItem->price * $qty;
+            $capital = $productItem->capital * $qty;
+
+            $disc = get_active_discount($price, $productItem->product_id, $productItem->id, $qty);
+        }
+
         if ($request->discount_code) {
             $discount = Discount::active()->where('code', $request->discount_code)->first();
 
@@ -162,11 +189,11 @@ class OrderService
 
         $totalPrice = $productItem->real_price - $disc['nominal'] + $xenditFee;
 
-        $totalIncome = $productItem->real_price - $disc['nominal'] + $forAdmin - $productItem->capital;
+        $totalIncome = $productItem->real_price - $disc['nominal'] + $forAdmin - $capital;
 
         return [
             'price' => $productItem->real_price,
-            'capital' => $productItem->capital,
+            'capital' => $capital,
             'admin_fee' => $xenditFee,
             'discount_price' => $disc['nominal'],
             'total_price' => $totalPrice,
@@ -478,7 +505,9 @@ class OrderService
 
     private function rankOptions(): array
     {
-        $items = ProductItem::where('product_id', 15)->orderBy('price')->get()->toArray();
+        /** @var Product $product */
+        $product = Product::whereCategory(ProductConstant::JOKI)->first();
+        $items = ProductItem::where('product_id', $product->id)->orderBy('price')->get()->toArray();
 
         return [
             [

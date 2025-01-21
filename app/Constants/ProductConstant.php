@@ -2,6 +2,8 @@
 
 namespace App\Constants;
 
+use Sheenazien8\Konstantiq\ConstanstAbstraction;
+
 class ProductConstant extends ConstanstAbstraction
 {
     const GAME = 'game';
@@ -9,6 +11,5 @@ class ProductConstant extends ConstanstAbstraction
     const OPERATOR = 'operator';
     const OTHER = 'other';
     const ACCOUNT = 'account';
+    const JOKI = 'joki';
 }
-
-?>

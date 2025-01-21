@@ -2,11 +2,11 @@
 
 namespace App\Constants;
 
+use Sheenazien8\Konstantiq\ConstanstAbstraction;
+
 class DefaultRole extends ConstanstAbstraction
 {
     const SUPER_ADMIN = 'Super Admin';
     const CUSTOMER = 'Customer';
     const RESELLER = 'Reseller';
 }
-
-?>

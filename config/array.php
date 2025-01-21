@@ -1,10 +1,11 @@
 <?php
 
+use App\Constants\ProductConstant;
 use App\Constants\StatusConst;
 
 return [
     'product' => [
-        'category' => ['game', 'voucher', 'operator', 'other'],
+        'category' => ProductConstant::all()->except(ProductConstant::ACCOUNT),
         'status' => [\App\Models\Product::ACTIVE, \App\Models\Product::INACTIVE]
     ],
     'default_role' => [
