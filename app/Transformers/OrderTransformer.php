@@ -26,7 +26,7 @@ class OrderTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($order)
+    public function transform(Order $order)
     {
         return [
             'id' => $order->id,
