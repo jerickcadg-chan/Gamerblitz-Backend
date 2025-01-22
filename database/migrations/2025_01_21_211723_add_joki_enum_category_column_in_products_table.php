@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->enum('category', ['game', 'voucher', 'operator', 'other', 'account', 'joki'])->change();
+            $table->enum('category', ['game', 'voucher', 'operator', 'other', 'account', 'joki_gendong'])->change();
         });
     }
 
@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Product::whereCategory(ProductConstant::JOKI)->update(['category' => 'other']);
+        Product::whereCategory(ProductConstant::JOKI_GENDONG)->update(['category' => 'other']);
         Schema::table('products', function (Blueprint $table) {
             $table->enum('category', ['game', 'voucher', 'operator', 'other', 'account'])->change();
         });

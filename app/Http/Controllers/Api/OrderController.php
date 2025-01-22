@@ -24,6 +24,7 @@ use App\Transformers\OrderTransformer;
 use App\Transformers\PaymentMethodTransformer;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
@@ -73,11 +74,17 @@ class OrderController extends Controller
         try {
             $order = $orderService->store($request);
 
+            if (is_array($order)) {
+                throw ValidationException::withMessages($order);
+            }
+
             if (is_string($order)) {
                 return api_status_warning($order);
             }
 
             return api_status_ok(transformer($order, new OrderTransformer));
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             return \api_status_error($e);
         }
@@ -206,7 +213,8 @@ class OrderController extends Controller
                 $orderService->createMitraGamersOrder($order);
             }
 
-            if ($order->productItem->type == ProductItemTypeConstant::ACCOUNT) {
+            dd($order->productItem->product->category != ProductConstant::JOKI_GENDONG);
+            if ($order->productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI_GENDONG) {
                 $orderService->sentAccountCredentialsToUser($order);
             }
 

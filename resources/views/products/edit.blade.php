@@ -52,9 +52,8 @@
                     <div class="form-group">
                         <label for="category_input" class="required">Kategori</label>
                         <select class="form-control" name="category" id="category_input" required>
-                            <option value="">Pilih kategori</option>
-                            @foreach (config('array.product.category') as $category)
-                                <option value="{{ $category }}" {{ old('category', $product->category) == $category ? 'selected' : null }}>{{ ucfirst($category) }}</option>
+                            @foreach (config('array.product.category') as $key => $category)
+                                <option value="{{ $key }}" {{ old('category', $product->category) == $key ? 'selected' : null }}>{{ ucfirst($category) }}</option>
                             @endforeach
                         </select>
                         @include('alerts.feedback', ['field' => 'category'])

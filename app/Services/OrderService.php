@@ -21,10 +21,11 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class OrderService
 {
-    public function store(OrderRequest $request): Order|string
+    public function store(OrderRequest $request): Order|string|array
     {
         try {
             DB::beginTransaction();
@@ -34,7 +35,13 @@ class OrderService
 
             $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
 
-            $price = $this->calculatePrice($request, $productItem, $paymentMethod, $request->qty);
+            [$price, $error] = $this->calculatePrice($request, $productItem, $paymentMethod, $request->qty);
+
+            if ($error != null) {
+                DB::commit();
+
+                return $error;
+            }
 
             if ($productItem->stock == 0) {
                 DB::commit();
@@ -114,7 +121,7 @@ class OrderService
             $this->createHistory($order->id, $orderStatus, 'order');
 
             if ($paymentMethod->name == PaymentMethod::SALDO) {
-                if ($productItem->type == ProductItemTypeConstant::ACCOUNT) {
+                if ($productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI_GENDONG) {
                     $this->sentAccountCredentialsToUser($order);
                 }
                 $this->setOrderSettlement($order);
@@ -143,15 +150,26 @@ class OrderService
 
     public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, $qty = 1): array
     {
-        if ($productItem->product->category == ProductConstant::JOKI) {
-            $joki = json_decode($request->note);
+        if ($productItem->product->category == ProductConstant::JOKI_GENDONG) {
+            $joki = json_decode($request->note, true) ?? [];
+            $validator = Validator::make($joki, [
+                'startRank' => 'required|string',
+                'startRankGrade' => 'required|integer',
+                'startStars' => 'required|integer',
+                'targetRank' => 'required|string',
+                'targetRankGrade' => 'required|integer',
+                'targetStars' => 'required|integer'
+            ]);
+            if ($validator->fails()) {
+                return [null, $validator->messages()->toArray()];
+            }
             $jokiResult = $this->calculateJokiMLPrice(
-                $joki->startRank,
-                $joki->startRankGrade,
-                $joki->startStars,
-                $joki->targetRank,
-                $joki->targetRankGrade,
-                $joki->targetStars
+                $joki['startRank'],
+                $joki['startRankGrade'],
+                $joki['startStars'],
+                $joki['targetRank'],
+                $joki['targetRankGrade'],
+                $joki['targetStars']
             );
 
             $price = $jokiResult['price'];
@@ -191,7 +209,7 @@ class OrderService
 
         $totalIncome = $productItem->real_price - $disc['nominal'] + $forAdmin - $capital;
 
-        return [
+        $prices = [
             'price' => $productItem->real_price,
             'capital' => $capital,
             'admin_fee' => $xenditFee,
@@ -200,6 +218,8 @@ class OrderService
             'total_income' => $totalIncome,
             'discount' => $disc['disc_id']
         ];
+
+        return [$prices, null];
     }
 
     public function calculateXenditFee(ProductItem $productItem, PaymentMethod $paymentMethod)
@@ -506,7 +526,7 @@ class OrderService
     private function rankOptions(): array
     {
         /** @var Product $product */
-        $product = Product::whereCategory(ProductConstant::JOKI)->first();
+        $product = Product::whereCategory(ProductConstant::JOKI_GENDONG)->first();
         $items = ProductItem::where('product_id', $product->id)->orderBy('price')->get()->toArray();
 
         return [
