@@ -45,7 +45,7 @@
                             <td>{{ $products->firstItem() + $index }}</td>
                             <td><a href="{{ $product->full_slug }}" target="_blank">{{ $product->name }}</a></td>
                             <td>{{ $product->code }}</td>
-                            <td>{{ ucfirst(ProductConstant::getTitle($product->category)) }}</td>
+                            <td>{{ $product->product_category }}</td>
                             <td>{!! $product->statusView !!}</td>
                             <td>
                                 @include('master.action', [

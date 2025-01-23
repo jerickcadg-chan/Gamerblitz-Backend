@@ -669,6 +669,7 @@ namespace App\Models{
  * @property string|null $code
  * @property string|null $input_format
  * @property string $category
+ * @property string|null $product_joki
  * @property string $description
  * @property string|null $company
  * @property string $how_to_order
@@ -713,6 +714,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMarkupReseller($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMarkupUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductJoki($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)

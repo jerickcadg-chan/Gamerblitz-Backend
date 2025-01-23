@@ -213,8 +213,7 @@ class OrderController extends Controller
                 $orderService->createMitraGamersOrder($order);
             }
 
-            dd($order->productItem->product->category != ProductConstant::JOKI_GENDONG);
-            if ($order->productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI_GENDONG) {
+            if ($order->productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI) {
                 $orderService->sentAccountCredentialsToUser($order);
             }
 

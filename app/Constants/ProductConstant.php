@@ -11,5 +11,5 @@ class ProductConstant extends ConstanstAbstraction
     const OPERATOR = 'operator';
     const OTHER = 'other';
     const ACCOUNT = 'account';
-    const JOKI_GENDONG = 'joki_gendong';
+    const JOKI = 'joki';
 }

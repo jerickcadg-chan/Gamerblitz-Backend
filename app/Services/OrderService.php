@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Constants\ProductConstant;
 use App\Constants\ProductItemTypeConstant;
+use App\Constants\ProductJoki;
 use App\Http\Requests\OrderRequest;
 use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
@@ -121,7 +122,7 @@ class OrderService
             $this->createHistory($order->id, $orderStatus, 'order');
 
             if ($paymentMethod->name == PaymentMethod::SALDO) {
-                if ($productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI_GENDONG) {
+                if ($productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI) {
                     $this->sentAccountCredentialsToUser($order);
                 }
                 $this->setOrderSettlement($order);
@@ -150,7 +151,7 @@ class OrderService
 
     public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, $qty = 1): array
     {
-        if ($productItem->product->category == ProductConstant::JOKI_GENDONG) {
+        if ($productItem->product->category == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) {
             $joki = json_decode($request->note, true) ?? [];
             $validator = Validator::make($joki, [
                 'startRank' => 'required|string',
@@ -526,7 +527,7 @@ class OrderService
     private function rankOptions(): array
     {
         /** @var Product $product */
-        $product = Product::whereCategory(ProductConstant::JOKI_GENDONG)->first();
+        $product = Product::whereCategory(ProductConstant::JOKI)->first();
         $items = ProductItem::where('product_id', $product->id)->orderBy('price')->get()->toArray();
 
         return [

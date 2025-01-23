@@ -59,6 +59,16 @@
                         @include('alerts.feedback', ['field' => 'category'])
                     </div>
                     <div class="form-group">
+                        <label for="product_joki">Produk Joki</label>
+                        <select class="form-control {{ $errors->has('product_joki') ? ' is-invalid' : '' }}" name="product_joki" id="product_joki">
+                            <option value="">Jika bukan joki abaikan</option>
+                            @foreach (config('array.product.joki') as $key => $category)
+                                <option value="{{ $key }}" {{ old('product_joki', $product->product_joki) == $key ? 'selected' : null }}>{{ ucfirst($category) }}</option>
+                            @endforeach
+                        </select>
+                        @include('alerts.feedback', ['field' => 'product_joki'])
+                    </div>
+                    <div class="form-group">
                         <label for="description_input" class="required">Deskripsi</label>
                         <textarea class="form-control tinymce" name="description" id="description_input" placeholder="Masukkan Deskripsi">{{ old('description', $product->description) }}</textarea>
                         @include('alerts.feedback', ['field' => 'description'])

@@ -61,7 +61,6 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-        dd($request->all());
         $product = Product::create($request->all());
         $product->productClient()
             ->create([

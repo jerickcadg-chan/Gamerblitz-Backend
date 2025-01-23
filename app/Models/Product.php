@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Constants\ProductConstant;
+use App\Constants\ProductJoki;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -24,7 +26,18 @@ class Product extends Model
     const VOUCHER = 'voucher';
 
     protected $fillable = [
-        'name', 'code', 'category', 'description', 'company', 'how_to_order', 'input_format', 'slug', 'status', 'markup_reseller', 'markup_user',
+        'name',
+        'code',
+        'category',
+        'description',
+        'company',
+        'how_to_order',
+        'input_format',
+        'slug',
+        'status',
+        'markup_reseller',
+        'markup_user',
+        'product_joki'
     ];
 
     public function productItems()
@@ -88,6 +101,19 @@ class Product extends Model
                 ->first()
                 ?->picture
                 ?->url ?? $this->default_picture_url ?? asset('images/no-image.png')
+        );
+    }
+
+    public function productCategory(): Attribute
+    {
+        $category = ProductConstant::getTitle($this->category);
+        return Attribute::make(
+            get: fn (): string => $this->category == ProductConstant::JOKI ?
+                str($category)
+                ->append(" ")
+                ->append("(")
+                ->append(ProductJoki::getTitle($this->product_joki))->append(")") :
+                $category
         );
     }
 }

@@ -31,6 +31,7 @@ class ProductRequest extends FormRequest
                     'description' => 'required|string',
                     'how_to_order' => 'required|string',
                     'status' => 'required',
+                    'product_joki' => 'required_if:category,joki',
 //                    'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ];
             case 'PUT':
@@ -40,6 +41,7 @@ class ProductRequest extends FormRequest
                     'category' => 'required|string',
                     'description' => 'required|string',
                     'how_to_order' => 'required|string',
+                    'product_joki' => 'required_if:category,joki',
 //                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ];
 

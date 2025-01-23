@@ -1,7 +1,6 @@
 <?php
 
-use App\Constants\ProductConstant;
-use App\Models\Product;
+use App\Constants\ProductJoki;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->enum('category', ['game', 'voucher', 'operator', 'other', 'account', 'joki_gendong'])->change();
+            $table->enum('product_joki', ProductJoki::getValues())->nullable()->after('category');
         });
     }
 
@@ -23,9 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Product::whereCategory(ProductConstant::JOKI)->update(['category' => 'other']);
         Schema::table('products', function (Blueprint $table) {
-            $table->enum('category', ['game', 'voucher', 'operator', 'other', 'account'])->change();
+            $table->dropColumn('product_joki');
         });
     }
 };
