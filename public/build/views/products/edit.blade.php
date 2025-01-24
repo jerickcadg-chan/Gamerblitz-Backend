@@ -37,14 +37,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="markup_user_input" class="required">Markup User (%)</label>
-                                <input type="number" min="0" class="form-control {{ $errors->has('markup_user') ? ' is-invalid' : '' }}" name="markup_user" id="markup_user_input" value="{{ old('markup_user', $product->markup_user) }}" placeholder="Markup Harga Untuk User" required>
+                                <input type="number" step="0.01" class="form-control {{ $errors->has('markup_user') ? ' is-invalid' : '' }}" name="markup_user" id="markup_user_input" value="{{ old('markup_user', $product->markup_user) }}" placeholder="Markup Harga Untuk User" required>
                                 @include('alerts.feedback', ['field' => 'markup_user'])
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="markup_reseller_input" class="required">Markup Reseller (%)</label>
-                                <input type="number" min="0" class="form-control {{ $errors->has('markup_reseller') ? ' is-invalid' : '' }}" name="markup_reseller" id="markup_reseller_input" value="{{ old('markup_reseller', $product->markup_reseller) }}" placeholder="Markup Harga Untuk Reseller" required>
+                                <input type="number" step="0.01" min="0" class="form-control {{ $errors->has('markup_reseller') ? ' is-invalid' : '' }}" name="markup_reseller" id="markup_reseller_input" value="{{ old('markup_reseller', $product->markup_reseller) }}" placeholder="Markup Harga Untuk Reseller" required>
                                 @include('alerts.feedback', ['field' => 'markup_reseller'])
                             </div>
                         </div>
@@ -52,12 +52,21 @@
                     <div class="form-group">
                         <label for="category_input" class="required">Kategori</label>
                         <select class="form-control" name="category" id="category_input" required>
-                            <option value="">Pilih kategori</option>
-                            @foreach (config('array.product.category') as $category)
-                                <option value="{{ $category }}" {{ old('category', $product->category) == $category ? 'selected' : null }}>{{ ucfirst($category) }}</option>
+                            @foreach (config('array.product.category') as $key => $category)
+                                <option value="{{ $key }}" {{ old('category', $product->category) == $key ? 'selected' : null }}>{{ ucfirst($category) }}</option>
                             @endforeach
                         </select>
                         @include('alerts.feedback', ['field' => 'category'])
+                    </div>
+                    <div class="form-group">
+                        <label for="product_joki">Produk Joki</label>
+                        <select class="form-control {{ $errors->has('product_joki') ? ' is-invalid' : '' }}" name="product_joki" id="product_joki">
+                            <option value="">Jika bukan joki abaikan</option>
+                            @foreach (config('array.product.joki') as $key => $category)
+                                <option value="{{ $key }}" {{ old('product_joki', $product->product_joki) == $key ? 'selected' : null }}>{{ ucfirst($category) }}</option>
+                            @endforeach
+                        </select>
+                        @include('alerts.feedback', ['field' => 'product_joki'])
                     </div>
                     <div class="form-group">
                         <label for="description_input" class="required">Deskripsi</label>
@@ -75,9 +84,13 @@
                         @include('alerts.feedback', ['field' => 'how_to_order'])
                     </div>
                     <div class="form-group">
-                        <label for="picture">Cover</label>
-                        <input type="file" name="picture" class="form-control mb-2" accept="image/*" value="{{ old('picture') }}">
-                        <small><i>Kosongi apabila tidak merubah cover</i></small>
+                        <label for="cover" class="required">Cover</label>
+                        <input type="file" name="cover" class="form-control" accept="image/*" value="{{ old('cover') }}">
+                        @include('alerts.feedback', ['field' => 'cover'])
+                    </div>
+                    <div class="form-group">
+                        <label for="picture" class="required">Gambar</label>
+                        <input type="file" name="picture" class="form-control" accept="image/*" value="{{ old('picture') }}">
                         @include('alerts.feedback', ['field' => 'picture'])
                     </div>
                     <div class="form-group">

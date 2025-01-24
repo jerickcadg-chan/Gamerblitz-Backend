@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>MitraGamers - Order Invoice</title>
+        <title>{{$order->client->name}} - Order Invoice</title>
         <style>
             body {
                 background: #000;
@@ -34,7 +34,7 @@
     </head>
     <body>
         <center>
-            <img src="{{ config('array.store.url') }}/img/mitragamers-logo.png" width="200px" alt="mitragamers-logo">
+            <img src="{{ $order->client->logo }}" width="200px" alt="mitragamers-logo">
             <div class="card">
                 @if ($order->payment_status == \App\Models\Order::PENDING && $order->order_status != \App\Models\Order::EXPIRED)
                     <h3>Hi, Silahkan selesaikan pembayaran anda sebelum {{ parse_date_full($order->expired_at) }}</h3>

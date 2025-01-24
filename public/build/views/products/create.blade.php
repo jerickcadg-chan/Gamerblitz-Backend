@@ -51,13 +51,23 @@
                     </div>
                     <div class="form-group">
                         <label for="category_input" class="required">Kategori</label>
-                        <select class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }}" name="category" id="category_input" required>
+                        <select class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}" name="category" id="category_input" required>
                             <option value="">Pilih kategori</option>
-                            @foreach (config('array.product.category') as $category)
-                                <option value="{{ $category }}" {{ old('category') == $category ? 'selected' : null }}>{{ ucfirst($category) }}</option>
+                            @foreach (config('array.product.category') as $key => $category)
+                                <option value="{{ $key }}" {{ old('category') == $key ? 'selected' : null }}>{{ ucfirst($category) }}</option>
                             @endforeach
                         </select>
                         @include('alerts.feedback', ['field' => 'category'])
+                    </div>
+                    <div class="form-group">
+                        <label for="product_joki">Produk Joki</label>
+                        <select class="form-control {{ $errors->has('product_joki') ? ' is-invalid' : '' }}" name="product_joki" id="product_joki">
+                            <option value="">Jika bukan joki abaikan</option>
+                            @foreach (config('array.product.joki') $key => as $category)
+                                <option value="{{ $key }}" {{ old('product_joki') == $key ? 'selected' : null }}>{{ ucfirst($category) }}</option>
+                            @endforeach
+                        </select>
+                        @include('alerts.feedback', ['field' => 'product_joki'])
                     </div>
                     <div class="form-group">
                         <label for="description_input" class="required">Deskripsi</label>
@@ -75,7 +85,12 @@
                         @include('alerts.feedback', ['field' => 'how_to_order'])
                     </div>
                     <div class="form-group">
-                        <label for="picture" class="required">Cover</label>
+                        <label for="cover" class="required">Cover</label>
+                        <input type="file" name="cover" class="form-control" accept="image/*" value="{{ old('cover') }}">
+                        @include('alerts.feedback', ['field' => 'cover'])
+                    </div>
+                    <div class="form-group">
+                        <label for="picture" class="required">Gambar</label>
                         <input type="file" name="picture" class="form-control" accept="image/*" value="{{ old('picture') }}">
                         @include('alerts.feedback', ['field' => 'picture'])
                     </div>

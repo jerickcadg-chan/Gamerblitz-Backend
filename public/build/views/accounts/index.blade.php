@@ -1,15 +1,13 @@
 @extends('layouts.app', [
-    'activePage' => 'product',
+    'activePage' => 'account',
 ])
-
-@use('\App\Constants\ProductConstant')
 
 @section('content')
     <div class="page-header">
         <h3 class="page-title"> Halaman {{ $title }} </h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('product.index') }}">{{ $title }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('account.index') }}">{{ $title }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Semua Data</li>
             </ol>
         </nav>
@@ -20,9 +18,6 @@
             <div class="card-body table-responsive">
                 <div class="row mb-2">
                     <div class="col-md-4 mb-2">
-                        <form method="get">
-                          <input type="text" class="form-control" name="name" placeholder="Cari nama produk" value="{{ request('name') }}">
-                        </form>
                     </div>
                     <div class="col-md-8 text-lg-end">
                         <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
@@ -32,26 +27,32 @@
                     <thead>
                         <tr>
                             <th> # </th>
-                            <th> Nama </th>
+                            <th> Title </th>
+                            <th> Price </th>
                             <th> Kode </th>
-                            <th> Kategori </th>
+                            <th> Winrate </th>
+                            <th> Skin </th>
+                            <th> Heroes </th>
                             <th> Status </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($products as $index => $product)
+                        @forelse ($accounts as $index => $account)
                         <tr>
-                            <td>{{ $products->firstItem() + $index }}</td>
-                            <td><a href="{{ $product->full_slug }}" target="_blank">{{ $product->name }}</a></td>
-                            <td>{{ $product->code }}</td>
-                            <td>{{ $product->product_category }}</td>
-                            <td>{!! $product->statusView !!}</td>
+                            <td>{{ $accounts->firstItem() + $index }}</td>
+                            <td><a href="{{ $account->full_slug }}" target="_blank">{{ $account->title }}</a></td>
+                            <td>{{ rp_format($account->price) }}</td>
+                            <td>{{ $account->code }}</td>
+                            <td>{{ $account->winrate }}</td>
+                            <td>{{ $account->skin }}</td>
+                            <td>{{ $account->heroes }}</td>
+                            <td>{{ $account->status_view }}</td>
                             <td>
                                 @include('master.action', [
-                                    'view_url' => route('product.show', $product),
-                                    'edit_url' => route('product.edit', $product),
-                                    'delete_url' => route('product.destroy', $product)
+                                    'view_url' => route('account.show', $account),
+                                    'edit_url' => route('account.edit', $account),
+                                    'delete_url' => route('account.destroy', $account)
                                 ])
                             </td>
                         </tr>
@@ -63,9 +64,10 @@
                     </tbody>
                 </table>
                 <div class="mt-2">
-                    {!! $products->appends(request()->query())->links() !!}
+                    {!! $accounts->appends(request()->query())->links() !!}
                 </div>
             </div>
         </div>
     </div>
 @endsection
+

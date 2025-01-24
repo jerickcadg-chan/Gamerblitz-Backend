@@ -31,10 +31,13 @@ class OrderAccountSucceed extends Mailable
      */
     public function envelope(): Envelope
     {
+        $order = $this->order;
+        $client = $this->order->client;
+
         return new Envelope(
-            from: $this->order->client->user->email,
-            to: $this->order->cust_email,
-            subject: "Pembelian akun anda di {$this->order->client->name} berhasil #{$this->order->code}",
+            from: $client->user->email,
+            to: $order->cust_email,
+            subject: "Pembelian akun anda di {$client->name} berhasil #{$order->code}",
         );
     }
 

@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>MitraGamers - Voucher Receipt</title>
+        <title>{{ $order->client->name }} - Voucher Receipt</title>
         <style>
             body {
                 background: #000;
@@ -47,8 +47,7 @@
                 </table>
             </div>
             <p>Email dibuat secara otomatis</p>
-            <p>Apabila kamu membutuhkan bantuan silahkan <a href="https://mitragamers.com/contact" target="_blank">Hubungi Kami</a> </p>
-            <a href="https://mitragamers.com" target="_blank">MitraGamers.com</a>
+            <a href="{{$order->client->host}}" target="_blank">{{$order->client->host}}</a>
         </center>
     </body>
 </html>

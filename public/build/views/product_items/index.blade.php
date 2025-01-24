@@ -29,7 +29,7 @@
               @csrf
               <div class="form-group">
                 <label for="marginInput">Margin</label>
-                <input type="number" class="form-control" id="marginInput" placeholder="Masukkan margin (%)">
+                <input type="number" class="form-control" id="marginInput" placeholder="Masukkan margin (%)" step="0.01">
                 <small id="marginHelp" class="form-text text-muted"></small>
               </div>
             </div>

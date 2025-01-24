@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>MitraGamers - Order Invoice</title>
+        <title>{{$order->client->name}} - Order Invoice</title>
         <style>
             body {
                 background: #000;
@@ -34,7 +34,7 @@
     </head>
     <body>
         <center>
-            <img src="{{ config('array.store.url') }}/img/mitragamers-logo.png" width="200px" alt="mitragamers-logo">
+            <img src="{{ $order->client->logo }}" width="200px" alt="mitragamers-logo">
             <div class="card">
                 @if ($order->payment_status == \App\Models\Order::PENDING && $order->order_status != \App\Models\Order::EXPIRED)
                     <h3>Hi, Silahkan selesaikan pembayaran anda sebelum {{ parse_date_full($order->expired_at) }}</h3>
@@ -88,8 +88,7 @@
                 <p><a href="{{ $order->payment_url_full }}" class="button" target="_blank">Bayar Sekarang</a></p>
             @endif
             <p>Email dibuat secara otomatis</p>
-            <p>Apabila kamu membutuhkan bantuan silahkan <a href="https://mitragamers.com/contact" target="_blank">Hubungi Kami</a> </p>
-            <a href="https://mitragamers.com" target="_blank">MitraGamers.com</a>
+            <a href="{{$order->client->host}}" target="_blank">{{$order->client->host}}</a>
         </center>
     </body>
 </html>

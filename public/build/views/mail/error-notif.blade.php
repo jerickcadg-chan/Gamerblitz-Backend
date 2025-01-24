@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>MitraGamers - Error Notif</title>
+        <title>{{ $order->client->name }} - Error Notif</title>
         <style>
             body {
                 background: #000;
@@ -21,7 +21,7 @@
     </head>
     <body>
         <center>
-            <img src="{{ config('array.store.url') }}/img/mitragamers-logo.png" width="200px" alt="mitragamers-logo">
+            <img src="{{ $order->client->logo }}/img/mitragamers-logo.png" width="200px" alt="mitragamers-logo">
             <div class="card">
                 <h1>Ada Transaksi Error 🙈</h1>
                 <h3>{{ $errMessage }}</h3>
@@ -49,7 +49,7 @@
                 </table>
             </div>
             <p>Email dibuat secara otomatis</p>
-            <a href="https://mitragamers.com" target="_blank">MitraGamers.com</a>
+            <a href="{{$order->client->host}}" target="_blank">{{$order->client->host}}</a>
         </center>
     </body>
 </html>

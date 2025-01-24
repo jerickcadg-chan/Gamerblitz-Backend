@@ -1,15 +1,13 @@
 @extends('layouts.app', [
-    'activePage' => 'product',
+    'activePage' => 'flash_sale',
 ])
-
-@use('\App\Constants\ProductConstant')
 
 @section('content')
     <div class="page-header">
         <h3 class="page-title"> Halaman {{ $title }} </h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('product.index') }}">{{ $title }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('flash_sale.index') }}">{{ $title }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Semua Data</li>
             </ol>
         </nav>
@@ -20,9 +18,6 @@
             <div class="card-body table-responsive">
                 <div class="row mb-2">
                     <div class="col-md-4 mb-2">
-                        <form method="get">
-                          <input type="text" class="form-control" name="name" placeholder="Cari nama produk" value="{{ request('name') }}">
-                        </form>
                     </div>
                     <div class="col-md-8 text-lg-end">
                         <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
@@ -33,25 +28,25 @@
                         <tr>
                             <th> # </th>
                             <th> Nama </th>
-                            <th> Kode </th>
-                            <th> Kategori </th>
+                            <th> Tanggal mulai </th>
+                            <th> Tanggal berakhir </th>
                             <th> Status </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($products as $index => $product)
+                        @forelse ($flash_sales as $index => $flash_sale)
                         <tr>
-                            <td>{{ $products->firstItem() + $index }}</td>
-                            <td><a href="{{ $product->full_slug }}" target="_blank">{{ $product->name }}</a></td>
-                            <td>{{ $product->code }}</td>
-                            <td>{{ $product->product_category }}</td>
-                            <td>{!! $product->statusView !!}</td>
+                            <td>{{ $flash_sales->firstItem() + $index }}</td>
+                            <td><a href="{{ $flash_sale->full_slug }}" target="_blank">{{ $flash_sale->name }}</a></td>
+                            <td>{{ $flash_sale->start_date->format('d M Y h:i:s') }}</td>
+                            <td>{{ $flash_sale->end_date->format('d M Y h:i:s') }}</td>
+                            <td>{!! $flash_sale->status_view !!}</td>
                             <td>
                                 @include('master.action', [
-                                    'view_url' => route('product.show', $product),
-                                    'edit_url' => route('product.edit', $product),
-                                    'delete_url' => route('product.destroy', $product)
+                                    'view_url' => route('flash_sale.show', $flash_sale),
+                                    'edit_url' => route('flash_sale.edit', $flash_sale),
+                                    'delete_url' => route('flash_sale.destroy', $flash_sale)
                                 ])
                             </td>
                         </tr>
@@ -63,9 +58,10 @@
                     </tbody>
                 </table>
                 <div class="mt-2">
-                    {!! $products->appends(request()->query())->links() !!}
+                    {!! $flash_sales->appends(request()->query())->links() !!}
                 </div>
             </div>
         </div>
     </div>
 @endsection
+

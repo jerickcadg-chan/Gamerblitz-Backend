@@ -32,6 +32,9 @@ class SendVoucher extends Mailable
      */
     public function build()
     {
-        return $this->subject('MitraGamers - Voucher Receipt #'.$this->order->code)->view('mail.voucher');
+        $order = $this->order;
+        $client = $this->order->client;
+
+        return $this->subject($client->name.' - Voucher Receipt #'.$order->code)->view('mail.voucher');
     }
 }

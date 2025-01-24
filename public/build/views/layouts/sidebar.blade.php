@@ -38,6 +38,11 @@
                         <a class="nav-link {{ in_array($activePage, ['product_item', 'voucher']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>
                     </li>
                     @endcan
+                    @can ('View Account')
+                    <li class="nav-item">
+                        <a class="nav-link {{ in_array($activePage, ['account']) ? 'active' : null }}" href="{{ route('account.index') }}">Akun</a>
+                    </li>
+                    @endcan
                 </ul>
             </div>
         </li>
@@ -67,6 +72,11 @@
                     @can ('View Slider')
                     <li class="nav-item">
                         <a class="nav-link {{ $activePage == 'slider' ? 'active' : null }}" href="{{ route('slider.index') }}"> Slider </a>
+                    </li>
+                    @endcan
+                    @can ('View Flash Sales')
+                    <li class="nav-item">
+                        <a class="nav-link {{ $activePage == 'flash_sale' ? 'active' : null }}" href="{{ route('flash_sale.index') }}">Flash Sales</a>
                     </li>
                     @endcan
                 </ul>

@@ -14,5 +14,7 @@ return [
     */
 
     'failed' => 'Username atau password salah',
+    'you_should_login' => 'Kamu harus login terlebih dahulu',
+    'unverified' => 'Akun kamu belum diverifikasi',
 
 ];

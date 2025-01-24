@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>MitraGamers - Voucher Receipt</title>
+        <title>{{ $order->client->name }} - Voucher Receipt</title>
         <style>
             body {
                 background: #000;
