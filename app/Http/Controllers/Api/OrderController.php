@@ -92,7 +92,7 @@ class OrderController extends Controller
 
     public function getPaymentMethods()
     {
-        $paymentMethod = PaymentMethod::orderBy('created_at', 'asc')->get();
+        $paymentMethod = PaymentMethod::filter($this->filter())->orderBy('created_at', 'asc')->get();
 
         return api_status_ok(transformer($paymentMethod, new PaymentMethodTransformer));
     }
