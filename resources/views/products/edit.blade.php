@@ -52,7 +52,7 @@
                     <div class="form-group">
                         <label for="category_input" class="required">Kategori</label>
                         <select class="form-control" name="category" id="category_input" required>
-                            @foreach (config('array.product.category') as $key => $category)
+                            @foreach ($productCategories as $key => $category)
                                 <option value="{{ $key }}" {{ old('category', $product->category) == $key ? 'selected' : null }}>{{ ucfirst($category) }}</option>
                             @endforeach
                         </select>
@@ -62,7 +62,7 @@
                         <label for="product_joki">Produk Joki</label>
                         <select class="form-control {{ $errors->has('product_joki') ? ' is-invalid' : '' }}" name="product_joki" id="product_joki">
                             <option value="">Jika bukan joki abaikan</option>
-                            @foreach (config('array.product.joki') as $key => $category)
+                            @foreach ($productJoki as $key => $category)
                                 <option value="{{ $key }}" {{ old('product_joki', $product->product_joki) == $key ? 'selected' : null }}>{{ ucfirst($category) }}</option>
                             @endforeach
                         </select>

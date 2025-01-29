@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Constants\ProductConstant;
+use App\Constants\ProductJoki;
 use App\Mail\SentVerificationLink;
 use App\Models\FlashSaleProductItem;
 use App\Models\User;
@@ -11,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
             return $div;
         });
 
+        View::share('productCategories', ProductConstant::all()->except(ProductConstant::ACCOUNT));
+        View::share('productJoki', ProductJoki::all());
 
         VerifyEmail::toMailUsing(function (User $notifiable) {
             $url = URL::temporarySignedRoute(
