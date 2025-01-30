@@ -20,5 +20,6 @@ class ClientAbout extends Model
         'social_facebook',
         'social_instagram',
         'social_tiktok',
+        'app_footer'
     ];
 }
