@@ -22,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'basic_auth' => \App\Http\Middleware\BasicAuth::class,
         ]);
 
-        $middleware->appendToGroup('api', EnsureHostIsValid::class);
+        $middleware->append(EnsureHostIsValid::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

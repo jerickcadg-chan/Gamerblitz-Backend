@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} {{ isset($title) ? ' - ' . $title : null }}</title>
+    <title>{{ client()->name }} {{ isset($title) ? ' - ' . $title : null }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('build/js/vendor.bundle.base.js') }}"></script>

@@ -1,7 +1,5 @@
 <?php
 
-use App\Constants\ProductConstant;
-use App\Constants\ProductJoki;
 use App\Constants\StatusConst;
 
 return [
