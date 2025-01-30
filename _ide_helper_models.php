@@ -197,6 +197,7 @@ namespace App\Models {
  * @property string|null $social_facebook
  * @property string|null $social_instagram
  * @property string|null $social_tiktok
+ * @property string|null $app_footer
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout newModelQuery()
