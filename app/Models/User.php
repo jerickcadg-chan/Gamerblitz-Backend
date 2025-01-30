@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -92,5 +93,29 @@ class User extends Authenticatable
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
+    }
+
+    public function name(): Attribute
+    {
+        $profile = $this->profile;
+        return Attribute::make(
+            get: fn() => ($profile?->first_name && $profile?->last_name) ? $this->full_name : $this->name,
+        );
+    }
+
+    public function fullName(): Attribute
+    {
+        $profile = $this->profile;
+        return Attribute::make(
+            get: fn() => $profile->first_name . ' ' . $profile->last_name
+        );
+    }
+
+    public function phoneNumber(): Attribute
+    {
+        $profile = $this->profile;
+        return Attribute::make(
+            get: fn() => $profile?->whatsapp_number ?? $this->phone_number,
+        );
     }
 }

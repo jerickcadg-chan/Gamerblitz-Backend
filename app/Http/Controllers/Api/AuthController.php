@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
+/** @package App\Http\Controllers\Api */
 class AuthController extends Controller
 {
     public function login(Request $request)
@@ -122,14 +124,24 @@ class AuthController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['string', 'email', 'max:255', 'unique:users,email,' . auth()->id()],
             'whatsapp_number' => ['required', 'numeric'],
+            'current_password' => ['nullable', 'string'],
+            'password' => ['required_with:current_password', 'nullable', 'string', 'min:4', 'confirmed'],
         ]);
 
         try {
             /** @var User $user */
-            $user = auth()->user();
-            $user->update([
+            $user = Auth::user();
+            $update = [
                 'email' => $validatedData['email'] ?? $user->email,
-            ]);
+            ];
+            if ($request->filled('current_password')) {
+                if (!Hash::check($request->get('current_password'), $user->password)) {
+                    return api_status_warning('Current password is incorrect', 422);
+                }
+
+                $update['password'] = bcrypt($request->get('password'));
+            }
+            $user->update($update);
 
             $validatedData['whatsapp_number'] = convert_to_62($validatedData['whatsapp_number']);
 
