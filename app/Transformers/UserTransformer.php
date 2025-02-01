@@ -16,7 +16,7 @@ class UserTransformer extends TransformerAbstract
     {
         return [
             'id' => $user->id,
-            'name' => $user->name,
+            'name' => ($user->profile?->first_name && $user->profile?->last_name) ? $user->full_name : $user->name,
             'email' => $user->email,
             'phone_number' => $user->phone_number,
             'address' => $user->address,

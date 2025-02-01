@@ -95,14 +95,6 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-    public function name(): Attribute
-    {
-        $profile = $this->profile;
-        return Attribute::make(
-            get: fn() => ($profile?->first_name && $profile?->last_name) ? $this->full_name : $this->name,
-        );
-    }
-
     public function fullName(): Attribute
     {
         $profile = $this->profile;
