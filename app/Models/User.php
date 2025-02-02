@@ -102,12 +102,4 @@ class User extends Authenticatable
             get: fn() => $profile->first_name . ' ' . $profile->last_name
         );
     }
-
-    public function phoneNumber(): Attribute
-    {
-        $profile = $this->profile;
-        return Attribute::make(
-            get: fn() => $profile?->whatsapp_number ?? $this->phone_number,
-        );
-    }
 }

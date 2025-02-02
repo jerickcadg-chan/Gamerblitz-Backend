@@ -14,11 +14,13 @@ class UserTransformer extends TransformerAbstract
      */
     public function transform(User $user)
     {
+        $profile = $user?->profile;
+
         return [
             'id' => $user->id,
-            'name' => ($user->profile?->first_name && $user->profile?->last_name) ? $user->full_name : $user->name,
+            'name' => ($profile?->first_name && $profile?->last_name) ? $user->full_name : $user->name,
             'email' => $user->email,
-            'phone_number' => $user?->phone_number,
+            'phone_number' => $profile?->whatsapp_number ?? $user?->phone_number,
             'address' => $user->address,
             'created_at' => parse_date_time($user->created_at),
             'role' => $user->role,
