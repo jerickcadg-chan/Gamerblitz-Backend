@@ -9,7 +9,6 @@ use App\Models\ProductItem;
 use App\Models\PaymentMethod;
 use App\Constants\ProductConstant;
 use App\Constants\ProductItemTypeConstant;
-use App\Http\Middleware\EnsureHostIsValid;
 use App\Services\CustAccountService;
 use App\Transformers\DiscountTransformer;
 use Illuminate\Http\Request;
@@ -17,11 +16,11 @@ use App\Services\OrderService;
 use App\Http\Requests\OrderRequest;
 use App\Mail\SendOrderNotif;
 use App\Models\Balance;
-use App\Models\Client;
 use App\Models\Product;
 use App\Services\BalanceService;
 use App\Transformers\OrderTransformer;
 use App\Transformers\PaymentMethodTransformer;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
@@ -33,7 +32,7 @@ class OrderController extends Controller
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->userId = auth()->user()->id ?? null;
+            $this->userId = Auth::id() ?? null;
 
             return $next($request);
         });
@@ -42,6 +41,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::with('user', 'productItem.product')->latest()
+            ->filter($this->filter())
             ->where('user_id', $this->userId)
             ->when(request('order_code'), function ($query) {
                 return $query->where('code', 'like', '%' . request('order_code') . '%');
@@ -256,7 +256,7 @@ class OrderController extends Controller
         }
 
         if (in_array($productItem->product->name, ['Free Fire', 'Mobile Legends'])) {
-            $checkNickname = Http::get(config('array.vexa.url') . '/check-nickname', [
+            $checkNickname = Http::get(config('array.mitra-gamers.url') . '/check-nickname', [
                 'customer_no' => CustAccountService::idExtractor($productItem->product->name, request('cust_account')),
                 'game' => $productItem->product->name
             ]);
