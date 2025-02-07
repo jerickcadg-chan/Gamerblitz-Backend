@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('product', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('default_picture_url');
             $table->after('markup_user', function (Blueprint $table) {
                 $table->string('default_picture');
@@ -25,8 +25,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('product', function (Blueprint $table) {
-            //
+        Schema::table('products', function (Blueprint $table) {
             $table->after('markup_user', function (Blueprint $table) {
                 $table->dropColumn('default_picture');
                 $table->dropColumn('default_cover');
