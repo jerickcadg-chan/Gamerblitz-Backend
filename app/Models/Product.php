@@ -69,7 +69,7 @@ class Product extends Model
 
     public function getFullSlugAttribute()
     {
-        return config('array.store_url') . '/topup/' . $this->slug;
+        return "https://" . str(client()->host)->replaceFirst("admin.", "") . '/topup/' . $this->slug;
     }
 
     public function setNameAttribute($value)
@@ -87,7 +87,7 @@ class Product extends Model
     public function productCover(): Attribute
     {
         return Attribute::make(
-            get: fn (): string => $this->productClient
+            get: fn(): string => $this->productClient
                 ->first()
                 ?->cover
                 ?->url ?? $this->default_picture_url ?? asset('images/no-image.png')
@@ -97,7 +97,7 @@ class Product extends Model
     public function productPicture(): Attribute
     {
         return Attribute::make(
-            get: fn (): string => $this->productClient
+            get: fn(): string => $this->productClient
                 ->first()
                 ?->picture
                 ?->url ?? $this->default_picture_url ?? asset('images/no-image.png')
@@ -106,9 +106,13 @@ class Product extends Model
 
     public function productCategory(): Attribute
     {
+        if (app()->runningInConsole()) {
+            return Attribute::make();
+        }
+
         $category = ProductConstant::getTitle($this->category);
         return Attribute::make(
-            get: fn (): string => $this->category == ProductConstant::JOKI ?
+            get: fn(): string => $this->category == ProductConstant::JOKI ?
                 str($category)
                 ->append(" ")
                 ->append("(")
