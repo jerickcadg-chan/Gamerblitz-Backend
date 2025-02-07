@@ -58,9 +58,15 @@
                         <td>{{ parse_date_time($product->updated_at) }}</td>
                     </tr>
                     <tr>
+                        <th>Gambar</th>
+                        <td>
+                            <img src="{{ $product->product_picture }}" class="w-25">
+                        </td>
+                    </tr>
+                    <tr>
                         <th>Cover</th>
                         <td>
-                            <img src="{{ $product->picture->url }}" class="w-25">
+                            <img src="{{ $product->product_cover }}" class="w-25">
                         </td>
                     </tr>
                 </table>
