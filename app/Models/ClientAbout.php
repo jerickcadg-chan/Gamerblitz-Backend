@@ -20,6 +20,8 @@ class ClientAbout extends Model
         'social_facebook',
         'social_instagram',
         'social_tiktok',
-        'app_footer'
+        'app_footer',
+        'mgclient_level',
+        'gtm_id',
     ];
 }
