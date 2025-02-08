@@ -271,7 +271,7 @@ class OrderController extends Controller
         }
 
         return api_status_ok([
-            'nickname' => null,
+            'nickname' => "Game not supported",
             'error' => null
         ]);
     }
