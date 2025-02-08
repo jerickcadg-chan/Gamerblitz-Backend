@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('default_picture_url');
             $table->after('markup_user', function (Blueprint $table) {
-                $table->string('default_picture');
-                $table->string('default_cover');
+                $table->string('default_picture')->nullable();
+                $table->string('default_cover')->nullable();
             });
         });
     }
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->after('markup_user', function (Blueprint $table) {
                 $table->dropColumn('default_picture');
                 $table->dropColumn('default_cover');
-                $table->string('default_picture_url');
+                $table->string('default_picture_url')->nullable();
             });
         });
     }
