@@ -249,16 +249,10 @@ class OrderController extends Controller
 
     public function checkNickname()
     {
-        $productItem = ProductItem::find(request('product_item_id'));
-
-        if (!$productItem) {
-            return api_status_warning('Product item not found');
-        }
-
-        if (in_array($productItem->product->name, ['Free Fire', 'Mobile Legends'])) {
+        if (in_array(request('game'), ['Free Fire', 'Mobile Legends'])) {
             $checkNickname = Http::get(config('array.mitra-gamers.url') . '/check-nickname', [
-                'customer_no' => CustAccountService::idExtractor($productItem->product->name, request('cust_account')),
-                'game' => $productItem->product->name
+                'customer_no' => request('customer_no'),
+                'game' => request('game')
             ]);
 
             $checkNickname = json_decode($checkNickname->collect());
