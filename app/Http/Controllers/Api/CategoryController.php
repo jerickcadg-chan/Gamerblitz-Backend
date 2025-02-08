@@ -4,20 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Constants\ProductConstant;
 use App\Http\Controllers\Controller;
+use App\Models\ProductCategory;
 
 class CategoryController extends Controller
 {
     public function __invoke()
     {
         return api_status_ok(
-            array_values(collect(ProductConstant::all())
-                ->filter(function ($item) {
-                    return $item != ProductConstant::getTitle('account') && $item != ProductConstant::getTitle('joki');
+            array_values(ProductCategory::all()
+                ->filter(function (ProductCategory $item) {
+                    return $item->name != ProductConstant::getTitle('account') && $item->name != ProductConstant::getTitle('joki');
                 })
-                ->map(function ($item, $key) {
+                ->map(function ($item) {
                     return [
-                        'key' => $key,
-                        'label' => $item,
+                        'key' => $item->slug,
+                        'label' => $item->name,
                     ];
                 })->toArray())
         );
