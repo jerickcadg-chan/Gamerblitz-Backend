@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EnsureNotCustomer
 {
@@ -17,10 +19,11 @@ class EnsureNotCustomer
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        if ($user->hasRole(\App\Constants\DefaultRole::CUSTOMER)) {
-            auth()->logout();
+        if ($user->roles->isEmpty() || $user->hasRole(\App\Constants\DefaultRole::CUSTOMER)) {
+            Auth::logout();
 
             toast(trans('auth.no_permission'), 'error');
             return redirect()->route('login');

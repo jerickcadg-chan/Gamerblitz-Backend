@@ -82,11 +82,11 @@
                                     'edit_url' => route('product_item.edit', $productItem),
                                     'delete_url' => route('product_item.destroy', $productItem)
                                 ])
-                                @if ($productItem->product->category == \App\Constants\ProductConstant::VOUCHER)
-                                    <button class="btn btn-gradient-success btn-rounded btn-icon" data-hover="tooltip" title="Kelola Voucher" data-placement="top"
-                                       onclick="window.open('{{ route('voucher.index', ['product_item_id' => $productItem->id]) }}', '_blank')"> <i class="mdi mdi-cash"></i>
-                                   </button>
-                                @endif
+                                {{-- @if ($productItem->product->category == \App\Constants\ProductConstant::VOUCHER) --}}
+                                {{--     <button class="btn btn-gradient-success btn-rounded btn-icon" data-hover="tooltip" title="Kelola Voucher" data-placement="top" --}}
+                                {{--        onclick="window.open('{{ route('voucher.index', ['product_item_id' => $productItem->id]) }}', '_blank')"> <i class="mdi mdi-cash"></i> --}}
+                                {{--    </button> --}}
+                                {{-- @endif --}}
                             </td>
                         </tr>
                         @empty

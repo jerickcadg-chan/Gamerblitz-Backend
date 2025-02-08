@@ -132,6 +132,16 @@ class ProductItem extends Model
         );
     }
 
+
+    public function capital(): Attribute
+    {
+        return Attribute::get(
+            get: function () {
+                return $this->capital_silver;
+            }
+        );
+    }
+
     public function order(): HasMany
     {
         return $this->hasMany(Order::class);

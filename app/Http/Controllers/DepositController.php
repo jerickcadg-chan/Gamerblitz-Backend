@@ -14,13 +14,15 @@ class DepositController extends Controller
     public function index()
     {
         $deposits = Deposit::with('user')->latest()
-            ->when(request('name'), function (Builder $query) {
-                $query->whereHas('user', function (Builder $query) {
-                    $query->where('name', 'like', '%'. \request('name') .'%');
-                });
+            ->whereHas('user', function (Builder $query) {
+                $query
+                    ->when(request('name'), function (Builder $query) {
+                        $query->where('name', 'like', '%' . \request('name') . '%');
+                    })
+                    ->where('client_id', client()->id);
             })
             ->when(\request('code'), function (Builder $query) {
-                $query->where('code', 'like', '%'. \request('code') .'%');
+                $query->where('code', 'like', '%' . \request('code') . '%');
             })
             ->paginate();
 
@@ -42,14 +44,14 @@ class DepositController extends Controller
             $action = DepositService::updateStatus($deposit, $request->status, $request->amount);
 
             if (!$action['status']) {
-                toast($action['message'] ?? "Failed",'error');
+                toast($action['message'] ?? "Failed", 'error');
                 return redirect()->back();
             }
 
-            toast("Deposit status terupdate",'success');
+            toast("Deposit status terupdate", 'success');
             return redirect()->route('deposit.index');
         } catch (\Exception $e) {
-            toast("Deposit status gagal",'error');
+            toast("Deposit status gagal", 'error');
             return redirect()->route('deposit.index');
         }
     }

@@ -16,10 +16,12 @@ use App\Models\Discount;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\ProductItem;
+use App\Models\User;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -30,6 +32,8 @@ class OrderService
     {
         try {
             DB::beginTransaction();
+            /** @var User $authUser */
+            $authUser = Auth::user();
 
             /** @var ProductItem $productItem */
             $productItem = ProductItem::find($request->product_item_id);
@@ -51,7 +55,7 @@ class OrderService
             };
 
             if ($request->payment_method === PaymentMethod::SALDO) {
-                if (!auth()->user()) {
+                if (!$authUser) {
                     DB::commit();
 
                     return trans('auth.you_should_login');
@@ -61,7 +65,7 @@ class OrderService
                     ->lockForUpdate()
                     ->where(
                         'user_id',
-                        auth()->user()->id
+                        $authUser->id
                     )->first() ?? new Balance(['amount' => 0]);
 
                 if ($balance->amount < $price['total_price']) {
@@ -81,7 +85,7 @@ class OrderService
 
             $order = new Order;
             $order->productItem()->associate($productItem);
-            $order->user()->associate(auth()->user() ?? null);
+            $order->user()->associate($authUser ?? null);
             $order->discount()->associate($price['discount']);
             $order->cust_account = $request->cust_account;
             $order->cust_email = $request->cust_email;
@@ -425,7 +429,7 @@ class OrderService
         $path = str(config('array.mitra-gamers.url'))->replaceEnd("/", "")->append('/api/v2/transaction')->value();
 
         $response = Http::withHeaders([
-            'Valid-token' => base64_encode("b72ec94c-8884-4f46-8ba0-fa8363a48ddf"),
+            'Valid-token' => base64_encode($order->client->user_token),
             'Accept' => 'application/json'
         ])->post($path, [
             'ref_id' => $order->code,

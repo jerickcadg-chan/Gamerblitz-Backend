@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\WhereByClient;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +19,7 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
+    use WhereByClient;
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +32,7 @@ class User extends Authenticatable
         'password',
         'phone_number',
         'client_id',
+        'first_login'
     ];
 
     /**

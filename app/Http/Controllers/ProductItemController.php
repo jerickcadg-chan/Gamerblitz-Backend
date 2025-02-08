@@ -7,6 +7,7 @@ use App\Models\ProductItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProductItemController extends Controller
 {
@@ -25,7 +26,7 @@ class ProductItemController extends Controller
     public function index()
     {
         /** @var \App\Models\Client $client */
-        $client = auth()->user()->client;
+        $client = Auth::user()->client;
         $productItems = ProductItem::query()
             ->with([
                 'productItemClients' => function ($query) use ($client) {

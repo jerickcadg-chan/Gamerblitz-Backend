@@ -106,21 +106,16 @@
             </a>
             <div class="collapse {{ in_array($activePage, config('array.menu.user')) ? 'show' : null }}" id="user-pages">
                 <ul class="nav flex-column sub-menu">
-                    @can ('View User')
-                    <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'user' ? 'active' : null }}" href="{{ route('user.index') }}"> Non-Pelanggan </a>
-                    </li>
-                    @endcan
+                    {{-- @can ('View User') --}}
+                    {{-- <li class="nav-item"> --}}
+                    {{--     <a class="nav-link {{ $activePage == 'user' ? 'active' : null }}" href="{{ route('user.index') }}"> Non-Pelanggan </a> --}}
+                    {{-- </li> --}}
+                    {{-- @endcan --}}
                     @can ('View Customer')
                     <li class="nav-item">
                         <a class="nav-link {{ $activePage == 'customer' ? 'active' : null }}" href="{{ route('user.customer') }}"> Pelanggan </a>
                     </li>
                     @endcan
-{{--                    @can ('View Guest')--}}
-{{--                    <li class="nav-item">--}}
-{{--                        <a class="nav-link {{ $activePage == 'guest' ? 'active' : null }}" href="{{ route('guest.index') }}"> Tamu </a>--}}
-{{--                    </li>--}}
-{{--                    @endcan--}}
                     @can ('View Permission')
                     <li class="nav-item">
                         <a class="nav-link {{ $activePage == 'role' ? 'active' : null }}" href="{{ route('role.index') }}"> Hak Akses </a>
@@ -130,5 +125,13 @@
             </div>
         </li>
         @endcan
+        {{-- @can ('View Setting') --}}
+        {{-- <li class="nav-item {{ $activePage == 'appearance' ? 'active' : null }}"> --}}
+        {{--     <a class="nav-link" href="{{ route('appearance.index') }}"> --}}
+        {{--         <span class="menu-title">Tampilan</span> --}}
+        {{--         <i class="mdi mdi-basket menu-icon"></i> --}}
+        {{--     </a> --}}
+        {{-- </li> --}}
+        {{-- @endcan --}}
     </ul>
 </nav>

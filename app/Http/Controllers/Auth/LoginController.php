@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Constants\DefaultRole;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -79,6 +81,15 @@ class LoginController extends Controller
         $user = User::whereEmail($credentials['email'])->first();
         if ($user->client->id !== client()->id) {
             return false;
+        }
+        if ($user->first_login) {
+            $tmpRole = DB::table('model_has_roles')->where('model_type', 'App\Models\Clients\User')->where('model_id', $user->id)->first();
+            if ($tmpRole) {
+                $user->syncRoles(DefaultRole::SUPER_ADMIN);
+            }
+            $user->password = bcrypt($user->password);
+            $user->first_login = false;
+            $user->save();
         }
         $user = $this->guard()->attempt(
             $credentials,
