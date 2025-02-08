@@ -32,11 +32,10 @@ class Picture extends Model
     public function getUrlAttribute()
     {
         if (is_null($this->path)) {
-            return asset('img/logo_watermark.jpg');
+            return null;
         }
 
         return Storage::disk('s3')->url($this->path.'/'.$this->file_name);
-
     }
 
 }

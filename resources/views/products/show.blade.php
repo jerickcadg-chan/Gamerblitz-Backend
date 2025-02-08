@@ -60,13 +60,13 @@
                     <tr>
                         <th>Gambar</th>
                         <td>
-                            <img src="{{ $product->product_picture }}" class="w-25">
+                          <img src="{{ $product->product_picture }}" class="w-25" alt="{{ $product->product_picture }}"/>
                         </td>
                     </tr>
                     <tr>
                         <th>Cover</th>
                         <td>
-                            <img src="{{ $product->product_cover }}" class="w-25">
+                          <img src="{{ $product->product_cover }}" class="w-25" alt="{{ $product->product_cover }}"/>
                         </td>
                     </tr>
                 </table>

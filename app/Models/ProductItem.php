@@ -20,7 +20,17 @@ class ProductItem extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'product_id', 'name', 'code', 'stock', 'price', 'price_reseller', 'capital', 'type'
+        'product_id',
+        'name',
+        'code',
+        'stock',
+        'price',
+        'price_reseller',
+        'capital_silver',
+        'capital_gold',
+        'capital_platinum',
+        'capital_diamond',
+        'type'
     ];
 
     protected $appends = [

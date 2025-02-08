@@ -38,15 +38,15 @@ class ProductController extends Controller
         return view('products.index', compact('products', 'createLink', 'title'));
     }
 
-    public function create()
-    {
-        $storeLink = route('product.store');
-        $indexLink = route('product.index');
-
-        $title = $this->title;
-
-        return view('products.create', compact('storeLink', 'indexLink', 'title'));
-    }
+    // public function create()
+    // {
+    //     $storeLink = route('product.store');
+    //     $indexLink = route('product.index');
+    //
+    //     $title = $this->title;
+    //
+    //     return view('products.create', compact('storeLink', 'indexLink', 'title'));
+    // }
 
     public function show(Product $product)
     {
@@ -71,7 +71,7 @@ class ProductController extends Controller
             $productClient = $product->productClient
                 ->firstWhere('client_id', client()->id);
 
-            insert_picture($request->cover, $productClient);
+            insert_picture($request->cover, $productClient, 'cover');
         }
 
         if ($request->picture) {

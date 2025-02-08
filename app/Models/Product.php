@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -37,7 +38,9 @@ class Product extends Model
         'status',
         'markup_reseller',
         'markup_user',
-        'product_joki'
+        'product_joki',
+        'default_picture',
+        'default_cover'
     ];
 
     public function productItems()
@@ -52,6 +55,9 @@ class Product extends Model
 
     public function getStatusViewAttribute()
     {
+        if ($this->productClient->first() == null && $this->status == 'active') {
+            return '<label class="badge badge-success">Aktif</label>';
+        }
         switch ($this->productClient->first()?->is_active) {
             case 1:
                 return '<label class="badge badge-success">Aktif</label>';
@@ -90,7 +96,7 @@ class Product extends Model
             get: fn(): string => $this->productClient
                 ->first()
                 ?->cover
-                ?->url ?? $this->default_picture_url ?? asset('images/no-image.png')
+                ?->url ?? $this->default_cover ?? asset('images/no-image.png')
         );
     }
 
@@ -100,24 +106,12 @@ class Product extends Model
             get: fn(): string => $this->productClient
                 ->first()
                 ?->picture
-                ?->url ?? $this->default_picture_url ?? asset('images/no-image.png')
+                ?->url ?? $this->default_picture ?? asset('images/no-image.png')
         );
     }
 
-    public function productCategory(): Attribute
+    public function productCategory(): BelongsTo
     {
-        if (app()->runningInConsole()) {
-            return Attribute::make();
-        }
-
-        $category = ProductConstant::getTitle($this->category);
-        return Attribute::make(
-            get: fn(): string => $this->category == ProductConstant::JOKI ?
-                str($category)
-                ->append(" ")
-                ->append("(")
-                ->append(ProductJoki::getTitle($this->product_joki))->append(")") :
-                $category
-        );
+        return $this->belongsTo(ProductCategory::class);
     }
 }

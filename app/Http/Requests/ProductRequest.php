@@ -26,23 +26,24 @@ class ProductRequest extends FormRequest
         switch ($this->method()) {
             case 'POST':
                 return [
-                    'name' => 'required|string|max:255',
-                    'category' => 'required|string',
-                    'description' => 'required|string',
-                    'how_to_order' => 'required|string',
+                    // 'name' => 'required|string|max:255',
+                    // 'category' => 'required|string',
+                    // 'description' => 'required|string',
+                    // 'how_to_order' => 'required|string',
                     'status' => 'required',
-                    'product_joki' => 'required_if:category,joki',
+                    // 'product_joki' => 'required_if:category,joki',
 //                    'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ];
             case 'PUT':
             case 'PATCH':
                 return [
-                    'name' => 'required|string|max:255',
-                    'category' => 'required|string',
-                    'description' => 'required|string',
-                    'how_to_order' => 'required|string',
-                    'product_joki' => 'required_if:category,joki',
+                    // 'name' => 'required|string|max:255',
+                    // 'category' => 'required|string',
+                    // 'description' => 'required|string',
+                    // 'how_to_order' => 'required|string',
+                    // 'product_joki' => 'required_if:category,joki',
 //                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'status' => 'required',
                 ];
 
             default:

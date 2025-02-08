@@ -196,6 +196,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereAppDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereAppFooter($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereAppLogoUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereAppName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereClientId($value)
@@ -520,6 +521,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Voucher> $vouchers
  * @property-read int|null $vouchers_count
  * @method static \Database\Factories\OrderFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order filter(array $filters, ?\IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList $allowedFilterList = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order query()
@@ -609,6 +611,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
  * @property-read int|null $pictures_order_count
  * @method static \Database\Factories\PaymentMethodFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod filter(array $filters, ?\IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList $allowedFilterList = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod query()
@@ -690,6 +693,7 @@ namespace App\Models{
  * @property-read int|null $pictures_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
  * @property-read int|null $pictures_order_count
+ * @property-read mixed $product_category
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductClient> $productClient
  * @property-read int|null $product_client_count
  * @property-read string $product_cover
@@ -933,6 +937,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Balance|null $balance
  * @property-read \App\Models\Client|null $client
+ * @property-read mixed $full_name
  * @property-read mixed $role
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count

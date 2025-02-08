@@ -24,9 +24,9 @@
                           <input type="text" class="form-control" name="name" placeholder="Cari nama produk" value="{{ request('name') }}">
                         </form>
                     </div>
-                    <div class="col-md-8 text-lg-end">
-                        <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
-                    </div>
+                    {{-- <div class="col-md-8 text-lg-end"> --}}
+                    {{--     <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a> --}}
+                    {{-- </div> --}}
                 </div>
                 <table class="table table-bordered table-hover">
                     <thead>
@@ -45,7 +45,7 @@
                             <td>{{ $products->firstItem() + $index }}</td>
                             <td><a href="{{ $product->full_slug }}" target="_blank">{{ $product->name }}</a></td>
                             <td>{{ $product->code }}</td>
-                            <td>{{ $product->product_category }}</td>
+                            <td>{{ $product->product_category?->name }}</td>
                             <td>{!! $product->statusView !!}</td>
                             <td>
                                 @include('master.action', [
