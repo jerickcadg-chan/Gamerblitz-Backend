@@ -23,5 +23,6 @@ class ClientAbout extends Model
         'app_footer',
         'mgclient_level',
         'gtm_id',
+        'favicon'
     ];
 }
