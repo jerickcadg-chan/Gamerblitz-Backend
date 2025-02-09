@@ -11,7 +11,8 @@ class CategoryController extends Controller
     public function __invoke()
     {
         return api_status_ok(
-            array_values(ProductCategory::all()
+            array_values(ProductCategory::active()
+                ->get()
                 ->filter(function (ProductCategory $item) {
                     return $item->name != ProductConstant::getTitle('account') && $item->name != ProductConstant::getTitle('joki');
                 })

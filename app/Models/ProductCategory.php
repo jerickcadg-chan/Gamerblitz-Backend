@@ -18,4 +18,9 @@ class ProductCategory extends Model
         'slug',
         'status'
     ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
 }
