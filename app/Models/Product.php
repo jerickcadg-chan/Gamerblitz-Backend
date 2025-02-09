@@ -114,4 +114,11 @@ class Product extends Model
     {
         return $this->belongsTo(ProductCategory::class);
     }
+
+    public function category(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->productCategory?->slug ?? 'other'
+        );
+    }
 }
