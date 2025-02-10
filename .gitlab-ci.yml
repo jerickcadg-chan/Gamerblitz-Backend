@@ -1,9 +1,16 @@
 before_script:
   - echo "Before script"
-  - cd /www/wwwroot/client-admin.mg.vexatechno.com #your project path
-building:
+
+variables:
+  SSH_USER: prod-ca-mg
+  SSH_HOST: 103.150.100.141
+  SSH_PORT: 20102
+  APP_DIR: /www/wwwroot/client_admin
+
+deploy_dev:
   stage: build
   script:
+    - cd /www/wwwroot/client-admin.mg.vexatechno.com #your project path
     - git pull
     - composer install
     - php artisan migrate
@@ -11,12 +18,10 @@ building:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
-testing:
-  stage: test
-  script:
-    - echo "Testing skiped"
-    # - php ./vendor/bin/phpunit
-deploying:
+
+deploy_prod:
   stage: deploy
   script:
-    - echo "Deployed"
+    - SSH $SSH_USER@$SSH_HOST -p $SSH_PORT "cd $APP_DIR && git pull && php artisan optimize"
+  only:
+    - tags
