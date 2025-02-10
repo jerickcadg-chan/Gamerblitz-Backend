@@ -5,21 +5,25 @@ namespace App\Models;
 use App\Traits\WhereByClient;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
+use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
+use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
+use IndexZer0\EloquentFiltering\Filter\Traits\Filterable;
 
 /**
  * @mixin IdeHelperOrder
  */
-class Order extends Model
+class Order extends Model implements IsFilterable
 {
     /**
      * @use HasFactory<OrderFactory>
      */
     use HasFactory;
     use WhereByClient;
+    use Filterable;
 
     const PENDING = 'pending';
     const SETTLEMENT = 'settlement';
@@ -218,5 +222,15 @@ class Order extends Model
     {
         return $this->hasMany(Account::class, 'client_id', 'client_id')
             ->where('product_item_id', $this->product_item_id);
+    }
+
+    // TODO:
+    // date_range, $between
+    // code $eq, $like
+    // item name $like, $eq
+    public function allowedFilters(): AllowedFilterList
+    {
+        return Filter::only(
+        );
     }
 }
