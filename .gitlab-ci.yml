@@ -1,5 +1,10 @@
 before_script:
   - echo "Before script"
+  - export PATH="$PATH:/home/gitlab-runner/.nvm/versions/node/v22.11.0/bin"
+
+stages:
+  - build
+  - deploy
 
 variables:
   SSH_USER: prod-ca-mg
@@ -7,11 +12,23 @@ variables:
   SSH_PORT: 20102
   APP_DIR: /www/wwwroot/client_admin
 
-deploy_dev:
+build_prod:
   stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - public/build
+    expire_in: 30 days
+  only:
+    - tags
+
+deploy_dev:
+  stage: deploy
   script:
     - cd /www/wwwroot/client-admin.mg.vexatechno.com #your project path
     - git pull
+    - npm run build
     - composer install
     - php artisan migrate
     - php artisan optimize
@@ -21,7 +38,10 @@ deploy_dev:
 
 deploy_prod:
   stage: deploy
+  dependencies:
+    - build
   script:
+    - scp -r -P $SSH_PORT public/build $SSH_USER@$SSH_HOST:$APP_DIR/public
     - SSH $SSH_USER@$SSH_HOST -p $SSH_PORT "cd $APP_DIR && git pull && php artisan optimize"
   only:
     - tags
