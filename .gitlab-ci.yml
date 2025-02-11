@@ -39,7 +39,7 @@ deploy_dev:
 deploy_prod:
   stage: deploy
   dependencies:
-    - build
+    - build_prod
   script:
     - scp -r -P $SSH_PORT public/build $SSH_USER@$SSH_HOST:$APP_DIR/public
     - SSH $SSH_USER@$SSH_HOST -p $SSH_PORT "cd $APP_DIR && git pull && php artisan optimize"
