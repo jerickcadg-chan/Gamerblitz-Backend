@@ -89,6 +89,11 @@
                         @include('alerts.feedback', ['field' => 'cover'])
                     </div>
                     <div class="form-group">
+                        <label for="input_ordering" class="required">Urutan</label>
+                        <input type="text" name="ordering" class="form-control {{ $errors->has('ordering') ? ' is-invalid' : '' }}" id="input_ordering" placeholder="Urutan berdasarkan nomor" value="{{ old('ordering', $product->ordering) }}" required>
+                        @include('alerts.feedback', ['field' => 'ordering'])
+                    </div>
+                    <div class="form-group">
                         <label for="picture" class="required">Gambar</label>
                         <input type="file" name="picture" class="form-control" accept="image/*" value="{{ old('picture') }}">
                         @include('alerts.feedback', ['field' => 'picture'])

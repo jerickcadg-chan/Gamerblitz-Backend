@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Client;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Services\OrderService;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use App\Transformers\ProductTransformer;
 use App\Transformers\ProductItemTransformer;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
 {
@@ -18,12 +16,15 @@ class ProductController extends Controller
     {
         $products = Product::active()
             ->orderBy('created_at')
-            ->when(request('category'), function ($query) {
-                return $query->where('category', request('category'));
+            ->when(request('category'), function (Builder $query) {
+                return $query->whereHas('productCategory', function (Builder $query) {
+                    $query->where('name', request('category'));
+                });
             })
             ->when(\request('name'), function ($query) {
-                return $query->where('name', 'like', '%'. \request('name') .'%');
+                return $query->where('name', 'like', '%' . \request('name') . '%');
             })
+            ->orderBy('ordering')
             ->get();
 
         return api_status_ok(transformer($products, new ProductTransformer));
@@ -33,11 +34,13 @@ class ProductController extends Controller
     {
         $products = Product::active()
             ->orderBy('created_at')
-            ->when(request('category'), function ($query) {
-                return $query->where('category', request('category'));
+            ->when(request('category'), function (Builder $query) {
+                return $query->whereHas('productCategory', function (Builder $query) {
+                    $query->where('name', request('category'));
+                });
             })
             ->when(\request('name'), function ($query) {
-                return $query->where('name', 'like', '%'. \request('name') .'%');
+                return $query->where('name', 'like', '%' . \request('name') . '%');
             });
 
         return api_status_ok(paginateTransformer($products, new ProductTransformer));

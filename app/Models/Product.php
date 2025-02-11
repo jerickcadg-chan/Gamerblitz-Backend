@@ -40,7 +40,8 @@ class Product extends Model
         'markup_user',
         'product_joki',
         'default_picture',
-        'default_cover'
+        'default_cover',
+        'ordering'
     ];
 
     public function productItems()

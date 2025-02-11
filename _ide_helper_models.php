@@ -139,7 +139,7 @@ namespace App\Models{
  * @property string $host
  * @property string $logo
  * @property string|null $description
- * @property string $user_token
+ * @property string|null $user_api_token
  * @property string|null $xendit_callback_token
  * @property string|null $xendit_token
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -164,7 +164,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereLogo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUserToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUserApiToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereXenditCallbackToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereXenditToken($value)
  * @mixin \Eloquent
@@ -192,6 +192,8 @@ namespace App\Models{
  * @property string|null $app_footer
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $mgclient_level
+ * @property string|null $gtm_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout query()
@@ -204,7 +206,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereContactTelegram($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereContactWhatsapp($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereGtmId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereMgclientLevel($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereSocialFacebook($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereSocialInstagram($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereSocialTiktok($value)
@@ -214,6 +218,45 @@ namespace App\Models{
  */
 	#[\AllowDynamicProperties]
 	class IdeHelperClientAbout {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $client_id
+ * @property string $mail_mailer
+ * @property string $mail_host
+ * @property string $mail_port
+ * @property string|null $mail_username
+ * @property string|null $mail_password
+ * @property string $mail_encryption
+ * @property string|null $mail_from_address
+ * @property string|null $mail_from_name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client $client
+ * @method static \Database\Factories\ClientMailCredentialFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereMailEncryption($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereMailFromAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereMailFromName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereMailHost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereMailMailer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereMailPassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereMailPort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereMailUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientMailCredential whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperClientMailCredential {}
 }
 
 namespace App\Models{
@@ -311,6 +354,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereByClient()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereExpiredAt($value)
@@ -669,10 +714,10 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int|null $product_category_id
  * @property string $name
  * @property string|null $code
  * @property string|null $input_format
- * @property string $category
  * @property string|null $product_joki
  * @property string $description
  * @property string|null $company
@@ -681,10 +726,12 @@ namespace App\Models{
  * @property string $status
  * @property float $markup_reseller
  * @property float $markup_user
- * @property string|null $default_picture_url
+ * @property string|null $default_picture
+ * @property string|null $default_cover
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $category
  * @property-read mixed $full_slug
  * @property-read mixed $status_view
  * @property-read \App\Models\Picture $picture
@@ -693,7 +740,7 @@ namespace App\Models{
  * @property-read int|null $pictures_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Picture> $pictures_order
  * @property-read int|null $pictures_order_count
- * @property-read mixed $product_category
+ * @property-read \App\Models\ProductCategory|null $productCategory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductClient> $productClient
  * @property-read int|null $product_client_count
  * @property-read string $product_cover
@@ -706,11 +753,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCategory($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCompany($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDefaultPictureUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDefaultCover($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDefaultPicture($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereHowToOrder($value)
@@ -719,6 +766,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMarkupReseller($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMarkupUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductJoki($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereStatus($value)
@@ -729,6 +777,32 @@ namespace App\Models{
  */
 	#[\AllowDynamicProperties]
 	class IdeHelperProduct {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\ProductCategoryFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperProductCategory {}
 }
 
 namespace App\Models{
@@ -776,14 +850,18 @@ namespace App\Models{
  * @property string|null $code
  * @property int $stock
  * @property string $price
+ * @property float $capital_silver
+ * @property float $capital_gold
+ * @property float $capital_platinum
+ * @property float $capital_diamond
  * @property float|null $price_reseller
- * @property string $capital
  * @property string $type
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Account> $accounts
  * @property-read int|null $accounts_count
+ * @property-read mixed $capital
  * @property-read \App\Models\ProductItemClient|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Client> $clients
  * @property-read int|null $clients_count
@@ -805,7 +883,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereCapital($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereCapitalDiamond($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereCapitalGold($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereCapitalPlatinum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereCapitalSilver($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereDeletedAt($value)
@@ -933,6 +1014,7 @@ namespace App\Models{
  * @property string|null $address
  * @property string $password
  * @property string|null $remember_token
+ * @property int $first_login
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Balance|null $balance
@@ -957,10 +1039,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User role($roles, $guard = null, $without = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereByClient()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFirstLogin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)

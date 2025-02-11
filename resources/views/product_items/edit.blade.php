@@ -35,7 +35,7 @@
                     </div>
                     <div class="form-group">
                         <label for="input_code" class="required">Kode</label>
-                        <input type="text" name="code" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" id="input_code" placeholder="Masukkan nama" value="{{ old('code', $productItem->code) }}" required>
+                        <input type="text" name="code" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" id="input_code" placeholder="Masukkan kode" value="{{ old('code', $productItem->code) }}" required>
                         @include('alerts.feedback', ['field' => 'code'])
                     </div>
                     <div class="row">
@@ -49,7 +49,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="input_price_reseller" class="required">Harga Reseller</label>
-                                <input type="number" name="price_reseller" class="form-control {{ $errors->has('price_reseller') ? ' is-invalid' : '' }}" id="input_price_reseller" placeholder="Masukkan harga reseller" value="{{ old('price_reseller', $productItem->price_reseller) }}" min="1" required>
+                                <input type="number" name="price_reseller" class="form-control {{ $errors->has('price_reseller') ? ' is-invalid' : '' }}" id="input_price_reseller" placeholder="Masukkan harga reseller" value="{{ old('price_reseller', $productItem->price_reseller ?? 0) }}" min="0">
                                 @include('alerts.feedback', ['field' => 'price_reseller'])
                             </div>
                         </div>
