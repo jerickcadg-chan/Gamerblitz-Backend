@@ -48,7 +48,7 @@
                 <div class="row mb-2">
                     <div class="col-md-12 text-lg-end">
                         <button class="btn btn-warning" id="updateMarginAction">Atur margin harga</button>
-                        <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
+                        {{-- <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a> --}}
                     </div>
                 </div>
                 <table class="table table-bordered table-hover">
@@ -79,8 +79,6 @@
                             <td>
                                 @include('master.action', [
                                     'view_url' => route('product_item.show', $productItem),
-                                    'edit_url' => route('product_item.edit', $productItem),
-                                    'delete_url' => route('product_item.destroy', $productItem)
                                 ])
                                 {{-- @if ($productItem->product->category == \App\Constants\ProductConstant::VOUCHER) --}}
                                 {{--     <button class="btn btn-gradient-success btn-rounded btn-icon" data-hover="tooltip" title="Kelola Voucher" data-placement="top" --}}

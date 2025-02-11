@@ -135,6 +135,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $level
  * @property string $name
  * @property string $host
  * @property string $logo
@@ -161,6 +162,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereHost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereLevel($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereLogo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUpdatedAt($value)
@@ -194,6 +196,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $mgclient_level
  * @property string|null $gtm_id
+ * @property string $favicon
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout query()
@@ -206,6 +209,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereContactTelegram($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereContactWhatsapp($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereFavicon($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereGtmId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ClientAbout whereMgclientLevel($value)
@@ -714,6 +718,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int|null $ordering
  * @property int|null $product_category_id
  * @property string $name
  * @property string|null $code
@@ -766,6 +771,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMarkupReseller($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMarkupUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereOrdering($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductJoki($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSlug($value)
@@ -789,6 +795,7 @@ namespace App\Models{
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory active()
  * @method static \Database\Factories\ProductCategoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newQuery()
@@ -848,7 +855,7 @@ namespace App\Models{
  * @property int $product_id
  * @property string $name
  * @property string|null $code
- * @property int $stock
+ * @property int|null $stock
  * @property string $price
  * @property float $capital_silver
  * @property float $capital_gold

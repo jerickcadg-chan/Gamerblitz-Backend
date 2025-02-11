@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Constants\DefaultRole;
+use App\Constants\UserLevel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @mixin IdeHelperProductItem
@@ -57,8 +59,8 @@ class ProductItem extends Model
 
     public function getRealPriceAttribute()
     {
-        return auth()->user() && auth()->user()->role === DefaultRole::RESELLER
-            ? ($this->margin_price_reseller ?? $this->margin_price)
+        return Auth::user() && Auth::user()->role === DefaultRole::RESELLER
+            ? ($this->price_reseller ?? $this->margin_price)
             : $this->margin_price;
     }
 
@@ -132,12 +134,19 @@ class ProductItem extends Model
         );
     }
 
-
     public function capital(): Attribute
     {
         return Attribute::get(
             get: function () {
-                return $this->capital_silver;
+                $level = client()->level;
+                $capital = match ($level) {
+                    UserLevel::SILVER => $this->capital_silver,
+                    UserLevel::GOLD => $this->capital_gold,
+                    UserLevel::PLATINUM => $this->capital_platinum,
+                    UserLevel::DIAMOND => $this->capital_diamond,
+                };
+
+                return $capital;
             }
         );
     }

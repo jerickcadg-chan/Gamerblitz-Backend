@@ -68,6 +68,7 @@ class ProductController extends Controller
                 ELSE 3
             END, price ASC")
             ->where('stock', '>', 0)
+            ->orWhere('stock', null)
             ->get();
 
         return api_status_ok(transformer($productItems, new ProductItemTransformer));
