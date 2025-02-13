@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 
 /** @package App\Http\Controllers\Api */
@@ -72,8 +73,8 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone_number' => ['required', 'numeric', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->where(fn($query) => $query->where('client_id', client()->id))],
+            'phone_number' => ['required', 'numeric', Rule::unique('users')->where(fn($query) => $query->where('client_id', client()->id))],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
         ]);
 

@@ -12,7 +12,7 @@
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label for="product_item_name_input">Cari Nama Item Produk</label>
+                    <label for="product_item_name_input">Cari Item Berdasarkan Kode</label>
                     <input type="text" class="form-control" name="name" value="{{ request('name') }}">
                 </div>
                 <div class="col-md-2">
