@@ -79,7 +79,7 @@ class LoginController extends Controller
     {
         $credentials = $this->credentials($request);
         $user = User::whereEmail($credentials['email'])->first();
-        if ($user->client->id !== client()->id) {
+        if ($user?->client?->id !== client()->id) {
             return false;
         }
         if ($user->first_login) {
