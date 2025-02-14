@@ -23,6 +23,7 @@ class FlashSaleController extends Controller
     public function index()
     {
         $flash_sales = FlashSale::latest()
+            ->whereClient()
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%' . request('name') . '%');
             })
