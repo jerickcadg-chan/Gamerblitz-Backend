@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Constants\DefaultRole;
 use App\Constants\UserLevel;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -94,8 +95,13 @@ class ProductItem extends Model
             get: function (): float {
                 $client_id = client()?->id;
 
+                // (100%-1,5%)
+                // 10.000:98,5% = 10.153
                 if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-                    return (float) $this->capital + ($this->capital * $productItemClient->margin / 100);
+                    $realPrice = (100 - $productItemClient->margin);
+                    $actualPrice = $this->capital / ($realPrice / 100);
+
+                    return (float) $actualPrice;
                 }
 
                 return $this->capital;
@@ -154,5 +160,10 @@ class ProductItem extends Model
     public function order(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', 'active');
     }
 }
