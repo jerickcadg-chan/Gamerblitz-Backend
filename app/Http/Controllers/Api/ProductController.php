@@ -67,8 +67,11 @@ class ProductController extends Controller
                 WHEN name RLIKE '^[0-9]' THEN 2
                 ELSE 3
             END, price ASC")
-            ->where('stock', '>', 0)
-            ->orWhere('stock', null)
+            ->where(function ($query) {
+                $query
+                    ->where('stock', '>', 0)
+                    ->orWhereNull('stock');
+            })
             ->get();
 
         return api_status_ok(transformer($productItems, new ProductItemTransformer));

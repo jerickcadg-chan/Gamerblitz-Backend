@@ -36,7 +36,6 @@ if (!function_exists('api_status_ok')) {
     function api_status_ok($data, $message = "data successfully retrieved", $code = 200)
     {
         $response = [
-            'url' => url()->full(),
             'method' => request()->getMethod(),
             'code' => $code,
             'message' => $message,
@@ -51,7 +50,6 @@ if (!function_exists('api_status_warning')) {
     function api_status_warning($message = "Something went wrong", $code = 400)
     {
         $response = [
-            'url' => url()->full(),
             'method' => request()->getMethod(),
             'request' => request()->except(['password', 'client']),
             'code' => $code,
@@ -68,7 +66,6 @@ if (!function_exists('api_status_error')) {
         throw_custom_exception($exception);
 
         $response = [
-            'url' => url()->full(),
             'method' => request()->getMethod(),
             'request' => request()->except(['password', 'file', 'client']),
             'code' => $exception->getCode()
