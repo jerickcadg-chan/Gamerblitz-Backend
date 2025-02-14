@@ -24,6 +24,7 @@ class SliderController extends Controller
     public function index()
     {
         $sliders = Slider::latest()
+            ->whereByClient()
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'. request('name') .'%');
             })
