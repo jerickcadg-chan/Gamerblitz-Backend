@@ -30,7 +30,7 @@ Route::get('/email/verify/{id}/mail/{mailhash}', function ($id, $mailhash) {
         event(new Verified($user));
     }
 
-    return redirect(config('array.store.url'));
+    return redirect(client()->host);
 })->middleware('signed')->name('verification');
 
 
