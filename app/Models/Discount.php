@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\WhereByClient;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -14,21 +16,43 @@ use Illuminate\Support\Facades\DB;
 class Discount extends Model
 {
     /** @use HasFactory<\Database\Factories\DiscountFactory> */
-    use HasFactory;
+    use HasFactory, WhereByClient;
 
     const ALL = 'all';
     const PRODUCT_TYPE = 'product_type';
     const PRODUCT_ITEM = 'product_item';
 
     protected $fillable = [
-        'name', 'code', 'description', 'nominal', 'disc_type', 'product_type', 'start_date', 'end_date', 'is_active', 'maximum', 'used'
+        'name',
+        'code',
+        'description',
+        'nominal',
+        'disc_type',
+        'product_type',
+        'start_date',
+        'end_date',
+        'is_active',
+        'maximum',
+        'used'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($discount) {
+            if (Auth::check()) {
+                $discount->client_id = client()?->id;
+            }
+        });
+    }
 
     public function products(): HasMany
     {
         return $this->hasMany(DiscountProduct::class);
     }
 
+    // TODO: ther is no
     public function scopeActive($query)
     {
         $now = now()->format('Y-m-d 00:00:00');

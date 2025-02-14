@@ -25,6 +25,7 @@ class DiscountController extends Controller
     public function index()
     {
         $discounts = Discount::latest()
+            ->whereClient()
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'. request('name') .'%');
             })
