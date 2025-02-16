@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Number;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 
@@ -168,6 +169,6 @@ class AuthController extends Controller
     {
         $balance = Balance::where('user_id', auth()->user()->id)->first();
 
-        return api_status_ok(rp_format($balance?->amount ?? 0));
+        return api_status_ok(currency_format($balance?->amount ?? 0));
     }
 }
