@@ -101,7 +101,7 @@ class User extends Authenticatable
             "user_id" => $this->id,
             "created_at" =>  '',
             "updated_at" => '',
-            'whatsapp_number' => $this->phone_number,
+            'whatsapp_number' => convert_to_62($this->phone_number),
         ]);
     }
 
