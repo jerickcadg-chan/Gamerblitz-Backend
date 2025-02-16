@@ -28,7 +28,6 @@ class ProductItem extends Model
         'code',
         'stock',
         'price',
-        'price_reseller',
         'capital_silver',
         'capital_gold',
         'capital_platinum',
@@ -124,15 +123,31 @@ class ProductItem extends Model
         );
     }
 
+    public function marginReseller(): Attribute
+    {
+        return Attribute::make(
+            get: function (): float {
+                $client_id = client()?->id;
+
+                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
+                    return (float)$productItemClient->reseller_margin;
+                }
+
+                return 0;
+            },
+        );
+    }
+
     public function marginPriceReseller(): Attribute
     {
         return Attribute::make(
             get: function (): float {
-                // TODO: Implement marginPriceReseller() method.
                 $client_id = client()?->id;
-
                 if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-                    return (float) $this->capital + ($this->capital * $productItemClient->margin / 100);
+                    $realPrice = (100 - $productItemClient->reseller_margin);
+                    $actualPrice = $this->capital / ($realPrice / 100);
+
+                    return (float) $actualPrice;
                 }
 
                 return $this->capital;

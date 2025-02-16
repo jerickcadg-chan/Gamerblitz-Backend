@@ -18,7 +18,6 @@
             <div class="card-body">
                 <form method="POST" action="{{ $storeLink }}" enctype="multipart/form-data">
                     @csrf
-                    {{-- {{ dd($errors) }} --}}
                     <div class="form-group">
                         <label for="name_input">Nama Pemilik</label>
                         <input type="text" class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" id="name_input" placeholder="Masukkan Nama" value="{{ old('name') }}">

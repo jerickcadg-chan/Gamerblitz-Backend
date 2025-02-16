@@ -20,6 +20,7 @@ class ProductItemClient extends Pivot
         'product_item_id',
         'client_id',
         'margin',
+        'reseller_margin',
         'is_active',
     ];
 

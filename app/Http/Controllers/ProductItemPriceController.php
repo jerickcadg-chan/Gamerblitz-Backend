@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -35,7 +36,7 @@ class ProductItemPriceController extends Controller
         }
 
         /** @var \App\Models\Client $client */
-        $client = auth()->user()->client;
+        $client = Auth::user()->client;
 
         if (!$request->update_all) {
             $productItemIds = $request->product_item_ids;
@@ -52,6 +53,7 @@ class ProductItemPriceController extends Controller
                 ],
                 [
                     'margin' => $request->margin,
+                    'reseller_margin' => $request->margin_reseller,
                     'updated_at' => now(),
                 ]
             );

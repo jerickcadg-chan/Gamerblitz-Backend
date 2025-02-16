@@ -32,6 +32,11 @@
                 <input type="number" class="form-control" id="marginInput" placeholder="Masukkan margin (%)" step="0.01">
                 <small id="marginHelp" class="form-text text-muted"></small>
               </div>
+              <div class="form-group">
+                <label for="marginResellerInput">Margin Reseller</label>
+                <input type="number" class="form-control" id="marginResellerInput" placeholder="Masukkan margin untuk reseller (%)" step="0.01">
+                <small id="marginResellerHelp" class="form-text text-muted"></small>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Update margin harga</button>
@@ -59,7 +64,9 @@
                             <th> Produk </th>
                             <th> Kode </th>
                             <th> Margin </th>
+                            <th> Reseller Margin </th>
                             <th> Harga </th>
+                            <th> Harga reseller </th>
                             <th> Stok </th>
                             <th> Modal </th>
                             <th> Aksi </th>
@@ -73,8 +80,10 @@
                             <td>{{ $productItem->product->name }} {{ $productItem->name }}</td>
                             <td>{{ $productItem->code }}</td>
                             <td>{{ $productItem->margin_percentage ?? 0 }} %</td>
+                            <td>{{ $productItem->margin_reseller ?? 0 }} %</td>
                             <td>{{ rp_format($productItem->margin_price) }}</td>
-                            <td>{{ $productItem->stock }}</td>
+                            <td>{{ rp_format($productItem->margin_price_reseller) }}</td>
+                            <td>{{ $productItem->stock === null ? '∞' : $productItem->stock }}</td>
                             <td>{{ rp_format($productItem->capital) }}</td>
                             <td>
                                 @include('master.action', [
@@ -128,10 +137,12 @@
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       const margin = document.querySelector('#marginInput').value;
+      const marginReseller = document.querySelector('#marginResellerInput').value;
       const productItemIds = document.querySelectorAll('input[name="product_item_ids"]:checked');
       const updateAll = document.querySelector('input[name="update_all"]').checked;
       const data = new FormData();
       data.append('margin', margin);
+      data.append('margin_reseller', marginReseller);
       if (updateAll) {
         data.append('update_all', updateAll);
       } else {
