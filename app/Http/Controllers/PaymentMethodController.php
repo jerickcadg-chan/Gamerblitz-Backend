@@ -56,6 +56,8 @@ class PaymentMethodController extends Controller
         /** @var \App\Models\PaymentMethod $payment_method */
         $payment_method = PaymentMethod::create([
             'name' => $name,
+            'vendor' => 'manual',
+            'category' => 'bank',
             'admin_fee' => 0,
             'admin_type' => 'no-admin',
             'slug' => Str::slug($name),
@@ -98,6 +100,8 @@ class PaymentMethodController extends Controller
         $payment_method->update([
             'name' => $name,
             'admin_fee' => 0,
+            'vendor' => 'manual',
+            'category' => 'bank',
             'admin_type' => 'no-admin',
             'slug' => Str::slug($name),
             'client_id' => Auth::user()->client->id,
