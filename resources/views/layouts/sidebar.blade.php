@@ -125,13 +125,13 @@
             </div>
         </li>
         @endcan
-        {{-- @can ('View Setting') --}}
-        {{-- <li class="nav-item {{ $activePage == 'appearance' ? 'active' : null }}"> --}}
-        {{--     <a class="nav-link" href="{{ route('appearance.index') }}"> --}}
-        {{--         <span class="menu-title">Tampilan</span> --}}
-        {{--         <i class="mdi mdi-basket menu-icon"></i> --}}
-        {{--     </a> --}}
-        {{-- </li> --}}
-        {{-- @endcan --}}
+        @can ('View Payment Methods')
+        <li class="nav-item {{ $activePage == 'payment_method' ? 'active' : null }}">
+            <a class="nav-link" href="{{ route('payment_method.index') }}">
+                <span class="menu-title">Metode Pembayaran</span>
+                <i class="mdi mdi-basket menu-icon"></i>
+            </a>
+        </li>
+        @endcan
     </ul>
 </nav>

@@ -28,7 +28,7 @@ class DiscountRequest extends FormRequest
             case 'POST':
                 return [
                     'name' => 'required|string|max:255',
-                    'code' => 'nullable|unique:discounts',
+                    'code' => 'nullable|unique:discounts|max:10',
                     'disc_type' => ['required', Rule::in(config('array.discount.disc_type_validation'))],
                     'nominal' => 'required|integer',
                     'maximum' => 'required|integer|min:1',
@@ -40,7 +40,7 @@ class DiscountRequest extends FormRequest
             case 'PATCH':
                 return [
                     'name' => 'required|string|max:255',
-                    'code' => 'nullable|unique:discounts,code,' .  request()->segment(2),
+                    'code' => 'nullable|max:10|unique:discounts,code,' .  $this->route('discount')->id,
                     'disc_type' => ['required', Rule::in(config('array.discount.disc_type_validation'))],
                     'nominal' => 'required|integer',
                     'maximum' => 'required|integer|min:1',

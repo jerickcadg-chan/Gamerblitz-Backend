@@ -6,6 +6,7 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductItemController;
 use App\Http\Controllers\ProductItemPriceController;
@@ -86,5 +87,6 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'slider' => SliderController::class,
         'user' => UserController::class,
         'role' => RoleController::class,
+        'payment_method' => PaymentMethodController::class,
     ]);
 });
