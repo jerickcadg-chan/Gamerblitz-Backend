@@ -53,6 +53,10 @@ class AuthController extends Controller
                 }
             }
 
+            if (!Hash::check($credentials['password'], $user->password)) {
+                return api_status_warning(trans('auth.failed'));
+            }
+
             if ($user?->client_id == null || $user?->client_id != client()?->id) {
                 return api_status_warning('User not found', 404);
             }
