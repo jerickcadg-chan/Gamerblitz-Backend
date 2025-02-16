@@ -3,6 +3,7 @@
 use App\Models\Client;
 use App\Models\Discount;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -233,7 +234,7 @@ if (!function_exists('paginateTransformer')) {
 if (!function_exists('client')) {
     function client(): ?Client
     {
-        if ($auth = auth()->user()) {
+        if ($auth = Auth::user()) {
             return $auth->client;
         }
 

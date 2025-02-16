@@ -22,6 +22,7 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        Auth::logout();
         $validator = Validator::make($request->all(), [
             'username' => 'required',
             'password' => 'required',
@@ -37,19 +38,20 @@ class AuthController extends Controller
         ];
 
         try {
-            if (!Auth::attempt($credentials)) {
+            /** @var User $user */
+            $user = User::whereEmail($credentials['email'])->whereClientId(client()->id)->first();
+            if (!$user) {
                 $credentials = [
                     'phone_number' => convert_to_62($request->username),
                     'password' => $request->password,
                 ];
 
-                if (!Auth::attempt($credentials)) {
+                $user = User::wherePhoneNumber($credentials['phone_number'])->whereClientId(client()->id)->first();
+
+                if (!$user) {
                     return api_status_warning(trans('auth.failed'));
                 }
             }
-
-            /** @var User $user */
-            $user = $request->user();
 
             if ($user?->client_id == null || $user?->client_id != client()?->id) {
                 return api_status_warning('User not found', 404);
