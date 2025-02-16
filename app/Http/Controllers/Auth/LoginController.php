@@ -78,7 +78,7 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request)
     {
         $credentials = $this->credentials($request);
-        $user = User::whereEmail($credentials['email'])->first();
+        $user = User::whereEmail($credentials['email'])->whereClientId(client()->id)->first();
         if ($user?->client?->id !== client()->id) {
             return false;
         }
