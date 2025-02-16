@@ -4,7 +4,7 @@
     <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{{ client()->logo }}" alt="logo" /></a>
   </div>
   <div class="navbar-menu-wrapper d-flex align-items-stretch">
-    <button class="navbar-toggler align-self-center" type="button" id="navbar-toggler" data-toggle="minimize" onclick="navbarToggler()">
+    <button class="navbar-toggler align-self-center" type="button" id="navbar-toggler" data-toggle="minimize" onclick="navbarToggler">
       <span class="mdi mdi-menu"></span>
     </button>
     <ul class="navbar-nav navbar-nav-right">
