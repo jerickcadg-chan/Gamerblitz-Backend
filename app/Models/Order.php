@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
 use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
 use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
+use IndexZer0\EloquentFiltering\Filter\FilterType;
 use IndexZer0\EloquentFiltering\Filter\Traits\Filterable;
+use IndexZer0\EloquentFiltering\Target\Target;
 
 /**
  * @mixin IdeHelperOrder
@@ -35,9 +37,23 @@ class Order extends Model implements IsFilterable
     const DONE = 'done';
 
     protected $fillable = [
-        'code', 'user_id', 'cust_email', 'cust_phone_number', 'product_item_id', 'cust_account', 'payment_method',
-        'payment_status', 'order_status', 'qty', 'price', 'admin_fee', 'total_price', 'total_income', 'note',
-        'expired_at', 'vexa_invoice'
+        'code',
+        'user_id',
+        'cust_email',
+        'cust_phone_number',
+        'product_item_id',
+        'cust_account',
+        'payment_method',
+        'payment_status',
+        'order_status',
+        'qty',
+        'price',
+        'admin_fee',
+        'total_price',
+        'total_income',
+        'note',
+        'expired_at',
+        'vexa_invoice'
     ];
 
     protected static function boot()
@@ -231,6 +247,21 @@ class Order extends Model implements IsFilterable
     public function allowedFilters(): AllowedFilterList
     {
         return Filter::only(
+            Filter::relation(
+                'productItem',
+                [FilterType::HAS],
+                Filter::only(
+                    Filter::relation(
+                        'product',
+                        [FilterType::HAS],
+                        Filter::only(
+                            Filter::field(Target::alias('item_name', 'name'), [FilterType::EQUAL, FilterType::LIKE]),
+                        )
+                    ),
+                )
+            ),
+            Filter::field('code', [FilterType::EQUAL, FilterType::LIKE]),
+            Filter::field(Target::alias('date_range', 'created_at'), [FilterType::BETWEEN]),
         );
     }
 }

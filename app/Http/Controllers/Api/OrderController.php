@@ -20,6 +20,7 @@ use App\Models\Product;
 use App\Services\BalanceService;
 use App\Transformers\OrderTransformer;
 use App\Transformers\PaymentMethodTransformer;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -40,8 +41,28 @@ class OrderController extends Controller
 
     public function index()
     {
+        $filter = $this->filter();
+        $itemNameFilter = Arr::where($this->filter(), function ($value) {
+            return $value["target"] === 'item_name';
+        });
+        if (count($itemNameFilter) > 0) {
+            $itemNameProductFilter = [
+                'type'   => '$has',
+                'target' => 'productItem',
+                'value' => [
+                    [
+                        'type' => '$has',
+                        'target' => 'product',
+                        'value' => array_values($itemNameFilter),
+                    ]
+                ]
+            ];
+            $filter = Arr::except($filter, array_keys($itemNameFilter));
+            $filter = array_merge([$itemNameProductFilter], $filter);
+        }
+
         $orders = Order::with('user', 'productItem.product')->latest()
-            ->filter($this->filter())
+            ->filter($filter)
             ->where('user_id', $this->userId)
             ->when(request('order_code'), function ($query) {
                 return $query->where('code', 'like', '%' . request('order_code') . '%');
