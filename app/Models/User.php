@@ -94,7 +94,10 @@ class User extends Authenticatable
 
     public function profile(): HasOne
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class)->withDefault([
+            'first_name' => $this->name,
+            'whatsapp_number' => $this->phone_number,
+        ]);
     }
 
     public function fullName(): Attribute
