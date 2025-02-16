@@ -129,7 +129,7 @@
         <li class="nav-item {{ $activePage == 'payment_method' ? 'active' : null }}">
             <a class="nav-link" href="{{ route('payment_method.index') }}">
                 <span class="menu-title">Metode Pembayaran</span>
-                <i class="mdi mdi-basket menu-icon"></i>
+                <i class="mdi mdi-currency-usd menu-icon"></i>
             </a>
         </li>
         @endcan
