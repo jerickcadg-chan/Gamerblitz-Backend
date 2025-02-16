@@ -95,7 +95,12 @@ class User extends Authenticatable
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class)->withDefault([
+            'id' => 0,
             'first_name' => $this->name,
+            'last_name' => '',
+            "user_id" => $this->id,
+            "created_at" =>  '',
+            "updated_at" => '',
             'whatsapp_number' => $this->phone_number,
         ]);
     }
