@@ -48,7 +48,7 @@ class OrderService
                 return $error;
             }
 
-            if ($productItem->stock == 0) {
+            if ($productItem->stock === 0) {
                 DB::commit();
 
                 return trans('order.out_of_stock');
