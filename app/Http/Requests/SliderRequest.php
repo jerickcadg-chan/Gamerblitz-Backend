@@ -30,7 +30,7 @@ class SliderRequest extends FormRequest
                     'url' => 'required|string|max:255',
                     'start_date' => 'required|date',
                     'end_date' => 'required|date|after_or_equal:start_date',
-                    'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
                 ];
             case 'PUT':
             case 'PATCH':
@@ -39,7 +39,7 @@ class SliderRequest extends FormRequest
                     'url' => 'required|string|max:255',
                     'start_date' => 'required|date',
                     'end_date' => 'required|date|after_or_equal:start_date',
-                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
                 ];
 
             default:
