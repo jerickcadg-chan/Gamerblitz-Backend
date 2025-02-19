@@ -358,8 +358,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereByClient()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Deposit whereExpiredAt($value)
@@ -408,6 +406,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereByClient()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Discount whereCreatedAt($value)
@@ -477,6 +477,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereByClient()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashSale whereEndDate($value)
@@ -643,6 +645,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int|null $client_id
  * @property string $name
  * @property string $admin_fee
  * @property string $admin_type
@@ -666,7 +669,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereAdminFee($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereAdminType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereByClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereClient()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentMethod whereName($value)
@@ -853,6 +859,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $product_id
+ * @property int|null $product_item_category_id
  * @property string $name
  * @property string|null $code
  * @property int|null $stock
@@ -866,6 +873,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $status
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Account> $accounts
  * @property-read int|null $accounts_count
  * @property-read mixed $capital
@@ -878,6 +886,7 @@ namespace App\Models{
  * @property-read float $margin_percentage
  * @property-read float $margin_price
  * @property-read float $margin_price_reseller
+ * @property-read float $margin_reseller
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $order
  * @property-read int|null $order_count
  * @property-read \App\Models\Product $product
@@ -885,6 +894,7 @@ namespace App\Models{
  * @property-read int|null $product_item_clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Voucher> $vouchers
  * @property-read int|null $vouchers_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem active()
  * @method static \Database\Factories\ProductItemFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newQuery()
@@ -902,6 +912,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem wherePriceReseller($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereProductItemCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem whereUpdatedAt($value)
@@ -918,9 +930,42 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int $product_id
+ * @property string $name
+ * @property string $slug
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Product $product
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItem> $productItems
+ * @property-read int|null $product_items_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory active()
+ * @method static \Database\Factories\ProductItemCategoryFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemCategory whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	class IdeHelperProductItemCategory {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property int $product_item_id
  * @property int $client_id
  * @property string $margin
+ * @property string $reseller_margin
  * @property int $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -936,6 +981,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereIsActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereMargin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereProductItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereResellerMargin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItemClient whereUpdatedAt($value)
  * @mixin \Eloquent
  */
@@ -994,6 +1040,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereByClient()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereClient()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereEndDate($value)
@@ -1032,7 +1080,7 @@ namespace App\Models{
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \App\Models\Profile|null $profile
+ * @property-read \App\Models\Profile $profile
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read int|null $roles_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens

@@ -33,7 +33,7 @@ class ProductTransformer extends TransformerAbstract
             'name' => $product->name,
             'slug' => $product->slug,
             'category' => $product->category,
-            'company' => $product->company ?? '-',
+            'company' => $product->company,
             'input_format' => json_decode($product->input_format),
             'description' => $product->description,
             'how_to_order' => $product->how_to_order,
