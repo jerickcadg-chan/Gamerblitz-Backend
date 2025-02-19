@@ -15,6 +15,7 @@
         "laravel/ui": "^4.5",
         "league/flysystem-aws-s3-v3": "^3.0",
         "maatwebsite/excel": "^3.1",
+        "opcodesio/log-viewer": "^3.14",
         "realrashid/sweet-alert": "^7.2",
         "sheenazien8/konstantiq": "^1.0",
         "spatie/laravel-fractal": "^6.2",

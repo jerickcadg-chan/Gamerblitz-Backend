@@ -45,13 +45,11 @@
                             <td>{{ $products->firstItem() + $index }}</td>
                             <td><a href="{{ $product->full_slug }}" target="_blank">{{ $product->name }}</a></td>
                             <td>{{ $product->code }}</td>
-                            <td>{{ $product->product_category?->name }}</td>
+                            <td>{{ $product->productCategory?->name }}</td>
                             <td>{!! $product->statusView !!}</td>
                             <td>
                                 @include('master.action', [
                                     'view_url' => route('product.show', $product),
-                                    'edit_url' => route('product.edit', $product),
-                                    'delete_url' => route('product.destroy', $product)
                                 ])
                             </td>
                         </tr>
