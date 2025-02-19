@@ -22,6 +22,7 @@ class MutationTransformer extends TransformerAbstract
     {
         return [
             'created_at' => parse_date_time($mutation->created_at),
+            'created_at_raw' => $mutation->created_at,
             'description' => $mutation->description,
             'amount' => rp_format($mutation->amount),
             'latest_balance' => rp_format($mutation->latest_balance),

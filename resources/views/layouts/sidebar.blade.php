@@ -19,7 +19,7 @@
                 <i class="mdi mdi-home menu-icon"></i>
             </a>
         </li>
-        @canany(['View Product Category', 'View Product Item'])
+        @canany(['View Product Category', 'View Product Item', 'View Product Item Category'])
         <li class="nav-item {{ in_array($activePage, config('array.menu.product')) ? 'active' : null }}">
             <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
                 <span class="menu-title">Produk</span>
@@ -33,9 +33,14 @@
                         <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Kategori </a>
                     </li>
                     @endcan
+                    @can ('View Product Item Category')
+                    <li class="nav-item">
+                        <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}" href="{{ route('product_item_category.index') }}">Produk Item Kategory </a>
+                    </li>
+                    @endcan
                     @can ('View Product Item')
                     <li class="nav-item">
-                        <a class="nav-link {{ in_array($activePage, ['product_item', 'voucher']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>
+                        <a class="nav-link {{ in_array($activePage, ['product_item']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>
                     </li>
                     @endcan
                     @can ('View Account')

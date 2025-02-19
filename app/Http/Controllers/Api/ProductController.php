@@ -15,7 +15,6 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::active()
-            ->orderBy('created_at')
             ->when(request('category'), function (Builder $query) {
                 return $query->whereHas('productCategory', function (Builder $query) {
                     $query->where('name', request('category'));
@@ -56,6 +55,7 @@ class ProductController extends Controller
     public function getProductItems($productId)
     {
         $productItems = ProductItem::query()
+            ->active()
             ->with([
                 'productItemClients' => function ($query) {
                     $query->where('client_id', client()->id);

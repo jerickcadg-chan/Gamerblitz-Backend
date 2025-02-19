@@ -32,6 +32,7 @@ class OrderTransformer extends TransformerAbstract
             'id' => $order->id,
             'code' => $order->code,
             'created_at' => parse_date_time_full($order->created_at),
+            'created_at_raw' => $order->created_at,
             'created_at_simple' => parse_date($order->created_at),
             'cust_email' => $order->cust_email,
             'cust_phone_number' => $order->cust_phone_number,

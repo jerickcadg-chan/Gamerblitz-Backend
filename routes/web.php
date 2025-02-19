@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductItemCategoryController;
 use App\Http\Controllers\ProductItemController;
 use App\Http\Controllers\ProductItemPriceController;
 use App\Http\Controllers\ReportController;
@@ -81,6 +82,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'product' => ProductController::class,
         'flash_sale' => FlashSaleController::class,
         'product_item' => ProductItemController::class,
+        'product_item_category' => ProductItemCategoryController::class,
         'product_item_price' => ProductItemPriceController::class,
         'voucher' => VoucherController::class,
         'discount' => DiscountController::class,

@@ -40,6 +40,7 @@ class ProductTransformer extends TransformerAbstract
             'status' => $product->status,
             'picture' => $product->product_picture,
             'cover' => $product->product_cover,
+            'ordering' => $product->ordering
         ];
     }
 

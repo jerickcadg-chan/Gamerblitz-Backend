@@ -28,9 +28,13 @@ class DepositTransformer extends TransformerAbstract
             'unique_code' => $deposit->unique_code,
             'total_amount' => rp_format($deposit->total_amount),
             'paid_at' => parse_date_time($deposit->paid_at),
+            'paid_at_raw' => $deposit->paid_at,
             'expired_at' => parse_date_time($deposit->expired_at),
+            'expired_at_raw' => $deposit->expired_at,
             'updated_at' => parse_date_time($deposit->updated_at),
+            'updated_at_raw' => $deposit->updated_at,
             'created_at' => parse_date_time($deposit->created_at),
+            'created_at_raw' => $deposit->created_at,
         ];
     }
 }

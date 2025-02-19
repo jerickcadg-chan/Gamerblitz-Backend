@@ -13,7 +13,8 @@ class DepositController extends Controller
 
     public function index()
     {
-        $deposits = Deposit::with('user')->latest()
+        $deposits = Deposit::with('user')
+            ->latest()
             ->whereHas('user', function (Builder $query) {
                 $query
                     ->when(request('name'), function (Builder $query) {
