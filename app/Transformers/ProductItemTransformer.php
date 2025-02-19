@@ -31,6 +31,7 @@ class ProductItemTransformer extends TransformerAbstract
             'id' => $productItem->id,
             'name' => $productItem->name,
             'stock' => $productItem->stock,
+            'product_item_category_id' => $productItem->product_item_category_id,
             'original_price' => rp_format($productItem->real_price),
             'discount_price' => rp_format($productItem->discount_price),
             'total_price' => rp_format($productItem->total_price),

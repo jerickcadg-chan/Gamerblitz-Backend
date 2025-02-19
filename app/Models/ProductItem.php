@@ -12,15 +12,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
+use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
+use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
+use IndexZer0\EloquentFiltering\Filter\FilterType;
+use IndexZer0\EloquentFiltering\Filter\Traits\Filterable;
 
 /**
  * @mixin IdeHelperProductItem
  */
-class ProductItem extends Model
+class ProductItem extends Model implements IsFilterable
 {
     /** @use HasFactory<\Database\Factories\ProductItemFactory> */
     use HasFactory;
     use SoftDeletes;
+    use Filterable;
 
     protected $fillable = [
         'product_id',
@@ -180,5 +186,15 @@ class ProductItem extends Model
     public function scopeActive(Builder $query)
     {
         return $query->where('status', 'active');
+    }
+
+    public function allowedFilters(): AllowedFilterList
+    {
+        return Filter::only(
+            Filter::field('name', [FilterType::LIKE, FilterType::EQUAL]),
+            Filter::field('code', [FilterType::LIKE, FilterType::EQUAL]),
+            Filter::field('type', [FilterType::EQUAL]),
+            Filter::field('product_item_category_id', [FilterType::EQUAL]),
+        );
     }
 }

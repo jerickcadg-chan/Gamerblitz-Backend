@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Services\OrderService;
-use Illuminate\Routing\Controller;
 use App\Transformers\ProductTransformer;
 use App\Transformers\ProductItemTransformer;
 use Illuminate\Database\Eloquent\Builder;
@@ -55,6 +55,7 @@ class ProductController extends Controller
     public function getProductItems($productId)
     {
         $productItems = ProductItem::query()
+            ->filter($this->filter())
             ->active()
             ->with([
                 'productItemClients' => function ($query) {

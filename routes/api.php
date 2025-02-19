@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\ForgotPassword;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductItemCategoryController;
 use App\Http\Controllers\Api\SliderController;
 use App\Models\Client;
 use App\Models\ClientTheme;
@@ -45,6 +46,7 @@ Route::get('/clients/all', function() {
 })->middleware('basic_auth');
 
 Route::get('category', CategoryController::class);
+Route::get('product-item-category', ProductItemCategoryController::class);
 Route::get('product/account', [AccountController::class, 'index'])->name('product.account');
 Route::get('product/{account:slug}/account', [AccountController::class, 'show'])->name('product.account.show');
 Route::get('product', [ProductController::class, 'index']);
