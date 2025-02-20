@@ -9,7 +9,8 @@ class CustAccountService
         $account = json_decode($value);
 
         switch ($productName) {
-            case 'Mobile Legends':
+            case 'Mobile Legends Fast':
+            case 'Mobile Legends Promo':
                 $requiredInformation = trim($account->player_id) . trim($account->server_id);
                 break;
 

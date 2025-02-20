@@ -430,6 +430,7 @@ class OrderService
             return false;
         }
 
+        $customer_no = CustAccountService::idExtractor($order->productItem->product->name, $order->cust_account);
         $path = str(config('array.mitra-gamers.url'))->replaceEnd("/", "")->append('/api/v2/transaction')->value();
 
         $response = Http::withHeaders([
@@ -441,7 +442,7 @@ class OrderService
             'qty' => $order->qty,
             'payment_method' => 'balance',
             'platform' => 'api',
-            'customer_no' => CustAccountService::idExtractor($order->productItem->product->name, $order->cust_account),
+            'customer_no' => $customer_no,
             'selling_price' => $order->price - $order->discount_price,
             'note' => $order->note
         ]);
