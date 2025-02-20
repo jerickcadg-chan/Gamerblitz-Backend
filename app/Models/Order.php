@@ -60,7 +60,7 @@ class Order extends Model implements IsFilterable
     {
         parent::boot();
         static::creating(function ($model) {
-            $model->attributes['code'] = 'KY' . date('ymd') . strtoupper(substr(uniqid(), -5));
+            $model->attributes['code'] = 'INV' . date('ymd') . strtoupper(substr(uniqid(), -5));
         });
     }
 
