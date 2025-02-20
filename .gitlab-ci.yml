@@ -43,6 +43,6 @@ deploy_prod:
     - build_prod
   script:
     - scp -r -P $SSH_PORT public/build $SSH_USER@$SSH_HOST:$APP_DIR/public
-    - SSH $SSH_USER@$SSH_HOST -p $SSH_PORT "cd $APP_DIR && git pull && php artisan optimize"
+    - ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd $APP_DIR && git pull && php artisan optimize"
   only:
     - tags
