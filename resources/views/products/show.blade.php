@@ -34,7 +34,7 @@
                         <td>{!! $product->statusView !!}</td>
                     </tr>
                     <tr>
-                        <th>Item Dijual</th>
+                        <th>Company</th>
                         <td>{{ $product->company }}</td>
                     </tr>
                     <tr>
