@@ -100,7 +100,7 @@ if (!function_exists('parse_date')) {
             return '-';
         }
         Carbon::setLocale('id');
-        //        $date = \Carbon\Carbon::parse($date)->translatedFormat("%d %B %Y");
+        //        $date = \Carbon\Carbon::parse($date)->format("%d %B %Y");
         $date = Carbon::parse($date);
         return $date->format('d') . '-' . get_month_simple($date->format('m')) . '-' . $date->format('Y');
     }
@@ -113,7 +113,7 @@ if (!function_exists('parse_date_full')) {
             return '-';
         }
         Carbon::setLocale('id');
-        //        $date = \Carbon\Carbon::parse($date)->translatedFormat("%d %B %Y");
+        //        $date = \Carbon\Carbon::parse($date)->format("%d %B %Y");
         $date = Carbon::parse($date);
         return $date->format('d') . ' ' . get_month_name($date->format('m')) . ' ' . $date->format('Y');
     }
@@ -126,9 +126,9 @@ if (!function_exists('parse_date_time')) {
             return '-';
         }
         Carbon::setLocale('id');
-        //        $date = \Carbon\Carbon::parse($date)->translatedFormat("%d %B %Y, %I:%M:%S %p");
+        //        $date = \Carbon\Carbon::parse($date)->format("%d %B %Y, %I:%M:%S %p");
         $date = Carbon::parse($date);
-        return $date->format('d') . '-' . get_month_simple($date->format('m')) . '-' . $date->format('Y') . ', ' . \Carbon\Carbon::parse($date)->translatedFormat("%H:%M:%S");
+        return $date->format('d') . '-' . get_month_simple($date->format('m')) . '-' . $date->format('Y') . ', ' . \Carbon\Carbon::parse($date)->format("H:i:s");
         //        return $date;
     }
 }
@@ -142,7 +142,7 @@ if (!function_exists('parse_date_time_full')) {
         Carbon::setLocale('id');
 
         $date = Carbon::parse($date);
-        return $date->format('d') . ' ' . get_month_name($date->format('m')) . ' ' . $date->format('Y') . ', ' . \Carbon\Carbon::parse($date)->translatedFormat("%H:%M:%S");
+        return $date->format('d') . ' ' . get_month_name($date->format('m')) . ' ' . $date->format('Y') . ', ' . \Carbon\Carbon::parse($date)->format("H:i:s");
     }
 }
 
