@@ -10,6 +10,7 @@ use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendSettlementNotif;
 use App\Models\Balance;
+use App\Models\Client;
 use App\Models\Order;
 use App\Models\Voucher;
 use App\Models\Discount;
@@ -323,6 +324,9 @@ class OrderService
         //            if ($order->productItem->product->category == ProductConstant::VOUCHER) {
         //                $this->sendVoucher($order);
         //            }
+        if ($order->productItem->type == ProductItemTypeConstant::TOPUP) {
+            $this->createMitraGamersOrder($order);
+        }
 
         $this->sendSettlementNotif($order);
     }
@@ -429,7 +433,7 @@ class OrderService
         $path = str(config('array.mitra-gamers.url'))->replaceEnd("/", "")->append('/api/v2/transaction')->value();
 
         $response = Http::withHeaders([
-            'Valid-token' => base64_encode($order->client->user_token),
+            'Valid-token' => base64_encode($order->client->user_api_token),
             'Accept' => 'application/json'
         ])->post($path, [
             'ref_id' => $order->code,
@@ -443,11 +447,11 @@ class OrderService
         ]);
 
         if (!$response->ok()) {
-            // $this->updateStatus(
-            //     order: $order,
-            //     orderStatus: Order::INPROCESS,
-            // );
-            // Mail::to(config('array.mail.notification'))->queue(new SendErrorNotif($order, $response->json("message")));
+            $this->updateStatus(
+                order: $order,
+                orderStatus: Order::INPROCESS,
+            );
+            Mail::to(Client()->user->email)->queue(new SendErrorNotif($order, $response->json("message")));
 
             return json_decode($response->collect());
         }
