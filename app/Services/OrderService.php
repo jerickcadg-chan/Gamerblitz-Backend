@@ -443,7 +443,6 @@ class OrderService
             'payment_method' => 'balance',
             'platform' => 'api',
             'customer_no' => $customer_no,
-            'selling_price' => $order->price - $order->discount_price,
             'note' => $order->note
         ]);
 
