@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Constants\ProductConstant;
-use App\Constants\ProductJoki;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -41,7 +39,8 @@ class Product extends Model
         'product_joki',
         'default_picture',
         'default_cover',
-        'ordering'
+        'ordering',
+        'product_category_id'
     ];
 
     public function productItems()
@@ -121,5 +120,10 @@ class Product extends Model
         return Attribute::make(
             get: fn() => $this->productCategory?->slug ?? 'other'
         );
+    }
+
+    public function productItemCategories(): HasMany
+    {
+        return $this->hasMany(ProductItemCategory::class);
     }
 }
