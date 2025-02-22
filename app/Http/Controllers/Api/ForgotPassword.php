@@ -43,7 +43,7 @@ class ForgotPassword extends Controller
 
         [$id, $token] = explode('|', $request->token, 2);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->where('host', client()->host)->first();
         $tokenModel = PersonalAccessToken::find($id);
 
         if ($tokenModel->expires_at && $tokenModel->expires_at->isPast()) {
