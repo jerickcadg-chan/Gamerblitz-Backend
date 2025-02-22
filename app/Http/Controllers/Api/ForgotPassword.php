@@ -17,7 +17,7 @@ class ForgotPassword extends Controller
         ]);
 
         /** @var User $user */
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->where('host', client()->host)->first();
         if (!$user) {
             return api_status_warning('Email not found!', 404);
         }
