@@ -65,11 +65,29 @@ class OrderController extends Controller
         $orders = Order::with('user', 'productItem.product')->latest()
             ->filter($filter)
             ->where('user_id', $this->userId)
+            ->when(request('limit'), function ($query) {
+                return $query->limit(\request('limit'));
+            })
             ->when(request('order_code'), function ($query) {
                 return $query->where('code', 'like', '%' . request('order_code') . '%');
             });
 
         return api_status_ok(paginateTransformer($orders, new OrderTransformer));
+    }
+
+    public function stats()
+    {
+        $orders = Order::where('user_id', $this->userId)
+            ->selectRaw("
+                COALESCE(SUM(CASE WHEN order_status = 'done' THEN 1 ELSE 0 END), 0) as `done`,
+                COALESCE(SUM(CASE WHEN order_status = 'in-process' THEN 1 ELSE 0 END), 0) as `in-process`,
+                COALESCE(SUM(CASE WHEN order_status = 'expired' THEN 1 ELSE 0 END), 0) as `expired`,
+                COALESCE(SUM(CASE WHEN order_status = 'canceled' THEN 1 ELSE 0 END), 0) as `canceled`
+            ")
+            ->first()
+            ->toArray();
+
+        return api_status_ok($orders);
     }
 
     public function show($order)

@@ -86,10 +86,10 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
 
     Route::get('mutation', [DepositController::class, 'mutation']);
 
+    Route::get('order-stats', [OrderController::class, 'stats']);
     Route::post('order/auth', [OrderController::class, 'store']);
     Route::get('order', [OrderController::class, 'index']);
     Route::get('order/{order}/auth', [OrderController::class, 'show']);
-
 
     Route::post('/setting/fe/appearance', [AccountController::class, 'appearance']);
 });
