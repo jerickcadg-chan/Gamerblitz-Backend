@@ -17,6 +17,14 @@
             table tr td {
                 padding: 15px;
             }
+            .btn {
+              padding: 10px 12px;
+              background-color: #364152;
+              color: white;
+              margin-top: 10px;
+              border-radius: 5px;
+              text-decoration: none;
+            }
         </style>
     </head>
     <body>
@@ -24,8 +32,10 @@
             <img src="{{$user->client->logo}}" width="200px" alt="{{ $user->client->name }}">
             <div class="card">
                 <h1>Email verifikasi</h1>
-                <p style="margin: 0px">Klik link dibawah ini untuk verifikasi email anda</p>
-                <a href="{{ $url }}" target="_blank">Link verifikasi</a>
+                <p>Klik link dibawah ini untuk verifikasi email anda</p>
+                <a href="{{ $url }}"
+                   target="_blank"
+                   class="btn">Verifikasi Disini</a>
             </div>
             <p>Email dibuat secara otomatis</p>
             <a href="{{$user->client->frontend_host}}" target="_blank">{{$user->client->frontend_host}}</a>
