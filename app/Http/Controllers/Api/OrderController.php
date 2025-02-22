@@ -65,14 +65,11 @@ class OrderController extends Controller
         $orders = Order::with('user', 'productItem.product')->latest()
             ->filter($filter)
             ->where('user_id', $this->userId)
-            ->when(request('limit'), function ($query) {
-                return $query->limit(\request('limit'));
-            })
             ->when(request('order_code'), function ($query) {
                 return $query->where('code', 'like', '%' . request('order_code') . '%');
             });
 
-        return api_status_ok(paginateTransformer($orders, new OrderTransformer));
+        return api_status_ok(paginateTransformer($orders, new OrderTransformer, [], \request('limit') ?? 10));
     }
 
     public function stats()
