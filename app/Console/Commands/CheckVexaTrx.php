@@ -44,11 +44,11 @@ class CheckVexaTrx extends Command
         $orders = Order::where('order_status', Order::INPROCESS)->get();
 
         foreach ($orders as $order) {
-            if ($order->vexa_invoice) {
+            if ($order->mg_invoice) {
                 $request = Http::asForm()->withHeaders([
                     'Authorization' => config('array.vexa.token'),
                     'Accept' => 'application/json'
-                ])->get(config('array.vexa.url') . '/v2/transaction/'. $order->vexa_invoice)->collect();
+                ])->get(config('array.vexa.url') . '/v2/transaction/'. $order->mg_invoice)->collect();
 
                 $response = json_decode($request->collect());
 

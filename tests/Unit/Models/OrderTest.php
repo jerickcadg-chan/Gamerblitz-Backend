@@ -30,7 +30,7 @@ class OrderTest extends TestCase
         $this->assertEquals([
             'code', 'user_id', 'cust_email', 'cust_phone_number', 'product_item_id', 'cust_account',
             'payment_method', 'payment_status', 'order_status', 'qty', 'price', 'admin_fee', 'total_price',
-            'total_income', 'note', 'expired_at', 'vexa_invoice'
+            'total_income', 'note', 'expired_at', 'mg_invoice'
         ], $order->getFillable());
     }
 
@@ -68,7 +68,7 @@ class OrderTest extends TestCase
             "payment_url",
             "payment_code",
             "payment_id",
-            "vexa_invoice",
+            "mg_invoice",
             "note",
             "expired_at",
             "created_at",

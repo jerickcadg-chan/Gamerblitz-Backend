@@ -156,7 +156,7 @@ class OrderService
 
     public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, $qty = 1): array
     {
-        if ($productItem->product->category == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) {
+        if (str($productItem->product->category)->lower() == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) {
             $joki = json_decode($request->note, true) ?? [];
             $validator = Validator::make($joki, [
                 'startRank' => 'required|string',
@@ -458,7 +458,7 @@ class OrderService
         $response = json_decode($response->collect());
 
         if ($response->payload) {
-            $order->vexa_invoice = $response->payload->id;
+            $order->mg_invoice = $response->payload->id;
             $order->save();
         }
 

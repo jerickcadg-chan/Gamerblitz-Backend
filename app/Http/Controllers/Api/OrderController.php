@@ -23,6 +23,7 @@ use App\Transformers\PaymentMethodTransformer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -165,15 +166,15 @@ class OrderController extends Controller
 
     public function agenCallback(Request $request, OrderService $orderService)
     {
-        // if (config('array.enable_log')) {
-        //     Log::info("BANGJEFF LOG - IP {$request->ip()} - REQUEST ". json_encode($request->all()) . " - HEADERS ". json_encode($request->header()));
-        // }
+        if (config('array.enable_log')) {
+            Log::info("BANGJEFF LOG - IP {$request->ip()} - REQUEST ". json_encode($request->all()) . " - HEADERS ". json_encode($request->header()));
+        }
 
         //        if ($request->ip() != config('array.bangjeff.ip')) {
         //            return api_status_warning('Invalid IP !!!');
         //        }
 
-        $order = Order::where('vexa_invoice', $request->invoice_number)->first();
+        $order = Order::where('code', $request->code)->first();
 
         if (empty($order)) {
             return api_status_warning("Wrong number!");
@@ -183,6 +184,7 @@ class OrderController extends Controller
 
         switch ($request->status_code) {
             case 'SUCCESS':
+            case 'Sukses':
                 $orderService->updateStatus($order, null, Order::DONE);
 
                 $note = strtolower($productItem->product->category) === Product::VOUCHER ? $request->voucher : "Nickname : $request->nickname - $request->status_desc";
@@ -191,6 +193,7 @@ class OrderController extends Controller
                 $orderService->updateCapital($order, $request->total_price);
                 break;
             case 'REFUNDED';
+            case 'Gagal';
                 $orderService->updateStatus($order, null, Order::REFUNDED);
                 $orderService->updateNote($order, $request->status_desc);
 

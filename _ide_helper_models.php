@@ -755,6 +755,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductClient> $productClient
  * @property-read int|null $product_client_count
  * @property-read string $product_cover
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemCategory> $productItemCategories
+ * @property-read int|null $product_item_categories_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItem> $productItems
  * @property-read int|null $product_items_count
  * @property-read string $product_picture
@@ -896,6 +898,7 @@ namespace App\Models{
  * @property-read int|null $vouchers_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem active()
  * @method static \Database\Factories\ProductItemFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem filter(array $filters, ?\IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList $allowedFilterList = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductItem onlyTrashed()

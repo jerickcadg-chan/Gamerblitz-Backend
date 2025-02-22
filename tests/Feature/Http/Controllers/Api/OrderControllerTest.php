@@ -621,7 +621,7 @@ class OrderControllerTest extends TestCase
         $response->assertOk();
 
         $order = $order->refresh();
-        $this->assertSame($order->vexa_invoice, $mitraGamersMockData['payload']['id']);
+        $this->assertSame($order->mg_invoice, $mitraGamersMockData['payload']['id']);
         $this->assertSame(Order::INPROCESS, $order->order_status);
         $this->assertSame(Order::SETTLEMENT, $order->payment_status);
 
@@ -680,7 +680,7 @@ class OrderControllerTest extends TestCase
         $response->assertOk();
 
         $order = $order->refresh();
-        $this->assertSame($order->vexa_invoice, null);
+        $this->assertSame($order->mg_invoice, null);
         $this->assertSame(Order::INPROCESS, $order->order_status);
         $this->assertSame(Order::SETTLEMENT, $order->payment_status);
 
@@ -745,7 +745,7 @@ class OrderControllerTest extends TestCase
 
         /** @var Order $order */
         $order = $order->refresh();
-        $this->assertSame($order->vexa_invoice, null);
+        $this->assertSame($order->mg_invoice, null);
         $this->assertSame(Order::DONE, $order->order_status);
         $this->assertSame(Order::SETTLEMENT, $order->payment_status);
 

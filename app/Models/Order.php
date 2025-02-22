@@ -53,7 +53,7 @@ class Order extends Model implements IsFilterable
         'total_income',
         'note',
         'expired_at',
-        'vexa_invoice'
+        'mg_invoice'
     ];
 
     protected static function boot()
