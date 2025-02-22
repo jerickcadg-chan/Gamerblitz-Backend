@@ -17,7 +17,7 @@ class ForgotPassword extends Controller
         ]);
 
         /** @var User $user */
-        $user = User::where('email', $request->email)->where('host', client()->host)->first();
+        $user = User::where('email', $request->email)->where('client_id', client()->id)->first();
         if (!$user) {
             return api_status_warning('Email not found!', 404);
         }
@@ -43,7 +43,7 @@ class ForgotPassword extends Controller
 
         [$id, $token] = explode('|', $request->token, 2);
 
-        $user = User::where('email', $request->email)->where('host', client()->host)->first();
+        $user = User::where('email', $request->email)->where('client_id', client()->id)->first();
         $tokenModel = PersonalAccessToken::find($id);
 
         if ($tokenModel->expires_at && $tokenModel->expires_at->isPast()) {
