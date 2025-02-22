@@ -62,6 +62,7 @@ class AuthController extends Controller
             }
 
             if ($user->email_verified_at == null) {
+                $user->sendEmailVerificationNotification();
                 return api_status_warning(trans('auth.unverified'), 400);
             }
 
