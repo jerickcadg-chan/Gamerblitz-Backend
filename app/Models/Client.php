@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Arr;
 
 /**
  * @mixin IdeHelperClient
@@ -78,5 +80,18 @@ class Client extends Model
         }
 
         return $this->hasOne(ClientAbout::class)->withDefault($defaultColumn);
+    }
+
+    public function frontendHost(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $host = parse_url((strpos($this->host, 'http') === 0 ? $this->host : 'http://' . $this->host), PHP_URL_HOST);
+                $hostParts = explode('.', $host);
+                unset($hostParts[0]);
+
+                return str(Arr::join($hostParts, '.'))->prepend('https://')->value();
+            }
+        );
     }
 }

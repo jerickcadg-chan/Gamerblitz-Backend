@@ -34,7 +34,7 @@
     </head>
     <body>
         <center>
-            <img src="{{ $order->client->logo }}" width="200px" alt="mitragamers-logo">
+            <img src="{{ $order->client->logo }}" width="200px" alt="{{ $order->client->name }}">
             <div class="card">
                 @if ($order->payment_status == \App\Models\Order::PENDING && $order->order_status != \App\Models\Order::EXPIRED)
                     <h3>Hi, Silahkan selesaikan pembayaran anda sebelum {{ parse_date_full($order->expired_at) }}</h3>
@@ -88,7 +88,7 @@
                 <p><a href="{{ $order->payment_url_full }}" class="button" target="_blank">Bayar Sekarang</a></p>
             @endif
             <p>Email dibuat secara otomatis</p>
-            <a href="{{$order->client->host}}" target="_blank">{{$order->client->host}}</a>
+            <a href="{{$order->client->frontend_host}}" target="_blank">{{$order->client->frontend_host}}</a>
         </center>
     </body>
 </html>

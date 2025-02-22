@@ -21,13 +21,13 @@
     </head>
     <body>
       <center>
-        <img src="{{ $order->client->logo }}" width="200px" alt="mitragamers-logo">
+        <img src="{{ $order->client->logo }}" width="200px" alt="{{ $order->client->name }}">
         <div class="card">
           <h1>Ini detail akun yang sudah anda beli 🔥</h1>
           {!! decrypt($order->accounts->first()->information) !!}
         </div>
         <p>Email dibuat secara otomatis</p>
-        <a href="{{$order->client->host}}" target="_blank">{{$order->client->host}}</a>
+        <a href="{{$order->client->frontend_host}}" target="_blank">{{$order->client->frontend_host}}</a>
       </center>
     </body>
 </html>

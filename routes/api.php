@@ -60,9 +60,9 @@ Route::get('payment-method', [OrderController::class, 'getPaymentMethods']);
 Route::post('discount', [OrderController::class, 'getDiscount']);
 
 Route::post('order', [OrderController::class, 'store']);
-Route::get('order/{order}', [OrderController::class, 'show']);
 Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('callback.xendit');
 Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->name('callback.bangjeff');
+Route::get('order/{order}', [OrderController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::put('clients/configuration', function(Request $request) {

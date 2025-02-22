@@ -184,14 +184,7 @@ class OrderController extends Controller
 
     public function agenCallback(Request $request, OrderService $orderService)
     {
-        if (config('array.enable_log')) {
-            Log::info("BANGJEFF LOG - IP {$request->ip()} - REQUEST ". json_encode($request->all()) . " - HEADERS ". json_encode($request->header()));
-        }
-
-        //        if ($request->ip() != config('array.bangjeff.ip')) {
-        //            return api_status_warning('Invalid IP !!!');
-        //        }
-
+        // TODO: fix auth
         $order = Order::where('code', $request->code)->first();
 
         if (empty($order)) {
@@ -200,7 +193,7 @@ class OrderController extends Controller
 
         $productItem = $order->productItem;
 
-        switch ($request->status_code) {
+        switch ($request->status) {
             case 'SUCCESS':
             case 'Sukses':
                 $orderService->updateStatus($order, null, Order::DONE);

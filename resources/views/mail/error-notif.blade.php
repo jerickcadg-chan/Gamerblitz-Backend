@@ -21,7 +21,7 @@
     </head>
     <body>
         <center>
-            <img src="{{ $order->client->logo }}/img/mitragamers-logo.png" width="200px" alt="mitragamers-logo">
+            <img src="{{ $order->client->logo }}" width="200px" alt="{{ $order->client->name}}">
             <div class="card">
                 <h1>Ada Transaksi Error 🙈</h1>
                 <h3>{{ $errMessage }}</h3>
@@ -49,7 +49,7 @@
                 </table>
             </div>
             <p>Email dibuat secara otomatis</p>
-            <a href="{{$order->client->host}}" target="_blank">{{$order->client->host}}</a>
+            <a href="{{$order->client->frontend_host}}" target="_blank">{{$order->client->frontend_host}}</a>
         </center>
     </body>
 </html>

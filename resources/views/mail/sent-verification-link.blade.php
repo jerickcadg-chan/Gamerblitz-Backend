@@ -21,14 +21,14 @@
     </head>
     <body>
         <center>
-            <img src="{{$user->client->logo}}" width="200px" alt="mitragamers-logo">
+            <img src="{{$user->client->logo}}" width="200px" alt="{{ $user->client->name }}">
             <div class="card">
                 <h1>Email verifikasi</h1>
                 <p style="margin: 0px">Klik link dibawah ini untuk verifikasi email anda</p>
                 <a href="{{ $url }}" target="_blank">Link verifikasi</a>
             </div>
             <p>Email dibuat secara otomatis</p>
-            <a href="{{$user->client->host}}" target="_blank">{{$user->client->host}}</a>
+            <a href="{{$user->client->frontend_host}}" target="_blank">{{$user->client->frontend_host}}</a>
         </center>
     </body>
 </html>

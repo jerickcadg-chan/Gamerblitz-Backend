@@ -71,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
 
 
         ResetPassword::createUrlUsing(function (User $user, string $token) {
-            $resetUrl = env('RESET_PASSWORD_URL', 'https://example.com/reset-password');
+            $resetUrl = $user->client->frontend_host . '/reset-password';
 
             return $resetUrl.'?token='.$token.'&email='.$user->email;
         });
