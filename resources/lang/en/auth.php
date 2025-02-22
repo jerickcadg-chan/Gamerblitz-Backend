@@ -19,5 +19,5 @@ return [
     'no_permission' => 'You do not have permission!!!.',
     'loged_out' => 'Logged out!',
     'you_should_login' => 'You should login first!',
-    'unverified' => 'Your account is not verified!',
+    'unverified' => 'Your account is not verified, please check your email again',
 ];
