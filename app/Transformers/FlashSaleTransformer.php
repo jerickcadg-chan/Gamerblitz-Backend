@@ -41,17 +41,17 @@ class FlashSaleTransformer extends TransformerAbstract
             'items' => $flashSale->items->map(function (FlashSaleProductItem $item) {
                 return [
                     'id' => $item->id,
-                    'slug' => $item->productItem->product?->slug,
+                    'slug' => $item->productItem?->product?->slug,
                     'flash_price' => $item->price,
                     'stock' => (float) $item->stock,
                     'real_price' => $item->productItem->real_price,
-                    'product_name' => $item->productItem->product?->name,
+                    'product_name' => $item->productItem?->product?->name,
                     'product_item' => [
                         'id' => $item->productItem->id,
                         'name' => $item->productItem->name,
                         'code' => $item->productItem->code,
-                        'cover' => $item->productItem->product?->product_cover,
-                        'picture' => $item->productItem->product?->product_picture,
+                        'cover' => $item->productItem?->product?->product_cover,
+                        'picture' => $item->productItem?->product?->product_picture,
                     ],
                 ];
             })->toArray(),
