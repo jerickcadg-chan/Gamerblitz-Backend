@@ -10,7 +10,6 @@ use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendSettlementNotif;
 use App\Models\Balance;
-use App\Models\Client;
 use App\Models\Order;
 use App\Models\Voucher;
 use App\Models\Discount;
@@ -27,7 +26,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use PhpOffice\PhpSpreadsheet\Calculation\Category;
 
 class OrderService
 {
@@ -158,9 +156,10 @@ class OrderService
 
     public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, $qty = 1): array
     {
+        $price = $productItem->real_price;
         if (str($productItem->product->category)->lower() == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) {
-            $joki = json_decode($request->note, true) ?? [];
-            $validator = Validator::make($joki, [
+            $joki = json_decode($request->note);
+            $validator = Validator::make((array) $joki, [
                 'startRank' => 'required|string',
                 'startRankGrade' => 'required|integer',
                 'startStars' => 'required|integer',
@@ -172,12 +171,12 @@ class OrderService
                 return [null, $validator->messages()->toArray()];
             }
             $jokiResult = $this->calculateJokiMLPrice(
-                $joki['startRank'],
-                $joki['startRankGrade'],
-                $joki['startStars'],
-                $joki['targetRank'],
-                $joki['targetRankGrade'],
-                $joki['targetStars']
+                $joki->startRank,
+                $joki->startRankGrade,
+                $joki->startStars,
+                $joki->targetRank,
+                $joki->targetRankGrade,
+                $joki->targetStars
             );
 
             $price = $jokiResult['price'];
@@ -205,6 +204,9 @@ class OrderService
             $disc = get_active_discount($productItem->real_price, $productItem->product_id, $productItem->id);
         }
 
+        $productItem->real_price = $price;
+        $productItem->capital = $capital;
+
         $xenditFee = $this->calculateXenditFee($productItem, $paymentMethod);
         $forAdmin = 0;
 
@@ -213,12 +215,12 @@ class OrderService
             $forAdmin = $xenditFee;
         }
 
-        $totalPrice = $productItem->real_price - $disc['nominal'] + $xenditFee;
+        $totalPrice = $price - $disc['nominal'] + $xenditFee;
 
-        $totalIncome = $productItem->real_price - $disc['nominal'] + $forAdmin - $capital;
+        $totalIncome = $price - $disc['nominal'] + $forAdmin - $capital;
 
         $prices = [
-            'price' => $productItem->real_price,
+            'price' => $price,
             'capital' => $capital,
             'admin_fee' => $xenditFee,
             'discount_price' => $disc['nominal'],
