@@ -120,6 +120,8 @@ class AccountService
                 'company' => '-',
                 'how_to_order' => '-',
                 'status' => Product::ACTIVE,
+                'default_picture' => 'https://s3.nevaobjects.id/assets-bucket/img/ProductCategory/42eda6116-no_image.png',
+                'default_cover' => 'https://s3.nevaobjects.id/assets-bucket/img/ProductCategory/42eda6116-no_image.png'
             ]);
 
         return $product;
