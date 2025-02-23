@@ -103,7 +103,6 @@ class AccountService
     private function createOrUpdateProduct(): ?Product
     {
         $category = ProductCategory::whereSlug(ProductConstant::ACCOUNT)->first();
-        dd($category);
 
         if (!$category) {
             toast('Category not found', 'error');
