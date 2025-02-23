@@ -7,18 +7,23 @@ use App\Http\Requests\AccountStoreRequest;
 use App\Http\Requests\AccountUpdateRequest;
 use App\Models\Account;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\ProductItem;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class AccountService
 {
-    public function store(AccountStoreRequest $request): Account
+    public function store(AccountStoreRequest $request): ?Account
     {
         DB::beginTransaction();
 
         try {
             $product = $this->createOrUpdateProduct();
+            if (!$product) {
+                return null;
+            }
             $productItem = $this->createProductItem($product, $request);
             $this->createProductItemClient($productItem);
             $productClient = $this->createProductClient($product);
@@ -95,18 +100,29 @@ class AccountService
         $productItem->delete();
     }
 
-    private function createOrUpdateProduct(): Product
+    private function createOrUpdateProduct(): ?Product
     {
+        $category = ProductCategory::whereSlug(ProductConstant::ACCOUNT)->first();
+
+        if (!$category) {
+            toast('Category not found', 'error');
+            return null;
+        }
+
         /** @var Product $product */
-        $product = Product::whereCategory(ProductConstant::ACCOUNT)->firstOrCreate([
-            'name' => 'Akun game',
-            'code' => 'AKUN',
-            'description' => 'Akun game',
-            'company' => '-',
-            'how_to_order' => '-',
-            'category' => ProductConstant::ACCOUNT,
-            'status' => Product::ACTIVE,
-        ]);
+        $product = Product::query()
+            ->whereHas('productCategory', function (Builder $query) {
+                $query->where('slug', ProductConstant::ACCOUNT);
+            })->firstOrCreate([
+                'name' => 'Akun game',
+                'code' => 'AKUN',
+                'description' => 'Akun game',
+                'company' => '-',
+                'how_to_order' => '-',
+                'status' => Product::ACTIVE,
+                'default_picture' => 'https://s3.nevaobjects.id/assets-bucket/img/ProductCategory/42eda6116-no_image.png',
+                'default_cover' => 'https://s3.nevaobjects.id/assets-bucket/img/ProductCategory/42eda6116-no_image.png'
+            ]);
 
         return $product;
     }

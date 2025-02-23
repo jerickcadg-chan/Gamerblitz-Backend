@@ -55,6 +55,9 @@ class AccountController extends Controller
     public function store(AccountStoreRequest $request, AccountService $accountService)
     {
         $account = $accountService->store($request);
+        if (!$account) {
+            return back()->withInput();
+        }
 
         toast(alert_created_text($this->title), 'success');
 

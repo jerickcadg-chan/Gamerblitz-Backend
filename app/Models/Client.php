@@ -94,4 +94,11 @@ class Client extends Model
             }
         );
     }
+
+    public function websiteLevel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->clientAbout->mgclient_level
+        );
+    }
 }
