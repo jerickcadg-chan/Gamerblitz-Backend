@@ -45,6 +45,7 @@ class ProductItem extends Model implements IsFilterable
     protected $appends = [
         'real_price',
         'total_price',
+        'capital'
     ];
 
     public function product()
