@@ -96,6 +96,10 @@
 @push('js')
   <script src="https://cdn.tiny.cloud/1/wejmk4ubc4t2ncovd3risw07yelp0dwzbvdxjq1ilyoizq6p/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
   <script>
+    tinymce.init({
+      selector:'textarea.tinymce',
+      height: 300
+    });
     document.addEventListener('DOMContentLoaded', function() {
       const discountCheckbox = document.getElementById('discount_checkbox');
       const discountForm = document.getElementById('discount_form');
