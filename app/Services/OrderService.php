@@ -204,10 +204,11 @@ class OrderService
             $disc = get_active_discount($productItem->real_price, $productItem->product_id, $productItem->id);
         }
 
-        $productItem->real_price = $price;
-        $productItem->capital = $capital;
-
-        $xenditFee = $this->calculateXenditFee($productItem, $paymentMethod);
+        $xenditFee = $this->calculateXenditFee(
+            realPrice: $price,
+            adminFee: $paymentMethod->admin_fee,
+            adminType: $paymentMethod->admin_type,
+        );
         $forAdmin = 0;
 
         if ($xenditFee == 'no-admin' && $paymentMethod->name != PaymentMethod::SALDO) {
@@ -232,11 +233,14 @@ class OrderService
         return [$prices, null];
     }
 
-    public function calculateXenditFee(ProductItem $productItem, PaymentMethod $paymentMethod)
-    {
-        return match ($paymentMethod->admin_type) {
-            'percentage' => ceil($productItem->real_price / ((100 - $paymentMethod->admin_fee) / 100)) - $productItem->real_price,
-            'nominal' => $paymentMethod->admin_fee,
+    public function calculateXenditFee(
+        $realPrice,
+        $adminFee,
+        $adminType,
+    ) {
+        return match ($adminType) {
+            'percentage' => ceil($realPrice / ((100 - $adminFee) / 100)) - $realPrice,
+            'nominal' => $adminFee,
             default => 0,
         };
     }
