@@ -231,7 +231,7 @@ class OrderService
     public function calculateXenditFee(ProductItem $productItem, PaymentMethod $paymentMethod)
     {
         return match ($paymentMethod->admin_type) {
-            'percentage' => ceil($productItem->real_price / ((100 - $paymentMethod->admin_fee) / 100)),
+            'percentage' => ceil($productItem->real_price / ((100 - $paymentMethod->admin_fee) / 100)) - $productItem->real_price,
             'nominal' => $paymentMethod->admin_fee,
             default => 0,
         };
