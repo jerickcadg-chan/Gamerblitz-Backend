@@ -96,7 +96,7 @@
 @endsection
 
 @push('js')
-  <script src="https://cdn.tiny.cloud/1/wejmk4ubc4t2ncovd3risw07yelp0dwzbvdxjq1ilyoizq6p/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.tiny.cloud/1/vs7rit0kmvgxaum7jh7z3nsu8rytp668mu1agxyhwvspvk6p/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
   <script>
     tinymce.init({
       selector:'textarea.tinymce',
