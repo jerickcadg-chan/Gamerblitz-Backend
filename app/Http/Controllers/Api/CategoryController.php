@@ -14,7 +14,7 @@ class CategoryController extends Controller
             array_values(ProductCategory::active()
                 ->get()
                 ->filter(function (ProductCategory $item) {
-                    return $item->name != ProductConstant::getTitle('account') && $item->name != ProductConstant::getTitle('joki');
+                    return $item->name != ProductConstant::getTitle('account');
                 })
                 ->map(function ($item) {
                     return [
