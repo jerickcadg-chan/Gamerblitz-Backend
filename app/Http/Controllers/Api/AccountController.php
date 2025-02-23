@@ -45,6 +45,10 @@ class AccountController extends Controller
 
     public function show(Account $account)
     {
+        if ($account->productItem->stock === 0) {
+            return api_status_warning("Account not found", 404);
+        }
+
         return api_status_ok(transformer(
             query: $account,
             transformer: new SalesAccountTransformer()
