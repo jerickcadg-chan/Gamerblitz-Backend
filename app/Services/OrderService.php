@@ -16,6 +16,7 @@ use App\Models\Voucher;
 use App\Models\Discount;
 use App\Models\PaymentMethod;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\ProductItem;
 use App\Models\User;
 use Exception;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
 
 class OrderService
 {
@@ -529,8 +531,9 @@ class OrderService
 
     private function rankOptions(): array
     {
+        $category = ProductCategory::whereSlug(ProductConstant::JOKI)->first();
         /** @var Product $product */
-        $product = Product::whereCategory(ProductConstant::JOKI)->first();
+        $product = Product::whereProductCategoryId($category->id)->first();
         $items = ProductItem::where('product_id', $product->id)->orderBy('price')->get()->toArray();
 
         return [
