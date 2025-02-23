@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\DefaultRole;
+use App\Constants\ProductItemTypeConstant;
 use App\Constants\UserLevel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -149,6 +150,9 @@ class ProductItem extends Model implements IsFilterable
         return Attribute::make(
             get: function (): float {
                 $client_id = client()?->id;
+                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
+                    return $this->price;
+                }
                 if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
                     $realPrice = (100 - $productItemClient->reseller_margin);
                     $actualPrice = $this->capital / ($realPrice / 100);
@@ -166,6 +170,9 @@ class ProductItem extends Model implements IsFilterable
         return Attribute::get(
             get: function () {
                 $level = client()->level;
+                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
+                    return $this->price;
+                }
                 $capital = match ($level) {
                     UserLevel::SILVER => $this->capital_silver,
                     UserLevel::GOLD => $this->capital_gold,
