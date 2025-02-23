@@ -35,7 +35,7 @@
           </tr>
           <tr>
             <th>Deskripsi</th>
-            <td>{{ $account->description }}</td>
+            <td>{!! $account->description !!}</td>
           </tr>
           <tr>
             <th>Winrate</th>
@@ -65,10 +65,10 @@
             <th>Informasi</th>
             <td>
               <span id="information-text">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
-              <button type="button" class="btn-sm btn-warning rounded-pill" id="show-information">
+              <button type="button" class="btn-sm btn-gradient-warning rounded-pill" id="show-information">
                 <i class="mdi mdi-eye"></i>
               </button>
-              <button type="button" class="btn-sm btn-info rounded-pill" id="edit-information">
+              <button type="button" class="btn-sm btn-gradient-info rounded-pill" id="edit-information">
                 <i class="mdi mdi-pencil"></i>
               </button>
             </td>
