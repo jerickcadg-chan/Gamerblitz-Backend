@@ -119,7 +119,6 @@ class AccountService
                 'description' => 'Akun game',
                 'company' => '-',
                 'how_to_order' => '-',
-                'category' => ProductConstant::ACCOUNT,
                 'status' => Product::ACTIVE,
             ]);
 
