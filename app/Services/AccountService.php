@@ -69,8 +69,9 @@ class AccountService
         try {
             $this->deleteProductItemClient($account->productItem);
             $this->deleteProductClient($account->productItem->product);
-            $this->deleteProductItem($account->productItem);
+            $productItem = $account->productItem;
             $account->delete();
+            $this->deleteProductItem($productItem);
 
             DB::commit();
         } catch (Exception $e) {
@@ -97,7 +98,7 @@ class AccountService
 
     private function deleteProductItem(ProductItem $productItem): void
     {
-        $productItem->delete();
+        $productItem->forceDelete();
     }
 
     private function createOrUpdateProduct(): ?Product
@@ -110,16 +111,14 @@ class AccountService
         }
 
         /** @var Product $product */
-        $product = Product::query()
-            ->whereHas('productCategory', function (Builder $query) {
-                $query->where('slug', ProductConstant::ACCOUNT);
-            })->firstOrCreate([
-                'name' => 'Akun game',
+        $product = $category->products()
+            ->firstOrCreate([
+                'name' => 'Akun Game',
                 'code' => 'AKUN',
-                'description' => 'Akun game',
+                'description' => 'Akun Game',
                 'company' => '-',
                 'how_to_order' => '-',
-                'status' => Product::ACTIVE,
+                'status' => Product::NOT_VISIBLE,
                 'default_picture' => 'https://s3.nevaobjects.id/assets-bucket/img/ProductCategory/42eda6116-no_image.png',
                 'default_cover' => 'https://s3.nevaobjects.id/assets-bucket/img/ProductCategory/42eda6116-no_image.png'
             ]);

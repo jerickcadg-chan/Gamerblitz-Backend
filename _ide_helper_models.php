@@ -147,6 +147,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ClientAbout $clientAbout
  * @property-read \App\Models\ClientTheme $clientTheme
+ * @property-read mixed $frontend_host
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductClient> $productClients
  * @property-read int|null $product_clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductItemClient> $productItemClients
@@ -154,6 +155,7 @@ namespace App\Models{
  * @property-read \App\Models\User|null $user
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
+ * @property-read mixed $website_level
  * @method static \Database\Factories\ClientFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newQuery()
@@ -548,7 +550,7 @@ namespace App\Models{
  * @property string|null $payment_url
  * @property string|null $payment_code
  * @property string|null $payment_id
- * @property string|null $vexa_invoice
+ * @property string|null $mg_invoice
  * @property string|null $note
  * @property string|null $expired_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -591,6 +593,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereDiscountPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereExpiredAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereMgInvoice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereNote($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereOrderStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePaymentCode($value)
@@ -605,7 +608,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereTotalPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereVexaInvoice($value)
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]

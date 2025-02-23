@@ -24,6 +24,8 @@ class Product extends Model
 
     const VOUCHER = 'voucher';
 
+    const NOT_VISIBLE = 'not_visible';
+
     protected $fillable = [
         'name',
         'code',

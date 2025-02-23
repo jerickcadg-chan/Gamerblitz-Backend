@@ -41,6 +41,7 @@ class ProductItemController extends Controller
             ->when(request('product_id'), function ($query) {
                 return $query->where('product_id', request('product_id'));
             })
+            ->doesnthave('accounts')
             ->paginate();
 
         $createLink = route('product_item.create');
