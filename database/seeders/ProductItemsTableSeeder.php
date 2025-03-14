@@ -29,7 +29,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '86 Diamond',
                 'stock' => 100,
                 'price' => 21000,
-                'capital' => 18368,
+                /*'capital' => 18368,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -38,7 +38,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '172 Diamond',
                 'stock' => 100,
                 'price' => 42000,
-                'capital' => 35875,
+                /*'capital' => 35875,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -47,7 +47,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '257 Diamond',
                 'stock' => 100,
                 'price' => 42000,
-                'capital' => 54817,
+                /*'capital' => 54817,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -56,7 +56,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '344 Diamond',
                 'stock' => 100,
                 'price' => 84000,
-                'capital' => 71750,
+                /*'capital' => 71750,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -65,7 +65,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '429 Diamond',
                 'stock' => 100,
                 'price' => 104000,
-                'capital' => 90692,
+                /*'capital' => 90692,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -74,7 +74,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '514 Diamond',
                 'stock' => 100,
                 'price' => 124000,
-                'capital' => 109634,
+                /*'capital' => 109634,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -83,7 +83,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '600 Diamond',
                 'stock' => 100,
                 'price' => 145000,
-                'capital' => 128002,
+                /*'capital' => 128002,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -92,7 +92,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '706 Diamond',
                 'stock' => 100,
                 'price' => 165000,
-                'capital' => 145796,
+                /*'capital' => 145796,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -101,7 +101,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '878 Diamond',
                 'stock' => 100,
                 'price' => 207000,
-                'capital' => 181671,
+                /*'capital' => 181671,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -110,7 +110,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '1050 Diamond',
                 'stock' => 100,
                 'price' => 249000,
-                'capital' => 217546,
+                /*'capital' => 217546,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -119,7 +119,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '1412 Diamond',
                 'stock' => 100,
                 'price' => 330000,
-                'capital' => 291592,
+                /*'capital' => 291592,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -128,7 +128,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '2195 Diamond',
                 'stock' => 100,
                 'price' => 480000,
-                'capital' => 437388,
+                /*'capital' => 437388,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -137,7 +137,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '3073 Diamond',
                 'stock' => 100,
                 'price' => 697000,
-                'capital' => 619059,
+                /*'capital' => 619059,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -146,7 +146,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '3688 Diamond',
                 'stock' => 100,
                 'price' => 815000,
-                'capital' => 728980,
+                /*'capital' => 728980,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -155,7 +155,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '4032 Diamond',
                 'stock' => 100,
                 'price' => 899000,
-                'capital' => 800730,
+                /*'capital' => 800730,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -164,7 +164,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '5532 Diamond',
                 'stock' => 100,
                 'price' => 1220000,
-                'capital' => 1093470,
+                /*'capital' => 1093470,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -173,7 +173,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => 'Starlight / Twilight',
                 'stock' => 100,
                 'price' => 110000,
-                'capital' => 87000,
+                /*'capital' => 87000,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -182,7 +182,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => 'Starlight Plus',
                 'stock' => 100,
                 'price' => 230000,
-                'capital' => 202000,
+                /*'capital' => 202000,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -195,7 +195,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '50 Diamond',
                 'stock' => 100,
                 'price' => 8000,
-                'capital' => 6182,
+                /*'capital' => 6182,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -204,7 +204,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '70 Diamond',
                 'stock' => 100,
                 'price' => 9500,
-                'capital' => 8500,
+                /*'capital' => 8500,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -213,7 +213,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '100 Diamond',
                 'stock' => 100,
                 'price' => 14000,
-                'capital' => 12364,
+                /*'capital' => 12364,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -222,7 +222,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '140 Diamond',
                 'stock' => 100,
                 'price' => 19000,
-                'capital' => 17000,
+                /*'capital' => 17000,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -231,7 +231,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '210 Diamond',
                 'stock' => 100,
                 'price' => 28500,
-                'capital' => 25500,
+                /*'capital' => 25500,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -240,7 +240,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '355 Diamond',
                 'stock' => 100,
                 'price' => 47000,
-                'capital' => 42500,
+                /*'capital' => 42500,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -249,7 +249,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '425 Diamond',
                 'stock' => 100,
                 'price' => 56500,
-                'capital' => 51000,
+                /*'capital' => 51000,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -258,7 +258,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '510 Diamond',
                 'stock' => 100,
                 'price' => 68000,
-                'capital' => 61818,
+                /*'capital' => 61818,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -267,7 +267,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '720 Diamond',
                 'stock' => 100,
                 'price' => 95000,
-                'capital' => 85000,
+                /*'capital' => 85000,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -276,7 +276,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '1075 Diamond',
                 'stock' => 100,
                 'price' => 142000,
-                'capital' => 127500,
+                /*'capital' => 127500,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -285,7 +285,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '2000 Diamond',
                 'stock' => 100,
                 'price' => 256000,
-                'capital' => 231818,
+                /*'capital' => 231818,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -294,7 +294,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => '7290 Diamond',
                 'stock' => 100,
                 'price' => 935000,
-                'capital' => 850000,
+                /*'capital' => 850000,*/
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -308,7 +308,7 @@ class ProductItemsTableSeeder extends Seeder
                 'name' => $item['name'],
                 'stock' => 100,
                 'price' => $item['price'],
-                'capital' => $item['capital'],
+                /*'capital' => $item['capital'],*/
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
