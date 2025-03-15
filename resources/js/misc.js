@@ -21,6 +21,8 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
     //Active class can be hard coded directly in html file also as required
 
     function addActiveClass(element) {
+      //NOTE: active class is already handled from blade tmeplate
+      return;
       if (current === "") {
         //for root url
         if (element.attr('href').indexOf("index.html") !== -1) {
