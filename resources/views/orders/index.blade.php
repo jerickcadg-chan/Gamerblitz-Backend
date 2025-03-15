@@ -26,7 +26,7 @@
                                 <input class="form-control" type="text" name="customer_name" value="{{ request('customer_name') }}" placeholder="Nama pembeli">
                             </div>
                             <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
-                                <select class="form-control" name="status">
+                                <select class="form-control select2" name="status">
                                     <option value="">Semua Pesanan</option>
                                     <option value="in-process" {{ request('status') == 'in-process' ? 'selected' : null }}>Menunggu Proses</option>
                                     <option value="done" {{ request('status') == 'done' ? 'selected' : null }}>Pesanan Selesai</option>
@@ -35,7 +35,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
-                                <select class="form-control" name="product_id">
+                                <select class="form-control select2" name="product_id">
                                     <option value="">Pilih Produk</option>
                                     @foreach (\App\Models\Product::all() as $product)
                                         <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : null }}>{{ $product->name }}</option>

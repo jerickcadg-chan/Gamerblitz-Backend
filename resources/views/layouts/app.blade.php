@@ -13,7 +13,6 @@
     <!-- Scripts -->
     <script src="{{ asset('build/js/vendor.bundle.base.js') }}"></script>
     <script src="{{ asset('build/js/hoverable-collapse.js') }}"></script>
-    <script src="{{ asset('build/js/misc.js') }}"></script>
 
     <!-- Styles -->
     <link href="{{ asset('build/vendors/mdi/css/materialdesignicons.min.css') }}" rel="stylesheet">
@@ -44,7 +43,7 @@
     @stack('js')
     @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
     <script>
-        $('.select2').select2();
+        $('select.form-control').select2();
         $('form').submit(function(){
             $(this).find(':submit').attr('disabled','disabled');
         });
