@@ -1,7 +1,7 @@
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-    <a class="navbar-brand brand-logo" href="index.html"><img src="{{ client()->logo }}" alt="logo" /></a>
-    <a class="navbar-brand brand-logo-mini" href="index.html">{{Str::of(client()->clientAbout?->app_name ?? client()->name)
+    <a class="navbar-brand brand-logo" href="{{ route('home') }}"><img src="{{ client()->logo }}" alt="logo" /></a>
+    <a class="navbar-brand brand-logo-mini" href="{{ route('home') }}">{{Str::of(client()->clientAbout?->app_name ?? client()->name)
       ->explode(' ')
       ->map(fn($word) => Str::substr($word, 0, 1)) // Get first letter of each word
     ->join('')}}</a>
