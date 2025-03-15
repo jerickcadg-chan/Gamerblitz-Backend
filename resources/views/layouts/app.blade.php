@@ -24,7 +24,7 @@
     <script src="{{ asset('build/vendors/select2/select2.min.js') }}"></script>
 
     <!-- Shortcut icon -->
-    <link rel="shortcut icon" href="{{ client()->clientAbout?->favicon_url }}" />
+    <link rel="shortcut icon" href="{{ client()->clientAbout?->favicon }}" />
 </head>
 <body>
     @auth
