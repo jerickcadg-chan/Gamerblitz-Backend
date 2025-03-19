@@ -170,7 +170,10 @@ class ProductItem extends Model implements IsFilterable
     {
         return Attribute::get(
             get: function () {
-                $level = client()->level;
+                $level = client()->level ?? null;
+                if (!$level) {
+                    return $this->capital_silver;
+                }
                 if ($this->type == ProductItemTypeConstant::ACCOUNT) {
                     return $this->price;
                 }
