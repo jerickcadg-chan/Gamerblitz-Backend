@@ -10,8 +10,6 @@ class FlashSaleTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
-     *
-     * @var array
      */
     protected array $defaultIncludes = [
         //
@@ -19,8 +17,6 @@ class FlashSaleTransformer extends TransformerAbstract
 
     /**
      * List of resources possible to include
-     *
-     * @var array
      */
     protected array $availableIncludes = [
         //
@@ -42,7 +38,7 @@ class FlashSaleTransformer extends TransformerAbstract
                 return [
                     'id' => $item->id,
                     'slug' => $item->productItem?->product?->slug,
-                    'flash_price' => $item->price,
+                    'flash_price' => (double) $item->price,
                     'stock' => (float) $item->stock,
                     'real_price' => $item->productItem?->real_price,
                     'product_name' => $item->productItem?->product?->name,
