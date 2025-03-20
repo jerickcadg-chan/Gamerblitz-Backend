@@ -30,7 +30,7 @@ class ProductTransformer extends TransformerAbstract
     {
         return [
             'id' => $product->id,
-            'name' => $product->name,
+            'name' => $product->product_client_name,
             'slug' => $product->slug,
             'category' => $product->category,
             'company' => $product->company,

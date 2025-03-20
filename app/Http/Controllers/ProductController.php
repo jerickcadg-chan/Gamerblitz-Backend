@@ -101,7 +101,11 @@ class ProductController extends Controller
         $product->update($request->all());
         $product->productClient()
             ->updateOrCreate([
+                'product_id' => $product->id
+            ],[
                 'client_id' => client()->id,
+                'is_active' => $request->status == 'active',
+                'name' => $request->name
             ]);
 
         if ($request->cover) {

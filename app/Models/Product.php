@@ -27,7 +27,6 @@ class Product extends Model
     const NOT_VISIBLE = 'not_visible';
 
     protected $fillable = [
-        'name',
         'code',
         'category',
         'description',
@@ -35,7 +34,6 @@ class Product extends Model
         'how_to_order',
         'input_format',
         'slug',
-        'status',
         'markup_reseller',
         'markup_user',
         'product_joki',
@@ -44,6 +42,13 @@ class Product extends Model
         'ordering',
         'product_category_id'
     ];
+
+    public function productClientName(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->productClient->first()?->name ?? $this->name
+        );
+    }
 
     public function productItems()
     {
@@ -88,7 +93,7 @@ class Product extends Model
 
     public function productClient()
     {
-        return $this->hasMany(ProductClient::class)
+        return $this->hasMany(ProductClient::class, 'product_id', 'id')
             ->where('client_id', client()?->id);
     }
 
