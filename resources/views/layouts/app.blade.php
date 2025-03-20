@@ -43,10 +43,12 @@
     @stack('js')
     @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
     <script>
-        $('select.form-control').select2();
-        $('form').submit(function(){
-            $(this).find(':submit').attr('disabled','disabled');
-        });
+    $('select.form-control').select2({
+      tags: true
+    });
+    $('form').submit(function(){
+      $(this).find(':submit').attr('disabled','disabled');
+    });
     </script>
 </body>
 </html>

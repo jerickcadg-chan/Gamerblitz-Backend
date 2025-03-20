@@ -49,7 +49,6 @@
                                 <button type="submit" class="btn btn-sm btn-primary">Cari</button>
                                 <a href="{{ url()->current() }}" class="btn btn-sm btn-danger">Reset</a>
                             </div>
-                            <input type="hidden" name="status" value="{{ request('status') }}">
                         </div>
                     </form>
                     <div class="table-responsive">
