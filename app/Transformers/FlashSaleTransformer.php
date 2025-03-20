@@ -38,7 +38,7 @@ class FlashSaleTransformer extends TransformerAbstract
                 return [
                     'id' => $item->id,
                     'slug' => $item->productItem?->product?->slug,
-                    'flash_price' => (double) $item->price,
+                    'flash_price' => $item->price,
                     'stock' => (float) $item->stock,
                     'real_price' => $item->productItem?->real_price,
                     'product_name' => $item->productItem?->product?->name,
