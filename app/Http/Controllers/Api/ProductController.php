@@ -55,7 +55,7 @@ class ProductController extends Controller
     public function getProductItems($productId)
     {
         $productItems = ProductItem::query()
-            ->with('product.productCategory')
+            ->with('product.productCategory', 'flashSaleProductItem.flashSale')
             ->filter($this->filter())
             ->active()
             ->with([

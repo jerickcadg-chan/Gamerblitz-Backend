@@ -805,6 +805,8 @@ namespace App\Models{
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory active()
  * @method static \Database\Factories\ProductCategoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newModelQuery()
@@ -884,6 +886,7 @@ namespace App\Models{
  * @property-read \App\Models\ProductItemClient|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Client> $clients
  * @property-read int|null $clients_count
+ * @property-read \App\Models\FlashSaleProductItem|null $flashSaleProductItem
  * @property-read mixed $discount_price
  * @property-read mixed $real_price
  * @property-read mixed $total_price
