@@ -4,7 +4,7 @@
 
 @section('content')
 <form>
-  <div class="row g-2 mb-4">
+  <div class="row">
     <div class="col">
       <label for="month-input" class="d-block">Bulan</label>
       <select id="month-input" class="form-control" name="month" autocomplete="off">
@@ -27,7 +27,7 @@
   </div>
 </form>
 
-<div class="row mb-4">
+<div class="row pt-4 mb-4">
   <div class="col-md-4">
     <div class="card bg-gradient-danger card-img-holder text-white">
       <div class="card-body">
@@ -57,8 +57,12 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row pt-4">
   <div class="col-md-8">
+    <div class="page-header">
+        <h3 class="page-title"> Statistik Transaksi 1 Minggu Terakhir</h3>
+        <a href="#">Selengkapnya</a>
+    </div>
     <div id="last-week-chart"></div>
   </div>
   <div class="col-md-4">
@@ -91,6 +95,11 @@ var options = {
     name: 'Profit',
     data: {{ Js::from($orderPastWeek['profit']) }}
   }],
+  yaxis: {
+    labels: {
+      formatter: value => formatRupiah(value)
+    }
+  },
   xaxis: {
     categories: {{ Js::from($orderPastWeek['days']) }}
   }
@@ -99,5 +108,15 @@ var options = {
 var chart = new ApexCharts(document.querySelector("#last-week-chart"), options);
 
 chart.render();
+
+function formatRupiah(value, options) {
+  const round = options?.round || true;
+  const roundedVal = round ? Math.round(value) : value;
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(roundedVal);
+}
 </script>
 @endpush

@@ -44,8 +44,16 @@ class HomeController extends Controller
             ->whereBetween('created_at', [now()->subWeek(), now()])
             ->groupBy('date')
             ->orderBy('date');
-        $turnover = $query->pluck('total_price');
-        $profit = $query->pluck('total_income');
+        $turnover = $query->pluck('total_price')->map(
+            function ($total) {
+                return round($total);
+            }
+        );
+        $profit = $query->pluck('total_income')->map(
+            function($total) {
+                return round($total);
+            }
+        );
         $days = $query->pluck('date');
         return compact('turnover', 'profit', 'days');
     }
