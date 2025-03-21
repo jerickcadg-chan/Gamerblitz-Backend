@@ -112,7 +112,7 @@
             <div class="collapse {{ in_array($activePage, config('array.menu.statistic')) ? 'show' : null }}" id="statistic-pages">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'statistic_order' ? 'active' : null }}" href="{{ route('statistic.order') }}"> Statistik Order </a>
+                        <a class="nav-link {{ $activePage == 'statistic_order' ? 'active' : null }}" href="{{ route('statistic.order') }}"> Statistik Transaksi </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}" href="{{ route('statistic.user') }}"> Statistik User </a>
