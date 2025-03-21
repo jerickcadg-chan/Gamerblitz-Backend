@@ -21,7 +21,7 @@ class Client extends Model
         'name',
         'logo',
         'description',
-        'user_token',
+        'user_api_token',
         'xendit_callback_token',
         'xendit_token',
         'host',

@@ -22,7 +22,7 @@ class ClientFactory extends Factory
             'host' => str(config('app.url'))->after('https://')->after('http://'),
             'logo' => $this->faker->imageUrl(),
             'description' => $this->faker->sentence(),
-            'user_token' => $this->faker->uuid(),
+            'user_api_token' => $this->faker->uuid(),
             'xendit_callback_token' => $this->faker->uuid(),
             'xendit_token' => $this->faker->uuid(),
         ];

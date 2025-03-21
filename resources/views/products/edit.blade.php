@@ -100,7 +100,7 @@
                     </div>
                     <div class="form-group">
                         <label for="status_input" class="required">Status</label>
-                        <select class="form-control" name="status" id="status_input" required>
+                        <select class="form-control select2" name="status" id="status_input" required>
                             <option value="">Pilih Status</option>
                             @foreach (config('array.product.status') as $status)
                                 <option value="{{ $status }}" {{ old('status', $product->status) == $status ? 'selected' : null }}>{{ ucfirst($status) }}</option>

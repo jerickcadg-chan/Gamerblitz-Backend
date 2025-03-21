@@ -25,7 +25,7 @@ class ProductsTableSeeder extends Seeder
         Product::insert([
             [
                 'name' => 'Mobile Legends',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'Montoon',
                 'description' => 'Mobile Legends: Bang Bang adalah sebuah permainan piranti bergerak berjenis arena pertarungan daring multipemain yang dikembangkan dan diterbitkan oleh Moonton, Yang kini menjadi anak perusahaan dari ByteDance.',
                 'how_to_order' => '<p><b>Cara Melihat Player ID / Server ID Mobile Legends</b></p><p><img src="https://mitragamers.com/assets/img/game/ml.jpg" class="w-100"></p><p>Untuk mengetahui informasi player ID dan server ID Mobile Legends, silahkan masuk ke menu "profile", lalu lihat bagian kanan atas.</p>',
@@ -36,7 +36,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Free Fire',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'Garena',
                 'description' => 'Garena Free Fire atau biasa disebut Free Fire adalah permainan battle royale yang dikembangkan oleh 111 Dots Studio dan diterbitkan oleh Garena untuk Android dan iOS. Itu menjadi permainan seluler yang paling banyak diunduh secara global pada tahun 2019.',
                 'how_to_order' => '<p><b>Cara Melihat Player ID Free Fire</b></p><p><img src="https://mitragamers.com/assets/img/game/ff.jpg" class="w-100"></p><p>Untuk menemukan informasi Player ID Free Fire dengan membuka menu "profile akun". Player ID terletak di bawah foto dan nama akun.</p>',
@@ -47,7 +47,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'PUBG Mobile',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'Tencent Games',
                 'description' => 'PUBG Mobile adalah video game battle royale gratis yang dikembangkan oleh LightSpeed ​​& Quantum Studio, sebuah divisi dari Tencent Games. Yang merupakan game mobile yang diadaptasi dari PUBG: Battlegrounds dan dirilis untuk Android dan iOS pada 19 Maret 2018.',
                 'how_to_order' => '<p><b>Cara Melihat Player ID Pubg Mobile</b></p><p><img src="https://mitragamers.com/assets/img/game/pubg.jpg" class="w-100"></p><p>Untuk menemukan informasi Player ID PUBG Mobile dengan membuka "profil" Di sana akan terlihat Player ID akun kamu</p>',
@@ -58,7 +58,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Genshin Impact',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'Mihoyo',
                 'description' => 'Genshin Impact adalah role-playing game yang dikembangkan oleh perusahaan Cina miHoYo, dan pertama kali diterbitkan pada tahun 2020. Game ini menampilkan lingkungan dunia terbuka bergaya anime dan sistem pertarungan berbasis aksi menggunakan sihir unsur dan pergantian karakter.',
                 'how_to_order' => '<p><b>Cara Melihat UID Genshin Impact</b></p><p><img src="https://mitragamers.com/assets/img/game/genshin.jpg" class="w-100"></p><p>Untuk menemukan informasi UID Genshin Impact dengan melihat informasi UID di bagian pojok kanan bawah layar permainan</p>',
@@ -69,7 +69,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Valorant',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'Riot',
                 'description' => 'Valorant adalah game first-person hero shooter gratis yang dikembangkan dan diterbitkan oleh Riot Games, untuk Microsoft Windows. Pertama kali dirilis dengan nama kode Project A pada Oktober 2019, game ini memulai periode beta tertutup dengan akses terbatas pada 7 April 2020, diikuti dengan rilis resmi pada 2 Juni 2020.',
                 'how_to_order' => '<p><b>Cara Riot ID Valorant</b></p><p>Pemain pertama-tama harus masuk ke akun Riot di riotgames.com. Setelah masuk, kamu dapat mengklik “RIOT ID” di sisi kiri kotak akun.</p>',
@@ -80,7 +80,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'LoL: Wild Rift',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'Riot',
                 'description' => 'League of Legends: Wild Rift adalah multiplayer online battle arena mobile game yang dikembangkan dan diterbitkan oleh Riot Games untuk Android dan iOS. Game gratis untuk dimainkan ini adalah versi modifikasi dari game PC League of Legends',
                 'how_to_order' => '<p><b>Cara Melihat Riot ID LoL - Wild Rift</b></p><p><img src="https://mitragamers.com/assets/img/game/lol.jpg" class="w-100"></p><p>Untuk menemukan informasi Riot ID LoL - Wild Rift dengan membuka menu "profile akun". Riot ID terletak di bawah foto dan nama akun.</p>',
@@ -91,7 +91,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Call of Duty Mobile',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'Garena',
                 'description' => 'Call of Duty: Mobile adalah game free-to-play shooter game yang dikembangkan oleh TiMi Studio Group dan diterbitkan oleh Activision untuk Android dan iOS. Dirilis pada 1 Oktober 2019',
                 'how_to_order' => '<p><b>Cara Melihat Open ID COD Mobile</b></p><p>Pemain pertama-tama harus membuka menu Setting, lalu klik Lainnya dan Open ID ada di layar bagian bawah</p>',
@@ -102,7 +102,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Arena of Valer',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'Garena',
                 'description' => 'Arena of Valor, sebelumnya Strike of Kings, adalah adaptasi internasional dari Honor of Kings, multiplayer online battle arena yang dikembangkan oleh TiMi Studio Group dan diterbitkan oleh Level Infinite untuk Android, iOS, dan Nintendo Switch untuk pasar di luar Daratan Tiongkok',
                 'how_to_order' => '<p><b>Cara Melihat Open ID AOV</b></p><p>Buka pengaturan game yang seperti gear di sebelah kanan atas. Pilih pada menu "Umum" lalu scroll ke bawah untuk menemukan "OpenID" yang berada di sebelah "NamaPemain".</p>',
@@ -113,7 +113,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Sausage Man',
-                'category' => 'game',
+                /*'category' => 'game',*/
                 'company' => 'XD Global',
                 'description' => 'Sausage Man adalah game bergenre battle royale. Dikembangkan oleh XD Entertainment, Sausage Man baru dirilis tanggal 29 Juni 2021 untuk dimainkan di perangkat berbasis Android.',
                 'how_to_order' => '<p><b>Cara Melihat User ID Sausage Man</b></p><p><img src="https://mitragamers.com/assets/img/game/sausage.jpg" class="w-100"></p><p>Masuk ke lobby Sausage Man, kemudian tap icon “Baris Tiga”. ID akun Sausage Man berada di sebelah kanan tombol “Ganti Akun” atau yang saya tandai “Arrow”.</p>',
@@ -124,7 +124,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Garena Shell',
-                'category' => 'voucher',
+                /*'category' => 'voucher',*/
                 'company' => 'Garena',
                 'description' => 'Garena Shell adalah mata uang Garena untuk top up game Garena',
                 'how_to_order' => '<p>Masuk ke situs kiosgamer.co.id dan pilih shell top up lalu isi kode Garena Shell yang sudah diberikan</p>',

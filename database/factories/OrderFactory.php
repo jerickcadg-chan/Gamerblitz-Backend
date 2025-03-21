@@ -49,7 +49,7 @@ class OrderFactory extends Factory
             'admin_fee' => 100,
             'discount_price' => 0,
             'total_price' => $productItem->price + 100,
-            'total_income' => $productItem->price,
+            'total_income' => $productItem->price - $productItem->capital,
             'created_at' => now(),
             'updated_at' => \Carbon\Carbon::parse(now())->addMinutes(12)
         ];
