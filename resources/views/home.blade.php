@@ -5,23 +5,23 @@
 @section('content')
 <form>
   <div class="row g-2 mb-4">
-    <div class="col-xl-5">
-      <label for="month-input">Bulan</label>
+    <div class="col">
+      <label for="month-input" class="d-block">Bulan</label>
       <select id="month-input" class="form-control" name="month" autocomplete="off">
         @foreach(get_months() as $monthIndex => $month)
         <option value="{{ $monthIndex + 1 }}" {{ intVal($selectedMonth) === $monthIndex + 1 ? 'selected' : '' }}>{{ $month }}</option>
         @endforeach
       </select>
     </div>
-    <div class="col-xl-5">
-      <label for="year-input">Tahun</label>
+    <div class="col">
+      <label for="year-input" class="d-block">Tahun</label>
       <select id="year-input" class="form-control" name="year" autocomplete="off">
         @foreach(get_years_reversed() as $year)
         <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>
         @endforeach
       </select>
     </div>
-    <div class="col-xl-2 d-flex align-items-center">
+    <div class="col d-flex align-items-center">
       <button type="submit" class="btn btn-sm btn-primary">Filter</button>
     </div>
   </div>
