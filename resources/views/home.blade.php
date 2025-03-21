@@ -61,7 +61,7 @@
   <div class="col-md-8">
     <div class="page-header">
         <h3 class="page-title"> Statistik Transaksi 1 Minggu Terakhir</h3>
-        <a href="#">Selengkapnya</a>
+        <a href="{{ route('statistic.order') }}">Selengkapnya</a>
     </div>
     <div id="last-week-chart"></div>
   </div>

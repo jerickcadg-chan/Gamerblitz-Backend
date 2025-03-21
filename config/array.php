@@ -15,6 +15,7 @@ return [
         'order',
         'report',
         'promo' => ['discount', 'slider'],
+        'statistic' => ['statistic_order', 'statistic_user'],
         'user' => ['user', 'guest', 'customer', 'role'],
         'digi' => ['digi_product_create', 'digi_transaction', 'digi_transaction_create']
     ],
