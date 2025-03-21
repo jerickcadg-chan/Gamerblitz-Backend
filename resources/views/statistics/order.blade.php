@@ -26,6 +26,53 @@
   <div id="order-statistic-chart"></div>
 </div>
 
+<div class="pt-4 stretch-card">
+  <div class="card">
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Jumlah</th>
+            <th>Omset</th>
+            <th>Profit</th>
+            <th>Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse ($orders as $order)
+          <tr>
+            <td>{{ $order['date'] }}</td>
+            <td>{{ $order['count'] }}</td>
+            <td>{{ $order['turnover'] }}</td>
+            <td>{{ $order['profit'] }}</td>
+            <td>{{ $order['profit_margin'] }}%</td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="100%" class="text-center">Tidak ada data ditemukan</td>
+          </tr>
+          @endforelse
+          <tr>
+            <td><strong>Total Transaksi</strong></td>
+            <td>{{ $orders->sum('count') }}</td>
+            <td>{{ $orders->sum('turnover') }}</td>
+            <td>{{ $orders->sum('profit') }}</td>
+            <td>{{ $orders->sum('profit_margin') }}%</td>
+          </tr>
+          <tr>
+            <td><strong>Rata - rata</strong></td>
+            <td>{{ round($orders->avg('count')) }}</td>
+            <td>{{ round($orders->avg('turnover')) }}</td>
+            <td>{{ round($orders->avg('profit')) }}</td>
+            <td>{{ round($orders->avg('profit_margin')) }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 @endsection
 
 @push('js')
@@ -37,10 +84,10 @@ var options = {
   },
   series: [{
     name: 'Omset',
-    data: {{ Js::from($turnover) }},
+    data: {{ Js::from($orders->pluck('turnover')) }},
   }, {
     name: 'Profit',
-    data: {{ Js::from($profit) }}
+    data: {{ Js::from($orders->pluck('profit')) }}
   }],
   yaxis: {
     labels: {
@@ -48,7 +95,7 @@ var options = {
     }
   },
   xaxis: {
-    categories: {{ Js::from($days) }}
+    categories: {{ Js::from($orders->pluck('date')) }}
   }
 }
 

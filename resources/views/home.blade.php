@@ -51,7 +51,7 @@
       <div class="card-body">
         <h4 class="font-weight-normal mb-3">Profit <i class="mdi mdi-diamond mdi-24px float-right"></i>
         </h4>
-        <h2>{{ rp_format($orderSum['profit']) }} <small>({{ $orderSum['profitPercent'] }}%)</small></h2>
+        <h2>{{ rp_format($orderSum['profit']) }} <small>({{ $orderSum['profitMargin'] }}%)</small></h2>
       </div>
     </div>
   </div>

@@ -13,25 +13,22 @@ class StatisticController extends Controller
         $endDate = request('endDate') ?? now()->format('Y-m-d');
         $query = Order::whereClient()
             ->where('order_status', Order::DONE)
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count, SUM(total_price) as total_price, SUM(total_income) as total_income')
+            ->selectRaw(
+                '
+                DATE(created_at) as date,
+                COUNT(*) as count,
+                ROUND(SUM(total_price)) as turnover,
+                ROUND(SUM(total_income)) as profit,
+                ROUND((SUM(total_income) / NULLIF(SUM(total_price), 0)) * 100) as profit_margin
+                '
+            )
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('date')
             ->orderBy('date');
 
-        $count = $query->pluck('count');
-        $turnover = $query->pluck('total_price')->map(
-            function ($total) {
-                return round($total);
-            }
-        );
-        $profit = $query->pluck('total_income')->map(
-            function ($total) {
-                return round($total);
-            }
-        );
-        $days = $query->pluck('date');
+        $orders = $query->get();
 
-        $data = compact('count', 'turnover', 'profit', 'days', 'startDate', 'endDate');
+        $data = compact('orders', 'startDate', 'endDate');
         return view('statistics.order', $data);
     }
 

@@ -67,12 +67,12 @@ class HomeController extends Controller
 
         $turnover = $orderSumQuery->sum('total_price');
         $profit = $orderSumQuery->sum('total_income');
-        $profitPercent = $turnover === 0 ? 0 : round(($profit / $turnover) * 100);
+        $profitMargin = $turnover === 0 ? 0 : round(($profit / $turnover) * 100);
         $orderSum = [
             'total' => $orderSumQuery->count(),
             'turnover' => $turnover,
             'profit' => $profit,
-            'profitPercent' => $profitPercent,
+            'profitMargin' => $profitMargin,
         ];
 
         return $orderSum;
