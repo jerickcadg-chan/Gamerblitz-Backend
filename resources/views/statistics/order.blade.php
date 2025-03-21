@@ -29,6 +29,9 @@
 <div class="pt-4 stretch-card">
   <div class="card">
     <div class="card-body table-responsive">
+      <div class="page-header">
+        <h3 class="page-title"> Statistik Transaksi {{ parse_date_format($startDate) }} - {{ parse_date_format($endDate) }}</h3>
+      </div>
       <table class="table table-bordered table-hover">
         <thead>
           <tr>
