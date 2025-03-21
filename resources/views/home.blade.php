@@ -59,11 +59,17 @@
 
 <div class="row pt-4">
   <div class="col-md-8">
-    <div class="page-header">
-        <h3 class="page-title"> Statistik Transaksi 1 Minggu Terakhir</h3>
-        <a href="{{ route('statistic.order') }}">Selengkapnya</a>
+    <div class="stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="page-header">
+            <h3 class="page-title"> Statistik Transaksi 1 Minggu Terakhir</h3>
+            <a href="{{ route('statistic.order') }}">Selengkapnya</a>
+          </div>
+          <div id="last-week-chart"></div>
+        </div>
+      </div>
     </div>
-    <div id="last-week-chart"></div>
   </div>
   <div class="col-md-4">
     <div class="card bg-gradient-primary card-img-holder text-white">

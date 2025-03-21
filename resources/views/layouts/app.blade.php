@@ -15,6 +15,7 @@
     <script src="{{ asset('build/js/hoverable-collapse.js') }}"></script>
 
     <!-- Styles -->
+    @stack('assets')
     <link href="{{ asset('build/vendors/mdi/css/materialdesignicons.min.css') }}" rel="stylesheet">
     @vite(['resources/js/app.js', 'resources/css/style.css'])
 

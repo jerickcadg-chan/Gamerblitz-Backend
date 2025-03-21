@@ -4,48 +4,68 @@
 
 @section('content')
 <form>
-  <div class="row">
-    <div class="col">
-      <label for="month-input" class="d-block">Tanggal Mulai</label>
-      <input type="date" name="startDate" class="form-control" required value="{{ $startDate }}" autocomplete="off" />
-    </div>
-    <div class="col">
-      <label for="year-input" class="d-block">Tanggal Selesai</label>
-      <input type="date" name="endDate" class="form-control" required value="{{ $endDate }}" autocomplete="off" />
+  <div class="row g-4">
+    <div class="col-xl-3">
+      <input type="text" name="daterange" class="form-control daterange" id="daterange-input" />
     </div>
     <div class="col d-flex align-items-center">
-      <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+      <button type="submit" class="btn btn-primary">Filter</button>
     </div>
   </div>
 </form>
 
-<div class="pt-4">
-  <div class="page-header">
-    <h3 class="page-title"> Statistik User {{ parse_date_format($startDate) }} - {{ parse_date_format($endDate) }}</h3>
+<div class="pt-4 stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <div class="page-header">
+        <h3 class="page-title"> Statistik User {{ parse_date_format($startDate) }} - {{ parse_date_format($endDate) }}</h3>
+      </div>
+      <div id="user-statistic-chart"></div>
+    </div>
   </div>
-  <div id="user-statistic-chart"></div>
 </div>
 
 @endsection
 
+@push('assets')
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+@endpush
+
 @push('js')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-var options = {
-  chart: {
-    type: 'area'
-  },
-  series: [{
-    name: 'User',
-    data: {{ Js::from($count) }},
-  }],
-  xaxis: {
-    categories: {{ Js::from($days) }}
-  }
+initChart()
+initDaterange()
+
+function initDaterange() {
+  $('.daterange').daterangepicker({
+    startDate: "{{ $startDate }}",
+    endDate: "{{ $endDate }}",
+    locale: {
+      format: 'YYYY-MM-DD'
+    }
+  })
 }
 
-var chart = new ApexCharts(document.querySelector("#user-statistic-chart"), options);
+function initChart() {
+  var options = {
+    chart: {
+      type: 'area'
+    },
+    series: [{
+      name: 'User',
+      data: {{ Js::from($count) }},
+    }],
+    xaxis: {
+      categories: {{ Js::from($days) }}
+    }
+  }
 
-chart.render();
+  var chart = new ApexCharts(document.querySelector("#user-statistic-chart"), options);
+
+  chart.render();
+}
 </script>
 @endpush

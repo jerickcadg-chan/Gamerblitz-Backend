@@ -4,13 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\User;
+use Carbon\Carbon;
 
 class StatisticController extends Controller
 {
     public function showOrderStatistic()
     {
-        $startDate = request('startDate') ?? now()->subWeek()->format('Y-m-d');
-        $endDate = request('endDate') ?? now()->format('Y-m-d');
+        $daterange = request('daterange');
+        if (!$daterange) {
+            $startDate = now()->subWeek()->format('Y-m-d');
+            $endDate = now()->format('Y-m-d');
+        } else {
+            $split = explode(' - ', $daterange);
+            $startDate = Carbon::parse($split[0])->format('Y-m-d');
+            $endDate = Carbon::parse($split[1])->format('Y-m-d');
+        }
+
         $query = Order::whereClient()
             ->where('order_status', Order::DONE)
             ->selectRaw(
@@ -34,8 +43,16 @@ class StatisticController extends Controller
 
     public function showUserStatistic()
     {
-        $startDate = request('startDate') ?? now()->subWeek()->format('Y-m-d');
-        $endDate = request('endDate') ?? now()->format('Y-m-d');
+        $daterange = request('daterange');
+        if (!$daterange) {
+            $startDate = now()->subWeek()->format('Y-m-d');
+            $endDate = now()->format('Y-m-d');
+        } else {
+            $split = explode(' - ', $daterange);
+            $startDate = Carbon::parse($split[0])->format('Y-m-d');
+            $endDate = Carbon::parse($split[1])->format('Y-m-d');
+        }
+
         $query = User::whereClient()
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->whereBetween('created_at', [$startDate, $endDate])
