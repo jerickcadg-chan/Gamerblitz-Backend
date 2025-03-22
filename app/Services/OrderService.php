@@ -190,6 +190,7 @@ class OrderService
             $price = $productItem->real_price * $qty;
             $capital = $productItem->capital * $qty;
 
+            // TODO: fix the logic of get_active_discount
             $disc = get_active_discount($price, $productItem->product_id, $productItem->id, $qty);
         }
 
