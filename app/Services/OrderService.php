@@ -187,7 +187,7 @@ class OrderService
                 'nominal' => 0
             ];
         } else {
-            $price = $productItem->price * $qty;
+            $price = $productItem->real_price * $qty;
             $capital = $productItem->capital * $qty;
 
             $disc = get_active_discount($price, $productItem->product_id, $productItem->id, $qty);
