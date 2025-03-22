@@ -14,6 +14,7 @@ use App\Http\Controllers\ProductItemPriceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SliderController;
+use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Auth\Events\Verified;
@@ -74,6 +75,10 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('report', [ReportController::class, 'index'])->name('report.index');
     Route::post('report/order', [ReportController::class, 'getOrder'])->name('report.get.order');
     Route::post('report/user', [ReportController::class, 'getUser'])->name('report.get.user');
+
+    // Statistic
+    Route::get('statistic/order', [StatisticController::class, 'showOrderStatistic'])->name('statistic.order');
+    Route::get('statistic/user', [StatisticController::class, 'showUserStatistic'])->name('statistic.user');
 
     Route::resource('account', AccountController::class);
     Route::post('account/{account}/show-information', [AccountController::class, 'showTheInformation'])->name('account.show-information');

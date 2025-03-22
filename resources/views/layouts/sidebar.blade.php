@@ -102,6 +102,25 @@
             </a>
         </li>
         @endcan
+        @can('View Statistic')
+        <li class="nav-item {{ in_array($activePage, config('array.menu.statistic')) ? 'active' : null }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#statistic-pages" aria-expanded="false" aria-controls="statistic-pages">
+                <span class="menu-title">Statistik</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-chart-areaspline menu-icon"></i>
+            </a>
+            <div class="collapse {{ in_array($activePage, config('array.menu.statistic')) ? 'show' : null }}" id="statistic-pages">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ $activePage == 'statistic_order' ? 'active' : null }}" href="{{ route('statistic.order') }}"> Statistik Transaksi </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}" href="{{ route('statistic.user') }}"> Statistik User </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        @endcan
         @canany(['View User', 'View Role'])
         <li class="nav-item {{ in_array($activePage, config('array.menu.user')) ? 'active' : null }}">
             <a class="nav-link" data-bs-toggle="collapse" href="#user-pages" aria-expanded="false" aria-controls="user-pages">

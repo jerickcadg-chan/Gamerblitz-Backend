@@ -22,7 +22,7 @@ class OrdersTableSeeder extends Seeder
         DB::table('order_histories')->truncate();
         Schema::enableForeignKeyConstraints();
 
-        Order::factory()->count(20)->create();
+        Order::factory()->count(1000)->create();
 
         $orders = Order::all();
 

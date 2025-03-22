@@ -11,10 +11,11 @@ return [
     ],
     'menu' => [
         'dashboard',
-        'product' => ['product', 'product_item', 'voucher', 'account'],
+        'product' => ['product', 'product_item', 'product_item_category', 'voucher', 'account'],
         'order',
         'report',
         'promo' => ['discount', 'slider'],
+        'statistic' => ['statistic_order', 'statistic_user'],
         'user' => ['user', 'guest', 'customer', 'role'],
         'digi' => ['digi_product_create', 'digi_transaction', 'digi_transaction_create']
     ],

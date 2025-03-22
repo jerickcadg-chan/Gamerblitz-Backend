@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Constants\ProductConstant;
+use App\Models\ProductCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +20,7 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'code' => $this->faker->unique()->numerify('PRD-#####'),
-            'category' => $this->faker->randomElement(ProductConstant::getValues()),
+            'product_category_id' => ProductCategory::factory(),
             'description' => $this->faker->sentence(),
             'company' => $this->faker->company(),
             'how_to_order' => $this->faker->sentence(),
