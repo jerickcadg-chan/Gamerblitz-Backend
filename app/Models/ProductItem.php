@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -55,15 +56,17 @@ class ProductItem extends Model implements IsFilterable
         return $this->belongsTo(Product::class);
     }
 
-    public function getDiscountPriceAttribute()
+    public function discountPrice(): Attribute
     {
         if ($this->flashSaleProductItem) {
             return $this->real_price - $this->flashSaleProductItem->price;
         }
 
-        $disc = get_active_discount($this->price, $this->product_id, $this->id) ;
+        $disc = get_active_discount($this->price, $this->product_id, $this->id);
 
-        return $disc['nominal'];
+        return Attribute::make(
+            get: fn () => $disc['nominal']
+        );
     }
 
     public function getTotalPriceAttribute()
@@ -177,7 +180,7 @@ class ProductItem extends Model implements IsFilterable
         return Attribute::get(
             get: function () {
                 $level = client()->level ?? null;
-                if (!$level) {
+                if (! $level) {
                     return $this->capital_silver;
                 }
                 if ($this->type == ProductItemTypeConstant::ACCOUNT) {
@@ -221,5 +224,10 @@ class ProductItem extends Model implements IsFilterable
             Filter::field('type', [FilterType::EQUAL]),
             Filter::field('product_item_category_id', [FilterType::EQUAL]),
         );
+    }
+
+    public function productItemCategory(): BelongsTo
+    {
+        return $this->belongsTo(ProductItemCategory::class);
     }
 }
