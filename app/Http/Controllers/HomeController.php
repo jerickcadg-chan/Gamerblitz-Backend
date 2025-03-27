@@ -41,7 +41,7 @@ class HomeController extends Controller
         $query = Order::whereClient()
             ->where('order_status', Order::DONE)
             ->selectRaw('DATE(created_at) as date, SUM(total_price) as total_price, SUM(total_income) as total_income')
-            ->whereBetween('created_at', [now()->subWeek(), now()])
+            ->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()])
             ->groupBy('date')
             ->orderBy('date');
         $turnover = $query->pluck('total_price')->map(
@@ -83,7 +83,7 @@ class HomeController extends Controller
     protected function getOrderToday()
     {
         $orderTodayQuery = Order::whereClient()
-            ->where('created_at', '=', today())
+            ->whereRaw('DATE(created_at) = ?', [today()])
             ->where('order_status', Order::DONE);
 
 

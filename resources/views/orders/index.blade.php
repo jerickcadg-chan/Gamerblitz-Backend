@@ -59,6 +59,8 @@
                                     <th rowspan="2">Pesanan</th>
                                     <th rowspan="2">Nama Produk</th>
                                     <th rowspan="2">Harga</th>
+                                    <th rowspan="2">Modal</th>
+                                    <th rowspan="2">Laba</th>
                                     <th colspan="2">Pembeli</th>
                                     <th colspan="2">Status</th>
                                 </tr>
@@ -86,6 +88,8 @@
                                             <span class="text-muted">{{ @$order->productItem->product->name }}</span>
                                         </td>
                                         <td>{{ rp_format($order->total_price) }}</td>
+                                        <td>{{ rp_format($order->capital) }}</td>
+                                        <td>{{ rp_format($order->total_income) }}</td>
                                         <td>{{ @$order->cust_email }}</td>
                                         <td><a href="https://web.whatsapp.com/send?phone={{ $order->cust_phone_number }}&text=Hai Kak" target="_blank">{{ $order->cust_phone_number }}</a></td>
                                         <td>{!! $order->payment_status_raw !!}</td>
