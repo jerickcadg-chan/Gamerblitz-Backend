@@ -3,6 +3,15 @@
 ])
 
 @section('content')
+
+@if(session('error'))
+<div class="mb-4">
+  <div class="alert alert-danger">
+    {{ session('error') }}
+  </div>
+</div>
+@endif
+
 <form>
   <div class="row g-4">
     <div class="col-xl-3">
@@ -41,8 +50,8 @@ initDaterange()
 
 function initDaterange() {
   $('.daterange').daterangepicker({
-    startDate: "{{ $startDate }}",
-    endDate: "{{ $endDate }}",
+    startDate: "{{ $startDate->format('Y-m-d') }}",
+    endDate: "{{ $endDate->format('Y-m-d') }}",
     locale: {
       format: 'YYYY-MM-DD'
     }
