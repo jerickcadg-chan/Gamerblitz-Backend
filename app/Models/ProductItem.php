@@ -56,7 +56,7 @@ class ProductItem extends Model implements IsFilterable
         return $this->belongsTo(Product::class);
     }
 
-    public function discountPrice(): Attribute
+    public function getDiscountPriceAttribute()
     {
         if ($this->flashSaleProductItem) {
             return $this->real_price - $this->flashSaleProductItem->price;
@@ -64,14 +64,12 @@ class ProductItem extends Model implements IsFilterable
 
         $disc = get_active_discount($this->price, $this->product_id, $this->id);
 
-        return Attribute::make(
-            get: fn () => $disc['nominal']
-        );
+        return $disc['nominal'];
     }
 
     public function getTotalPriceAttribute()
     {
-        return $this->real_price - $this->discountPrice;
+        return $this->real_price - $this->discount_price;
     }
 
     public function getRealPriceAttribute()
