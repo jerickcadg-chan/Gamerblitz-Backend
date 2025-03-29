@@ -12,12 +12,17 @@ class StatisticController extends Controller
     {
         $daterange = request('daterange');
         if (!$daterange) {
-            $startDate = now()->subWeek()->format('Y-m-d');
-            $endDate = now()->format('Y-m-d');
+            $startDate = now()->subWeek();
+            $endDate = now();
         } else {
             $split = explode(' - ', $daterange);
-            $startDate = Carbon::parse($split[0])->format('Y-m-d');
-            $endDate = Carbon::parse($split[1])->format('Y-m-d');
+            $startDate = Carbon::parse($split[0]);
+            $endDate = Carbon::parse($split[1]);
+        }
+
+        if ($startDate->diffInDays($endDate) > 31) {
+            session()->flash('error', 'Rentang tanggal maksimal adalah 31 hari');
+            return redirect()->back();
         }
 
         $query = Order::whereClient()
@@ -31,7 +36,7 @@ class StatisticController extends Controller
                 ROUND((SUM(total_income) / NULLIF(SUM(total_price), 0)) * 100) as profit_margin
                 '
             )
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()])
             ->groupBy('date')
             ->orderBy('date');
 
@@ -45,17 +50,22 @@ class StatisticController extends Controller
     {
         $daterange = request('daterange');
         if (!$daterange) {
-            $startDate = now()->subWeek()->format('Y-m-d');
-            $endDate = now()->format('Y-m-d');
+            $startDate = now()->subWeek();
+            $endDate = now();
         } else {
             $split = explode(' - ', $daterange);
-            $startDate = Carbon::parse($split[0])->format('Y-m-d');
-            $endDate = Carbon::parse($split[1])->format('Y-m-d');
+            $startDate = Carbon::parse($split[0]);
+            $endDate = Carbon::parse($split[1]);
+        }
+
+        if ($startDate->diffInDays($endDate) > 31) {
+            session()->flash('error', 'Rentang tanggal maksimal adalah 31 hari');
+            return redirect()->back();
         }
 
         $query = User::whereClient()
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()])
             ->groupBy('date')
             ->orderBy('date');
 
