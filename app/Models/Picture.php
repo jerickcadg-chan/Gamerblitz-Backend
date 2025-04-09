@@ -16,6 +16,8 @@ class Picture extends Model
     */
     use HasFactory;
 
+    protected $appends = ['url'];
+
     protected $fillable = [
         'path',
         'file_name',
