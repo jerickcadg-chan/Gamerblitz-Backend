@@ -10,19 +10,25 @@ class ProductItemCategoryController extends Controller
 {
     public function __invoke()
     {
+        $data = ProductItemCategory::active()->with("metas.picture")->get();
         return api_status_ok(
-            array_values(ProductItemCategory::active()
-                ->get()
-                ->filter(function (ProductItemCategory $item) {
-                    return $item->name != ProductConstant::getTitle('account') && $item->name != ProductConstant::getTitle('joki');
-                })
-                ->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'key' => $item->slug,
-                        'label' => $item->name,
-                    ];
-                })->toArray())
+            array_values(
+                $data
+                    ->filter(function (ProductItemCategory $item) {
+                        return $item->name !=
+                            ProductConstant::getTitle("account") &&
+                            $item->name != ProductConstant::getTitle("joki");
+                    })
+                    ->map(function ($item) {
+                        return [
+                            "id" => $item->id,
+                            "key" => $item->slug,
+                            "label" => $item->name,
+                            "metas" => $item->metas,
+                        ];
+                    })
+                    ->toArray()
+            )
         );
     }
 }

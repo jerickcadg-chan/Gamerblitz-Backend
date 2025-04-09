@@ -16,7 +16,7 @@ class ProductItemCategory extends Model
     /** @use HasFactory<\Database\Factories\ProductItemCategoryFactory> */
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $guarded = ["id"];
 
     public function product(): BelongsTo
     {
@@ -30,6 +30,11 @@ class ProductItemCategory extends Model
 
     public function scopeActive(Builder $query)
     {
-        return $query->where('status', 'active');
+        return $query->where("status", "active");
+    }
+
+    public function metas(): HasMany
+    {
+        return $this->hasMany(ProductItemCategoryMeta::class);
     }
 }
