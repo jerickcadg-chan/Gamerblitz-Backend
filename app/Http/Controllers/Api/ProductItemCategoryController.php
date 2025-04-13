@@ -22,6 +22,7 @@ class ProductItemCategoryController extends Controller
                     ->map(function ($item) {
                         return [
                             "id" => $item->id,
+                            'product_id' => $item?->product_id,
                             "key" => $item->slug,
                             "label" => $item->name,
                             "metas" => $item->metas,
