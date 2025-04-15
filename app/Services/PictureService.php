@@ -13,7 +13,7 @@ class PictureService extends Controller
     {
         $imageName = substr(uniqid(), -9).'-'.$picture->getClientOriginalName();
 
-        Storage::disk('s3')->putFileAs($location, $picture, $imageName);
+        Storage::disk(config('filesystems.default'))->putFileAs($location, $picture, $imageName);
 
         $modelPicture = $model->picture()->create([
             'path' => $location,
@@ -27,7 +27,7 @@ class PictureService extends Controller
 
     public function delete(Picture $picture)
     {
-        Storage::disk('s3')->delete($picture->path . '/' . $picture->file_name);
+        Storage::disk(config('filesystems.default'))->delete($picture->path . '/' . $picture->file_name);
         $picture->delete();
     }
 }
