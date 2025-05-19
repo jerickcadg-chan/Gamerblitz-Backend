@@ -10,12 +10,12 @@ use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendSettlementNotif;
 use App\Models\Balance;
-use App\Models\Client;
 use App\Models\Order;
 use App\Models\Voucher;
 use App\Models\Discount;
 use App\Models\PaymentMethod;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\ProductItem;
 use App\Models\User;
 use Exception;
@@ -156,9 +156,10 @@ class OrderService
 
     public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, $qty = 1): array
     {
+        $price = $productItem->real_price;
         if (str($productItem->product->category)->lower() == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) {
-            $joki = json_decode($request->note, true) ?? [];
-            $validator = Validator::make($joki, [
+            $joki = json_decode($request->note);
+            $validator = Validator::make((array) $joki, [
                 'startRank' => 'required|string',
                 'startRankGrade' => 'required|integer',
                 'startStars' => 'required|integer',
@@ -170,12 +171,12 @@ class OrderService
                 return [null, $validator->messages()->toArray()];
             }
             $jokiResult = $this->calculateJokiMLPrice(
-                $joki['startRank'],
-                $joki['startRankGrade'],
-                $joki['startStars'],
-                $joki['targetRank'],
-                $joki['targetRankGrade'],
-                $joki['targetStars']
+                $joki->startRank,
+                $joki->startRankGrade,
+                $joki->startStars,
+                $joki->targetRank,
+                $joki->targetRankGrade,
+                $joki->targetStars
             );
 
             $price = $jokiResult['price'];
@@ -186,9 +187,10 @@ class OrderService
                 'nominal' => 0
             ];
         } else {
-            $price = $productItem->price * $qty;
+            $price = $productItem->real_price * $qty;
             $capital = $productItem->capital * $qty;
 
+            // TODO: fix the logic of get_active_discount
             $disc = get_active_discount($price, $productItem->product_id, $productItem->id, $qty);
         }
 
@@ -203,7 +205,11 @@ class OrderService
             $disc = get_active_discount($productItem->real_price, $productItem->product_id, $productItem->id);
         }
 
-        $xenditFee = $this->calculateXenditFee($productItem, $paymentMethod);
+        $xenditFee = $this->calculateXenditFee(
+            realPrice: $price,
+            adminFee: $paymentMethod->admin_fee,
+            adminType: $paymentMethod->admin_type,
+        );
         $forAdmin = 0;
 
         if ($xenditFee == 'no-admin' && $paymentMethod->name != PaymentMethod::SALDO) {
@@ -211,12 +217,12 @@ class OrderService
             $forAdmin = $xenditFee;
         }
 
-        $totalPrice = $productItem->real_price - $disc['nominal'] + $xenditFee;
+        $totalPrice = $price - $disc['nominal'] + $xenditFee;
 
-        $totalIncome = $productItem->real_price - $disc['nominal'] + $forAdmin - $capital;
+        $totalIncome = $price - $disc['nominal'] + $forAdmin - $capital;
 
         $prices = [
-            'price' => $productItem->real_price,
+            'price' => $price,
             'capital' => $capital,
             'admin_fee' => $xenditFee,
             'discount_price' => $disc['nominal'],
@@ -228,11 +234,14 @@ class OrderService
         return [$prices, null];
     }
 
-    public function calculateXenditFee(ProductItem $productItem, PaymentMethod $paymentMethod)
-    {
-        return match ($paymentMethod->admin_type) {
-            'percentage' => ceil($productItem->real_price / ((100 - $paymentMethod->admin_fee) / 100)) - $productItem->real_price,
-            'nominal' => $paymentMethod->admin_fee,
+    public function calculateXenditFee(
+        $realPrice,
+        $adminFee,
+        $adminType,
+    ) {
+        return match ($adminType) {
+            'percentage' => ceil($realPrice / ((100 - $adminFee) / 100)) - $realPrice,
+            'nominal' => $adminFee,
             default => 0,
         };
     }
@@ -529,8 +538,9 @@ class OrderService
 
     private function rankOptions(): array
     {
+        $category = ProductCategory::whereSlug(ProductConstant::JOKI)->first();
         /** @var Product $product */
-        $product = Product::whereCategory(ProductConstant::JOKI)->first();
+        $product = Product::whereProductCategoryId($category->id)->first();
         $items = ProductItem::where('product_id', $product->id)->orderBy('price')->get()->toArray();
 
         return [

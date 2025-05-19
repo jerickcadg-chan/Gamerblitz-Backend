@@ -39,14 +39,15 @@ Route::get('slider', [SliderController::class, 'index']);
 
 Route::get('check-nickname', [OrderController::class, 'checkNickname']);
 
-Route::get('/clients/all', function() {
+Route::get('/clients/all', function () {
     $clients = Client::get();
 
     return api_status_ok(transformer($clients, \App\Transformers\ClientConfigurationTransformer::class));
 })->middleware('basic_auth');
 
 Route::get('category', CategoryController::class);
-Route::get('product-item-category', ProductItemCategoryController::class);
+Route::get('product-item-category', [ProductItemCategoryController::class, 'index']);
+Route::get('product-item-categories', [ProductItemCategoryController::class, 'indexWithMeta']);
 Route::get('product/account', [AccountController::class, 'index'])->name('product.account');
 Route::get('product/{account:slug}/account', [AccountController::class, 'show'])->name('product.account.show');
 Route::get('product', [ProductController::class, 'index']);
@@ -65,7 +66,7 @@ Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->na
 Route::get('order/{order}', [OrderController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
-    Route::put('clients/configuration', function(Request $request) {
+    Route::put('clients/configuration', function (Request $request) {
         ClientTheme::query()
             ->where('client_id', client()->id)
             ->updateOrInsert(['client_id' => client()->id], $request->merge(['client_id' => client()->id])->except('client'));

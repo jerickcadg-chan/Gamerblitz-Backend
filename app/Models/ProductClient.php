@@ -21,6 +21,7 @@ class ProductClient extends Model
         'product_id',
         'client_id',
         'is_active',
+        'name'
     ];
 
     public function product(): BelongsTo

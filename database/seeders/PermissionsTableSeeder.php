@@ -53,6 +53,8 @@ class PermissionsTableSeeder extends Seeder
             'View User Report',
             'View Product Report',
 
+            'View Statistic',
+
             'View User',
             'Create User',
             'Edit User',

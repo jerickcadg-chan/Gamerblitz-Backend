@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Services\OrderService;
-use App\Transformers\ProductTransformer;
 use App\Transformers\ProductItemTransformer;
+use App\Transformers\ProductTransformer;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
@@ -21,10 +21,17 @@ class ProductController extends Controller
                 });
             })
             ->when(\request('name'), function ($query) {
-                return $query->where('name', 'like', '%' . \request('name') . '%');
+                return $query->where('name', 'like', '%'.\request('name').'%');
             })
             ->orderBy('ordering')
-            ->get();
+            ->get()
+            ->filter(function ($product) {
+                if ($product->productClient->first() && ! $product->productClient->first()?->is_active) {
+                    return false;
+                }
+
+                return true;
+            });
 
         return api_status_ok(transformer($products, new ProductTransformer));
     }
@@ -39,7 +46,7 @@ class ProductController extends Controller
                 });
             })
             ->when(\request('name'), function ($query) {
-                return $query->where('name', 'like', '%' . \request('name') . '%');
+                return $query->where('name', 'like', '%'.\request('name').'%');
             });
 
         return api_status_ok(paginateTransformer($products, new ProductTransformer));
@@ -55,12 +62,13 @@ class ProductController extends Controller
     public function getProductItems($productId)
     {
         $productItems = ProductItem::query()
+            ->with('product.productCategory', 'flashSaleProductItem.flashSale')
             ->filter($this->filter())
             ->active()
             ->with([
                 'productItemClients' => function ($query) {
                     $query->where('client_id', client()->id);
-                }
+                },
             ])
             ->where('product_id', $productId)
             ->orderByRaw("CASE

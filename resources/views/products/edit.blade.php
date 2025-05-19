@@ -18,11 +18,11 @@
             <div class="card-body">
                 <form method="POST" action="{{ $updateLink }}" enctype="multipart/form-data">
                     @csrf @method('PUT')
-                    {{-- <div class="form-group"> --}}
-                    {{--     <label for="name_input" class="required">Nama</label> --}}
-                    {{--     <input type="text" class="form-control" name="name" id="name_input" placeholder="Masukkan Nama" value="{{ old('name', $product->name) }}" required> --}}
-                    {{--     @include('alerts.feedback', ['field' => 'name']) --}}
-                    {{-- </div> --}}
+                    <div class="form-group">
+                        <label for="name_input" class="required">Nama</label>
+                        <input type="text" class="form-control" name="name" id="name_input" placeholder="Masukkan Nama" value="{{ old('name', $product->name) }}" required>
+                        @include('alerts.feedback', ['field' => 'name'])
+                    </div>
                     {{-- <div class="form-group"> --}}
                     {{--     <label for="code_input">Kode</label> --}}
                     {{--     <input type="text" class="form-control" name="code" id="code_input" placeholder="Masukkan Nama" value="{{ old('code', $product->code) }}"> --}}
@@ -88,11 +88,11 @@
                         <input type="file" name="cover" class="form-control" accept="image/*" value="{{ old('cover') }}">
                         @include('alerts.feedback', ['field' => 'cover'])
                     </div>
-                    <div class="form-group">
-                        <label for="input_ordering" class="required">Urutan</label>
-                        <input type="text" name="ordering" class="form-control {{ $errors->has('ordering') ? ' is-invalid' : '' }}" id="input_ordering" placeholder="Urutan berdasarkan nomor" value="{{ old('ordering', $product->ordering) }}" required>
-                        @include('alerts.feedback', ['field' => 'ordering'])
-                    </div>
+                    {{-- <div class="form-group"> --}}
+                    {{--     <label for="input_ordering" class="required">Urutan</label> --}}
+                    {{--     <input type="text" name="ordering" class="form-control {{ $errors->has('ordering') ? ' is-invalid' : '' }}" id="input_ordering" placeholder="Urutan berdasarkan nomor" value="{{ old('ordering', $product->ordering) }}" required> --}}
+                    {{--     @include('alerts.feedback', ['field' => 'ordering']) --}}
+                    {{-- </div> --}}
                     <div class="form-group">
                         <label for="picture" class="required">Gambar</label>
                         <input type="file" name="picture" class="form-control" accept="image/*" value="{{ old('picture') }}">
@@ -100,7 +100,7 @@
                     </div>
                     <div class="form-group">
                         <label for="status_input" class="required">Status</label>
-                        <select class="form-control" name="status" id="status_input" required>
+                        <select class="form-control select2" name="status" id="status_input" required>
                             <option value="">Pilih Status</option>
                             @foreach (config('array.product.status') as $status)
                                 <option value="{{ $status }}" {{ old('status', $product->status) == $status ? 'selected' : null }}>{{ ucfirst($status) }}</option>

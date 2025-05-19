@@ -10,8 +10,6 @@ class FlashSaleTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
-     *
-     * @var array
      */
     protected array $defaultIncludes = [
         //
@@ -19,8 +17,6 @@ class FlashSaleTransformer extends TransformerAbstract
 
     /**
      * List of resources possible to include
-     *
-     * @var array
      */
     protected array $availableIncludes = [
         //

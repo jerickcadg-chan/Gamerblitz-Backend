@@ -16,49 +16,39 @@
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <ul class="nav nav-tabs">
-                    <li {{ request('status') == 'in-process' ? 'class=active' : null }}>
-                        <a href="{{ route('order.index', ['status' => config('array.order.order_status.in-process')]) }}">Menunggu Proses</a>
-                    </li>
-                    <li {{ request('status') == 'done' ? 'class=active' : null }}>
-                        <a href="{{ route('order.index', ['status' => config('array.order.order_status.done')]) }}">Pesanan Selesai</a>
-                    </li>
-                    <li {{ request('status') == 'expired' ? 'class=active' : null }}>
-                        <a href="{{ route('order.index', ['status' => config('array.order.order_status.expired')]) }}">Pesanan Kadaluarsa</a>
-                    </li>
-                    <li {{ request('status') == 'canceled' ? 'class=active' : null }}>
-                        <a href="{{ route('order.index', ['status' => config('array.order.order_status.canceled')]) }}">Pesanan Dibatalkan</a>
-                    </li>
-                    <li {{ request('status') == '' ? 'class=active' : null }}>
-                        <a href="{{ route('order.index') }}">Semua Pesanan</a>
-                    </li>
-                </ul>
-
                 <div class="mt-3">
                     <form>
-                        <div class="row mb-3">
-                            <div class="col-md-2 mb-2">
+                        <div class="row mb-3 g-xl-2">
+                            <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
                                 <input class="form-control" type="text" name="order_code" value="{{ request('order_code') }}" placeholder="Nomor invoice">
                             </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
                                 <input class="form-control" type="text" name="customer_name" value="{{ request('customer_name') }}" placeholder="Nama pembeli">
                             </div>
-                            <div class="col-md-2 mb-2">
-                                <select class="form-control" name="product_id">
+                            <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
+                                <select class="form-control select2" name="status">
+                                    <option value="">Semua Pesanan</option>
+                                    <option value="in-process" {{ request('status') == 'in-process' ? 'selected' : null }}>Menunggu Proses</option>
+                                    <option value="done" {{ request('status') == 'done' ? 'selected' : null }}>Pesanan Selesai</option>
+                                    <option value="expired" {{ request('status') == 'expired' ? 'selected' : null }}>Pesanan Kedaluwarsa</option>
+                                    <option value="canceled" {{ request('status') == 'canceled' ? 'selected' : null }}>Pesanan Dibatalkan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
+                                <select class="form-control select2" name="product_id">
                                     <option value="">Pilih Produk</option>
                                     @foreach (\App\Models\Product::all() as $product)
                                         <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : null }}>{{ $product->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
                                 <input type="date" class="form-control" name="date" value="{{ request('date') }}" placeholder="Tanggal">
                             </div>
-                            <div class="col-md-2 mb-2 pt-2">
+                            <div class="col-md-6 col-lg-4 col-xl-2 mb-2 pt-2">
                                 <button type="submit" class="btn btn-sm btn-primary">Cari</button>
-                                <a href="{{ url()->current() }}?status={{ request('status') }}" class="btn btn-sm btn-danger">Reset</a>
+                                <a href="{{ url()->current() }}" class="btn btn-sm btn-danger">Reset</a>
                             </div>
-                            <input type="hidden" name="status" value="{{ request('status') }}">
                         </div>
                     </form>
                     <div class="table-responsive">
@@ -69,6 +59,8 @@
                                     <th rowspan="2">Pesanan</th>
                                     <th rowspan="2">Nama Produk</th>
                                     <th rowspan="2">Harga</th>
+                                    <th rowspan="2">Modal</th>
+                                    <th rowspan="2">Laba</th>
                                     <th colspan="2">Pembeli</th>
                                     <th colspan="2">Status</th>
                                 </tr>
@@ -96,6 +88,8 @@
                                             <span class="text-muted">{{ @$order->productItem->product->name }}</span>
                                         </td>
                                         <td>{{ rp_format($order->total_price) }}</td>
+                                        <td>{{ rp_format($order->capital) }}</td>
+                                        <td>{{ rp_format($order->total_income) }}</td>
                                         <td>{{ @$order->cust_email }}</td>
                                         <td><a href="https://web.whatsapp.com/send?phone={{ $order->cust_phone_number }}&text=Hai Kak" target="_blank">{{ $order->cust_phone_number }}</a></td>
                                         <td>{!! $order->payment_status_raw !!}</td>

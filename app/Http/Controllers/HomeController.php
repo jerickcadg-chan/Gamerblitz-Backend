@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -22,34 +23,77 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(): View
     {
-        $month = today()->format('m');
-        $year = today()->format('Y');
+        $selectedMonth = request('month') ?? today()->format('m');
+        $selectedYear = request('year') ?? today()->format('Y');
 
-        $order = Order::whereClient()
-            ->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year)
-            ->get();
+        $orderToday = $this->getOrderToday();
+        $orderSum = $this->getOrderSum($selectedMonth, $selectedYear);
+        $orderPastWeek = $this->getOrderPastWeek();
 
-        $progress = Order::whereClient()
-            ->select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('SUM(total_income) as total_income'),
-                DB::raw('count(*) as count')
-            )
-            ->settlement()
-            ->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year)
+        $data = compact('orderSum', 'orderToday', 'orderPastWeek', 'selectedYear', 'selectedMonth');
+        return view('home', $data);
+    }
+
+    protected function getOrderPastWeek()
+    {
+        $query = Order::whereClient()
+            ->where('order_status', Order::DONE)
+            ->selectRaw('DATE(created_at) as date, SUM(total_price) as total_price, SUM(total_income) as total_income')
+            ->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()])
             ->groupBy('date')
-            ->get();
+            ->orderBy('date');
+        $turnover = $query->pluck('total_price')->map(
+            function ($total) {
+                return round($total);
+            }
+        );
+        $profit = $query->pluck('total_income')->map(
+            function($total) {
+                return round($total);
+            }
+        );
+        $days = $query->pluck('date');
+        return compact('turnover', 'profit', 'days');
+    }
 
+    protected function getOrderSum($month, $year)
+    {
+        $orderSumQuery = Order::whereClient()
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->where('order_status', Order::DONE);
+
+        $turnover = $orderSumQuery->sum('total_price');
+        $profit = $orderSumQuery->sum('total_income');
+        $profitMargin = $turnover === 0 ? 0 : round(($profit / $turnover) * 100);
         $orderSum = [
-            'total' => $order->count(),
-            'expired' => $order->where('order_status', Order::EXPIRED)->count(),
-            'done' => $order->where('order_status', Order::DONE)->count(),
+            'total' => $orderSumQuery->count(),
+            'turnover' => $turnover,
+            'profit' => $profit,
+            'profitMargin' => $profitMargin,
         ];
 
-        return view('home', \compact('orderSum', 'progress'));
+        return $orderSum;
+    }
+    /**
+     * @return array<string,mixed>
+     */
+    protected function getOrderToday()
+    {
+        $orderTodayQuery = Order::whereClient()
+            ->whereRaw('DATE(created_at) = ?', [today()])
+            ->where('order_status', Order::DONE);
+
+
+        $turnoverToday = $orderTodayQuery->sum('total_price');
+        $profitToday = $orderTodayQuery->sum('total_income');
+        $orderToday = [
+            'total' => $orderTodayQuery->count(),
+            'turnover' => $turnoverToday,
+            'profit' => $profitToday,
+        ];
+        return $orderToday;
     }
 }

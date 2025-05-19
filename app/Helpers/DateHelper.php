@@ -197,6 +197,15 @@ if (!function_exists('get_years')) {
     }
 }
 
+if (!function_exists('get_years_reversed')) {
+    function get_years_reversed()
+    {
+        $years = collect(get_years());
+        return $years->reverse()->toArray();
+
+    }
+}
+
 if (!function_exists('get_start_and_end_date')) {
     function get_start_and_end_date($dates)
     {

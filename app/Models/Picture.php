@@ -16,6 +16,8 @@ class Picture extends Model
     */
     use HasFactory;
 
+    protected $appends = ['url'];
+
     protected $fillable = [
         'path',
         'file_name',
@@ -35,7 +37,7 @@ class Picture extends Model
             return null;
         }
 
-        return Storage::disk('s3')->url($this->path.'/'.$this->file_name);
+        return Storage::disk(config('filesystems.default'))->url($this->path.'/'.$this->file_name);
     }
 
 }

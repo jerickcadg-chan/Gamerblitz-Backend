@@ -13,9 +13,9 @@
     <!-- Scripts -->
     <script src="{{ asset('build/js/vendor.bundle.base.js') }}"></script>
     <script src="{{ asset('build/js/hoverable-collapse.js') }}"></script>
-    <script src="{{ asset('build/js/misc.js') }}"></script>
 
     <!-- Styles -->
+    @stack('assets')
     <link href="{{ asset('build/vendors/mdi/css/materialdesignicons.min.css') }}" rel="stylesheet">
     @vite(['resources/js/app.js', 'resources/css/style.css'])
 
@@ -24,7 +24,7 @@
     <script src="{{ asset('build/vendors/select2/select2.min.js') }}"></script>
 
     <!-- Shortcut icon -->
-    <link rel="shortcut icon" href="{{ client()->clientAbout?->favicon_url }}" />
+    <link rel="shortcut icon" href="{{ client()->clientAbout?->favicon }}" />
 </head>
 <body>
     @auth
@@ -44,10 +44,12 @@
     @stack('js')
     @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
     <script>
-        $('.select2').select2();
-        $('form').submit(function(){
-            $(this).find(':submit').attr('disabled','disabled');
-        });
+    $('select.form-control').select2({
+      tags: true
+    });
+    $('form').submit(function(){
+      $(this).find(':submit').attr('disabled','disabled');
+    });
     </script>
 </body>
 </html>
