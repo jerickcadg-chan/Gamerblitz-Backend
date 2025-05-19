@@ -64,7 +64,7 @@
           <tr>
             <th>Informasi</th>
             <td>
-              <span id="information-text">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
+              <span id="information-text">**********</span>
               <button type="button" class="btn-sm btn-gradient-warning rounded-pill" id="show-information">
                 <i class="mdi mdi-eye"></i>
               </button>
