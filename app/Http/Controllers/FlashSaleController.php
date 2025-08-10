@@ -23,7 +23,6 @@ class FlashSaleController extends Controller
     public function index()
     {
         $flash_sales = FlashSale::latest()
-            ->whereClient()
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%' . request('name') . '%');
             })
@@ -52,7 +51,6 @@ class FlashSaleController extends Controller
             'name' => 'nullable',
             'start_date' => ['required', 'date', 'before:end_date', function ($attribute, $value, $fail) use ($request) {
                 $exist = FlashSale::query()
-                    ->where('client_id', client()->id)
                     ->where(function (Builder $query) use ($request) {
                         $query->where('start_date', '<=', now()->parse($request->end_date)->format('Y-m-d H:i:s'))
                             ->where('end_date', '>=', now()->parse($request->start_date)->format('Y-m-d H:i:s'));
@@ -103,7 +101,6 @@ class FlashSaleController extends Controller
             'name' => 'nullable',
             'start_date' => ['required', 'date', 'before:end_date', function ($attribute, $value, $fail) use ($request, $flash_sale) {
                 $exist = FlashSale::query()
-                    ->where('client_id', client()->id)
                     ->where('id', '!=', $flash_sale->id)
                     ->where(function (Builder $query) use ($request) {
                         $query->where('start_date', '<=', now()->parse($request->end_date)->format('Y-m-d H:i:s'))

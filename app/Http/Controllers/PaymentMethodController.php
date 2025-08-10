@@ -24,7 +24,6 @@ class PaymentMethodController extends Controller
     public function index()
     {
         $payment_methods = PaymentMethod::latest()
-            ->whereClient()
             ->paginate();
 
         $createLink = route('payment_method.create');

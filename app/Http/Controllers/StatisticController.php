@@ -25,8 +25,7 @@ class StatisticController extends Controller
             return redirect()->back();
         }
 
-        $query = Order::whereClient()
-            ->where('order_status', Order::DONE)
+        $query = Order::where('order_status', Order::DONE)
             ->selectRaw(
                 '
                 DATE(created_at) as date,
@@ -63,8 +62,7 @@ class StatisticController extends Controller
             return redirect()->back();
         }
 
-        $query = User::whereClient()
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+        $query = User::selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()])
             ->groupBy('date')
             ->orderBy('date');

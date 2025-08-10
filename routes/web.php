@@ -33,7 +33,7 @@ Route::get('/email/verify/{id}/mail/{mailhash}', function ($id, $mailhash) {
         event(new Verified($user));
     }
 
-    return redirect(client()->frontend_host . '/login?verification=success');
+    return redirect(config('app.fe_url') . '/login?verification=success');
 })->middleware('signed')->name('verification');
 
 

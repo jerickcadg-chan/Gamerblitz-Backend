@@ -39,14 +39,14 @@ class AuthController extends Controller
 
         try {
             /** @var User $user */
-            $user = User::whereEmail($credentials['email'])->whereClientId(client()->id)->first();
+            $user = User::whereEmail($credentials['email'])->first();
             if (!$user) {
                 $credentials = [
                     'phone_number' => convert_to_62($request->username),
                     'password' => $request->password,
                 ];
 
-                $user = User::wherePhoneNumber($credentials['phone_number'])->whereClientId(client()->id)->first();
+                $user = User::wherePhoneNumber($credentials['phone_number'])->first();
 
                 if (!$user) {
                     return api_status_warning(trans('auth.failed'));
@@ -55,10 +55,6 @@ class AuthController extends Controller
 
             if (!Hash::check($credentials['password'], $user->password)) {
                 return api_status_warning(trans('auth.failed'));
-            }
-
-            if ($user?->client_id == null || $user?->client_id != client()?->id) {
-                return api_status_warning('User not found', 404);
             }
 
             if ($user->email_verified_at == null) {
@@ -81,8 +77,8 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->where(fn($query) => $query->where('client_id', client()->id))],
-            'phone_number' => ['required', 'numeric', Rule::unique('users')->where(fn($query) => $query->where('client_id', client()->id))],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
+            'phone_number' => ['required', 'numeric', Rule::unique('users')],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
         ]);
 
@@ -101,7 +97,6 @@ class AuthController extends Controller
 
             $role = Role::where('name', 'Customer')->first();
             $user->assignRole($role);
-            $user->client()->associate(client());
             $user->save();
 
             $user->balance()->create([

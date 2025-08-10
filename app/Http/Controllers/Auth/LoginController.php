@@ -78,24 +78,10 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request)
     {
         $credentials = $this->credentials($request);
-        $user = User::whereEmail($credentials['email'])->whereClientId(client()->id)->first();
-        if ($user?->client?->id !== client()->id) {
-            return false;
-        }
-        if ($user->first_login) {
-            $tmpRole = DB::table('model_has_roles')->where('model_type', 'App\Models\Clients\User')->where('model_id', $user->id)->first();
-            if ($tmpRole) {
-                $user->syncRoles(DefaultRole::SUPER_ADMIN);
-            }
-            $user->password = bcrypt($user->password);
-            $user->first_login = false;
-            $user->save();
-        }
-        $user = $this->guard()->attempt(
+
+        return $this->guard()->attempt(
             $credentials,
             $request->boolean('remember')
         );
-
-        return $user;
     }
 }

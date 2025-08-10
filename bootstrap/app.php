@@ -21,8 +21,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'only_verified' => \App\Http\Middleware\OnlyVerifiedUserCan::class,
             'basic_auth' => \App\Http\Middleware\BasicAuth::class,
         ]);
-
-        $middleware->append(EnsureHostIsValid::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

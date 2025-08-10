@@ -62,24 +62,6 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = Product::create($request->all());
-        $product->productClient()
-            ->create([
-                'client_id' => client()->id,
-            ]);
-
-        if ($request->cover) {
-            $productClient = $product->productClient
-                ->firstWhere('client_id', client()->id);
-
-            insert_picture($request->cover, $productClient, 'cover');
-        }
-
-        if ($request->picture) {
-            $productClient = $product->productClient
-                ->firstWhere('client_id', client()->id);
-
-            insert_picture($request->picture, $productClient);
-        }
 
         toast(alert_created_text($this->title), 'success');
 
@@ -99,44 +81,6 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $product->update($request->all());
-        $product->productClient()
-            ->updateOrCreate([
-                'product_id' => $product->id
-            ],[
-                'client_id' => client()->id,
-                'is_active' => $request->status == 'active',
-                'name' => $request->name
-            ]);
-
-        if ($request->cover) {
-            $productClient = $product->productClient
-                ->firstWhere('client_id', client()->id);
-            if ($productClient->cover) {
-                delete_picture($productClient->cover);
-                insert_picture(
-                    picture: $request->cover,
-                    model: $productClient,
-                    type: 'cover'
-                );
-            } else {
-                insert_picture(
-                    picture: $request->cover,
-                    model: $productClient,
-                    type: 'cover',
-                );
-            }
-        }
-
-        if ($request->picture) {
-            $productClient = $product->productClient
-                ->firstWhere('client_id', client()->id);
-            if ($productClient->picture) {
-                delete_picture($productClient->picture);
-                insert_picture($request->picture, $productClient);
-            } else {
-                insert_picture($request->picture, $productClient);
-            }
-        }
 
         toast(alert_updated_text($this->title), 'success');
         return redirect()->route('product.index');

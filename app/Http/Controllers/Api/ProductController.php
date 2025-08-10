@@ -65,11 +65,6 @@ class ProductController extends Controller
             ->with('product.productCategory', 'flashSaleProductItem.flashSale')
             ->filter($this->filter())
             ->active()
-            ->with([
-                'productItemClients' => function ($query) {
-                    $query->where('client_id', client()->id);
-                },
-            ])
             ->where('product_id', $productId)
             ->orderByRaw("CASE
                 WHEN name RLIKE '^[A-Za-z]' THEN 1

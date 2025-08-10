@@ -15,18 +15,8 @@ class CategoryController extends Controller
             array_values(ProductCategory::active()
                 ->get()
                 ->filter(function (ProductCategory $item) {
-                    $websiteLevel = client()->website_level;
-                    if ($websiteLevel == WebsiteLevel::BASIC) {
-                        return $item->name != ProductConstant::getTitle('account') && $item->name != ProductConstant::getTitle('joki');
-                    }
+                    return $item->name != ProductConstant::getTitle('account') && $item->name != ProductConstant::getTitle('joki');
 
-                    if ($websiteLevel == WebsiteLevel::PREMIUM) {
-                        return $item->name != ProductConstant::getTitle('joki');
-                    }
-
-                    if ($websiteLevel == WebsiteLevel::ULTIMATE) {
-                        return $item->name;
-                    }
                 })
                 ->map(function ($item) {
                     return [

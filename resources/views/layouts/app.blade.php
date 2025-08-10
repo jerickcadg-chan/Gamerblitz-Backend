@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ client()->name }} {{ isset($title) ? ' - ' . $title : null }}</title>
+    <title>@# {{ isset($title) ? ' - ' . $title : null }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('build/js/vendor.bundle.base.js') }}"></script>
@@ -24,7 +24,7 @@
     <script src="{{ asset('build/vendors/select2/select2.min.js') }}"></script>
 
     <!-- Shortcut icon -->
-    <link rel="shortcut icon" href="{{ client()->clientAbout?->favicon }}" />
+    <link rel="shortcut icon" href="@#" />
 </head>
 <body>
     @auth

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\WhereByClient;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\OrderFactory;
@@ -24,7 +23,6 @@ class Order extends Model implements IsFilterable
      * @use HasFactory<OrderFactory>
      */
     use HasFactory;
-    use WhereByClient;
     use Filterable;
 
     const PENDING = 'pending';

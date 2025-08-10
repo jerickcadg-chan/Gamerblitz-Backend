@@ -173,28 +173,28 @@ class ProductItem extends Model implements IsFilterable
         );
     }
 
-    public function capital(): Attribute
-    {
-        return Attribute::get(
-            get: function () {
-                $level = client()->level ?? null;
-                if (! $level) {
-                    return $this->capital_silver;
-                }
-                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
-                    return $this->price;
-                }
-                $capital = match ($level) {
-                    UserLevel::SILVER => $this->capital_silver,
-                    UserLevel::GOLD => $this->capital_gold,
-                    UserLevel::PLATINUM => $this->capital_platinum,
-                    UserLevel::DIAMOND => $this->capital_diamond,
-                };
-
-                return $capital;
-            }
-        );
-    }
+//    public function capital(): Attribute
+//    {
+//        return Attribute::get(
+//            get: function () {
+//                $level = client()->level ?? null;
+//                if (! $level) {
+//                    return $this->capital_silver;
+//                }
+//                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
+//                    return $this->price;
+//                }
+//                $capital = match ($level) {
+//                    UserLevel::SILVER => $this->capital_silver,
+//                    UserLevel::GOLD => $this->capital_gold,
+//                    UserLevel::PLATINUM => $this->capital_platinum,
+//                    UserLevel::DIAMOND => $this->capital_diamond,
+//                };
+//
+//                return $capital;
+//            }
+//        );
+//    }
 
     public function order(): HasMany
     {

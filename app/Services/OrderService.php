@@ -103,7 +103,6 @@ class OrderService
             $order->total_income = $price['total_income'];
             $order->expired_at = Carbon::parse(now())->addHours(1);
             $order->note = $request->note;
-            $order->client()->associate(client());
             $order->save();
 
             if ($order->discount) {

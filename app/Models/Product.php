@@ -42,14 +42,6 @@ class Product extends Model
         'ordering',
         'product_category_id'
     ];
-
-    public function productClientName(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->productClient->first()?->name ?? $this->name
-        );
-    }
-
     public function productItems()
     {
         return $this->hasMany(ProductItem::class)->latest();
@@ -80,10 +72,10 @@ class Product extends Model
         }
     }
 
-    public function getFullSlugAttribute()
-    {
-        return "https://" . str(client()->host)->replaceFirst("admin.", "") . '/topup/' . $this->slug;
-    }
+//    public function getFullSlugAttribute()
+//    {
+//        return "https://" . str(client()->host)->replaceFirst("admin.", "") . '/topup/' . $this->slug;
+//    }
 
     public function setNameAttribute($value)
     {

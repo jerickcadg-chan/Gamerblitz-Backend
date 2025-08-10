@@ -38,8 +38,7 @@ class HomeController extends Controller
 
     protected function getOrderPastWeek()
     {
-        $query = Order::whereClient()
-            ->where('order_status', Order::DONE)
+        $query = Order::where('order_status', Order::DONE)
             ->selectRaw('DATE(created_at) as date, SUM(total_price) as total_price, SUM(total_income) as total_income')
             ->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()])
             ->groupBy('date')
@@ -60,7 +59,7 @@ class HomeController extends Controller
 
     protected function getOrderSum($month, $year)
     {
-        $orderSumQuery = Order::whereClient()
+        $orderSumQuery = Order::query()
             ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
             ->where('order_status', Order::DONE);
@@ -82,7 +81,7 @@ class HomeController extends Controller
      */
     protected function getOrderToday()
     {
-        $orderTodayQuery = Order::whereClient()
+        $orderTodayQuery = Order::query()
             ->whereRaw('DATE(created_at) = ?', [today()])
             ->where('order_status', Order::DONE);
 

@@ -19,8 +19,7 @@ class DepositController extends Controller
                 $query
                     ->when(request('name'), function (Builder $query) {
                         $query->where('name', 'like', '%' . \request('name') . '%');
-                    })
-                    ->where('client_id', client()->id);
+                    });
             })
             ->when(\request('code'), function (Builder $query) {
                 $query->where('code', 'like', '%' . \request('code') . '%');
