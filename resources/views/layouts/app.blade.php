@@ -8,16 +8,19 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>GPDS Game Shop {{ isset($title) ? ' - ' . $title : null }}</title>
+    <title>Panel GPDS Game Shop {{ isset($title) ? ' - ' . $title : null }}</title>
+
+    {{--  Script--}}
+    <script src="{{ asset('js/vendor.bundle.base.js') }}"></script>
 
     <!-- Styles -->
     @stack('assets')
-    <link href="{{ asset('build/vendors/mdi/css/materialdesignicons.min.css') }}" rel="stylesheet">
-    @vite(['resources/js/app.js', 'resources/css/style.css'])
+    <link href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}" rel="stylesheet">
+    @vite(['resources/css/style.css'])
 
     <!-- Select2 -->
-    <link href="{{ asset('build/vendors/select2/select2.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('build/vendors/select2/select2.min.js') }}"></script>
+    <link href="{{ asset('vendors/select2/select2.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
 
     <!-- Shortcut icon -->
     <link rel="shortcut icon" href="{{ asset('img/gpds_icon.png') }}" />
@@ -39,6 +42,8 @@
 
     @stack('js')
     @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
+    <script src="{{ asset('js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('js/misc.js') }}"></script>
     <script>
     $('select.form-control').select2({
       tags: true
