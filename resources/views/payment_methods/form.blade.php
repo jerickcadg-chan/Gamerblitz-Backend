@@ -119,7 +119,7 @@
             @include('alerts.feedback', ['field' => 'ordering'])
           </div>
 
-          <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
           <a href="{{ route('payment_method.index') }}" class="btn btn-light">Cancel</a>
         </form>
       </div>

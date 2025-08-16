@@ -47,7 +47,7 @@
                         </div>
                         <hr>
                     </div>
-                    <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                     <a href="{{ $indexLink }}" class="btn btn-light">Cancel</a>
                 </form>
             </div>

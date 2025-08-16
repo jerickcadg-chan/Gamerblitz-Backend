@@ -95,7 +95,7 @@
 {{--                         @include('alerts.feedback', ['field' => 'picture']) --}}
 {{--                     </div> --}}
 {{--                     <input type="hidden" name="status" value="active"> --}}
-{{--                     <button type="submit" class="btn btn-gradient-primary me-2">Submit</button> --}}
+{{--                     <button type="submit" class="btn btn-primary">Submit</button> --}}
 {{--                     <a href="{{ $indexLink }}" class="btn btn-light">Cancel</a> --}}
 {{--                 </form> --}}
 {{--             </div> --}}
