@@ -32,6 +32,11 @@ class PermissionsTableSeeder extends Seeder
             'Edit Product Category',
             'Delete Product Category',
 
+            'View Product',
+            'Create Product',
+            'Edit Product',
+            'Delete Product',
+
             'View Product Item',
             'Create Product Item',
             'Edit Product Item',

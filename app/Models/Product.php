@@ -28,7 +28,7 @@ class Product extends Model
 
     protected $fillable = [
         'code',
-        'category',
+        'product_category_id',
         'description',
         'company',
         'how_to_order',
@@ -52,6 +52,10 @@ class Product extends Model
         return $query->where('status', self::ACTIVE);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class);
+    }
     public function getStatusViewAttribute()
     {
         if ($this->productClient->first() == null && $this->status == 'active') {
@@ -112,13 +116,6 @@ class Product extends Model
     public function productCategory(): BelongsTo
     {
         return $this->belongsTo(ProductCategory::class);
-    }
-
-    public function category(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->productCategory?->slug ?? 'other'
-        );
     }
 
     public function productItemCategories(): HasMany

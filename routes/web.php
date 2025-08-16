@@ -7,6 +7,7 @@ use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductItemCategoryController;
 use App\Http\Controllers\ProductItemController;
@@ -84,6 +85,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::post('account/{account}/show-information', [AccountController::class, 'showTheInformation'])->name('account.show-information');
     // Resource router
     Route::resources([
+        'product_category' => ProductCategoryController::class,
         'product' => ProductController::class,
         'flash_sale' => FlashSaleController::class,
         'product_item' => ProductItemController::class,

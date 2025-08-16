@@ -1,25 +1,12 @@
 <?php
 
-namespace Database\Factories;
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\ProductCategory;
+use Faker\Generator as Faker;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductCategory>
- */
-class ProductCategoryFactory extends Factory
-{
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
-    {
-        return [
-            'name' => $this->faker->word(),
-            'slug' => $this->faker->slug(),
-            'status' => 'active'
-        ];
-    }
-}
+$factory->define(ProductCategory::class, function (Faker $faker) {
+    return [
+        'name' => $faker->words(3, true),
+    ];
+});

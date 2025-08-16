@@ -16,7 +16,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('category', ['game', 'voucher', 'operator', 'other']);
+            $table->foreignId('product_category_id')->constrained();
             $table->text('description');
             $table->string('company')->nullable();
             $table->text('how_to_order');

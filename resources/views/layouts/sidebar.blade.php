@@ -29,6 +29,11 @@
             <div class="collapse {{ in_array($activePage, config('array.menu.product')) ? 'show' : null }}" id="general-pages">
                 <ul class="nav flex-column sub-menu">
                     @can ('View Product Category')
+                      <li class="nav-item">
+                        <a class="nav-link {{ $activePage == 'product_category' ? 'active' : null }}" href="{{ route('product_category.index') }}"> Category </a>
+                      </li>
+                    @endcan
+                    @can ('View Product')
                     <li class="nav-item">
                         <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Produk </a>
                     </li>

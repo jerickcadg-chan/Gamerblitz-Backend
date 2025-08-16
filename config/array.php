@@ -11,7 +11,7 @@ return [
     ],
     'menu' => [
         'dashboard',
-        'product' => ['product', 'product_item', 'product_item_category', 'voucher', 'account'],
+        'product' => ['product', 'product_item', 'product_item_category', 'product_category'],
         'order',
         'report',
         'promo' => ['discount', 'slider', 'flash_sale'],

@@ -16,10 +16,10 @@ class ProductController extends Controller
     {
         $this->title = 'Produk';
 
-        $this->middleware(['permission:View Product Category'])->only('index', 'show');
-        $this->middleware(['permission:Create Product Category'])->only(['create', 'store']);
-        $this->middleware(['permission:Edit Product Category'])->only('edit', 'update');
-        $this->middleware(['permission:Delete Product Category'])->only('destroy');
+        $this->middleware(['permission:View Product'])->only('index', 'show');
+        $this->middleware(['permission:Create Product'])->only(['create', 'store']);
+        $this->middleware(['permission:Edit Product'])->only('edit', 'update');
+        $this->middleware(['permission:Delete Product'])->only('destroy');
     }
 
     public function index()
