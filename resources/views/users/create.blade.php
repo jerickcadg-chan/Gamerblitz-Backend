@@ -38,7 +38,7 @@
                         <select class="form-control select2 {{ $errors->has('role_id') ? ' is-invalid' : '' }}" name="role_id" id="input_role_id" required>
                             <option value="">Pilih role</option>
                             @foreach($roles as $role)
-                                <option value="{{ $role->id }}" @if(old('role_id') == $role->id) selected @endif>{{ $role->name }}</option>
+                                <option value="{{ $role->name }}" @if(old('role_name') == $role->name) selected @endif>{{ $role->name }}</option>
                             @endforeach
                         </select>
                         @include('alerts.feedback', ['field' => 'role_id'])
