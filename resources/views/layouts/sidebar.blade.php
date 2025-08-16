@@ -3,7 +3,7 @@
         <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
                 <div class="nav-profile-image">
-                    <img src="{{ asset('build/img/icon.png') }}" alt="profile">
+                    <img src="{{ asset('img/gpds_icon.png') }}" alt="profile">
                     <span class="login-status online"></span>
                 </div>
                 <div class="nav-profile-text d-flex flex-column">
@@ -30,22 +30,17 @@
                 <ul class="nav flex-column sub-menu">
                     @can ('View Product Category')
                     <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Kategori </a>
+                        <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Produk </a>
                     </li>
                     @endcan
                     @can ('View Product Item Category')
                     <li class="nav-item">
-                        <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}" href="{{ route('product_item_category.index') }}">Produk Item Kategori </a>
+                        <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}" href="{{ route('product_item_category.index') }}">Item Kategori </a>
                     </li>
                     @endcan
                     @can ('View Product Item')
                     <li class="nav-item">
                         <a class="nav-link {{ in_array($activePage, ['product_item']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>
-                    </li>
-                    @endcan
-                    @can ('View Account')
-                    <li class="nav-item">
-                        <a class="nav-link {{ in_array($activePage, ['account']) ? 'active' : null }}" href="{{ route('account.index') }}">Akun</a>
                     </li>
                     @endcan
                 </ul>
@@ -130,11 +125,11 @@
             </a>
             <div class="collapse {{ in_array($activePage, config('array.menu.user')) ? 'show' : null }}" id="user-pages">
                 <ul class="nav flex-column sub-menu">
-                    {{-- @can ('View User') --}}
-                    {{-- <li class="nav-item"> --}}
-                    {{--     <a class="nav-link {{ $activePage == 'user' ? 'active' : null }}" href="{{ route('user.index') }}"> Non-Pelanggan </a> --}}
-                    {{-- </li> --}}
-                    {{-- @endcan --}}
+                     @can ('View User')
+                     <li class="nav-item">
+                         <a class="nav-link {{ $activePage == 'user' ? 'active' : null }}" href="{{ route('user.index') }}"> Non-Pelanggan </a>
+                     </li>
+                     @endcan
                     @can ('View Customer')
                     <li class="nav-item">
                         <a class="nav-link {{ $activePage == 'customer' ? 'active' : null }}" href="{{ route('user.customer') }}"> Pelanggan </a>

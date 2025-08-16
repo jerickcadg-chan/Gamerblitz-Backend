@@ -25,7 +25,6 @@ class UserController extends Controller
     public function index()
     {
         $users = User::nonCustomer()->latest()
-            ->whereByClient()
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'. request('name') .'%');
             })
@@ -41,7 +40,6 @@ class UserController extends Controller
     public function getCustomer()
     {
         $users = User::customer()->latest()
-            ->whereByClient()
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'. request('name') .'%');
             })

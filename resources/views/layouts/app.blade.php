@@ -8,11 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@# {{ isset($title) ? ' - ' . $title : null }}</title>
-
-    <!-- Scripts -->
-    <script src="{{ asset('build/js/vendor.bundle.base.js') }}"></script>
-    <script src="{{ asset('build/js/hoverable-collapse.js') }}"></script>
+    <title>GPDS Game Shop {{ isset($title) ? ' - ' . $title : null }}</title>
 
     <!-- Styles -->
     @stack('assets')
@@ -24,7 +20,7 @@
     <script src="{{ asset('build/vendors/select2/select2.min.js') }}"></script>
 
     <!-- Shortcut icon -->
-    <link rel="shortcut icon" href="@#" />
+    <link rel="shortcut icon" href="{{ asset('img/gpds_icon.png') }}" />
 </head>
 <body>
     @auth

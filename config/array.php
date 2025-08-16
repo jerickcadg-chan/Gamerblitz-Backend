@@ -14,7 +14,7 @@ return [
         'product' => ['product', 'product_item', 'product_item_category', 'voucher', 'account'],
         'order',
         'report',
-        'promo' => ['discount', 'slider'],
+        'promo' => ['discount', 'slider', 'flash_sale'],
         'statistic' => ['statistic_order', 'statistic_user'],
         'user' => ['user', 'guest', 'customer', 'role'],
         'digi' => ['digi_product_create', 'digi_transaction', 'digi_transaction_create']
