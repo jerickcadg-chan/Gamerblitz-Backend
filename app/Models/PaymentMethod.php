@@ -27,7 +27,7 @@ class PaymentMethod extends Model implements IsFilterable
     const SALDO = 'saldo';
 
     protected $fillable = [
-        'name', 'admin_fee', 'admin_type', 'slug', 'vendor', 'category', 'client_id'
+        'name', 'admin_fee', 'admin_type', 'slug', 'vendor', 'category'
     ];
 
     public function getDisplayNameAttribute()

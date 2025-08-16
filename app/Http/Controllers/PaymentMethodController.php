@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaymentMethodRequest;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,102 +24,57 @@ class PaymentMethodController extends Controller
 
     public function index()
     {
-        $payment_methods = PaymentMethod::latest()
+        $paymentMethods = PaymentMethod::latest()
             ->paginate();
 
         $createLink = route('payment_method.create');
 
         $title = $this->title;
 
-        return view('payment_methods.index', compact('payment_methods', 'createLink', 'title'));
+        return view('payment_methods.index', compact('paymentMethods', 'createLink', 'title'));
     }
 
     public function create()
     {
-        $storeLink = route('payment_method.store');
-        $indexLink = route('payment_method.index');
-
+        $formAction = route('payment_method.store');
         $title = $this->title;
 
-        return view('payment_methods.create', compact('storeLink', 'indexLink', 'title'));
+        return view('payment_methods.form', compact('formAction', 'title'));
     }
 
-    public function store(Request $request)
+    public function store(PaymentMethodRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'bank_account' => 'required',
-            'account_number' => 'required|max:20',
-        ]);
-        $name = Str::of($request->bank_account)->append(' ', $request->account_number, ' a/n ', $request->name);
-
-        /** @var \App\Models\PaymentMethod $payment_method */
-        $payment_method = PaymentMethod::create([
-            'name' => $name,
-            'vendor' => 'manual',
-            'category' => 'bank',
-            'admin_fee' => 0,
-            'admin_type' => 'no-admin',
-            'slug' => Str::slug($name),
-            'client_id' => Auth::user()->client->id,
-        ]);
+        PaymentMethod::create($request->all());
 
         toast(alert_created_text($this->title), 'success');
-
-        return redirect()->route('payment_method.show', $payment_method);
+        return redirect()->route('payment_method.index');
     }
 
-    public function edit(PaymentMethod $payment_method)
+    public function edit(PaymentMethod $paymentMethod)
     {
-        $updateLink = route('payment_method.update', $payment_method);
-        $indexLink = route('payment_method.index');
+        $formAction = route('payment_method.update', $paymentMethod);
         $title = $this->title;
 
-        [$bank_account, $account_number, $an, $name] = Str::of($payment_method->name)->explode(' ', 4);
-
-        return view('payment_methods.edit', [
-            'updateLink' => $updateLink,
-            'indexLink' => $indexLink,
-            'payment_method' => $payment_method,
-            'title' => $title,
-            'bank_account' => $bank_account,
-            'account_number' => $account_number,
-            'name' => $name,
-        ]);
+        return view('payment_methods.form', compact('title', 'formAction', 'paymentMethod'));
     }
 
-    public function update(Request $request, PaymentMethod $payment_method)
+    public function update(PaymentMethodRequest $request, PaymentMethod $paymentMethod)
     {
-        $request->validate([
-            'name' => 'required',
-            'bank_account' => 'required',
-            'account_number' => 'required|max:20',
-        ]);
-        $name = Str::of($request->bank_account)->append(' ', $request->account_number, ' a/n ', $request->name);
-
-        $payment_method->update([
-            'name' => $name,
-            'admin_fee' => 0,
-            'vendor' => 'manual',
-            'category' => 'bank',
-            'admin_type' => 'no-admin',
-            'slug' => Str::slug($name),
-            'client_id' => Auth::user()->client->id,
-        ]);
+        $paymentMethod->update($request->all());
 
         toast(alert_updated_text($this->title), 'success');
 
-        return redirect()->route('payment_method.show', $payment_method);
+        return redirect()->route('payment_method.index');
     }
 
-    public function show(PaymentMethod $payment_method)
+    public function show(PaymentMethod $paymentMethod)
     {
-        $editLink = route('payment_method.edit', $payment_method);
-        $deleteLink = route('payment_method.destroy', $payment_method);
+        $editLink = route('payment_method.edit', $paymentMethod);
+        $deleteLink = route('payment_method.destroy', $paymentMethod);
         $indexLink = route('payment_method.index');
         $title = $this->title;
 
-        return view('payment_methods.show', compact('payment_method', 'editLink', 'indexLink', 'deleteLink', 'title'));
+        return view('payment_methods.show', compact('paymentMethod', 'editLink', 'indexLink', 'deleteLink', 'title'));
     }
 
     public function destroy(PaymentMethod $payment_method)
