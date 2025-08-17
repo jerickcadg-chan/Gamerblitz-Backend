@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,10 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class ProductItemCategory extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductItemCategoryFactory> */
-    use HasFactory;
 
     protected $guarded = ["id"];
+
+    protected $fillable = [
+        'name', 'product_id'
+    ];
 
     public function product(): BelongsTo
     {
@@ -26,11 +26,6 @@ class ProductItemCategory extends Model
     public function productItems(): HasMany
     {
         return $this->hasMany(ProductItem::class);
-    }
-
-    public function scopeActive(Builder $query)
-    {
-        return $query->where("status", "active");
     }
 
     public function metas(): HasMany

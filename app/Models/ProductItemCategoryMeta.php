@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductItemCategoryMeta extends Model
 {
-    use HasFactory;
     use WithPictures;
 
     protected $guarded = ['id'];

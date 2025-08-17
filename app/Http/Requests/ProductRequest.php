@@ -26,23 +26,29 @@ class ProductRequest extends FormRequest
         switch ($this->method()) {
             case 'POST':
                 return [
-                    // 'name' => 'required|string|max:255',
-                    // 'category' => 'required|string',
-                    // 'description' => 'required|string',
-                    // 'how_to_order' => 'required|string',
+                    'name' => 'required|max:255',
+                    'code' => 'required|max:100',
+                    'company' => 'required|max:100',
+                    'product_category_id' => 'required',
+                    'description' => 'required',
+                    'how_to_order' => 'required',
+                    'input_format' => 'required',
                     'status' => 'required',
-                    // 'product_joki' => 'required_if:category,joki',
-//                    'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+                    'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
                 ];
             case 'PUT':
             case 'PATCH':
                 return [
-                    // 'name' => 'required|string|max:255',
-                    // 'category' => 'required|string',
-                    // 'description' => 'required|string',
-                    // 'how_to_order' => 'required|string',
-                    // 'product_joki' => 'required_if:category,joki',
-//                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'name' => 'required|max:255',
+                    'code' => 'required|max:100',
+                    'company' => 'required|max:100',
+                    'product_category_id' => 'required',
+                    'description' => 'required',
+                    'how_to_order' => 'required',
+                    'input_format' => 'required',
+                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+                    'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
                     'status' => 'required',
                 ];
 

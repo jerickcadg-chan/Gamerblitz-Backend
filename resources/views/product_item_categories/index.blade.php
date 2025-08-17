@@ -2,8 +2,6 @@
     'activePage' => 'product_item_category',
 ])
 
-@use('\App\Constants\product_item_categoryConstant')
-
 @section('content')
     <div class="page-header">
         <h3 class="page-title"> Halaman {{ $title }} </h3>
@@ -24,9 +22,9 @@
                           <input type="text" class="form-control" name="name" placeholder="Cari nama produk" value="{{ request('name') }}">
                         </form>
                     </div>
-                    {{-- <div class="col-md-8 text-lg-end"> --}}
-                    {{--     <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a> --}}
-                    {{-- </div> --}}
+                     <div class="col-md-8 text-lg-end">
+                         <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
+                     </div>
                 </div>
                 <table class="table table-bordered table-hover">
                     <thead>
@@ -34,6 +32,7 @@
                             <th> # </th>
                             <th> Nama </th>
                             <th> Produk </th>
+                            <th> Aksi </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,6 +41,13 @@
                             <td>{{ $productItemCategories->firstItem() + $index }}</td>
                             <td>{{ $product_item_category->name }}</td>
                             <td>{{ $product_item_category->product->name }}</td>
+                            <td>
+                              @include('master.action', [
+                                  'view_url' => route('product_item_category.show', $product_item_category),
+                                  'edit_url' => route('product_item_category.edit', $product_item_category),
+                                  'delete_url' => route('product_item_category.destroy', $product_item_category),
+                              ])
+                            </td>
                         </tr>
                         @empty
                         <tr>

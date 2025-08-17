@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductCategoryRequest;
 use App\Models\ProductCategory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
@@ -24,7 +25,9 @@ class ProductCategoryController extends Controller
 
     public function index()
     {
-        $productCategories = ProductCategory::latest()->paginate();
+        $productCategories = ProductCategory::latest()
+            ->when(\request('name'), fn(Builder $q) => $q->where('name', 'like', '%'. \request('name') .'%'))
+            ->paginate();
 
         $createLink = route('product_category.create');
 

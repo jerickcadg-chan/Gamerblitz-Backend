@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained();
             $table->string('name');
-            $table->string('slug');
-            $table->enum('status', ['active', 'non-active'])->default('active');
             $table->timestamps();
         });
     }

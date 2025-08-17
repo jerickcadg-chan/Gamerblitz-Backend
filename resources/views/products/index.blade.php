@@ -24,9 +24,9 @@
                           <input type="text" class="form-control" name="name" placeholder="Cari nama produk" value="{{ request('name') }}">
                         </form>
                     </div>
-                    {{-- <div class="col-md-8 text-lg-end"> --}}
-                    {{--     <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a> --}}
-                    {{-- </div> --}}
+                     <div class="col-md-8 text-lg-end">
+                         <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
+                     </div>
                 </div>
                 <table class="table table-bordered table-hover">
                     <thead>
@@ -43,7 +43,7 @@
                         @forelse ($products as $index => $product)
                         <tr>
                             <td>{{ $products->firstItem() + $index }}</td>
-                            <td><a href="{{ $product->full_slug }}" target="_blank">{{ $product->product_client_name }}</a></td>
+                            <td>{{ $product->name }}</td>
                             <td>{{ $product->code }}</td>
                             <td>{{ $product->productCategory?->name }}</td>
                             <td>{!! $product->statusView !!}</td>

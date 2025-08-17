@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>Slug</th>
-                        <td><a href="{{ $product->full_slug }}" target="_blank">{{ $product->full_slug }}</a></td>
+                        <td>{{ $product->slug }}</td>
                     </tr>
                     <tr>
                         <th>Status</th>
@@ -39,7 +39,7 @@
                     </tr>
                     <tr>
                         <th>Kategori</th>
-                        <td>{{ ucfirst($product->category) }}</td>
+                        <td>{{ $product->productCategory->name }}</td>
                     </tr>
                     <tr>
                         <th>Deskripsi</th>
@@ -60,13 +60,17 @@
                     <tr>
                         <th>Gambar</th>
                         <td>
-                          <img src="{{ $product->product_picture }}" class="w-25" alt="{{ $product->product_picture }}"/>
+                          <a href="{{ asset($product->default_picture) }}" target="_blank">
+                            <img src="{{ asset($product->default_picture) }}" class="w-25" alt="{{ $product->name }}"/>
+                          </a>
                         </td>
                     </tr>
                     <tr>
                         <th>Cover</th>
                         <td>
-                          <img src="{{ $product->product_cover }}" class="w-25" alt="{{ $product->product_cover }}"/>
+                          <a href="{{ asset($product->default_cover) }}" target="_blank">
+                            <img src="{{ asset($product->default_cover) }}" class="w-25" alt="{{ $product->name }}"/>
+                          </a>
                         </td>
                     </tr>
                 </table>

@@ -38,15 +38,15 @@
                         <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Produk </a>
                     </li>
                     @endcan
-                    @can ('View Product Item Category')
-                    <li class="nav-item">
-                        <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}" href="{{ route('product_item_category.index') }}">Item Kategori </a>
-                    </li>
-                    @endcan
                     @can ('View Product Item')
                     <li class="nav-item">
                         <a class="nav-link {{ in_array($activePage, ['product_item']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>
                     </li>
+                    @endcan
+                    @can ('View Product Item Category')
+                      <li class="nav-item">
+                        <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}" href="{{ route('product_item_category.index') }}">Item Kategori </a>
+                      </li>
                     @endcan
                 </ul>
             </div>

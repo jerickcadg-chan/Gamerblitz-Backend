@@ -25,6 +25,13 @@ class PictureService extends Controller
         return $modelPicture;
     }
 
+    public function insert($picture)
+    {
+        $imageName = substr(uniqid(), -9).'-'.$picture->getClientOriginalName();
+
+        return $picture->storeAs('image', $imageName, 'public');
+    }
+
     public function delete(Picture $picture)
     {
         Storage::disk(config('filesystems.default'))->delete($picture->path . '/' . $picture->file_name);

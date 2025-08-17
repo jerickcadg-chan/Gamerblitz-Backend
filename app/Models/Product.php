@@ -27,6 +27,7 @@ class Product extends Model
     const NOT_VISIBLE = 'not_visible';
 
     protected $fillable = [
+        'name',
         'code',
         'product_category_id',
         'description',
@@ -40,7 +41,7 @@ class Product extends Model
         'default_picture',
         'default_cover',
         'ordering',
-        'product_category_id'
+        'status'
     ];
     public function productItems()
     {
@@ -52,28 +53,17 @@ class Product extends Model
         return $query->where('status', self::ACTIVE);
     }
 
-    public function category()
+    public function productCategory()
     {
         return $this->belongsTo(ProductCategory::class);
     }
     public function getStatusViewAttribute()
     {
-        if ($this->productClient->first() == null && $this->status == 'active') {
-            return '<label class="badge badge-success">Aktif</label>';
-        }
-        switch ($this->productClient->first()?->is_active) {
-            case 1:
-                return '<label class="badge badge-success">Aktif</label>';
-                break;
-
-            case 0:
-                return '<label class="badge badge-danger">Tidak aktif</label>';
-                break;
-
-            default:
-                return '<label class="badge badge-warning">Klaim!</label>';
-                break;
-        }
+        return match ($this->status) {
+            'active' => '<label class="badge badge-success">Aktif</label>',
+            'inactive' => '<label class="badge badge-danger">Tidak aktif</label>',
+            default => '<label class="badge badge-warning">'. $this->status .'</label>',
+        };
     }
 
 //    public function getFullSlugAttribute()
@@ -87,35 +77,14 @@ class Product extends Model
         $this->attributes['slug'] = \slugify($value);
     }
 
-    public function productClient()
+    public function productCover(): string
     {
-        return $this->hasMany(ProductClient::class, 'product_id', 'id')
-            ->where('client_id', client()?->id);
+        return $this->default_cover ? asset($this->default_cover) : asset('images/no-image.png');
     }
 
-    public function productCover(): Attribute
+    public function productPicture(): string
     {
-        return Attribute::make(
-            get: fn(): string => $this->productClient
-                ->first()
-                ?->cover
-                ?->url ?? $this->default_cover ?? asset('images/no-image.png')
-        );
-    }
-
-    public function productPicture(): Attribute
-    {
-        return Attribute::make(
-            get: fn(): string => $this->productClient
-                ->first()
-                ?->picture
-                ?->url ?? $this->default_picture ?? asset('images/no-image.png')
-        );
-    }
-
-    public function productCategory(): BelongsTo
-    {
-        return $this->belongsTo(ProductCategory::class);
+        return $this->default_picture ? asset($this->default_picture) : asset('images/no-image.png');
     }
 
     public function productItemCategories(): HasMany
