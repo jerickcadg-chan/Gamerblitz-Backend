@@ -39,12 +39,12 @@ class DiscountController extends Controller
 
     public function create()
     {
-        $storeLink = route('discount.store');
+        $formAction = route('discount.store');
         $indexLink = route('discount.index');
 
         $title = $this->title;
 
-        return view('discounts.create', compact('storeLink', 'indexLink', 'title'));
+        return view('discounts.form', compact('formAction', 'indexLink', 'title'));
     }
 
     public function show(Discount $discount)
@@ -94,12 +94,12 @@ class DiscountController extends Controller
 
     public function edit(Discount $discount)
     {
-        $updateLink = route('discount.update', $discount);
+        $formAction = route('discount.update', $discount);
         $indexLink = route('discount.index');
 
         $title = $this->title;
 
-        return view('discounts.edit', compact('updateLink', 'indexLink', 'discount', 'title'));
+        return view('discounts.form', compact('formAction', 'indexLink', 'discount', 'title'));
     }
 
     public function update(DiscountRequest $request, Discount $discount)
