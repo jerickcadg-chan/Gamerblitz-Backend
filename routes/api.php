@@ -6,13 +6,12 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DepositController;
 use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\ForgotPassword;
+use App\Http\Controllers\Api\LapakGamingController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductItemCategoryController;
 use App\Http\Controllers\Api\SliderController;
 use App\Models\Client;
-use App\Models\ClientTheme;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -64,6 +63,10 @@ Route::post('order', [OrderController::class, 'store']);
 Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('callback.xendit');
 Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->name('callback.bangjeff');
 Route::get('order/{order}', [OrderController::class, 'show']);
+
+Route::middleware(['ip.whitelist:' . config('array.lapakgaming.ip')])->group(function () {
+    Route::post('callback/lapakgaming/product', [LapakGamingController::class, 'productUpdateCallback']);
+});
 
 Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::put('me', [AuthController::class, 'updateMe']);

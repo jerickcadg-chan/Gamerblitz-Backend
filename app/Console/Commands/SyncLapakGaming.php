@@ -110,7 +110,7 @@ class SyncLapakGaming extends Command
                             'price_silver' => $item['price'],
                             'price_gold' => $item['price'],
                             'price_vip' => $item['price'],
-                            'status' => $this->normalizeItemStatus($item),
+                            'status' => $item['status'] === 'available' ? 'active' : 'empty',
                             'updated_at' => now(),
                         ]
                     );
@@ -125,14 +125,5 @@ class SyncLapakGaming extends Command
                 DB::rollBack();
             }
         }
-    }
-
-    private function normalizeItemStatus(mixed $item): string
-    {
-        if ($item['status'] === 'available') {
-            return 'active';
-        }
-
-        return 'empty';
     }
 }

@@ -40,6 +40,7 @@ return [
     'lapakgaming' => [
         'url' => env('LAPAKGAMING_URL'),
         'token' => env('LAPAKGAMING_TOKEN'),
+        'ip' => env('LAPAKGAMING_IP'),
     ],
     'bangjeff' => [
         'url' => env('BANGJEFF_URL'),

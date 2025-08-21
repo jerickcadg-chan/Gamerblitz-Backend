@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\EnsureHostIsValid;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'not_customer' => \App\Http\Middleware\EnsureNotCustomer::class,
             'only_verified' => \App\Http\Middleware\OnlyVerifiedUserCan::class,
             'basic_auth' => \App\Http\Middleware\BasicAuth::class,
+            'ip.whitelist' => \App\Http\Middleware\IpWhitelist::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

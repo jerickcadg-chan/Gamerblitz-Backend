@@ -27,6 +27,11 @@ class ProductItem extends Model
         'price_gold',
         'price_vip',
         'type',
+        // TODO: add capital column -> price from provider
+        // TODO: add margin public user
+        // TODO: add margin silver
+        // TODO: add margin gold
+        // TODO: add margin vip
     ];
 
     protected $appends = [
