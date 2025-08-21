@@ -25,23 +25,7 @@ class ProductItemController extends Controller
 
     public function index()
     {
-        /** @var \App\Models\Client $client */
-        $client = Auth::user()->client;
-        $productItems = ProductItem::query()
-            ->active()
-            ->with([
-                'productItemClients' => function ($query) use ($client) {
-                    $query->where('client_id', $client->id);
-                },
-            ])
-            ->latest()->with('product')
-            ->when(request('name'), function ($query) {
-                return $query->where('code', 'like', '%'.request("name").'%');
-            })
-            ->when(request('product_id'), function ($query) {
-                return $query->where('product_id', request('product_id'));
-            })
-            ->doesnthave('accounts')
+        $productItems = ProductItem::latest()
             ->paginate();
 
         $createLink = route('product_item.create');

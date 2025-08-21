@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductItemCategoryMetaRequest;
 use App\Http\Requests\ProductItemCategoryRequest;
 use App\Models\ProductItem;
 use App\Models\ProductItemCategory;
@@ -98,18 +99,16 @@ class ProductItemCategoryController extends Controller
     {
         $title = "Item {$productItemCategory->product->name} $productItemCategory->name";
         $actionLink = route('product_item_categories.metas.store', ['product_item_category' => $productItemCategory]);
-        $productItems = ProductItem::orderByPublic()->where('product_id', $productItemCategory->product_id)->where('price_public', '>', 0)->get();
 
-        return view('product_item_categories.meta-form', compact('title', 'productItemCategory', 'productItems', 'actionLink'));
+        return view('product_item_categories.meta-form', compact('title', 'productItemCategory', 'actionLink'));
     }
 
     public function metaEdit(ProductItemCategory $productItemCategory, ProductItemCategoryMeta $meta)
     {
         $title = "Item {$productItemCategory->product->name} $productItemCategory->name";
         $actionLink = route('product_item_categories.metas.update', ['product_item_category' => $productItemCategory, 'meta' => $meta]);
-        $productItems = ProductItem::orderByPublic()->where('product_id', $productItemCategory->product_id)->where('price_public', '>', 0)->get();
 
-        return view('product_item_categories.meta-form', compact('title', 'productItemCategory', 'actionLink', 'productItems', 'meta'));
+        return view('product_item_categories.meta-form', compact('title', 'productItemCategory', 'actionLink', 'meta'));
     }
 
     public function metaStore(ProductItemCategoryMetaRequest $request, ProductItemCategory $productItemCategory)
@@ -118,9 +117,6 @@ class ProductItemCategoryController extends Controller
             DB::beginTransaction();
 
             $meta = ProductItemCategoryMeta::create($request->all());
-
-            ProductItem::whereIn('id', $request->product_item_ids)
-                ->update(['product_item_category_id' => $productItemCategory->id]);
 
             insert_picture(request('picture'), $meta);
 
@@ -145,9 +141,6 @@ class ProductItemCategoryController extends Controller
             DB::beginTransaction();
 
             $meta->update($request->all());
-
-            ProductItem::whereIn('id', $request->product_item_ids)
-                ->update(['product_item_category_id' => $productItemCategory->id]);
 
             if ($request->picture) {
                 insert_picture(request('picture'), $meta);

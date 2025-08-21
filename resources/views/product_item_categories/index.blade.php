@@ -19,7 +19,7 @@
                 <div class="row mb-2">
                     <div class="col-md-4 mb-2">
                         <form method="get">
-                          <input type="text" class="form-control" name="name" placeholder="Cari nama produk" value="{{ request('name') }}">
+                          <input type="text" class="form-control" name="name" placeholder="Cari nama item kategori" value="{{ request('name') }}">
                         </form>
                     </div>
                      <div class="col-md-8 text-lg-end">

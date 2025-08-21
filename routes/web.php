@@ -83,6 +83,16 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
 
     Route::resource('account', AccountController::class);
     Route::post('account/{account}/show-information', [AccountController::class, 'showTheInformation'])->name('account.show-information');
+
+    // product_item_category meta
+    Route::group(['prefix' => 'product_item_category', 'as' => 'product_item_categories.'], function () {
+        Route::get('/{product_item_category}/meta', [ProductItemCategoryController::class, 'metaCreate'])->name('metas.create');
+        Route::get('/{product_item_category}/meta/{meta}', [ProductItemCategoryController::class, 'metaEdit'])->name('metas.edit');
+        Route::post('/{product_item_category}/meta', [ProductItemCategoryController::class, 'metaStore'])->name('metas.store');
+        Route::put('/{product_item_category}/meta/{meta}', [ProductItemCategoryController::class, 'metaUpdate'])->name('metas.update');
+        Route::delete('/meta/{meta}', [ProductItemCategoryController::class, 'metaDestroy'])->name('metas.destroy');
+    });
+
     // Resource router
     Route::resources([
         'product_category' => ProductCategoryController::class,

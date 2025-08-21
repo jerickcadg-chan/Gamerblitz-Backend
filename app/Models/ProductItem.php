@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Constants\DefaultRole;
 use App\Constants\ProductItemTypeConstant;
-use App\Constants\UserLevel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,25 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
-use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
-use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
-use IndexZer0\EloquentFiltering\Filter\FilterType;
-use IndexZer0\EloquentFiltering\Filter\Traits\Filterable;
 
-/**
- * @mixin IdeHelperProductItem
- */
-class ProductItem extends Model implements IsFilterable
+class ProductItem extends Model
 {
-    use Filterable;
-
-    /** @use HasFactory<\Database\Factories\ProductItemFactory> */
     use HasFactory;
-
-    use SoftDeletes;
 
     protected $fillable = [
         'product_id',
@@ -84,39 +69,26 @@ class ProductItem extends Model implements IsFilterable
         return $this->hasMany(Voucher::class);
     }
 
-    public function clients()
-    {
-        return $this->belongsToMany(Client::class, ProductItemClient::class);
-    }
-
-    public function productItemClients()
-    {
-        return $this->hasMany(ProductItemClient::class)
-            ->when(client()?->id, function ($query) {
-                $query->where('client_id', client()?->id);
-            });
-    }
-
     public function accounts(): HasMany
     {
         return $this->hasMany(Account::class)
             ->where('client_id', client()?->id);
     }
 
-    public function marginPrice(): Attribute
+    public function marginPrice()
     {
         return Attribute::make(
-            get: function (): float {
-                $client_id = client()?->id;
-
-                // (100%-1,5%)
-                // 10.000:98,5% = 10.153
-                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-                    $realPrice = (100 - $productItemClient->margin);
-                    $actualPrice = $this->capital / ($realPrice / 100);
-
-                    return (float) $actualPrice;
-                }
+            get: function () {
+//                $client_id = client()?->id;
+//
+//                // (100%-1,5%)
+//                // 10.000:98,5% = 10.153
+//                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
+//                    $realPrice = (100 - $productItemClient->margin);
+//                    $actualPrice = $this->capital / ($realPrice / 100);
+//
+//                    return (float) $actualPrice;
+//                }
 
                 return $this->capital;
             },
@@ -126,12 +98,12 @@ class ProductItem extends Model implements IsFilterable
     public function marginPercentage(): Attribute
     {
         return Attribute::make(
-            get: function (): float {
-                $client_id = client()?->id;
-
-                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-                    return (float) $productItemClient->margin;
-                }
+            get: function () {
+//                $client_id = client()?->id;
+//
+//                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
+//                    return (float) $productItemClient->margin;
+//                }
 
                 return 0;
             },
@@ -141,12 +113,12 @@ class ProductItem extends Model implements IsFilterable
     public function marginReseller(): Attribute
     {
         return Attribute::make(
-            get: function (): float {
-                $client_id = client()?->id;
-
-                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-                    return (float) $productItemClient->reseller_margin;
-                }
+            get: function () {
+//                $client_id = client()?->id;
+//
+//                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
+//                    return (float) $productItemClient->reseller_margin;
+//                }
 
                 return 0;
             },
@@ -156,17 +128,17 @@ class ProductItem extends Model implements IsFilterable
     public function marginPriceReseller(): Attribute
     {
         return Attribute::make(
-            get: function (): float {
-                $client_id = client()?->id;
-                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
-                    return $this->price;
-                }
-                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-                    $realPrice = (100 - $productItemClient->reseller_margin);
-                    $actualPrice = $this->capital / ($realPrice / 100);
-
-                    return (float) $actualPrice;
-                }
+            get: function () {
+//                $client_id = client()?->id;
+//                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
+//                    return $this->price;
+//                }
+//                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
+//                    $realPrice = (100 - $productItemClient->reseller_margin);
+//                    $actualPrice = $this->capital / ($realPrice / 100);
+//
+//                    return (float) $actualPrice;
+//                }
 
                 return $this->capital;
             },
@@ -212,16 +184,6 @@ class ProductItem extends Model implements IsFilterable
             ->whereHas('flashSale', function ($query) {
                 $query->active();
             });
-    }
-
-    public function allowedFilters(): AllowedFilterList
-    {
-        return Filter::only(
-            Filter::field('name', [FilterType::LIKE, FilterType::EQUAL]),
-            Filter::field('code', [FilterType::LIKE, FilterType::EQUAL]),
-            Filter::field('type', [FilterType::EQUAL]),
-            Filter::field('product_item_category_id', [FilterType::EQUAL]),
-        );
     }
 
     public function productItemCategory(): BelongsTo

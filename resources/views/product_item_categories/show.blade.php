@@ -1,25 +1,16 @@
-@extends('layouts.admin', [
+@extends('layouts.app', [
     'activePage' => 'product_item_category',
 ])
 
 @section('content')
-  <div class="row">
-    <div class="col-12 col-sm-6">
-      <h3 class="page-title font-weight-bold"> Halaman Detail {{ $title }} </h3>
-    </div>
-    <div class="col-12 col-sm-6">
-      <nav aria-label="breadcrumb" class="float-md-right float-sm-none">
-        <ol class="breadcrumb pl-0">
-          <li class="breadcrumb-item">
-            <a href="{{ route('home') }}">Home</a>
-          </li>
-          <li class="breadcrumb-item active" aria-current="page">
-            <a href="{{ route('product_item_category.index') }}">{{ $title }}</a>
-          </li>
-          <li class="breadcrumb-item active" aria-current="page">Detail Data</li>
-        </ol>
-      </nav>
-    </div>
+  <div class="page-header">
+    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('product_item_category.index') }}">{{ $title }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Detail Data</li>
+      </ol>
+    </nav>
   </div>
 
   <div class="col-lg-12 grid-margin stretch-card">
