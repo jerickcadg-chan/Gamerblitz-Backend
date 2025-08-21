@@ -27,7 +27,7 @@ class ProductFactory extends Factory
             'input_format' => $this->faker->word(),
             'slug' => $this->faker->slug(),
             'status' => $this->faker->randomElement(['active', 'inactive']),
-            'markup_reseller' => $this->faker->randomFloat(2, 0, 1),
+            'markup_reseller_silver' => $this->faker->randomFloat(2, 0, 1),
             'markup_user' => $this->faker->randomFloat(2, 0, 1),
         ];
     }

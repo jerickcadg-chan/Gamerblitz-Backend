@@ -54,7 +54,7 @@ class FetchVariant extends Command
 
                     $data = [
                         'price' => round($variant['price'] + ($variant['price'] * $product->markup_user / 100)),
-                        'price_reseller' => round($variant['price'] + ($variant['price'] * $product->markup_reseller / 100)),
+                        'price_reseller' => round($variant['price'] + ($variant['price'] * $product->markup_reseller_silver / 100)),
                         'capital' => $variant['price'],
                         'stock' => $variant['isActive'] ? 99999 : 0
                     ];

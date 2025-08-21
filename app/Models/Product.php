@@ -35,14 +35,26 @@ class Product extends Model
         'how_to_order',
         'input_format',
         'slug',
-        'markup_reseller',
+        'markup_reseller_silver_silver',
+        'markup_reseller_silver_gold',
+        'markup_reseller_silver_vip',
         'markup_user',
         'product_joki',
         'default_picture',
         'default_cover',
         'ordering',
-        'status'
+        'status',
+        'provider',
+        'provider_code',
+        'provider_country',
     ];
+
+    protected $attributes = [
+        'provider' => '',
+        'provider_code' => '',
+        'provider_country' => '',
+    ];
+
     public function productItems()
     {
         return $this->hasMany(ProductItem::class)->latest();

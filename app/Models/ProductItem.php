@@ -23,10 +23,9 @@ class ProductItem extends Model
         'code',
         'stock',
         'price',
-        'capital_silver',
-        'capital_gold',
-        'capital_platinum',
-        'capital_diamond',
+        'price_silver',
+        'price_gold',
+        'price_vip',
         'type',
     ];
 
@@ -151,16 +150,15 @@ class ProductItem extends Model
 //            get: function () {
 //                $level = client()->level ?? null;
 //                if (! $level) {
-//                    return $this->capital_silver;
+//                    return $this->price_silver;
 //                }
 //                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
 //                    return $this->price;
 //                }
 //                $capital = match ($level) {
-//                    UserLevel::SILVER => $this->capital_silver,
-//                    UserLevel::GOLD => $this->capital_gold,
-//                    UserLevel::PLATINUM => $this->capital_platinum,
-//                    UserLevel::DIAMOND => $this->capital_diamond,
+//                    UserLevel::SILVER => $this->price_silver,
+//                    UserLevel::GOLD => $this->price_gold,
+//                    UserLevel::PLATINUM => $this->price_vip,
 //                };
 //
 //                return $capital;

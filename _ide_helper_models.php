@@ -13,7 +13,7 @@
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $product_item_id
@@ -73,7 +73,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $user_id
@@ -100,7 +100,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $balance_id
@@ -132,7 +132,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $level
@@ -179,7 +179,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $client_id
@@ -228,7 +228,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $client_id
@@ -267,7 +267,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $client_id
@@ -338,7 +338,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $code
@@ -379,7 +379,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int|null $client_id
@@ -433,7 +433,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $discount_id
@@ -460,7 +460,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $client_id
@@ -496,7 +496,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $flash_sale_id
@@ -526,7 +526,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int|null $client_id
@@ -616,7 +616,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $order_id
@@ -644,7 +644,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int|null $client_id
@@ -689,7 +689,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $pictureable_id
@@ -723,7 +723,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int|null $ordering
@@ -737,7 +737,7 @@ namespace App\Models{
  * @property string $how_to_order
  * @property string $slug
  * @property string $status
- * @property float $markup_reseller
+ * @property float $markup_reseller_silver
  * @property float $markup_user
  * @property string|null $default_picture
  * @property string|null $default_cover
@@ -798,7 +798,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -827,7 +827,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $product_id
@@ -864,7 +864,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $product_id
@@ -873,10 +873,9 @@ namespace App\Models{
  * @property string|null $code
  * @property int|null $stock
  * @property string $price
- * @property float $capital_silver
- * @property float $capital_gold
- * @property float $capital_platinum
- * @property float $capital_diamond
+ * @property float $price_silver
+ * @property float $price_gold
+ * @property float $price_vip
  * @property float|null $price_reseller
  * @property string $type
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -939,7 +938,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $product_id
@@ -973,7 +972,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $product_item_id
@@ -1005,7 +1004,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $user_id
@@ -1033,7 +1032,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int|null $client_id
@@ -1072,7 +1071,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int|null $client_id
@@ -1131,7 +1130,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $product_item_id

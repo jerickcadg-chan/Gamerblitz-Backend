@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::table('product_items', function (Blueprint $table) {
             $table->dropColumn('capital');
             $table->after('price', function (Blueprint $table) {
-                $table->double('capital_silver')->default(0);
-                $table->double('capital_gold')->default(0);
-                $table->double('capital_platinum')->default(0);
-                $table->double('capital_diamond')->default(0);
+                $table->double('price_silver')->default(0);
+                $table->double('price_gold')->default(0);
+                $table->double('price_vip')->default(0);
             });
         });
     }
@@ -28,10 +27,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('product_items', function (Blueprint $table) {
-            $table->dropColumn('capital_silver');
-            $table->dropColumn('capital_gold');
-            $table->dropColumn('capital_platinum');
-            $table->dropColumn('capital_diamond');
+            $table->dropColumn('price_silver');
+            $table->dropColumn('price_gold');
+            $table->dropColumn('price_vip');
             $table->after('price', function (Blueprint $table) {
                 $table->double('capital');
             });

@@ -60,11 +60,11 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="markup_reseller_input" class="required">Markup Reseller (%)</label>
-                <input type="number" min="0" class="form-control {{ $errors->has('markup_reseller') ? ' is-invalid' : '' }}"
-                       name="markup_reseller" id="markup_reseller_input" placeholder="0"
-                       value="{{ old('markup_reseller', $product->markup_reseller ?? '') }}" required>
-                @include('alerts.feedback', ['field' => 'markup_reseller'])
+                <label for="markup_reseller_silver_input" class="required">Markup Reseller (%)</label>
+                <input type="number" min="0" class="form-control {{ $errors->has('markup_reseller_silver') ? ' is-invalid' : '' }}"
+                       name="markup_reseller_silver" id="markup_reseller_silver_input" placeholder="0"
+                       value="{{ old('markup_reseller_silver', $product->markup_reseller_silver ?? '') }}" required>
+                @include('alerts.feedback', ['field' => 'markup_reseller_silver'])
               </div>
             </div>
           </div>

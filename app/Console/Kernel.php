@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('set:expired')->everyMinute();
+        // $schedule->command('app:sync-lapak-gaming')->everyMinute();
     }
 
     /**

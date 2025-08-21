@@ -37,6 +37,10 @@ return [
     'deposit' => [
         'status' => [StatusConst::PENDING, StatusConst::PAID, StatusConst::EXPIRED]
     ],
+    'lapakgaming' => [
+        'url' => env('LAPAKGAMING_URL'),
+        'token' => env('LAPAKGAMING_TOKEN'),
+    ],
     'bangjeff' => [
         'url' => env('BANGJEFF_URL'),
         'api_key' => env('BANGJEFF_APIKEY'),
