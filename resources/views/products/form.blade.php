@@ -41,7 +41,15 @@
           </div>
 
           <div class="form-group">
-            <label for="company_input" class="required">Company</label>
+            <label for="provider_code_input" class="required">Kode Provider</label>
+            <input type="text" class="form-control {{ $errors->has('provider_code') ? ' is-invalid' : '' }}"
+                   name="provider_code" id="provider_code_input" placeholder="Enter Provider Code"
+                   value="{{ old('provider_code', $product->provider_code ?? '') }}" required>
+            @include('alerts.feedback', ['field' => 'provider_code'])
+          </div>
+
+          <div class="form-group">
+            <label for="company_input" class="required">Perusahaan</label>
             <input type="text" class="form-control {{ $errors->has('company') ? ' is-invalid' : '' }}"
                    name="company" id="company_input" placeholder="Moonton"
                    value="{{ old('company', $product->company ?? '') }}" required>
@@ -60,11 +68,29 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="markup_reseller_silver_input" class="required">Markup Reseller (%)</label>
+                <label for="markup_reseller_silver_input" class="required">Markup Reseller Silver (%)</label>
                 <input type="number" min="0" class="form-control {{ $errors->has('markup_reseller_silver') ? ' is-invalid' : '' }}"
                        name="markup_reseller_silver" id="markup_reseller_silver_input" placeholder="0"
                        value="{{ old('markup_reseller_silver', $product->markup_reseller_silver ?? '') }}" required>
                 @include('alerts.feedback', ['field' => 'markup_reseller_silver'])
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="markup_reseller_gold_input" class="required">Markup Reseller Gold (%)</label>
+                <input type="number" min="0" class="form-control {{ $errors->has('markup_reseller_gold') ? ' is-invalid' : '' }}"
+                       name="markup_reseller_gold" id="markup_reseller_gold_input" placeholder="0"
+                       value="{{ old('markup_reseller_gold', $product->markup_reseller_gold ?? '') }}" required>
+                @include('alerts.feedback', ['field' => 'markup_reseller_gold'])
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="markup_reseller_vip_input" class="required">Markup Reseller VIP (%)</label>
+                <input type="number" min="0" class="form-control {{ $errors->has('markup_reseller_vip') ? ' is-invalid' : '' }}"
+                       name="markup_reseller_vip" id="markup_reseller_vip_input" placeholder="0"
+                       value="{{ old('markup_reseller_vip', $product->markup_reseller_vip ?? '') }}" required>
+                @include('alerts.feedback', ['field' => 'markup_reseller_vip'])
               </div>
             </div>
           </div>

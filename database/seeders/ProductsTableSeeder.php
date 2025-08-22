@@ -23,17 +23,31 @@ class ProductsTableSeeder extends Seeder
         Schema::enableForeignKeyConstraints();
 
         Product::insert([
-            [
-                'name' => 'Mobile Legends',
-                /*'category' => 'game',*/
-                'company' => 'Montoon',
-                'description' => 'Mobile Legends: Bang Bang adalah sebuah permainan piranti bergerak berjenis arena pertarungan daring multipemain yang dikembangkan dan diterbitkan oleh Moonton, Yang kini menjadi anak perusahaan dari ByteDance.',
-                'how_to_order' => '<p><b>Cara Melihat Player ID / Server ID Mobile Legends</b></p><p><img src="https://mitragamers.com/assets/img/game/ml.jpg" class="w-100"></p><p>Untuk mengetahui informasi player ID dan server ID Mobile Legends, silahkan masuk ke menu "profile", lalu lihat bagian kanan atas.</p>',
-                'slug' => 'mobile-legends',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
+            'name' => 'Mobile Legends',
+            'code' => 'ML',
+            'product_category_id' => 1,
+            'description' => 'Mobile Legends: Bang Bang adalah sebuah permainan piranti bergerak berjenis arena pertarungan daring multipemain yang dikembangkan dan diterbitkan oleh Moonton, Yang kini menjadi anak perusahaan dari ByteDance.',
+            'company' => 'Moonton',
+            'how_to_order' => '<p><b>Cara Melihat Player ID / Server ID Mobile Legends</b></p><p><img src="https://mitragamers.com/assets/img/game/ml.jpg" class="w-100"></p><p>Untuk mengetahui informasi player ID dan server ID Mobile Legends, silahkan masuk ke menu "profile", lalu lihat bagian kanan atas.</p>',
+            'input_format' => '{}',
+            'slug' => 'mobile-legends',
+            'markup_reseller_silver' => 1,
+            'markup_reseller_gold' => 1,
+            'markup_reseller_vip' => 1,
+            'markup_user' => 2,
+            'default_picture' => '',
+            'default_cover' => '',
+            'ordering' => 0,
+            'status' => 'active',
+            'provider' => 'lapakgaming',
+            'provider_code' => 'ML',
+            'provider_country' => 'id',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Product::insert([
+            // TODO: adjust seeder for other products
             [
                 'name' => 'Free Fire',
                 /*'category' => 'game',*/
@@ -42,6 +56,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p><b>Cara Melihat Player ID Free Fire</b></p><p><img src="https://mitragamers.com/assets/img/game/ff.jpg" class="w-100"></p><p>Untuk menemukan informasi Player ID Free Fire dengan membuka menu "profile akun". Player ID terletak di bawah foto dan name akun.</p>',
                 'slug' => 'free-fire',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -53,6 +71,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p><b>Cara Melihat Player ID Pubg Mobile</b></p><p><img src="https://mitragamers.com/assets/img/game/pubg.jpg" class="w-100"></p><p>Untuk menemukan informasi Player ID PUBG Mobile dengan membuka "profil" Di sana akan terlihat Player ID akun kamu</p>',
                 'slug' => 'pubg-mobile',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -64,6 +86,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p><b>Cara Melihat UID Genshin Impact</b></p><p><img src="https://mitragamers.com/assets/img/game/genshin.jpg" class="w-100"></p><p>Untuk menemukan informasi UID Genshin Impact dengan melihat informasi UID di bagian pojok kanan bawah layar permainan</p>',
                 'slug' => 'genshin-impact',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -75,6 +101,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p><b>Cara Riot ID Valorant</b></p><p>Pemain pertama-tama harus masuk ke akun Riot di riotgames.com. Setelah masuk, kamu dapat mengklik “RIOT ID” di sisi kiri kotak akun.</p>',
                 'slug' => 'valorant',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -86,6 +116,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p><b>Cara Melihat Riot ID LoL - Wild Rift</b></p><p><img src="https://mitragamers.com/assets/img/game/lol.jpg" class="w-100"></p><p>Untuk menemukan informasi Riot ID LoL - Wild Rift dengan membuka menu "profile akun". Riot ID terletak di bawah foto dan name akun.</p>',
                 'slug' => 'lol-wild-rift',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -97,6 +131,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p><b>Cara Melihat Open ID COD Mobile</b></p><p>Pemain pertama-tama harus membuka menu Setting, lalu klik Lainnya dan Open ID ada di layar bagian bawah</p>',
                 'slug' => 'call-of-duty-mobile',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -108,6 +146,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p><b>Cara Melihat Open ID AOV</b></p><p>Buka pengaturan game yang seperti gear di sebelah kanan atas. Pilih pada menu "Umum" lalu scroll ke bawah untuk menemukan "OpenID" yang berada di sebelah "NamePemain".</p>',
                 'slug' => 'arena-of-valor',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -119,6 +161,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p><b>Cara Melihat User ID Sausage Man</b></p><p><img src="https://mitragamers.com/assets/img/game/sausage.jpg" class="w-100"></p><p>Masuk ke lobby Sausage Man, kemudian tap icon “Baris Tiga”. ID akun Sausage Man berada di sebelah kanan tombol “Ganti Akun” atau yang saya tandai “Arrow”.</p>',
                 'slug' => 'sausage-man',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -130,6 +176,10 @@ class ProductsTableSeeder extends Seeder
                 'how_to_order' => '<p>Masuk ke situs kiosgamer.co.id dan pilih shell top up lalu isi kode Garena Shell yang sudah diberikan</p>',
                 'slug' => 'garena-shell',
                 'status' => 'active',
+                'product_category_id' => 1,
+                'provider' => 'lapakgaming',
+                'provider_code' => 'ML',
+                'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

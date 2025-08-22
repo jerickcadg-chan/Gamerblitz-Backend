@@ -15,7 +15,7 @@ class AddMarkupInProductsTable extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->double('markup_user')->after('status')->default(2);
-            $table->double('markup_reseller_silver')->after('status')->default(1);
+            $table->double('markup_reseller')->after('status')->default(1);
         });
     }
 
@@ -28,7 +28,7 @@ class AddMarkupInProductsTable extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('markup_user');
-            $table->dropColumn('markup_reseller_silver');
+            $table->dropColumn('markup_reseller');
         });
     }
 }

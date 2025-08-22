@@ -13,8 +13,9 @@ class ProductsSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(ProductCategoriesTableSeeder::class);
         $this->call(ProductsTableSeeder::class);
-        $this->call(ProductItemsTableSeeder::class);
+        // $this->call(ProductItemsTableSeeder::class);
         // $this->call(VouchersTableSeeder::class);
     }
 }
