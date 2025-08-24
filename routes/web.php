@@ -14,6 +14,7 @@ use App\Http\Controllers\ProductItemController;
 use App\Http\Controllers\ProductItemPriceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\UserController;
@@ -92,6 +93,9 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         Route::put('/{product_item_category}/meta/{meta}', [ProductItemCategoryController::class, 'metaUpdate'])->name('metas.update');
         Route::delete('/meta/{meta}', [ProductItemCategoryController::class, 'metaDestroy'])->name('metas.destroy');
     });
+
+    Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
+    Route::put('/setting', [SettingController::class, 'update'])->name('setting.update');
 
     // Resource router
     Route::resources([

@@ -95,10 +95,10 @@ class PermissionsTableSeeder extends Seeder
             'Edit Flash Sales',
             'Delete Flash Sales',
 
-            'View Account',
-            'Create Account',
-            'Edit Account',
-            'Delete Account',
+            'View Setting',
+            'Create Setting',
+            'Edit Setting',
+            'Delete Setting',
         ];
 
         foreach ($permissions as $permission){

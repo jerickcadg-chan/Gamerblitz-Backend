@@ -157,5 +157,13 @@
             </a>
         </li>
         @endcan
+        @can ('View Setting')
+          <li class="nav-item {{ $activePage == 'setting' ? 'active' : null }}">
+            <a class="nav-link" href="{{ route('setting.index') }}">
+              <span class="menu-title">Setting</span>
+              <i class="mdi mdi-cogs menu-icon"></i>
+            </a>
+          </li>
+        @endcan
     </ul>
 </nav>
