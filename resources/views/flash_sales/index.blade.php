@@ -27,10 +27,9 @@
                     <thead>
                         <tr>
                             <th> # </th>
-                            <th> Nama </th>
-                            <th> Tanggal mulai </th>
-                            <th> Tanggal berakhir </th>
-                            <th> Status </th>
+                            <th> Product Item </th>
+                            <th> Price </th>
+                            <th> Stock </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -38,13 +37,11 @@
                         @forelse ($flash_sales as $index => $flash_sale)
                         <tr>
                             <td>{{ $flash_sales->firstItem() + $index }}</td>
-                            <td><a href="{{ $flash_sale->full_slug }}" target="_blank">{{ $flash_sale->name }}</a></td>
-                            <td>{{ $flash_sale->start_date->format('d M Y h:i:s') }}</td>
-                            <td>{{ $flash_sale->end_date->format('d M Y h:i:s') }}</td>
-                            <td>{!! $flash_sale->status_view !!}</td>
+                            <td>{{ $flash_sale->productItem->full_name }}</td>
+                            <td>{{ idr_format($flash_sale->price) }}</td>
+                            <td>{{ $flash_sale->stock }}</td>
                             <td>
                                 @include('master.action', [
-                                    'view_url' => route('flash_sale.show', $flash_sale),
                                     'edit_url' => route('flash_sale.edit', $flash_sale),
                                     'delete_url' => route('flash_sale.destroy', $flash_sale)
                                 ])

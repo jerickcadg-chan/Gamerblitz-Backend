@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('client_abouts', function (Blueprint $table) {
-            $table->string('mgclient_level')->nullable();
-            $table->string('gtm_id')->nullable();
+        Schema::create('settings', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -22,9 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('client_abouts', function (Blueprint $table) {
-            $table->dropColumn('mgclient_level');
-            $table->dropColumn('gtm_id');
-        });
+        Schema::dropIfExists('settings');
     }
 };

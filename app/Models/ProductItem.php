@@ -40,9 +40,19 @@ class ProductItem extends Model
         'capital',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function flashSales(): HasMany
+    {
+        return $this->hasMany(FlashSale::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->product->name ." ". $this->name;
     }
 
     public function getDiscountPriceAttribute()
@@ -68,7 +78,7 @@ class ProductItem extends Model
             : $this->margin_price;
     }
 
-    public function vouchers()
+    public function vouchers(): HasMany
     {
         return $this->hasMany(Voucher::class);
     }
@@ -176,7 +186,7 @@ class ProductItem extends Model
         return $this->hasMany(Order::class);
     }
 
-    public function scopeActive(Builder $query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'active');
     }

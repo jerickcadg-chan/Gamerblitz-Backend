@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('flash_sale_product_items', function (Blueprint $table) {
+        Schema::create('flash_sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('flash_sale_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_item_id')->constrained()->cascadeOnDelete();
             $table->double('stock')->default(0);
             $table->decimal('price', 19, 2)->default(0);
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('flash_sale_product_items');
+        Schema::dropIfExists('flash_sales');
     }
 };
