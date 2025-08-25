@@ -22,7 +22,7 @@ class SettingController extends Controller
             }
         }
 
-        return view('setting.index', compact('settings'));
+        return view('settings.index', compact('settings'));
     }
 
     public function update(SettingRequest $request)

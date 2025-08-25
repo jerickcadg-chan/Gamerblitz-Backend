@@ -3,7 +3,7 @@
         <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
                 <div class="nav-profile-image">
-                    <img src="{{ asset('img/gpds_icon.png') }}" alt="profile">
+                    <img src="{{ asset(get_setting('favicon')['value']) }}" alt="profile">
                     <span class="login-status online"></span>
                 </div>
                 <div class="nav-profile-text d-flex flex-column">
@@ -156,6 +156,14 @@
                 <i class="mdi mdi-currency-usd menu-icon"></i>
             </a>
         </li>
+        @endcan
+        @can ('View Blog')
+          <li class="nav-item {{ $activePage == 'blog' ? 'active' : null }}">
+            <a class="nav-link" href="{{ route('blog.index') }}">
+              <span class="menu-title">Blog</span>
+              <i class="mdi mdi-newspaper menu-icon"></i>
+            </a>
+          </li>
         @endcan
         @can ('View Setting')
           <li class="nav-item {{ $activePage == 'setting' ? 'active' : null }}">

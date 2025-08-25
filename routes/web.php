@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\FlashSaleController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\SliderController;
 use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
+use App\Models\BlogCategory;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -97,6 +99,15 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
     Route::put('/setting', [SettingController::class, 'update'])->name('setting.update');
 
+    Route::post('blog/upload-image', [BlogController::class, 'uploadImage'])->name('blog.upload_image');
+
+    Route::post('blog-categories/quick-store', function (\Illuminate\Http\Request $r) {
+        $r->validate(['name'=>'required|string|max:150']);
+        $slug = \Illuminate\Support\Str::slug($r->name);
+        $cat = BlogCategory::firstOrCreate(['slug'=>$slug], ['name'=>$r->name]);
+        return response()->json(['id'=>$cat->id, 'name'=>$cat->name]);
+    })->name('blog-categories.quick-store');
+
     // Resource router
     Route::resources([
         'product_category' => ProductCategoryController::class,
@@ -111,5 +122,6 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'user' => UserController::class,
         'role' => RoleController::class,
         'payment_method' => PaymentMethodController::class,
+        'blog' => BlogController::class,
     ]);
 });

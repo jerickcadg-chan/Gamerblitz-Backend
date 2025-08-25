@@ -1,4 +1,4 @@
-@extends('layouts.app', ['activePage' => 'settings'])
+@extends('layouts.app', ['activePage' => 'setting'])
 
 @section('content')
   <div class="col-lg-12 grid-margin stretch-card">

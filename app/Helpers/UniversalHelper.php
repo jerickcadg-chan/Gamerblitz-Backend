@@ -2,6 +2,7 @@
 
 use App\Models\Client;
 use App\Models\Discount;
+use App\Models\Setting;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -231,13 +232,12 @@ if (!function_exists('paginateTransformer')) {
     }
 }
 
-if (!function_exists('client')) {
-    function client(): ?Client
+if (! function_exists('get_setting')) {
+    function get_setting(string $key): array
     {
-        if ($auth = Auth::user()) {
-            return $auth->client;
-        }
-
-        return request('client');
+        return Setting::select(['value', 'key'])->where('key', $key)->first()?->toArray() ?? [
+            'key' => $key,
+            'value' => ''
+        ];
     }
 }

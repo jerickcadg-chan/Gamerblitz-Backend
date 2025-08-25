@@ -99,6 +99,11 @@ class PermissionsTableSeeder extends Seeder
             'Create Setting',
             'Edit Setting',
             'Delete Setting',
+
+            'View Blog',
+            'Create Blog',
+            'Edit Blog',
+            'Delete Blog',
         ];
 
         foreach ($permissions as $permission){

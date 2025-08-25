@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Panel GPDS Game Shop {{ isset($title) ? ' - ' . $title : null }}</title>
+    <title>Panel {{ get_setting('brand_name')['value'] }} {{ isset($title) ? ' - ' . $title : null }}</title>
 
     {{--  Script--}}
     <script src="{{ asset('js/vendor.bundle.base.js') }}"></script>
