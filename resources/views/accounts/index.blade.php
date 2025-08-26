@@ -4,11 +4,11 @@
 
 @section('content')
     <div class="page-header">
-        <h3 class="page-title"> Halaman {{ $title }} </h3>
+        <h3 class="page-title"> Page {{ $title }} </h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('account.index') }}">{{ $title }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Semua Data</li>
+                <li class="breadcrumb-item active" aria-current="page">Data List</li>
             </ol>
         </nav>
     </div>
@@ -20,7 +20,7 @@
                     <div class="col-md-4 mb-2">
                     </div>
                     <div class="col-md-8 text-lg-end">
-                        <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
+                        <a href="{{ $createLink }}" class="btn btn-primary">Create data</a>
                     </div>
                 </div>
                 <table class="table table-bordered table-hover">
@@ -34,7 +34,7 @@
                             <th> Skin </th>
                             <th> Heroes </th>
                             <th> Status </th>
-                            <th> Aksi </th>
+                            <th> Action </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,7 +58,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="100%" class="text-center">Tidak ada data ditemukan</td>
+                            <td colspan="100%" class="text-center">No Data</td>
                         </tr>
                         @endforelse
                     </tbody>

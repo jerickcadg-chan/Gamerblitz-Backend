@@ -51,7 +51,7 @@ class ProductControllerTest extends TestCase
         $response->assertRedirect(route('product.index'));
 
         $this->assertToast($response, [
-            'title' => alert_created_text('Produk'),
+            'title' => alert_created_text('Product'),
             'icon' => 'success',
         ]);
 
@@ -71,7 +71,7 @@ class ProductControllerTest extends TestCase
         $response->assertRedirect(route('product.index'));
 
         $this->assertToast($response, [
-            'title' => alert_created_text('Produk'),
+            'title' => alert_created_text('Product'),
             'icon' => 'success',
         ]);
 
@@ -116,7 +116,7 @@ class ProductControllerTest extends TestCase
         $response->assertRedirect(route('product.index'));
 
         $this->assertToast($response, [
-            'title' => alert_updated_text('Produk'),
+            'title' => alert_updated_text('Product'),
             'icon' => 'success',
         ]);
 
@@ -138,7 +138,7 @@ class ProductControllerTest extends TestCase
         $response->assertRedirect(route('product.index'));
 
         $this->assertToast($response, [
-            'title' => alert_updated_text('Produk'),
+            'title' => alert_updated_text('Product'),
             'icon' => 'success',
         ]);
         $product = Product::whereName($data['name'])->first();
@@ -173,7 +173,7 @@ class ProductControllerTest extends TestCase
         $response->assertRedirect(route('product.index'));
 
         $this->assertToast($response, [
-            'title' => alert_updated_text('Produk'),
+            'title' => alert_updated_text('Product'),
             'icon' => 'success',
         ]);
 
@@ -196,7 +196,7 @@ class ProductControllerTest extends TestCase
         $response->assertRedirect(route('product.index'));
 
         $this->assertToast($response, [
-            'title' => alert_deleted_text('Produk'),
+            'title' => alert_deleted_text('Product'),
             'icon' => 'success',
         ]);
 
@@ -224,7 +224,7 @@ class ProductControllerTest extends TestCase
         $response->assertRedirect(route('product.index'));
 
         $this->assertToast($response, [
-            'title' => alert_deleted_text('Produk'),
+            'title' => alert_deleted_text('Product'),
             'icon' => 'success',
         ]);
 

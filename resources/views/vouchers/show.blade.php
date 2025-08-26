@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="page-header">
-        <h3 class="page-title"> Halaman {{ $title }} </h3>
+        <h3 class="page-title"> Page {{ $title }} </h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('voucher.index', ['product_item_id' => request('product_item_id')]) }}">{{ $title }}</a></li>
@@ -39,7 +39,7 @@
                         <td>{{ $voucher->vendor }}</td>
                     </tr>
                     <tr>
-                        <th>Tgl Dibuat</th>
+                        <th>Created At</th>
                         <td>{{ parse_date_time($voucher->created_at) }}</td>
                     </tr>
                     <tr>
@@ -49,7 +49,7 @@
                     <tr>
                         <td colspan="2">
                             <form>
-                                <input type="text" class="form-control" placeholder="Masukkan PIN untuk melihat Password" name="pin" value="{{ request('pin') }}" required>
+                                <input type="text" class="form-control" placeholder="Enter PIN untuk melihat Password" name="pin" value="{{ request('pin') }}" required>
                                 <input type="hidden" name="product_item_id" value="{{ $voucher->product_item_id }}">
                             </form>
                         </td>

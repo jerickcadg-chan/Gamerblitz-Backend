@@ -22,7 +22,7 @@
         @canany(['View Product Category', 'View Product Item', 'View Product Item Category'])
         <li class="nav-item {{ in_array($activePage, config('array.menu.product')) ? 'active' : null }}">
             <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
-                <span class="menu-title">Produk</span>
+                <span class="menu-title">Product</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-briefcase menu-icon"></i>
             </a>
@@ -35,7 +35,7 @@
                     @endcan
                     @can ('View Product')
                     <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Produk </a>
+                        <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Product </a>
                     </li>
                     @endcan
                     @can ('View Product Item')
@@ -45,7 +45,7 @@
                     @endcan
                     @can ('View Product Item Category')
                       <li class="nav-item">
-                        <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}" href="{{ route('product_item_category.index') }}">Item Kategori </a>
+                        <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}" href="{{ route('product_item_category.index') }}">Item Category </a>
                       </li>
                     @endcan
                 </ul>
@@ -55,7 +55,7 @@
         @can ('View Order')
         <li class="nav-item {{ $activePage == 'order' ? 'active' : null }}">
             <a class="nav-link" href="{{ route('order.index') }}">
-                <span class="menu-title">Pesanan</span>
+                <span class="menu-title">Order</span>
                 <i class="mdi mdi-basket menu-icon"></i>
             </a>
         </li>
@@ -71,7 +71,7 @@
                 <ul class="nav flex-column sub-menu">
                     @can ('View Discount')
                     <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'discount' ? 'active' : null }}" href="{{ route('discount.index') }}"> Diskon </a>
+                        <a class="nav-link {{ $activePage == 'discount' ? 'active' : null }}" href="{{ route('discount.index') }}"> Discount </a>
                     </li>
                     @endcan
                     @can ('View Slider')
@@ -97,7 +97,7 @@
         @can ('View Report')
         <li class="nav-item {{ $activePage == 'report' ? 'active' : null }}">
             <a class="nav-link" href="{{ route('report.index') }}">
-                <span class="menu-title">Laporan</span>
+                <span class="menu-title">Report</span>
                 <i class="mdi mdi-book menu-icon"></i>
             </a>
         </li>
@@ -105,17 +105,17 @@
         @can('View Statistic')
         <li class="nav-item {{ in_array($activePage, config('array.menu.statistic')) ? 'active' : null }}">
             <a class="nav-link" data-bs-toggle="collapse" href="#statistic-pages" aria-expanded="false" aria-controls="statistic-pages">
-                <span class="menu-title">Statistik</span>
+                <span class="menu-title">Statistic</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-chart-areaspline menu-icon"></i>
             </a>
             <div class="collapse {{ in_array($activePage, config('array.menu.statistic')) ? 'show' : null }}" id="statistic-pages">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'statistic_order' ? 'active' : null }}" href="{{ route('statistic.order') }}"> Statistik Transaksi </a>
+                        <a class="nav-link {{ $activePage == 'statistic_order' ? 'active' : null }}" href="{{ route('statistic.order') }}"> Statistic Order </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}" href="{{ route('statistic.user') }}"> Statistik User </a>
+                        <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}" href="{{ route('statistic.user') }}"> Statistic User </a>
                     </li>
                 </ul>
             </div>
@@ -124,7 +124,7 @@
         @canany(['View User', 'View Role'])
         <li class="nav-item {{ in_array($activePage, config('array.menu.user')) ? 'active' : null }}">
             <a class="nav-link" data-bs-toggle="collapse" href="#user-pages" aria-expanded="false" aria-controls="user-pages">
-                <span class="menu-title">Pengguna</span>
+                <span class="menu-title">User</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-account menu-icon"></i>
             </a>
@@ -132,17 +132,17 @@
                 <ul class="nav flex-column sub-menu">
                      @can ('View User')
                      <li class="nav-item">
-                         <a class="nav-link {{ $activePage == 'user' ? 'active' : null }}" href="{{ route('user.index') }}"> Non-Pelanggan </a>
+                         <a class="nav-link {{ $activePage == 'user' ? 'active' : null }}" href="{{ route('user.index') }}"> Non-Customer </a>
                      </li>
                      @endcan
                     @can ('View Customer')
                     <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'customer' ? 'active' : null }}" href="{{ route('user.customer') }}"> Pelanggan </a>
+                        <a class="nav-link {{ $activePage == 'customer' ? 'active' : null }}" href="{{ route('user.customer') }}"> Customer </a>
                     </li>
                     @endcan
                     @can ('View Permission')
                     <li class="nav-item">
-                        <a class="nav-link {{ $activePage == 'role' ? 'active' : null }}" href="{{ route('role.index') }}"> Hak Akses </a>
+                        <a class="nav-link {{ $activePage == 'role' ? 'active' : null }}" href="{{ route('role.index') }}"> Permissions </a>
                     </li>
                     @endcan
                 </ul>
@@ -152,7 +152,7 @@
         @can ('View Payment Methods')
         <li class="nav-item {{ $activePage == 'payment_method' ? 'active' : null }}">
             <a class="nav-link" href="{{ route('payment_method.index') }}">
-                <span class="menu-title">Metode Pembayaran</span>
+                <span class="menu-title">Payment Method</span>
                 <i class="mdi mdi-currency-usd menu-icon"></i>
             </a>
         </li>

@@ -4,7 +4,7 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('account.index') }}">{{ $title }}</a></li>
@@ -20,43 +20,43 @@
           @csrf
           @method('PUT')
           <div class="form-group">
-            <label for="title_input">Nama</label>
-            <input type="text" class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}" name="title" id="title_input" placeholder="Masukkan Nama" value="{{ old('title', $account->title) }}">
+            <label for="title_input">Name</label>
+            <input type="text" class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}" name="title" id="title_input" placeholder="Enter Name" value="{{ old('title', $account->title) }}">
             @include('alerts.feedback', ['field' => 'title'])
           </div>
           <div class="form-group">
             <label for="code_input">Kode</label>
-            <input type="text" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" id="code_input" placeholder="Masukkan Kode" value="{{ old('code', $account->code) }}">
+            <input type="text" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" id="code_input" placeholder="Enter Kode" value="{{ old('code', $account->code) }}">
             @include('alerts.feedback', ['field' => 'code'])
           </div>
           <div class="form-group">
-            <label for="description_input">Deskripsi</label>
-            <textarea class="form-control tinymce {{ $errors->has('description') ? ' is-invalid' : '' }}" name="description" id="description_input" placeholder="Masukkan Deskripsi">{{ old('description', $account->description) }}</textarea>
+            <label for="description_input">Description</label>
+            <textarea class="form-control tinymce {{ $errors->has('description') ? ' is-invalid' : '' }}" name="description" id="description_input" placeholder="Enter Description">{{ old('description', $account->description) }}</textarea>
             @include('alerts.feedback', ['field' => 'description'])
           </div>
           <div class="form-group">
             <label for="winrate_input">Winrate</label>
-            <input type="number" step="0.1" class="form-control {{ $errors->has('winrate') ? ' is-invalid' : '' }}" name="winrate" id="winrate_input" placeholder="Masukkan Winrate" value="{{ old('winrate', $account->winrate) }}">
+            <input type="number" step="0.1" class="form-control {{ $errors->has('winrate') ? ' is-invalid' : '' }}" name="winrate" id="winrate_input" placeholder="Enter Winrate" value="{{ old('winrate', $account->winrate) }}">
             @include('alerts.feedback', ['field' => 'winrate'])
           </div>
           <div class="form-group">
             <label for="skin_input">Jumlah Skin</label>
-            <input type="number" class="form-control {{ $errors->has('skin') ? ' is-invalid' : '' }}" name="skin" id="skin_input" placeholder="Masukkan Jumlah Skin" value="{{ old('skin', $account->skin) }}">
+            <input type="number" class="form-control {{ $errors->has('skin') ? ' is-invalid' : '' }}" name="skin" id="skin_input" placeholder="Enter Jumlah Skin" value="{{ old('skin', $account->skin) }}">
             @include('alerts.feedback', ['field' => 'skin'])
           </div>
           <div class="form-group">
             <label for="heroes_input">Jumlah Heroes</label>
-            <input type="number" class="form-control {{ $errors->has('heroes') ? ' is-invalid' : '' }}" name="heroes" id="heroes_input" placeholder="Masukkan Jumlah Heroes" value="{{ old('heroes', $account->heroes) }}">
+            <input type="number" class="form-control {{ $errors->has('heroes') ? ' is-invalid' : '' }}" name="heroes" id="heroes_input" placeholder="Enter Jumlah Heroes" value="{{ old('heroes', $account->heroes) }}">
             @include('alerts.feedback', ['field' => 'heroes'])
           </div>
           <div class="form-group">
             <label for="price_input">Harga</label>
-            <input type="number" step="0.1" class="form-control {{ $errors->has('price') ? ' is-invalid' : '' }}" name="price" id="price_input" placeholder="Masukkan Harga" value="{{ old('price', $account->productItem->price) }}">
+            <input type="number" step="0.1" class="form-control {{ $errors->has('price') ? ' is-invalid' : '' }}" name="price" id="price_input" placeholder="Enter Harga" value="{{ old('price', $account->productItem->price) }}">
             @include('alerts.feedback', ['field' => 'price'])
           </div>
           <div class="form-group" id="information-group" style="display: none;">
             <label for="information_input">Informasi</label>
-            <textarea class="form-control tinymce {{ $errors->has('information') ? ' is-invalid' : '' }}" name="information" id="information_input" placeholder="Masukkan Informasi">{{ old('information', 'xxxxxxxxxxxxxxxxxxxxxxx') }}</textarea>
+            <textarea class="form-control tinymce {{ $errors->has('information') ? ' is-invalid' : '' }}" name="information" id="information_input" placeholder="Enter Informasi">{{ old('information', 'xxxxxxxxxxxxxxxxxxxxxxx') }}</textarea>
             @include('alerts.feedback', ['field' => 'information'])
           </div>
           <div class="form-group">
@@ -68,7 +68,7 @@
           <div class="form-group">
             <label class="form-check-label" for="discount_checkbox">
             <input class="form-check-input" type="checkbox" id="discount_checkbox" name="discount" value="1" {{ old('discount', $account->discount_type != null) ? 'checked' : '' }}>
-              Tambahkan harga coret (harga ini akan muncul di halaman produk akun)
+              Createkan harga coret (harga ini akan muncul di halaman produk akun)
             </label>
           </div>
           <div id="discount_form" style="display: none;">

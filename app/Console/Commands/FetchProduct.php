@@ -49,7 +49,7 @@ class FetchProduct extends Command
 
         foreach ($products['data'] as $product) {
             $text .= "===============\n";
-            $text .= "Nama : ".$product['name']."\n";
+            $text .= "Name : ".$product['name']."\n";
             $text .= "Kode : ".$product['code']."\n";
             $text .= "Input : ".json_encode($product['inputs'])."\n";
             $text .= "===============\n";

@@ -61,7 +61,7 @@
                         <td>{!! $order->cust_account_format !!}</td>
                     </tr>
                     <tr>
-                        <td>Produk</td>
+                        <td>Product</td>
                         <td>{{ $order->productItem->name }} {{ $order->productItem->product->name }}</td>
                     </tr>
                     <tr>

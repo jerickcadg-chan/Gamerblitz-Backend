@@ -4,11 +4,11 @@
 
 @section('content')
     <div class="page-header">
-        <h3 class="page-title"> Halaman {{ $title }} </h3>
+        <h3 class="page-title"> Page {{ $title }} </h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('product_item.index') }}">{{ $title }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Semua Data</li>
+                <li class="breadcrumb-item active" aria-current="page">Data List</li>
             </ol>
         </nav>
     </div>
@@ -29,12 +29,12 @@
               @csrf
               <div class="form-group">
                 <label for="marginInput">Margin</label>
-                <input type="number" class="form-control" id="marginInput" placeholder="Masukkan margin (%)" step="0.01">
+                <input type="number" class="form-control" id="marginInput" placeholder="Enter margin (%)" step="0.01">
                 <small id="marginHelp" class="form-text text-muted"></small>
               </div>
               <div class="form-group">
                 <label for="marginResellerInput">Margin Reseller</label>
-                <input type="number" class="form-control" id="marginResellerInput" placeholder="Masukkan margin untuk reseller (%)" step="0.01">
+                <input type="number" class="form-control" id="marginResellerInput" placeholder="Enter margin untuk reseller (%)" step="0.01">
                 <small id="marginResellerHelp" class="form-text text-muted"></small>
               </div>
             </div>
@@ -53,7 +53,7 @@
                 <div class="row mb-2">
                     <div class="col-md-12 text-lg-end">
                         <button class="btn btn-warning" id="updateMarginAction">Atur margin harga</button>
-                        {{-- <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a> --}}
+                        {{-- <a href="{{ $createLink }}" class="btn btn-primary">Create data</a> --}}
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -62,7 +62,7 @@
                           <tr>
                               <th> <input type="checkbox" name="update_all" value="true"/> </th>
                               <th> # </th>
-                              <th> Produk </th>
+                              <th> Product </th>
                               <th> Kode </th>
                               <th> Margin </th>
                               <th> Reseller Margin </th>
@@ -70,7 +70,7 @@
                               <th> Harga reseller </th>
                               <th> Stok </th>
                               <th> Modal </th>
-                              <th> Aksi </th>
+                              <th> Action </th>
                           </tr>
                       </thead>
                       <tbody>
@@ -99,7 +99,7 @@
                           </tr>
                           @empty
                           <tr>
-                              <td colspan="100%" class="text-center">Tidak ada data ditemukan</td>
+                              <td colspan="100%" class="text-center">No Data</td>
                           </tr>
                           @endforelse
                       </tbody>

@@ -4,7 +4,7 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('product_item_category.index') }}">{{ $title }}</a></li>
@@ -18,11 +18,11 @@
       <div class="card-body">
         <table class="table table-nospace">
           <tr>
-            <th>Produk</th>
+            <th>Product</th>
             <td>{{ $productItemCategory->product->name }}</td>
           </tr>
           <tr>
-            <th>Nama</th>
+            <th>Name</th>
             <td>{{ $productItemCategory->name }}</td>
           </tr>
         </table>
@@ -36,7 +36,7 @@
         <a
           class="btn btn-primary"
           href="{{ route('product_item_categories.metas.create', ['product_item_category' => $productItemCategory]) }}"
-        >Tambah Data</a>
+        >Create Data</a>
       </div>
       <div class="table-responsive">
         <table class="table table-bordered">
@@ -44,7 +44,7 @@
           <tr>
             <th>Harga Minimal</th>
             <th>Ikon</th>
-            <th>Aksi</th>
+            <th>Action</th>
           </tr>
           </thead>
           <tbody>
@@ -74,7 +74,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="100%" class="text-center">Tidak ada data ditemukan</td>
+              <td colspan="100%" class="text-center">No Data</td>
             </tr>
           @endforelse
           </tbody>

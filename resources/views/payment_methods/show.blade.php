@@ -4,7 +4,7 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('payment_method.index') }}">{{ $title }}</a></li>

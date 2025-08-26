@@ -4,8 +4,8 @@
             <th rowspan="2">No</th>
             <th rowspan="2">Pesanan</th>
             <th rowspan="2">Tgl Pesan</th>
-            <th rowspan="2">Nama Produk</th>
-            <th rowspan="2">Item Produk</th>
+            <th rowspan="2">Name Product</th>
+            <th rowspan="2">Item Product</th>
             <th rowspan="2">Pembeli</th>
             <th rowspan="2">Email</th>
             <th rowspan="2">No Handphone</th>
@@ -44,7 +44,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="100%" class="text-center">Tidak ada data ditemukan</td>
+                <td colspan="100%" class="text-center">No Data</td>
             </tr>
         @endforelse
     </tbody>

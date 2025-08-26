@@ -18,7 +18,7 @@ class ProductItemCategoryController extends Controller
 
     public function __construct()
     {
-        $this->title = 'Produk Item Kategori';
+        $this->title = 'Product Item Category';
 
         $this->middleware(['permission:View Product Item Category'])->only('index', 'show');
         $this->middleware(['permission:Create Product Item Category'])->only(['create', 'store']);

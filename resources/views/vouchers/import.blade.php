@@ -4,11 +4,11 @@
 
 @section('content')
     <div class="page-header">
-        <h3 class="page-title"> Halaman {{ $title }} </h3>
+        <h3 class="page-title"> Page {{ $title }} </h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('voucher.index', ['product_item_id' => request('product_item_id')]) }}">{{ $title }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tambah Data</li>
+                <li class="breadcrumb-item active" aria-current="page">Create Data</li>
             </ol>
         </nav>
     </div>

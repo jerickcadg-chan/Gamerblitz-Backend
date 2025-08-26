@@ -3,12 +3,12 @@
 ])
 
 @php
-  $page = isset($meta) ? 'Tambah' : 'Edit';
+  $page = isset($meta) ? 'Create' : 'Edit';
 @endphp
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('product_item_category.index') }}">{{ $title }}</a></li>
@@ -29,20 +29,20 @@
         @endisset
         @csrf
         <div class="form-group">
-          <label for="input_min_price" class="required">Harga Minimal</label>
+          <label for="input_min_price" class="required">Price Minimal</label>
           <input
             type="number"
             name="min_price"
             class="form-control {{ $errors->has('min_price') ? ' is-invalid' : '' }}"
             id="input_min_price"
-            placeholder="Masukkan harga minimal"
+            placeholder="Enter minimal price"
             value="{{ old('min_price', @$meta->min_price) }}"
             required
           />
           @include('alerts.feedback', ['field' => 'min_price'])
         </div>
         <div class="form-group">
-          <label for="input_picture" @if(!isset($meta)) class="required" @endif>Ikon</label>
+          <label for="input_picture" @if(!isset($meta)) class="required" @endif>Icon</label>
           <input
             type="file"
             name="picture"

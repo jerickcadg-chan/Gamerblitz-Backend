@@ -3,12 +3,12 @@
 ])
 
 @php
-  $page = isset($productItemCategory) ? 'Tambah' : 'Edit';
+  $page = isset($productItemCategory) ? 'Create' : 'Edit';
 @endphp
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('product_item_category.index') }}">{{ $title }}</a></li>
@@ -26,7 +26,7 @@
               @method('PUT')
             @endisset
             <div class="form-group">
-              <label for="input_product_id" class="required">Produk</label>
+              <label for="input_product_id" class="required">Product</label>
               <select
                 name="product_id"
                 class="form-control select2 {{ $errors->has('product_id') ? ' is-invalid' : '' }}"
@@ -41,13 +41,13 @@
               @include('alerts.feedback', ['field' => 'product_id'])
             </div>
             <div class="form-group">
-              <label for="input_name" class="required">Nama</label>
+              <label for="input_name" class="required">Name</label>
               <input
                 type="text"
                 name="name"
                 class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }}"
                 id="input_name"
-                placeholder="Masukkan nama"
+                placeholder="Enter name"
                 value="{{ old('name', @$productItemCategory->name) }}"
                 required
               />

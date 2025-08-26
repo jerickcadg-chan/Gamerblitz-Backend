@@ -12,11 +12,11 @@ use App\Services\OrderService;
 
 class OrderController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {
-        $this->title = 'Pesanan';
+        $this->title = 'Order';
 
         $this->middleware(['permission:View Order'])->only('index', 'show');
     }

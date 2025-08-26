@@ -4,7 +4,7 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('account.index') }}">{{ $title }}</a></li>
@@ -26,7 +26,7 @@
             </td>
           </tr>
           <tr>
-            <th>Nama Akun</th>
+            <th>Name Akun</th>
             <td>{{ $account->title }}</td>
           </tr>
           <tr>
@@ -34,7 +34,7 @@
             <td>{{ $account->code }}</td>
           </tr>
           <tr>
-            <th>Deskripsi</th>
+            <th>Description</th>
             <td>{!! $account->description !!}</td>
           </tr>
           <tr>
@@ -83,7 +83,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="pinModalLabel">Masukkan PIN</h5>
+          <h5 class="modal-title" id="pinModalLabel">Enter PIN</h5>
           <button type="button" class="close" onclick="$('#pinModal').modal('hide')">
             <span aria-hidden="true">&times;</span>
           </button>

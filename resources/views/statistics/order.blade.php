@@ -53,7 +53,7 @@
             </tr>
             @empty
             <tr>
-              <td colspan="100%" class="text-center">Tidak ada data ditemukan</td>
+              <td colspan="100%" class="text-center">No Data</td>
             </tr>
             @endforelse
             <tr>

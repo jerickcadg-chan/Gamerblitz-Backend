@@ -35,7 +35,7 @@
             @csrf
 
             <div class="mb-2">
-              <input type="text" id="product_item_search" class="form-control" placeholder="Cari item…" oninput="filterRows()">
+              <input type="text" id="product_item_search" class="form-control" placeholder="Search item…" oninput="filterRows()">
             </div>
 
             <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">

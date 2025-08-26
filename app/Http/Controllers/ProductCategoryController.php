@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {
@@ -38,12 +38,12 @@ class ProductCategoryController extends Controller
 
     public function create()
     {
-        $storeLink = route('product_category.store');
+        $actionLink = route('product_category.store');
         $indexLink = route('product_category.index');
 
         $title = $this->title;
 
-        return view('product_categories.create', compact('storeLink', 'indexLink', 'title'));
+        return view('product_categories.form', compact('actionLink', 'indexLink', 'title'));
     }
 
     public function show(ProductCategory $productCategory)
@@ -68,12 +68,12 @@ class ProductCategoryController extends Controller
 
     public function edit(ProductCategory $productCategory)
     {
-        $updateLink = route('product_category.update', $productCategory);
+        $actionLink = route('product_category.update', $productCategory);
         $indexLink = route('product_category.index');
 
         $title = $this->title;
 
-        return view('product_categories.edit', compact('updateLink', 'indexLink', 'productCategory', 'title'));
+        return view('product_categories.form', compact('actionLink', 'indexLink', 'productCategory', 'title'));
     }
 
     public function update(ProductCategoryRequest $request, ProductCategory $productCategory)

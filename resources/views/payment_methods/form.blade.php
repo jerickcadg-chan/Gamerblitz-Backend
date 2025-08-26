@@ -4,11 +4,11 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('payment_method.index') }}">{{ $title }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{{ isset($paymentMethod) ? 'Edit Data' : 'Tambah Data' }}</li>
+        <li class="breadcrumb-item active" aria-current="page">{{ isset($paymentMethod) ? 'Edit Data' : 'Create Data' }}</li>
       </ol>
     </nav>
   </div>
@@ -23,7 +23,7 @@
           <div class="form-group">
             <label for="name_input" class="required">Name</label>
             <input type="text" class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }}"
-                   name="name" id="name_input" placeholder="Masukkan Nama"
+                   name="name" id="name_input" placeholder="Enter Name"
                    value="{{ old('name', $paymentMethod->name ?? '') }}" required>
             @include('alerts.feedback', ['field' => 'name'])
           </div>
@@ -39,7 +39,7 @@
           <div class="form-group">
             <label for="account_name_input">Account Name</label>
             <input type="text" class="form-control {{ $errors->has('account_name') ? ' is-invalid' : '' }}"
-                   name="account_name" id="account_name_input" placeholder="Nama bank / e-wallet"
+                   name="account_name" id="account_name_input" placeholder="Name bank / e-wallet"
                    value="{{ old('account_name', $paymentMethod->account_name ?? '') }}">
             @include('alerts.feedback', ['field' => 'account_name'])
           </div>
@@ -55,7 +55,7 @@
           <div class="form-group">
             <label for="account_holder_name_input">Account Holder Name</label>
             <input type="text" class="form-control {{ $errors->has('account_holder_name') ? ' is-invalid' : '' }}"
-                   name="account_holder_name" id="account_holder_name_input" placeholder="Nama pemilik rekening"
+                   name="account_holder_name" id="account_holder_name_input" placeholder="Name pemilik rekening"
                    value="{{ old('account_holder_name', $paymentMethod->account_holder_name ?? '') }}">
             @include('alerts.feedback', ['field' => 'account_holder_name'])
           </div>

@@ -25,8 +25,8 @@
               <option value="published" {{ request('status')==='published' ? 'selected' : '' }}>Published</option>
             </select>
           </div>
-          <div class="col-md-6 col-lg-4 col-xl-2 mb-2 pt-2">
-            <button type="submit" class="btn btn-sm btn-primary">Cari</button>
+          <div class="col-md-6 mb-2 pt-2">
+            <button type="submit" class="btn btn-sm btn-primary">Search</button>
             <a href="{{ url()->current() }}" class="btn btn-sm btn-danger">Reset</a>
           </div>
         </form>
@@ -63,7 +63,7 @@
                 </td>
               </tr>
             @empty
-              <tr><td colspan="6" class="text-center text-muted">No data.</td></tr>
+              <tr><td colspan="100%" class="text-center text-muted">No data.</td></tr>
             @endforelse
             </tbody>
           </table>

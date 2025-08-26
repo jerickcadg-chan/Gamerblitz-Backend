@@ -4,11 +4,11 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('deposit.index') }}">{{ $title }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Semua Data</li>
+        <li class="breadcrumb-item active" aria-current="page">Data List</li>
       </ol>
     </nav>
   </div>
@@ -19,13 +19,13 @@
         <form method="get" class="mb-3">
           <div class="row">
             <div class="col-md-4">
-              <input type="text" class="form-control" name="name" placeholder="Cari nama user" value="{{ request('name') }}">
+              <input type="text" class="form-control" name="name" placeholder="Search user name" value="{{ request('name') }}">
             </div>
             <div class="col-md-4">
-              <input type="text" class="form-control" name="code" placeholder="Cari kode deposit" value="{{ request('code') }}">
+              <input type="text" class="form-control" name="code" placeholder="Search deposit code" value="{{ request('code') }}">
             </div>
-            <div class="col-md-2 mb-2 pt-2">
-              <button type="submit" class="btn btn-sm btn-primary">Cari</button>
+            <div class="col-md-4 mb-2 pt-2">
+              <button type="submit" class="btn btn-sm btn-primary">Search</button>
               <a href="{{ url()->current() }}" class="btn btn-sm btn-danger">Reset</a>
             </div>
           </div>
@@ -34,12 +34,12 @@
           <thead>
           <tr>
             <th>#</th>
-            <th>Tanggal</th>
+            <th>Date</th>
             <th>Kode</th>
             <th>User</th>
-            <th>Jumlah</th>
+            <th>Nominal</th>
             <th>Status</th>
-            <th>Aksi</th>
+            <th>Action</th>
           </tr>
           </thead>
           <tbody>
@@ -59,7 +59,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="100%" class="text-center">Tidak ada data ditemukan</td>
+              <td colspan="100%" class="text-center">No Data</td>
             </tr>
           @endforelse
           </tbody>

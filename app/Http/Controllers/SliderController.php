@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller;
 
 class SliderController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {
@@ -38,12 +38,12 @@ class SliderController extends Controller
 
     public function create()
     {
-        $storeLink = route('slider.store');
+        $actionLink = route('slider.store');
         $indexLink = route('slider.index');
 
         $title = $this->title;
 
-        return view('sliders.create', compact('storeLink', 'indexLink', 'title'));
+        return view('sliders.form', compact('actionLink', 'indexLink', 'title'));
     }
 
     public function show(Slider $slider)
@@ -69,12 +69,12 @@ class SliderController extends Controller
 
     public function edit(Slider $slider)
     {
-        $updateLink = route('slider.update', $slider);
+        $actionLink = route('slider.update', $slider);
         $indexLink = route('slider.index');
 
         $title = $this->title;
 
-        return view('sliders.edit', compact('updateLink', 'indexLink', 'slider', 'title'));
+        return view('sliders.form', compact('actionLink', 'indexLink', 'slider', 'title'));
     }
 
     public function update(SliderRequest $request, Slider $slider)

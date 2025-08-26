@@ -4,11 +4,11 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('account.index') }}">{{ $title }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Tambah Data</li>
+        <li class="breadcrumb-item active" aria-current="page">Create Data</li>
       </ol>
     </nav>
   </div>
@@ -19,43 +19,43 @@
         <form method="POST" action="{{ $storeLink }}" enctype="multipart/form-data">
           @csrf
           <div class="form-group">
-            <label for="title_input" class="required">Nama</label>
-            <input type="text" class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}" name="title" id="title_input" placeholder="Masukkan Nama Akun" value="{{ old('title') }}">
+            <label for="title_input" class="required">Name</label>
+            <input type="text" class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}" name="title" id="title_input" placeholder="Enter Name Akun" value="{{ old('title') }}">
             @include('alerts.feedback', ['field' => 'title'])
           </div>
           <div class="form-group">
             <label for="code_input" class="required">Code</label>
-            <input type="text" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" id="code_input" placeholder="Masukkan Code Akun" value="{{ old('code') }}">
+            <input type="text" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" id="code_input" placeholder="Enter Code Akun" value="{{ old('code') }}">
             @include('alerts.feedback', ['field' => 'code'])
           </div>
           <div class="form-group">
             <label for="description_input" class="required">Description</label>
-            <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }} tinymce" name="description" id="description_input" placeholder="Masukkan Deskripsi Akun">{{ old('description') }}</textarea>
+            <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }} tinymce" name="description" id="description_input" placeholder="Enter Description Akun">{{ old('description') }}</textarea>
             @include('alerts.feedback', ['field' => 'description'])
           </div>
           <div class="form-group">
             <label for="winrate_input" class="required">Winrate</label>
-            <input type="number" step="0.1" class="form-control {{ $errors->has('winrate') ? ' is-invalid' : '' }}" name="winrate" id="winrate_input" placeholder="Masukkan Winrate Akun" value="{{ old('winrate') }}">
+            <input type="number" step="0.1" class="form-control {{ $errors->has('winrate') ? ' is-invalid' : '' }}" name="winrate" id="winrate_input" placeholder="Enter Winrate Akun" value="{{ old('winrate') }}">
             @include('alerts.feedback', ['field' => 'winrate'])
           </div>
           <div class="form-group">
             <label for="skin_input" class="required">Skin</label>
-            <input type="number" class="form-control {{ $errors->has('skin') ? ' is-invalid' : '' }}" name="skin" id="skin_input" placeholder="Masukkan Jumlah Skin Akun" value="{{ old('skin') }}">
+            <input type="number" class="form-control {{ $errors->has('skin') ? ' is-invalid' : '' }}" name="skin" id="skin_input" placeholder="Enter Jumlah Skin Akun" value="{{ old('skin') }}">
             @include('alerts.feedback', ['field' => 'skin'])
           </div>
           <div class="form-group">
             <label for="heroes_input" class="required">Heroes</label>
-            <input type="number" class="form-control {{ $errors->has('heroes') ? ' is-invalid' : '' }}" name="heroes" id="heroes_input" placeholder="Masukkan Jumlah Heroes Akun" value="{{ old('heroes') }}">
+            <input type="number" class="form-control {{ $errors->has('heroes') ? ' is-invalid' : '' }}" name="heroes" id="heroes_input" placeholder="Enter Jumlah Heroes Akun" value="{{ old('heroes') }}">
             @include('alerts.feedback', ['field' => 'heroes'])
           </div>
           <div class="form-group">
             <label for="price_input" class="required">Price</label>
-            <input type="number" step="0.1" class="form-control {{ $errors->has('price') ? ' is-invalid' : '' }}" name="price" id="price_input" placeholder="Masukkan Harga Akun" value="{{ old('price') }}">
+            <input type="number" step="0.1" class="form-control {{ $errors->has('price') ? ' is-invalid' : '' }}" name="price" id="price_input" placeholder="Enter Harga Akun" value="{{ old('price') }}">
             @include('alerts.feedback', ['field' => 'price'])
           </div>
           <div class="form-group">
             <label for="information_input" class="required">Information</label>
-            <textarea class="form-control {{ $errors->has('information') ? ' is-invalid' : '' }}" name="information" id="information_input" placeholder="Masukkan Informasi Akun">{{ old('information') }}</textarea>
+            <textarea class="form-control {{ $errors->has('information') ? ' is-invalid' : '' }}" name="information" id="information_input" placeholder="Enter Informasi Akun">{{ old('information') }}</textarea>
             @include('alerts.feedback', ['field' => 'information'])
           </div>
           <div class="form-group">
@@ -66,7 +66,7 @@
           <div class="form-group">
             <label class="form-check-label" for="discount_checkbox">
             <input class="form-check-input" type="checkbox" id="discount_checkbox" name="discount" value="1" {{ old('discount') ? 'checked' : '' }}>
-              Tambahkan harga coret (harga ini akan muncul di halaman produk akun)
+              Createkan harga coret (harga ini akan muncul di halaman produk akun)
             </label>
           </div>
           <div id="discount_form" style="display: none;">

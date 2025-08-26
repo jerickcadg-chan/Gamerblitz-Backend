@@ -8,11 +8,11 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Halaman {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }} </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('product.index') }}">{{ $title }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{{ $isEdit ? 'Edit Data' : 'Tambah Data' }}</li>
+        <li class="breadcrumb-item active" aria-current="page">{{ $isEdit ? 'Edit Data' : 'Create Data' }}</li>
       </ol>
     </nav>
   </div>
@@ -25,9 +25,9 @@
           @if($isEdit) @method('PUT') @endif
 
           <div class="form-group">
-            <label for="name_input" class="required">Nama</label>
+            <label for="name_input" class="required">Name</label>
             <input type="text" class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }}"
-                   name="name" id="name_input" placeholder="Masukkan Nama"
+                   name="name" id="name_input" placeholder="Enter Name"
                    value="{{ old('name', $product->name ?? '') }}" required>
             @include('alerts.feedback', ['field' => 'name'])
           </div>
@@ -35,15 +35,15 @@
           <div class="form-group">
             <label for="code_input" class="required">Kode</label>
             <input type="text" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}"
-                   name="code" id="code_input" placeholder="Masukkan Kode"
+                   name="code" id="code_input" placeholder="Enter Kode"
                    value="{{ old('code', $product->code ?? '') }}" required>
             @include('alerts.feedback', ['field' => 'code'])
           </div>
 
           <div class="form-group">
-            <label for="company_input" class="required">Perusahaan</label>
+            <label for="company_input" class="required">Company</label>
             <input type="text" class="form-control {{ $errors->has('company') ? ' is-invalid' : '' }}"
-                   name="company" id="company_input" placeholder="Montoon"
+                   name="company" id="company_input" placeholder="Moonton"
                    value="{{ old('company', $product->company ?? '') }}" required>
             @include('alerts.feedback', ['field' => 'company'])
           </div>
@@ -70,10 +70,10 @@
           </div>
 
           <div class="form-group">
-            <label for="category_input" class="required">Kategori</label>
+            <label for="category_input" class="required">Category</label>
             <select class="form-control {{ $errors->has('product_category_id') ? ' is-invalid' : '' }}"
                     name="product_category_id" id="category_input" required>
-              <option value="">Pilih kategori</option>
+              <option value="">Select category</option>
               @foreach (\App\Models\ProductCategory::all() as $category)
                 <option value="{{ $category->id }}"
                   {{ (string) old('product_category_id', $product->product_category_id ?? '') === (string) $category->id ? 'selected' : '' }}>
@@ -85,23 +85,23 @@
           </div>
 
           <div class="form-group">
-            <label for="description_input" class="required">Deskripsi</label>
+            <label for="description_input" class="required">Description</label>
             <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }} tinymce"
-                      name="description" id="description_input" placeholder="Masukkan Deskripsi">{{ old('description', $product->description ?? '') }}</textarea>
+                      name="description" id="description_input" placeholder="Enter Description">{{ old('description', $product->description ?? '') }}</textarea>
             @include('alerts.feedback', ['field' => 'description'])
           </div>
 
           <div class="form-group">
             <label for="input_format_input" class="required">Format Input</label>
             <textarea class="form-control {{ $errors->has('input_format') ? ' is-invalid' : '' }}"
-                      name="input_format" id="input_format_input" placeholder="Masukkan Format Input" required>{{ old('input_format', $product->input_format ?? '') }}</textarea>
+                      name="input_format" id="input_format_input" placeholder="Enter Format Input" required>{{ old('input_format', $product->input_format ?? '') }}</textarea>
             @include('alerts.feedback', ['field' => 'input_format'])
           </div>
 
           <div class="form-group">
-            <label for="how_to_order_input" class="required">Cara Order</label>
+            <label for="how_to_order_input" class="required">How to Order</label>
             <textarea class="form-control {{ $errors->has('how_to_order') ? ' is-invalid' : '' }} tinymce"
-                      name="how_to_order" id="how_to_order_input" placeholder="Masukkan Cara Order">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
+                      name="how_to_order" id="how_to_order_input" placeholder="Enter Cara Order">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
             @include('alerts.feedback', ['field' => 'how_to_order'])
           </div>
 
@@ -119,7 +119,7 @@
           </div>
 
           <div class="form-group">
-            <label for="picture" class="required">Gambar</label>
+            <label for="picture" class="required">Picture</label>
             <input type="file" name="picture" class="form-control {{ $errors->has('picture') ? ' is-invalid' : '' }}" accept="image/*">
             @include('alerts.feedback', ['field' => 'picture'])
             @if($isEdit && !empty($product->default_picture))
@@ -147,7 +147,6 @@
               @include('alerts.feedback', ['field' => 'status'])
             </div>
           @else
-            {{-- Saat create, paksa default active --}}
             <input type="hidden" name="status" value="active">
           @endif
 

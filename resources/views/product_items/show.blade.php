@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="page-header">
-        <h3 class="page-title"> Halaman {{ $title }} </h3>
+        <h3 class="page-title"> Page {{ $title }} </h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('product_item.index') }}">{{ $title }}</a></li>
@@ -18,7 +18,7 @@
             <div class="card-body">
                 <table class="table table-nospace">
                     <tr>
-                        <th>Produk</th>
+                        <th>Product</th>
                         <td>
                             <p>{{ $productItem->name }}</p>
                             <p class="text-muted">{{ $productItem->product->name }} ({{ ucfirst($productItem->product->category) }})</p>
@@ -42,16 +42,16 @@
                     </tr>
                     @if ($productItem->product->category == \App\Constants\ProductConstant::VOUCHER)
                         <tr>
-                            <th>Halaman Voucher</th>
+                            <th>Page Voucher</th>
                             <td><a href="{{ route('voucher.index', ['product_item_id' => $productItem->id]) }}" target="_blank">Klik disini</a> </td>
                         </tr>
                     @endif
                     <tr>
-                        <th>Tgl Dibuat</th>
+                        <th>Created At</th>
                         <td>{{ parse_date_time($productItem->created_at) }}</td>
                     </tr>
                     <tr>
-                        <th>Tgl Diupdate</th>
+                        <th>Updated At</th>
                         <td>{{ parse_date_time($productItem->updated_at) }}</td>
                     </tr>
                 </table>

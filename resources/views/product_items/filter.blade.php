@@ -3,7 +3,7 @@
         <form method="get">
             <div class="row">
                 <div class="col-md-5">
-                    <label for="product_input">Pilih Produk</label>
+                    <label for="product_input">Pilih Product</label>
                     <select class="form-control select2" name="product_id" id="product_input">
                         <option value=""></option>
                         @foreach ($products as $product)
@@ -12,12 +12,12 @@
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label for="product_item_name_input">Cari Item Berdasarkan Kode</label>
+                    <label for="product_item_name_input">Search Item Berdasarkan Kode</label>
                     <input type="text" class="form-control" name="name" value="{{ request('name') }}">
                 </div>
                 <div class="col-md-2">
                     <div class="pt-4">
-                        <button type="submit" class="btn btn-primary btn-sm">Cari</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Search</button>
                         <a href="{{ route('product_item.index') }}" class="btn btn-danger btn-sm">Reset</a>
                     </div>
                 </div>

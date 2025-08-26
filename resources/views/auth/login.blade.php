@@ -24,7 +24,7 @@
                 </span>
               @enderror
               <div class="mt-3">
-                <button type="submit" class="btn w-100 btn-danger btn-lg font-weight-medium auth-form-btn" href="../../index.html">SIGN IN</button>
+                <button type="submit" class="btn w-100 btn-primary btn-lg font-weight-medium auth-form-btn">SIGN IN</button>
               </div>
               <div class="my-4">
                 <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>

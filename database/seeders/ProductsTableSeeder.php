@@ -39,7 +39,7 @@ class ProductsTableSeeder extends Seeder
                 /*'category' => 'game',*/
                 'company' => 'Garena',
                 'description' => 'Garena Free Fire atau biasa disebut Free Fire adalah permainan battle royale yang dikembangkan oleh 111 Dots Studio dan diterbitkan oleh Garena untuk Android dan iOS. Itu menjadi permainan seluler yang paling banyak diunduh secara global pada tahun 2019.',
-                'how_to_order' => '<p><b>Cara Melihat Player ID Free Fire</b></p><p><img src="https://mitragamers.com/assets/img/game/ff.jpg" class="w-100"></p><p>Untuk menemukan informasi Player ID Free Fire dengan membuka menu "profile akun". Player ID terletak di bawah foto dan nama akun.</p>',
+                'how_to_order' => '<p><b>Cara Melihat Player ID Free Fire</b></p><p><img src="https://mitragamers.com/assets/img/game/ff.jpg" class="w-100"></p><p>Untuk menemukan informasi Player ID Free Fire dengan membuka menu "profile akun". Player ID terletak di bawah foto dan name akun.</p>',
                 'slug' => 'free-fire',
                 'status' => 'active',
                 'created_at' => now(),
@@ -71,7 +71,7 @@ class ProductsTableSeeder extends Seeder
                 'name' => 'Valorant',
                 /*'category' => 'game',*/
                 'company' => 'Riot',
-                'description' => 'Valorant adalah game first-person hero shooter gratis yang dikembangkan dan diterbitkan oleh Riot Games, untuk Microsoft Windows. Pertama kali dirilis dengan nama kode Project A pada Oktober 2019, game ini memulai periode beta tertutup dengan akses terbatas pada 7 April 2020, diikuti dengan rilis resmi pada 2 Juni 2020.',
+                'description' => 'Valorant adalah game first-person hero shooter gratis yang dikembangkan dan diterbitkan oleh Riot Games, untuk Microsoft Windows. Pertama kali dirilis dengan name kode Project A pada Oktober 2019, game ini memulai periode beta tertutup dengan akses terbatas pada 7 April 2020, diikuti dengan rilis resmi pada 2 Juni 2020.',
                 'how_to_order' => '<p><b>Cara Riot ID Valorant</b></p><p>Pemain pertama-tama harus masuk ke akun Riot di riotgames.com. Setelah masuk, kamu dapat mengklik “RIOT ID” di sisi kiri kotak akun.</p>',
                 'slug' => 'valorant',
                 'status' => 'active',
@@ -83,7 +83,7 @@ class ProductsTableSeeder extends Seeder
                 /*'category' => 'game',*/
                 'company' => 'Riot',
                 'description' => 'League of Legends: Wild Rift adalah multiplayer online battle arena mobile game yang dikembangkan dan diterbitkan oleh Riot Games untuk Android dan iOS. Game gratis untuk dimainkan ini adalah versi modifikasi dari game PC League of Legends',
-                'how_to_order' => '<p><b>Cara Melihat Riot ID LoL - Wild Rift</b></p><p><img src="https://mitragamers.com/assets/img/game/lol.jpg" class="w-100"></p><p>Untuk menemukan informasi Riot ID LoL - Wild Rift dengan membuka menu "profile akun". Riot ID terletak di bawah foto dan nama akun.</p>',
+                'how_to_order' => '<p><b>Cara Melihat Riot ID LoL - Wild Rift</b></p><p><img src="https://mitragamers.com/assets/img/game/lol.jpg" class="w-100"></p><p>Untuk menemukan informasi Riot ID LoL - Wild Rift dengan membuka menu "profile akun". Riot ID terletak di bawah foto dan name akun.</p>',
                 'slug' => 'lol-wild-rift',
                 'status' => 'active',
                 'created_at' => now(),
@@ -105,7 +105,7 @@ class ProductsTableSeeder extends Seeder
                 /*'category' => 'game',*/
                 'company' => 'Garena',
                 'description' => 'Arena of Valor, sebelumnya Strike of Kings, adalah adaptasi internasional dari Honor of Kings, multiplayer online battle arena yang dikembangkan oleh TiMi Studio Group dan diterbitkan oleh Level Infinite untuk Android, iOS, dan Nintendo Switch untuk pasar di luar Daratan Tiongkok',
-                'how_to_order' => '<p><b>Cara Melihat Open ID AOV</b></p><p>Buka pengaturan game yang seperti gear di sebelah kanan atas. Pilih pada menu "Umum" lalu scroll ke bawah untuk menemukan "OpenID" yang berada di sebelah "NamaPemain".</p>',
+                'how_to_order' => '<p><b>Cara Melihat Open ID AOV</b></p><p>Buka pengaturan game yang seperti gear di sebelah kanan atas. Pilih pada menu "Umum" lalu scroll ke bawah untuk menemukan "OpenID" yang berada di sebelah "NamePemain".</p>',
                 'slug' => 'arena-of-valor',
                 'status' => 'active',
                 'created_at' => now(),
