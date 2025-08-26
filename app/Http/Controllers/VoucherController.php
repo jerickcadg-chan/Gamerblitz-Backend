@@ -12,8 +12,8 @@ use App\Services\OrderService;
 
 class VoucherController extends Controller
 {
-    private $title;
-    private $product_item_id;
+    private string $title;
+    private mixed $product_item_id;
 
     public function __construct()
     {

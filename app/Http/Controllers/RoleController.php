@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {
-        $this->title = 'Hak Akses';
+        $this->title = 'Role';
 
         $this->middleware(['permission:View Role'])->only('index', 'show');
         $this->middleware(['permission:Create Role'])->only(['create', 'store']);

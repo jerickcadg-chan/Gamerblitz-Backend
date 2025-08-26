@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductItemCategoryController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {

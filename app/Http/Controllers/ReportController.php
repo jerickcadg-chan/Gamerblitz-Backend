@@ -10,11 +10,11 @@ use App\Exports\UserExport;
 
 class ReportController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {
-        $this->title = 'Laporan';
+        $this->title = 'Report';
 
         $this->middleware(['permission:View Transaction Report'])->only('getOrder');
         $this->middleware(['permission:View User Report'])->only('getUser');
@@ -36,7 +36,7 @@ class ReportController extends Controller
 
         $data = new OrderExport($orders);
 
-        return \Excel::download($data, 'laporan_order_'. request('order_start_date') .'_'. request('order_end_date') .'.xls');
+        return \Excel::download($data, 'report_order_'. request('order_start_date') .'_'. request('order_end_date') .'.xls');
     }
 
     public function getUser()
@@ -48,6 +48,6 @@ class ReportController extends Controller
 
         $data = new UserExport($users);
 
-        return \Excel::download($data, 'laporan_user_'. request('user_start_date') .'_'. request('user_end_date') .'.xls');
+        return \Excel::download($data, 'report_user_'. request('user_start_date') .'_'. request('user_end_date') .'.xls');
     }
 }

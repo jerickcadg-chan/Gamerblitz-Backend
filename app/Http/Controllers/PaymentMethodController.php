@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class PaymentMethodController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {

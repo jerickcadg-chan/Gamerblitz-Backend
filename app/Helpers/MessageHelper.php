@@ -1,42 +1,42 @@
 <?php
 
 if (!function_exists('alert_created_text')) {
-    function alert_created_text($model = null)
+    function alert_created_text($model = null): string
     {
-        return "Data {$model} berhasil ditambah!";
+        return "Data {$model} successfully created!";
     }
 }
 
 if (!function_exists('alert_updated_text')) {
-    function alert_updated_text($model = null)
+    function alert_updated_text($model = null): string
     {
-        return "Data {$model} berhasil diperbarui!";
+        return "Data {$model} successfully updated!";
     }
 }
 
 if (!function_exists('alert_deleted_text')) {
-    function alert_deleted_text($model = null)
+    function alert_deleted_text($model = null): string
     {
-        return "Data {$model} berhasil dihapus!";
+        return "Data {$model} successfully deleted!";
     }
 }
 
 if (!function_exists('alert_imported_text')) {
-    function alert_imported_text($model = null)
+    function alert_imported_text($model = null): string
     {
-        return "Data {$model} berhasil diimport!";
+        return "Data {$model} successfully imported!";
     }
 }
 
 if (!function_exists('alert_forbidden')) {
-    function alert_forbidden()
+    function alert_forbidden(): string
     {
         return 'Whooooops! System error!';
     }
 }
 
 if (!function_exists('alert_error')) {
-    function alert_error($model = null)
+    function alert_error($model = null): string
     {
         return app()->environment() == 'production' ? 'Internal server error' : substr($model, 0, 300);
     }
@@ -51,7 +51,8 @@ if (!function_exists('auth_role_is')) {
 }
 
 if (!function_exists('greeting')) {
-    function greeting() {
+    function greeting(): string
+    {
         $hour = now()->format('H');
 
         if ($hour < 10) {

@@ -88,7 +88,7 @@ class OrderController extends Controller
             // \Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
         }
 
-        toast('Sukses update status order menjadi '. $order->order_status_translated, 'success');
+        toast('Changed order status to '. $order->order_status_translated, 'success');
         return redirect()->back();
     }
 }

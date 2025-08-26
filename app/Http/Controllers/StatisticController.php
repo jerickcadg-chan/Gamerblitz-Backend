@@ -21,7 +21,7 @@ class StatisticController extends Controller
         }
 
         if ($startDate->diffInDays($endDate) > 31) {
-            session()->flash('error', 'Rentang tanggal maksimal adalah 31 hari');
+            session()->flash('error', 'Date range max 31 dat');
             return redirect()->back();
         }
 
@@ -58,7 +58,7 @@ class StatisticController extends Controller
         }
 
         if ($startDate->diffInDays($endDate) > 31) {
-            session()->flash('error', 'Rentang tanggal maksimal adalah 31 hari');
+            session()->flash('error', 'Date range max 31 day');
             return redirect()->back();
         }
 

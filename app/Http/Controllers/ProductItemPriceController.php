@@ -60,7 +60,7 @@ class ProductItemPriceController extends Controller
         }
 
         return response()->json([
-            'message' => 'Harga produk berhasil diupdate',
+            'message' => 'Product price updated',
             'success' => true,
         ]);
     }

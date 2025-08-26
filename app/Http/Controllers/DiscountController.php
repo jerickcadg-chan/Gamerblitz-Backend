@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class DiscountController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {

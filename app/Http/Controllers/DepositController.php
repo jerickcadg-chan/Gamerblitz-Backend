@@ -9,7 +9,7 @@ use App\Models\Deposit;
 
 class DepositController extends Controller
 {
-    protected $title = 'Deposit';
+    protected string $title = 'Deposit';
 
     public function index()
     {
@@ -48,10 +48,10 @@ class DepositController extends Controller
                 return redirect()->back();
             }
 
-            toast("Deposit status terupdate", 'success');
+            toast("Deposit status updated", 'success');
             return redirect()->route('deposit.index');
         } catch (\Exception $e) {
-            toast("Deposit status gagal", 'error');
+            toast("Deposit status failed", 'error');
             return redirect()->route('deposit.index');
         }
     }

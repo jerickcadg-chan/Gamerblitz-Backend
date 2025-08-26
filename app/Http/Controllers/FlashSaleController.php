@@ -6,7 +6,6 @@ use App\Http\Requests\FlashSaleRequest;
 use App\Models\FlashSale;
 use App\Models\Product;
 use App\Models\ProductItem;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

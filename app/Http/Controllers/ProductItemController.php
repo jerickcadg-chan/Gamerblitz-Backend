@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductItemController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {

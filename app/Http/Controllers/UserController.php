@@ -10,11 +10,11 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    private $title;
+    private string $title;
 
     public function __construct()
     {
-        $this->title = 'Pengguna';
+        $this->title = 'User';
 
         $this->middleware(['permission:View User'])->only('index', 'show');
         $this->middleware(['permission:Create User'])->only(['create', 'store']);
