@@ -125,7 +125,7 @@ class SyncLapakGaming extends Command
                     $productItem->margin_gold = $marginGold;
                     $productItem->margin_vip = $marginVip;
                     $productItem->status = $item['status'] === 'available' ? 'active' : 'empty';
-                    $productItem->updated_at = now();
+                    $productItem->sync_at = now();
                     $productItem->save();
                 }
 

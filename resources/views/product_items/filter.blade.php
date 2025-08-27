@@ -3,7 +3,7 @@
         <form method="get">
             <div class="row">
                 <div class="col-md-5">
-                    <label for="product_input">Pilih Product</label>
+                    <label for="product_input">Select Product</label>
                     <select class="form-control select2" name="product_id" id="product_input">
                         <option value="">All</option>
                         @foreach ($products as $product)
@@ -12,8 +12,8 @@
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label for="product_item_name_input">Search Item Berdasarkan Kode</label>
-                    <input type="text" class="form-control" name="name" value="{{ request('name') }}">
+                    <label for="product_item_name_input">Search by code</label>
+                    <input type="text" class="form-control" name="name" value="{{ request('name') }}" placeholder="e.g. ML28-S1">
                 </div>
                 <div class="col-md-2">
                     <div class="pt-4">

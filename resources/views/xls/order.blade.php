@@ -5,7 +5,7 @@
             <th rowspan="2">Pesanan</th>
             <th rowspan="2">Tgl Pesan</th>
             <th rowspan="2">Name Product</th>
-            <th rowspan="2">Item Product</th>
+            <th rowspan="2">Product Item</th>
             <th rowspan="2">Pembeli</th>
             <th rowspan="2">Email</th>
             <th rowspan="2">No Handphone</th>

@@ -25,6 +25,7 @@ class CreateProductItemsTable extends Migration
             $table->decimal('margin_gold', 19, 2)->default(0);
             $table->decimal('margin_vip', 19, 2)->default(0);
             $table->enum('status', ['active','non-active','trouble','empty'])->default('active');
+            $table->timestamp('sync_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

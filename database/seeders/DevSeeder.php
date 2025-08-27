@@ -20,5 +20,6 @@ class DevSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
         $this->call(ProductsSeeder::class);
         $this->call(PaymentMethodsTableSeeder::class);
+        $this->call(CustomersTableSeeder::class);
     }
 }

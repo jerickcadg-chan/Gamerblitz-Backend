@@ -38,7 +38,7 @@ class LapakGamingController extends Controller
             return api_status_ok('SKIPPED');
         }
 
-        if ($productItem->updated_at->timestamp > $meta['unix_timestamp']) {
+        if ($productItem->sync_at->timestamp > $meta['unix_timestamp']) {
             // out of date, skip
             return api_status_ok('OUT OF DATE');
         }
@@ -55,6 +55,7 @@ class LapakGamingController extends Controller
         $productItem->margin_gold = $marginGold;
         $productItem->margin_vip = $marginVip;
         $productItem->status = $data['status'] === 'available' ? 'active' : 'empty';
+        $productItem->sync_at = now();
         $productItem->save();
         return api_status_ok('OK');
     }

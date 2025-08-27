@@ -42,6 +42,10 @@ class ProductItem extends Model implements IsFilterable
         'margin_percentage',
     ];
 
+    protected $casts = [
+        'sync_at' => 'datetime',
+    ];
+
     public function getFullNameAttribute(): string
     {
         return $this->product->name ." ". $this->name;

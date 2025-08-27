@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="page-header">
-        <h3 class="page-title"> Page {{ $title }} </h3>
+        <h3 class="page-title"> {{ $title }} Page </h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('product_item.index') }}">{{ $title }}</a></li>
@@ -62,7 +62,7 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-md-12 text-lg-end">
-                        <button class="btn btn-warning" id="updateMarginAction">Atur margin harga</button>
+                        <button class="btn btn-warning" id="updateMarginAction">Adjust Price Margin</button>
                         {{-- <a href="{{ $createLink }}" class="btn btn-primary">Create data</a> --}}
                     </div>
                 </div>
@@ -144,9 +144,8 @@
       const checkboxes = document.querySelectorAll('input[name="product_item_ids"]');
       if (document.querySelectorAll('input[name="product_item_ids"]:checked').length === 0) {
         Swal.fire({
-          title: 'Error!',
-          text: 'Pilih minimal satu produk item',
-          icon: 'error',
+          text: 'Select at least one product item',
+          icon: 'info',
         })
       } else {
         $('#updateMarginActionModal').modal('show')
