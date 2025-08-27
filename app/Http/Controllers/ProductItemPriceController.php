@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -27,6 +25,9 @@ class ProductItemPriceController extends Controller
                     'array'
                 ],
                 'margin' => ['required', 'numeric', 'min:0', 'max:100'],
+                'margin_silver' => ['required', 'numeric', 'min:0', 'max:100'],
+                'margin_gold' => ['required', 'numeric', 'min:0', 'max:100'],
+                'margin_vip' => ['required', 'numeric', 'min:0', 'max:100'],
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -35,29 +36,17 @@ class ProductItemPriceController extends Controller
             ], 422);
         }
 
-        /** @var \App\Models\Client $client */
-        $client = Auth::user()->client;
+        $query = $request->update_all
+        ? ProductItem::query()
+        : ProductItem::whereIn('id', $request->product_item_ids);
 
-        if (!$request->update_all) {
-            $productItemIds = $request->product_item_ids;
-            $productItems = ProductItem::whereIn('id', $productItemIds)->get();
-        } else {
-            $productItems = ProductItem::all();
-        }
-
-        foreach ($productItems as $productItem) {
-            DB::table('product_item_client')->updateOrInsert(
-                [
-                    'product_item_id' => $productItem->id,
-                    'client_id' => $client->id,
-                ],
-                [
-                    'margin' => $request->margin,
-                    'reseller_margin' => $request->margin_reseller,
-                    'updated_at' => now(),
-                ]
-            );
-        }
+        $query->update([
+            'margin'          => $request->margin,
+            'margin_silver' => $request->margin_silver,
+            'margin_gold' => $request->margin_gold,
+            'margin_vip' => $request->margin_vip,
+            'updated_at'      => now(),
+        ]);
 
         return response()->json([
             'message' => 'Product price updated',

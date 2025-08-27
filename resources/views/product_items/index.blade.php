@@ -20,7 +20,7 @@
         <div class="modal-content">
           <form method="POST" id="form-update-margin">
             <div class="modal-header">
-              <h5 class="modal-title">Modal title</h5>
+              <h5 class="modal-title">Product Item Price Margin</h5>
               <button type="button" class="close" onclick="$('#updateMarginActionModal').modal('hide')">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -33,9 +33,19 @@
                 <small id="marginHelp" class="form-text text-muted"></small>
               </div>
               <div class="form-group">
-                <label for="marginResellerInput">Margin Reseller</label>
-                <input type="number" class="form-control" id="marginResellerInput" placeholder="Enter margin untuk reseller (%)" step="0.01">
-                <small id="marginResellerHelp" class="form-text text-muted"></small>
+                <label for="marginSilverInput">Margin Reseller Silver</label>
+                <input type="number" class="form-control" id="marginSilverInput" placeholder="Masukkan margin untuk reseller silver (%)" step="0.01">
+                <small id="marginSilverHelp" class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label for="marginGoldInput">Margin Reseller Gold</label>
+                <input type="number" class="form-control" id="marginGoldInput" placeholder="Masukkan margin untuk reseller silver (%)" step="0.01">
+                <small id="marginGoldHelp" class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label for="marginVipInput">Margin Reseller Vip</label>
+                <input type="number" class="form-control" id="marginVipInput" placeholder="Masukkan margin untuk reseller silver (%)" step="0.01">
+                <small id="marginVipHelp" class="form-text text-muted"></small>
               </div>
             </div>
             <div class="modal-footer">
@@ -65,9 +75,13 @@
                               <th> Product </th>
                               <th> Kode </th>
                               <th> Margin </th>
-                              <th> Reseller Margin </th>
+                              <th> Margin Reseller Silver </th>
+                              <th> Margin Reseller Gold </th>
+                              <th> Margin Reseller VIP </th>
                               <th> Harga </th>
-                              <th> Harga reseller </th>
+                              <th> Harga reseller Silver </th>
+                              <th> Harga reseller Gold </th>
+                              <th> Harga reseller VIP </th>
                               <th> Stok </th>
                               <th> Modal </th>
                               <th> Action </th>
@@ -81,9 +95,13 @@
                               <td>{{ $productItem->product->name }} {{ $productItem->name }}</td>
                               <td>{{ $productItem->code }}</td>
                               <td>{{ $productItem->margin_percentage ?? 0 }} %</td>
-                              <td>{{ $productItem->margin_reseller ?? 0 }} %</td>
-                              <td>{{ rp_format($productItem->margin_price) }}</td>
-                              <td>{{ rp_format($productItem->margin_price_reseller) }}</td>
+                              <td>{{ $productItem->margin_silver ?? 0 }} %</td>
+                              <td>{{ $productItem->margin_gold ?? 0 }} %</td>
+                              <td>{{ $productItem->margin_vip ?? 0 }} %</td>
+                              <td>{{ rp_format($productItem->margin_price_public) }}</td>
+                              <td>{{ rp_format($productItem->margin_price_silver) }}</td>
+                              <td>{{ rp_format($productItem->margin_price_gold) }}</td>
+                              <td>{{ rp_format($productItem->margin_price_vip) }}</td>
                               <td>{{ $productItem->stock === null ? '∞' : $productItem->stock }}</td>
                               <td>{{ rp_format($productItem->capital) }}</td>
                               <td>
@@ -139,12 +157,16 @@
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       const margin = document.querySelector('#marginInput').value;
-      const marginReseller = document.querySelector('#marginResellerInput').value;
+      const marginSilver = document.querySelector('#marginSilverInput').value;
+      const marginGold = document.querySelector('#marginGoldInput').value;
+      const marginVip = document.querySelector('#marginVipInput').value;
       const productItemIds = document.querySelectorAll('input[name="product_item_ids"]:checked');
       const updateAll = document.querySelector('input[name="update_all"]').checked;
       const data = new FormData();
       data.append('margin', margin);
-      data.append('margin_reseller', marginReseller);
+      data.append('margin_silver', marginSilver);
+      data.append('margin_gold', marginGold);
+      data.append('margin_vip', marginVip);
       if (updateAll) {
         data.append('update_all', updateAll);
       } else {

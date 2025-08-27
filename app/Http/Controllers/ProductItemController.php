@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductItemRequest;
 use App\Models\ProductItem;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class ProductItemController extends Controller
 {
@@ -25,7 +23,15 @@ class ProductItemController extends Controller
 
     public function index()
     {
-        $productItems = ProductItem::latest()
+        $productItems = ProductItem::query()
+            ->active()
+            ->latest()->with('product')
+            ->when(request('name'), function ($query) {
+                return $query->where('code', 'like', '%'.request("name").'%');
+            })
+            ->when(request('product_id'), function ($query) {
+                return $query->where('product_id', request('product_id'));
+            })
             ->paginate();
 
         $createLink = route('product_item.create');

@@ -143,11 +143,11 @@ class OrderService
 
             return $order;
         } catch (Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             throw_custom_exception($e);
             throw new Exception($e->getMessage());
         } catch (GuzzleException $e) {
-            DB::rollback();
+            DB::rollBack();
             throw_custom_exception($e);
             throw new Exception($e->getMessage());
         }

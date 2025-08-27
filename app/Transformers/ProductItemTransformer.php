@@ -29,6 +29,7 @@ class ProductItemTransformer extends TransformerAbstract
     {
         return [
             'id' => $productItem->id,
+            'code' => $productItem->code,
             'name' => $productItem->name,
             'stock' => $productItem->stock,
             'product_item_category_id' => $productItem->product_item_category_id,

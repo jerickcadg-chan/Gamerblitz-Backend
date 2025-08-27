@@ -3,52 +3,44 @@
 namespace App\Models;
 
 use App\Constants\DefaultRole;
-use App\Constants\ProductItemTypeConstant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+/* use Illuminate\Database\Eloquent\Relations\HasOne; */
 use Illuminate\Support\Facades\Auth;
+use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
+use IndexZer0\EloquentFiltering\Filter\Traits\Filterable;
 
-class ProductItem extends Model
+class ProductItem extends Model implements IsFilterable
 {
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'product_id',
-        'name',
         'code',
+        'name',
+        'capital',
         'stock',
-        'price',
-        'price_silver',
-        'price_gold',
-        'price_vip',
-        'type',
-        // TODO: add capital column -> price from provider
-        // TODO: add margin public user
-        // TODO: add margin silver
-        // TODO: add margin gold
-        // TODO: add margin vip
+        'margin', // margin public
+        'margin_silver',
+        'margin_gold',
+        'margin_vip',
     ];
 
     protected $appends = [
+        'margin_price_public',
+        'margin_price_silver',
+        'margin_price_gold',
+        'margin_price_vip',
+        // computed based on user tier
         'real_price',
         'total_price',
-        'capital',
+        'margin_price',
+        'margin_percentage',
     ];
-
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class);
-    }
-
-    public function flashSales(): HasMany
-    {
-        return $this->hasMany(FlashSale::class);
-    }
 
     public function getFullNameAttribute(): string
     {
@@ -73,9 +65,90 @@ class ProductItem extends Model
 
     public function getRealPriceAttribute()
     {
-        return Auth::user() && Auth::user()->role === DefaultRole::RESELLER
-            ? ($this->price_reseller ?? $this->margin_price)
-            : $this->margin_price;
+        return $this->margin_price;
+    }
+
+    /**
+     * computed based on user role
+     *
+     */
+    public function marginPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => (float) (
+                $this->capital / ((100 - $this->margin_percentage) / 100)
+            ),
+        );
+    }
+
+    /**
+     * computed based on user role
+     *
+     */
+    public function marginPercentage(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $user = Auth::user();
+
+                if ($user) {
+                    return match ($user->role) {
+                        DefaultRole::RESELLER_SILVER => $this->margin_silver,
+                        DefaultRole::RESELLER_GOLD   => $this->margin_gold,
+                        DefaultRole::RESELLER_VIP    => $this->margin_vip,
+                        default                      => $this->margin,
+                    };
+                }
+
+                return $this->margin;
+            },
+        );
+    }
+
+    public function marginPricePublic(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => (float) (
+                $this->capital / ((100 - $this->margin) / 100)
+            ),
+        );
+    }
+
+    public function marginPriceSilver(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => (float) (
+                $this->capital / ((100 - $this->margin_silver) / 100)
+            ),
+        );
+    }
+
+    public function marginPriceGold(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => (float) (
+                $this->capital / ((100 - $this->margin_gold) / 100)
+            ),
+        );
+    }
+
+    public function marginPriceVip(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => (float) (
+                $this->capital / ((100 - $this->margin_vip) / 100)
+            ),
+        );
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function flashSales(): HasMany
+    {
+        return $this->hasMany(FlashSale::class);
     }
 
     public function vouchers(): HasMany
@@ -83,121 +156,26 @@ class ProductItem extends Model
         return $this->hasMany(Voucher::class);
     }
 
-    public function accounts(): HasMany
-    {
-        return $this->hasMany(Account::class)
-            ->where('client_id', client()?->id);
-    }
-
-    public function marginPrice()
-    {
-        return Attribute::make(
-            get: function () {
-//                $client_id = client()?->id;
-//
-//                // (100%-1,5%)
-//                // 10.000:98,5% = 10.153
-//                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-//                    $realPrice = (100 - $productItemClient->margin);
-//                    $actualPrice = $this->capital / ($realPrice / 100);
-//
-//                    return (float) $actualPrice;
-//                }
-
-                return $this->capital;
-            },
-        );
-    }
-
-    public function marginPercentage(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-//                $client_id = client()?->id;
-//
-//                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-//                    return (float) $productItemClient->margin;
-//                }
-
-                return 0;
-            },
-        );
-    }
-
-    public function marginReseller(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-//                $client_id = client()?->id;
-//
-//                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-//                    return (float) $productItemClient->reseller_margin;
-//                }
-
-                return 0;
-            },
-        );
-    }
-
-    public function marginPriceReseller(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-//                $client_id = client()?->id;
-//                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
-//                    return $this->price;
-//                }
-//                if ($productItemClient = $this->productItemClients->firstWhere('client_id', $client_id)) {
-//                    $realPrice = (100 - $productItemClient->reseller_margin);
-//                    $actualPrice = $this->capital / ($realPrice / 100);
-//
-//                    return (float) $actualPrice;
-//                }
-
-                return $this->capital;
-            },
-        );
-    }
-
-//    public function capital(): Attribute
-//    {
-//        return Attribute::get(
-//            get: function () {
-//                $level = client()->level ?? null;
-//                if (! $level) {
-//                    return $this->price_silver;
-//                }
-//                if ($this->type == ProductItemTypeConstant::ACCOUNT) {
-//                    return $this->price;
-//                }
-//                $capital = match ($level) {
-//                    UserLevel::SILVER => $this->price_silver,
-//                    UserLevel::GOLD => $this->price_gold,
-//                    UserLevel::PLATINUM => $this->price_vip,
-//                };
-//
-//                return $capital;
-//            }
-//        );
-//    }
-
     public function order(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * @param Builder<Model> $query
+     */
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'active');
     }
 
-    public function flashSaleProductItem(): HasOne
-    {
-        return $this->hasOne(FlashSaleProductItem::class)
-            ->whereHas('flashSale', function ($query) {
-                $query->active();
-            });
-    }
+    /* public function flashSaleProductItem(): HasOne */
+    /* { */
+    /*     return $this->hasOne(FlashSaleProductItem::class) */
+    /*         ->whereHas('flashSale', function ($query) { */
+    /*             $query->active(); */
+    /*         }); */
+    /* } */
 
     public function productItemCategory(): BelongsTo
     {

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constants\DefaultRole;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Faker\Factory as Faker;
@@ -17,6 +18,12 @@ class CustomersTableSeeder extends Seeder
     {
         $faker = Faker::create();
 
+        $resellerRoles = [
+            DefaultRole::RESELLER_SILVER,
+            DefaultRole::RESELLER_GOLD,
+            DefaultRole::RESELLER_VIP,
+        ];
+
         for ($i=1; $i <= 50; $i++) {
             $user = User::create([
                 'name' => $faker->unique()->name,
@@ -27,6 +34,12 @@ class CustomersTableSeeder extends Seeder
             ]);
 
             $user->assignRole(\Spatie\Permission\Models\Role::where('name', 'Customer')->first());
+
+            // assign one reseller role randomly
+            if (rand(0, 1)) {
+                $role = $faker->randomElement($resellerRoles);
+                $user->assignRole($role);
+            }
         }
     }
 }

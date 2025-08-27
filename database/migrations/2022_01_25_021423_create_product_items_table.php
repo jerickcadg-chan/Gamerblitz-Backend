@@ -17,9 +17,14 @@ class CreateProductItemsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->string('name');
-            $table->integer('stock');
-            $table->decimal('price', 19, 2);
+            $table->string('code')->nullable();
+            $table->integer('stock')->nullable();
             $table->decimal('capital', 19, 2);
+            $table->decimal('margin', 19, 2)->default(0);
+            $table->decimal('margin_silver', 19, 2)->default(0);
+            $table->decimal('margin_gold', 19, 2)->default(0);
+            $table->decimal('margin_vip', 19, 2)->default(0);
+            $table->enum('status', ['active','non-active','trouble','empty'])->default('active');
             $table->softDeletes();
             $table->timestamps();
 

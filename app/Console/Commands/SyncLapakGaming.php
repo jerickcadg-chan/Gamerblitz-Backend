@@ -50,7 +50,10 @@ class SyncLapakGaming extends Command
 
         $lgCategories = collect($response->json('data.categories'));
 
-        Log::info('LapakGaming: categories fetched', ['count' => $lgCategories->count()]);
+        Log::channel('lapakgaming')->info('categories', [
+            'url' => $categoriesUrl,
+            'response' => $lgCategories,
+        ]);
 
         $products = Product::query()
             ->where('status', Product::ACTIVE)
@@ -86,7 +89,12 @@ class SyncLapakGaming extends Command
 
             $lgItems = collect($itemsResponse->json('data.products'));
 
-            Log::info('LapakGaming: product items fetched', ['count' => $lgItems->count()]);
+            Log::channel('lapakgaming')->info('product items', [
+                'url' => $productItemsUrl,
+                'category_code' => $product->provider_code,
+                'country_code' => $product->provider_country ?? 'id',
+                'response' => $lgItems,
+            ]);
 
             try {
                 DB::beginTransaction();
@@ -98,22 +106,27 @@ class SyncLapakGaming extends Command
                 ]);
 
                 foreach ($lgItems as $item) {
-                    ProductItem::updateOrCreate(
-                        [
-                            'product_id' => $product->id,
-                            'code' => $item['code'],
-                        ],
-                        [
-                            'name' => $item['name'],
-                            'price' => $item['price'],
-                            // TODO: calculate reseller tier price
-                            'price_silver' => $item['price'],
-                            'price_gold' => $item['price'],
-                            'price_vip' => $item['price'],
-                            'status' => $item['status'] === 'available' ? 'active' : 'empty',
-                            'updated_at' => now(),
-                        ]
-                    );
+                    $productItem = ProductItem::where('product_id', $product->id)->where('code', $item['code'])->firstOrNew([
+                        'product_id' => $product->id,
+                        'code' => $item['code'],
+                    ]);
+
+                    $marginPublicUser = $productItem->margin ?: $product->markup_user;
+                    $marginSilver = $productItem->margin_silver ?: $product->markup_reseller_silver;
+                    $marginGold = $productItem->margin_gold ?: $product->markup_reseller_gold;
+                    $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
+
+                    $productItem->name = $item['name'];
+                    $productItem->capital = $item['price'];
+                    $productItem->stock = null;
+
+                    $productItem->margin = $marginPublicUser;
+                    $productItem->margin_silver = $marginSilver;
+                    $productItem->margin_gold = $marginGold;
+                    $productItem->margin_vip = $marginVip;
+                    $productItem->status = $item['status'] === 'available' ? 'active' : 'empty';
+                    $productItem->updated_at = now();
+                    $productItem->save();
                 }
 
                 DB::commit();

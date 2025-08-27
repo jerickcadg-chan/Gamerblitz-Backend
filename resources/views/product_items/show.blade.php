@@ -26,15 +26,23 @@
                     </tr>
                     <tr>
                         <th>Harga Umum</th>
-                        <td>{{ rp_format($productItem->price) }}</td>
+                        <td>{{ rp_format($productItem->margin_price_public) }}</td>
                     </tr>
                     <tr>
-                        <th>Harga Reseller</th>
-                        <td>{{ rp_format($productItem->price_reseller) }}</td>
+                        <th>Harga Reseller Silver</th>
+                        <td>{{ rp_format($productItem->margin_price_silver) }}</td>
+                    </tr>
+                    <tr>
+                        <th>Harga Reseller Gold</th>
+                        <td>{{ rp_format($productItem->margin_price_gold) }}</td>
+                    </tr>
+                    <tr>
+                        <th>Harga Reseller VIP</th>
+                        <td>{{ rp_format($productItem->margin_price_vip) }}</td>
                     </tr>
                     <tr>
                         <th>Stok</th>
-                        <td>{{ currency_format($productItem->stock) }}</td>
+                        <td>{{ $productItem->stock ? currency_format($productItem->stock) : "∞" }}</td>
                     </tr>
                     <tr>
                         <th>Modal</th>

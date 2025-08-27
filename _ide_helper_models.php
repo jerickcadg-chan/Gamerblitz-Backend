@@ -895,7 +895,6 @@ namespace App\Models{
  * @property-read float $margin_percentage
  * @property-read float $margin_price
  * @property-read float $margin_price_reseller
- * @property-read float $margin_reseller
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $order
  * @property-read int|null $order_count
  * @property-read \App\Models\Product $product

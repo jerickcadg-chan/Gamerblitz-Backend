@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\DefaultRole;
 use App\Traits\WhereByClient;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -62,14 +63,14 @@ class User extends Authenticatable
     public function scopeNonCustomer($query)
     {
         return $query->whereHas('roles', function ($query) {
-            return $query->where('name', '!=', 'Customer');
+            return $query->where('name', '!=', DefaultRole::CUSTOMER);
         });
     }
 
     public function scopeCustomer($query)
     {
         return $query->whereHas('roles', function ($query) {
-            return $query->where('name', 'Customer');
+            return $query->where('name', DefaultRole::CUSTOMER);
         });
     }
 
@@ -78,13 +79,22 @@ class User extends Authenticatable
         $this->attributes['name'] = ucwords(strtolower($value));
     }
 
+    /**
+     * Get highest level
+     *
+     */
     public function getRoleAttribute()
     {
-        $role = $this->roles;
-
-        return count($role) > 1
-            ? ($this->hasRole('Super Admin') ? $role->where('name', '!=', 'Super Admin')->first()->name : $role->first()->name)
-            : ($role->first()->name ?? null);
+        if ($this->hasRole(DefaultRole::RESELLER_VIP)) {
+            return DefaultRole::RESELLER_VIP;
+        }
+        if ($this->hasRole(DefaultRole::RESELLER_GOLD)) {
+            return DefaultRole::RESELLER_GOLD;
+        }
+        if ($this->hasRole(DefaultRole::RESELLER_SILVER)) {
+            return DefaultRole::RESELLER_SILVER;
+        }
+        return DefaultRole::CUSTOMER;
     }
 
     public function client(): BelongsTo

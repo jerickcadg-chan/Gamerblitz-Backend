@@ -23,7 +23,7 @@ class CreatePaymentMethodsTable extends Migration
             $table->decimal('admin_fee', 19, 2)->default(0);
             $table->enum('admin_type', ['nominal', 'percentage', 'no-admin']);
             $table->string('vendor', 50);
-            $table->string('category', 100);
+            $table->string('category', 100)->nullable();
             $table->boolean('is_active')->default(1);
             $table->integer('ordering')->nullable();
             $table->timestamps();

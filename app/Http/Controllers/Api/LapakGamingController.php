@@ -27,8 +27,10 @@ class LapakGamingController extends Controller
         // }
         $data = $request->input('data');
         $meta = $request->input('meta');
-        $item = ProductItem::where('code', $data['code'])->first();
-        if (!$item) {
+
+        $productItem = ProductItem::where('code', $data['code'])->first();
+
+        if (!$productItem) {
             Log::info('LapakGaming: product Item not stored', [
                 'data' => $data
             ]);
@@ -36,19 +38,24 @@ class LapakGamingController extends Controller
             return api_status_ok('SKIPPED');
         }
 
-        if ($item->updated_at->timestamp > $meta['unix_timestamp']) {
+        if ($productItem->updated_at->timestamp > $meta['unix_timestamp']) {
             // out of date, skip
             return api_status_ok('OUT OF DATE');
         }
 
-        $item->price = $data['price'];
-        // TODO: calculate reseller tier price
-        $item->price_silver = $data['price'];
-        $item->price_gold = $data['price'];
-        $item->price_vip = $data['price'];
-        $item->price_vip = $data['price'];
-        $item->status = $data['status'] === 'available' ? 'active' : 'empty';
-        $item->save();
+        $product = $productItem->product;
+
+        $marginPublicUser = $productItem->margin ?: $product->markup_user;
+        $marginSilver = $productItem->margin_silver ?: $product->markup_reseller_silver;
+        $marginGold = $productItem->margin_gold ?: $product->markup_reseller_gold;
+        $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
+
+        $productItem->margin = $marginPublicUser;
+        $productItem->margin_silver = $marginSilver;
+        $productItem->margin_gold = $marginGold;
+        $productItem->margin_vip = $marginVip;
+        $productItem->status = $data['status'] === 'available' ? 'active' : 'empty';
+        $productItem->save();
         return api_status_ok('OK');
     }
 }

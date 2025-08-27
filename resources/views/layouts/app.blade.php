@@ -40,7 +40,6 @@
         @yield('content')
     @endauth
 
-    @stack('js')
     @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
     <script src="{{ asset('js/hoverable-collapse.js') }}"></script>
     <script src="{{ asset('js/misc.js') }}"></script>
@@ -52,5 +51,6 @@
       $(this).find(':submit').attr('disabled','disabled');
     });
     </script>
+    @stack('js')
 </body>
 </html>

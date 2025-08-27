@@ -28,7 +28,9 @@ class ProductItemRequest extends FormRequest
                 return [
                     'name' => 'required|string',
                     'price' => 'required',
-                    'price_reseller' => 'required',
+                    'price_silver' => 'required',
+                    'price_gold' => 'required',
+                    'price_vip' => 'required',
                     'capital' => 'required',
                     'stock' => 'required|integer',
                 ];
@@ -37,6 +39,9 @@ class ProductItemRequest extends FormRequest
                 return [
                     'name' => 'required|string',
                     'price' => 'required',
+                    'price_silver' => 'required',
+                    'price_gold' => 'required',
+                    'price_vip' => 'required',
                     'capital' => 'required',
                     'stock' => 'required|integer',
                 ];

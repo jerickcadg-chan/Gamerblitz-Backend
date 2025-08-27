@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
-use App\Models\ProductItem;
 use App\Models\Picture;
 
 class ProductsTableSeeder extends Seeder
@@ -58,7 +57,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'FF',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -73,7 +72,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'UCPUBGM',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -88,7 +87,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'GI',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -103,7 +102,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'VAL',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -118,7 +117,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'LOL',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -133,7 +132,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'CODM',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -148,7 +147,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'AOV',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -163,7 +162,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'SMN',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -178,7 +177,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => 'active',
                 'product_category_id' => 1,
                 'provider' => 'lapakgaming',
-                'provider_code' => 'ML',
+                'provider_code' => 'VGS',
                 'provider_country' => 'id',
                 'created_at' => now(),
                 'updated_at' => now()

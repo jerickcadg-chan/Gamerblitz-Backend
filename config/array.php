@@ -7,7 +7,11 @@ return [
         'status' => [\App\Models\Product::ACTIVE, \App\Models\Product::INACTIVE]
     ],
     'default_role' => [
-        \App\Constants\DefaultRole::SUPER_ADMIN, \App\Constants\DefaultRole::CUSTOMER, \App\Constants\DefaultRole::RESELLER
+        \App\Constants\DefaultRole::SUPER_ADMIN,
+        \App\Constants\DefaultRole::CUSTOMER,
+        \App\Constants\DefaultRole::RESELLER_SILVER,
+        \App\Constants\DefaultRole::RESELLER_GOLD,
+        \App\Constants\DefaultRole::RESELLER_VIP,
     ],
     'menu' => [
         'dashboard',
