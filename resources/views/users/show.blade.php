@@ -34,6 +34,10 @@
             <td>{{ $user->role }}</td>
           </tr>
           <tr>
+            <th>Affiliate</th>
+            <td>{{ $user->affiliate?->code }}</td>
+          </tr>
+          <tr>
             <th>Created At</th>
             <td>{{ parse_date_time($user->created_at) }}</td>
           </tr>

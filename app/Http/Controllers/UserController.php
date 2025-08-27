@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Affiliate;
 use App\Models\User;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -51,14 +53,14 @@ class UserController extends Controller
 
     public function create()
     {
-        $storeLink = route('user.store');
+        $actionLink = route('user.store');
         $indexLink = route('user.index');
 
         $title = $this->title;
 
         $roles = Role::all();
 
-        return view('users.create', compact('roles', 'storeLink', 'indexLink', 'title'));
+        return view('users.form', compact('roles', 'actionLink', 'indexLink', 'title'));
     }
 
     public function show(User $user)
@@ -78,30 +80,83 @@ class UserController extends Controller
 
         $user->assignRole($request->role_id);
 
+        if ($request->boolean('affiliate_on')) {
+            // kalau sudah ada, skip
+            if (!$user->affiliate) {
+                // jika admin mengisi custom code, pakai itu; kalau tidak, auto-generate
+                $code = $this->generateUniqueAffiliateCode();
+
+                // validasi sederhana: pastikan unik; kalau tidak unik dan custom -> tambahkan suffix
+                if (Affiliate::where('code', $code)->exists()) {
+                    if ($request->filled('affiliate_code')) {
+                        $code = $this->makeUniqueFromBase($code);
+                    } else {
+                        $code = $this->generateUniqueAffiliateCode();
+                    }
+                }
+
+                Affiliate::create([
+                    'user_id' => $user->id,
+                    'code'    => $code,
+                    'status'  => 'active',
+                    'balance' => 0,
+                ]);
+            }
+        }
+
         toast(alert_created_text($this->title),'success');
-        return redirect()->route('user.index');
+        return redirect()->route('user.show', $user);
     }
 
     public function edit(User $user)
     {
-        $updateLink = route('user.update', $user);
+        $actionLink = route('user.update', $user);
         $indexLink = route('user.index');
 
         $title = $this->title;
 
         $roles = Role::all();
 
-        return view('users.edit', compact('roles', 'updateLink', 'indexLink', 'user', 'title'));
+        return view('users.form', compact('roles', 'actionLink', 'indexLink', 'user', 'title'));
     }
 
     public function update(UserRequest $request, User $user)
     {
-        $user->update($request->except([$request->password ? '' : 'password']));
+        $data = $request->all();
+        if (empty($request->password)) {
+            unset($data['password']);
+        }
+        $user->update($data);
 
         $user->syncRoles($request->role_id);
 
-        toast(alert_updated_text($this->title),'success');
-        return redirect()->route('user.index');
+        if ($request->boolean('affiliate_on')) {
+            if ($user->affiliate) {
+                $user->affiliate->update(['status' => 'active']);
+            } else {
+                $code = $request->filled('affiliate_code')
+                    ? strtoupper(trim($request->affiliate_code))
+                    : $this->generateUniqueAffiliateCode();
+
+                if (Affiliate::where('code', $code)->exists()) {
+                    $code = $this->makeUniqueFromBase($code);
+                }
+
+                Affiliate::create([
+                    'user_id' => $user->id,
+                    'code'    => $code,
+                    'status'  => 'active',
+                    'balance' => 0,
+                ]);
+            }
+        } else {
+            if ($user->affiliate) {
+                $user->affiliate->update(['status' => 'inactive']);
+            }
+        }
+
+        toast(alert_updated_text($this->title), 'success');
+        return redirect()->route('user.show', $user);
     }
 
     public function destroy(User $user)
@@ -110,5 +165,30 @@ class UserController extends Controller
 
         toast(alert_deleted_text($this->title),'success');
         return redirect()->route('user.index');
+    }
+
+    private function generateUniqueAffiliateCode(): string
+    {
+        do {
+            $code = Str::upper(Str::random(8)); // A-Z0-9
+        } while (Affiliate::where('code', $code)->exists());
+
+        return $code;
+    }
+
+    private function makeUniqueFromBase(string $base): string
+    {
+        $base = Str::upper(preg_replace('/\s+/', '', $base));
+        $candidate = $base;
+        $i = 1;
+        while (Affiliate::where('code', $candidate)->exists()) {
+            $candidate = $base . $i;
+            $i++;
+            if ($i > 9999) { // fallback hard-stop
+                $candidate = $this->generateUniqueAffiliateCode();
+                break;
+            }
+        }
+        return $candidate;
     }
 }
