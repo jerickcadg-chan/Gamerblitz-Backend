@@ -36,6 +36,7 @@
               <th> Name </th>
               <th> Category </th>
               <th> Provider </th>
+              <th> Items </th>
               <th> Status </th>
               <th> Action </th>
             </tr>
@@ -58,6 +59,10 @@
                   @else
                     -
                   @endisset
+                </td>
+                <td>
+                  <a
+                    href="{{ route('product_item.index', ['product_id' => $product->id]) }}">{{ $product->product_items_count }}</a>
                 </td>
                 <td>{!! $product->statusView !!}</td>
                 <td>

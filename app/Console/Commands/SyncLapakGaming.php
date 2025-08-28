@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Constants\CurrencyConstant;
 use App\Constants\ProviderConstant;
 use App\Models\Product;
 use App\Models\ProductItem;

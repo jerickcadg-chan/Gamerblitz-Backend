@@ -26,6 +26,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::latest()
+            ->withCount('productItems')
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%' . request('name') . '%');
             })
