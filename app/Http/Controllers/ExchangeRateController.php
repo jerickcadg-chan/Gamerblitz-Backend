@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\CurrencyConstant;
 use App\Http\Requests\ExchangeRateRequest;
 use App\Models\ExchangeRate;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,8 +32,12 @@ class ExchangeRateController extends Controller
             ->get()
             ->unique('currency_code')
             ->sort(function ($a, $b) {
-                if ($a->currency_code === 'USD') return -1;   // USD always first
-                if ($b->currency_code === 'USD') return 1;
+                if ($a->currency_code === 'USD') {
+                    return -1;
+                }   // USD always first
+                if ($b->currency_code === 'USD') {
+                    return 1;
+                }
                 return strcmp($a->currency_code, $b->currency_code); // alphabetical
             })
             ->values();
@@ -52,9 +57,11 @@ class ExchangeRateController extends Controller
         $actionLink = route('exchange_rate.store');
         $indexLink = route('exchange_rate.index');
 
+        $currencies = CurrencyConstant::all();
+
         $title = $this->title;
 
-        return view('exchange_rates.form', compact('actionLink', 'indexLink', 'title'));
+        return view('exchange_rates.form', compact('currencies', 'actionLink', 'indexLink', 'title'));
     }
 
     /**
@@ -88,15 +95,30 @@ class ExchangeRateController extends Controller
      */
     public function edit(ExchangeRate $exchangeRate)
     {
-        //
+        $title = $this->title;
+        $actionLink = route('exchange_rate.update', $exchangeRate);
+        $indexLink = route('exchange_rate.index');
+
+        $currencies = CurrencyConstant::all();
+
+        return view('exchange_rates.form', compact('title', 'currencies', 'indexLink', 'actionLink', 'exchangeRate'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ExchangeRate $exchangeRate)
+    public function update(ExchangeRateRequest $request, ExchangeRate $exchangeRate)
     {
-        //
+        if (floatval($request->input('rate')) !== floatval($exchangeRate->rate)) {
+            $newRate = new ExchangeRate();
+            $newRate->currency_code = $exchangeRate->currency_code;
+            $newRate->rate = $request->input('rate');
+            $newRate->effective_at = now();
+            $newRate->save();
+            toast(alert_created_text($this->title), 'success');
+        }
+
+        return redirect()->route('exchange_rate.index');
     }
 
     /**

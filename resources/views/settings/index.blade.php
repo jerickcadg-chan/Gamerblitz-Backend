@@ -163,7 +163,13 @@
             <select class="form-control" name="settings[base_currency]">
               @php $v = old('settings.base_currency', $settings['base_currency'] ?? 'USD'); @endphp
               @foreach ($currencies as $currency)
-              <option value="{{ $currency['code'] }}" {{ $v === $currency['code'] ? 'selected' : '' }}>({{ $currency['symbol'] }}) {{ $currency['code'] }} / {{ $currency['name'] }}</option>
+                @php
+                  $symbol = $currency['symbol'] ?? null;
+                  $code = $currency['code'] ?? '';
+                @endphp
+                <option value="{{ $code }}" {{ $v === $code ? 'selected' : '' }}>
+                  {{ $symbol ? "($symbol) " : '' }}{{ $code }} / {{ $currency['name'] ?? '' }}
+                </option>
               @endforeach
             </select>
           </div>

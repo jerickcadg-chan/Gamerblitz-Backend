@@ -23,6 +23,11 @@ class ExchangeRateRequest extends FormRequest
      */
     public function rules()
     {
+        if ($this->isMethod('PUT')) {
+            return [
+                'rate' => 'decimal:0,8',
+            ];
+        }
         return [
             'currency_code' => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/'],
             'rate' => 'decimal:0,8',
