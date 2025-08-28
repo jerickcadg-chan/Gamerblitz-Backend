@@ -2,41 +2,55 @@
 
 namespace App\Constants;
 
-use Sheenazien8\Konstantiq\ConstanstAbstraction;
+use Illuminate\Support\Facades\Cache;
 
-class CurrencyConstant extends ConstanstAbstraction
+class CurrencyConstant
 {
-    public const BASE_CURRENCY = 'PHP';
+    public const DEFAULT_BASE_CURRENCY = 'USD';
 
-    public const IDR = 'IDR';
-    public const PHP = 'PHP';
-    public const USD = 'USD';
+    public static function all(): array
+    {
+        return Cache::rememberForever('currencies', function () {
+            return json_decode(
+                file_get_contents(resource_path('data/currencies.json')),
+                true
+            );
+        });
+    }
 
-    // Metadata map
-    private const DATA = [
-        'IDR' => ['symbol' => 'Rp', 'country' => 'ID'],
-        'PHP' => ['symbol' => '₱', 'country' => 'PH'],
-        'USD' => ['symbol' => '$', 'country' => 'US'],
-    ];
+    public static function metadata(string $code): ?array
+    {
+        $data = self::all();
+        return $data[$code] ?? null;
+    }
 
     public static function symbol(string $code): ?string
     {
-        return self::DATA[$code]['symbol'] ?? null;
+        return self::metadata($code)['symbol'] ?? null;
+    }
+
+    public static function countryByCode(string $code): ?string
+    {
+        return self::metadata($code)['country'] ?? null;
     }
 
     public static function codeByCountry(string $country): ?string
     {
-        foreach (self::DATA as $code => $info) {
-            if ($info['country'] === strtoupper($country)) {
+        foreach (self::all() as $code => $info) {
+            if (strcasecmp($info['country'], $country) === 0) {
                 return $code;
             }
         }
         return null;
     }
 
-    public static function countryByCode(string $code): ?string
+    public static function name(string $code): ?string
     {
-        return self::DATA[$code]['country'] ?? null;
+        return self::metadata($code)['name'] ?? null;
+    }
+
+    public static function locale(string $code): ?string
+    {
+        return self::metadata($code)['locale'] ?? null;
     }
 }
-
