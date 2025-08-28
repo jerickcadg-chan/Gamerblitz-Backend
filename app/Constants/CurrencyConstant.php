@@ -8,14 +8,29 @@ class CurrencyConstant
 {
     public const DEFAULT_BASE_CURRENCY = 'USD';
 
+    protected static array $priority = ['USD', 'PHP', 'IDR'];
+
     public static function all(): array
     {
-        return Cache::rememberForever('currencies', function () {
+        $data = Cache::rememberForever('currencies', function () {
             return json_decode(
                 file_get_contents(resource_path('data/currencies.json')),
                 true
             );
         });
+
+        // Prioritize fixed currencies
+        uksort($data, function ($a, $b) {
+            $posA = array_search($a, self::$priority, true);
+            $posB = array_search($b, self::$priority, true);
+
+            $posA = $posA === false ? PHP_INT_MAX : $posA;
+            $posB = $posB === false ? PHP_INT_MAX : $posB;
+
+            return $posA <=> $posB;
+        });
+
+        return $data;
     }
 
     public static function metadata(string $code): ?array

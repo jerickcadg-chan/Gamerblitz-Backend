@@ -26,8 +26,8 @@ class CreateProductsTable extends Migration
             $table->string('slug');
             $table->enum('status', ['active', 'inactive', 'not_visible']);
             $table->string('provider'); // lapakgaming, manual, etc
-            $table->string('provider_code'); // lapakgaming, manual, etc
-            $table->string('provider_country'); // id, my, ph, etc
+            $table->string('provider_code')->nullable(); // product code from provider ML, VAL, FF etc
+            $table->string('provider_country')->nullable(); // id, my, ph, etc
             $table->decimal('markup_user', 19, 2)->default(0);
             $table->decimal('markup_reseller_silver', 19, 2)->default(0);
             $table->decimal('markup_reseller_gold', 19, 2)->default(0);

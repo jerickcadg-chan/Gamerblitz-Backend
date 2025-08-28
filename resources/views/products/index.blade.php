@@ -52,8 +52,9 @@
                 <td>{{ $product->productCategory?->name }}</td>
                 <td>
                   @isset($product->provider)
-                    <div class="mb-2">{{ \App\Constants\ProviderConstant::AVAILABLE_PROVIDER[$product->provider] }}
-                      ({{ \App\Constants\ProviderConstant::AVAILABLE_COUNTRY[$product->provider_country] }})
+                    <div class="mb-2">
+                      {{ App\Constants\ProviderConstant::AVAILABLE_PROVIDER[$product->provider] ?? '-' }}
+                      ({{ App\Constants\CountryConstant::name($product->provider_country) ?? '-' }})
                     </div>
                     <strong class="small">Code: {{ $product->provider_code }}</strong>
                   @else
