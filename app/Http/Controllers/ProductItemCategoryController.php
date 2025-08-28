@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductItemCategoryMetaRequest;
 use App\Http\Requests\ProductItemCategoryRequest;
-use App\Models\ProductItem;
 use App\Models\ProductItemCategory;
 use App\Models\ProductItemCategoryMeta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductItemCategoryController extends Controller

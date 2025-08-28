@@ -157,6 +157,14 @@
             </a>
         </li>
         @endcan
+        @can ('View Exchange Rate')
+        <li class="nav-item {{ $activePage == 'exchange_rate' ? 'active' : null }}">
+            <a class="nav-link" href="{{ route('exchange_rate.index') }}">
+                <span class="menu-title">Exchange Rate</span>
+                <i class="mdi mdi-swap-horizontal menu-icon"></i>
+            </a>
+        </li>
+        @endcan
         @can ('View Blog')
           <li class="nav-item {{ $activePage == 'blog' ? 'active' : null }}">
             <a class="nav-link" href="{{ route('blog.index') }}">

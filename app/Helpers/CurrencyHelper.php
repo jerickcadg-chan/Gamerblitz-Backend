@@ -15,9 +15,9 @@ if (!function_exists('rp_format')) {
 }
 
 if (!function_exists('currency_format')) {
-    function currency_format($price)
+    function currency_format($price, $point = 0, $decimalSeparator = ".", $thousandSeparator = ",")
     {
-        return (int) $price != 0 ? number_format($price,0,',','.') : $price;
+        return (int) $price != 0 ? number_format($price, $point, $decimalSeparator, $thousandSeparator) : $price;
     }
 }
 

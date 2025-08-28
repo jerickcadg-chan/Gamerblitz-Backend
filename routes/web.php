@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
@@ -122,6 +123,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'user' => UserController::class,
         'role' => RoleController::class,
         'payment_method' => PaymentMethodController::class,
+        'exchange_rate' => ExchangeRateController::class,
         'blog' => BlogController::class,
     ]);
 });

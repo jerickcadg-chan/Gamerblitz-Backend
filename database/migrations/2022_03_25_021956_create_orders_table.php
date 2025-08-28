@@ -33,8 +33,13 @@ class CreateOrdersTable extends Migration
             $table->decimal('total_price', 19, 2);
             $table->decimal('total_income', 19, 2);
             $table->string('payment_url')->nullable();
+            $table->text('payment_code')->nullable();
             $table->string('payment_id')->nullable();
             $table->string('note')->nullable();
+            $table->dateTime('expired_at')->nullable();
+            $table->char('currency_code', 3);
+            $table->char('base_currency_code', 3);
+            $table->decimal('currency_exchange_rate', 18, 8);
             $table->timestamps();
 
             $table->foreign('product_item_id')->references('id')->on('product_items')

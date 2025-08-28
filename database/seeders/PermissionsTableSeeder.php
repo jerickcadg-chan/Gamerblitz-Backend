@@ -104,6 +104,11 @@ class PermissionsTableSeeder extends Seeder
             'Create Blog',
             'Edit Blog',
             'Delete Blog',
+
+            'View Exchange Rate',
+            'Create Exchange Rate',
+            'Edit Exchange Rate',
+            'Delete Exchange Rate',
         ];
 
         foreach ($permissions as $permission){
