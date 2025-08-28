@@ -23,7 +23,7 @@
     <script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
 
     <!-- Shortcut icon -->
-    <link rel="shortcut icon" href="{{ asset('img/gpds_icon.png') }}" />
+    <link rel="shortcut icon" href="{{ asset('/setting/'.get_setting('favicon')['value']) }}" />
 </head>
 <body>
     @auth

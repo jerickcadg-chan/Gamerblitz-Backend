@@ -3,7 +3,7 @@
         <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
                 <div class="nav-profile-image">
-                    <img src="{{ get_setting('favicon')['value'] }}" alt="profile">
+                    <img src="{{ asset('/storage/'.get_setting('favicon')['value']) }}" alt="profile">
                     <span class="login-status online"></span>
                 </div>
                 <div class="nav-profile-text d-flex flex-column">
