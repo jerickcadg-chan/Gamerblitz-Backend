@@ -80,13 +80,10 @@ class UserController extends Controller
 
         $user->assignRole($request->role_id);
 
-        if ($request->boolean('affiliate_on')) {
-            // kalau sudah ada, skip
+        if ($request->affiliate_on == 1) {
             if (!$user->affiliate) {
-                // jika admin mengisi custom code, pakai itu; kalau tidak, auto-generate
                 $code = $this->generateUniqueAffiliateCode();
 
-                // validasi sederhana: pastikan unik; kalau tidak unik dan custom -> tambahkan suffix
                 if (Affiliate::where('code', $code)->exists()) {
                     if ($request->filled('affiliate_code')) {
                         $code = $this->makeUniqueFromBase($code);
@@ -130,7 +127,7 @@ class UserController extends Controller
 
         $user->syncRoles($request->role_id);
 
-        if ($request->boolean('affiliate_on')) {
+        if ($request->affiliate_on == 1) {
             if ($user->affiliate) {
                 $user->affiliate->update(['status' => 'active']);
             } else {

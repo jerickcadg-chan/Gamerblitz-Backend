@@ -60,7 +60,8 @@
           </div>
           <div class="form-group form-check">
             <label for="affiliate_on">Enable Affiliate</label>
-            <input type="checkbox" class="form-check mt-1" id="affiliate_on" name="affiliate_on" value="1" {{ old('affiliate_on') ? 'checked' : '' }}>
+            <input type="checkbox" class="form-check mt-1" id="affiliate_on" name="affiliate_on" value="1" {{ old('affiliate_on', @$user->affiliate->status) ? 'checked' : ''
+}}>
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
           <a href="{{ $indexLink }}" class="btn btn-light">Cancel</a>

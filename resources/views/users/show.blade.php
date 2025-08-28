@@ -35,7 +35,11 @@
           </tr>
           <tr>
             <th>Affiliate</th>
-            <td>{{ $user->affiliate?->code }}</td>
+            @isset($user->affiliate)
+              <td>{{ $user->affiliate?->code }} - {{ $user->affiliate->status }}</td>
+            @else
+              <td>-</td>
+            @endisset
           </tr>
           <tr>
             <th>Created At</th>
