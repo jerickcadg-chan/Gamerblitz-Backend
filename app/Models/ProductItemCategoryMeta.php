@@ -6,6 +6,7 @@ use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductItemCategoryMeta extends Model
 {
@@ -16,5 +17,10 @@ class ProductItemCategoryMeta extends Model
     public function productItemCategory(): BelongsTo
     {
         return $this->belongsTo(ProductItemCategory::class);
+    }
+
+    public function productItems(): HasMany
+    {
+        return $this->hasMany(ProductItem::class);
     }
 }

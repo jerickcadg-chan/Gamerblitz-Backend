@@ -29,19 +29,6 @@
         @endisset
         @csrf
         <div class="form-group">
-          <label for="input_min_price" class="required">Price Minimal</label>
-          <input
-            type="number"
-            name="min_price"
-            class="form-control {{ $errors->has('min_price') ? ' is-invalid' : '' }}"
-            id="input_min_price"
-            placeholder="Enter minimal price"
-            value="{{ old('min_price', @$meta->min_price) }}"
-            required
-          />
-          @include('alerts.feedback', ['field' => 'min_price'])
-        </div>
-        <div class="form-group">
           <label for="input_picture" @if(!isset($meta)) class="required" @endif>Icon</label>
           <input
             type="file"
@@ -53,6 +40,39 @@
             @if(!isset($meta)) required @endif
           />
           @include('alerts.feedback', ['field' => 'picture'])
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <input type="text" class="form-control mb-3" id="search-input" placeholder="Cari produk item...">
+          </div>
+
+          <table class="table table-bordered table-hover" id="product-table">
+            <thead>
+            <tr>
+              <th width="50">
+                <input type="checkbox" id="select-all">
+              </th>
+              <th>Product Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach ($productItems as $item)
+              <tr>
+                <td>
+                  <input
+                    type="checkbox"
+                    name="product_item_ids[]"
+                    value="{{ $item->id }}"
+                    class="product-checkbox"
+                    {{ isset($meta) && $meta->productItems->pluck('id')->contains($item->id) ? 'checked' : '' }}
+                  >
+                </td>
+                <td>{{ $item->product->name }} - {{ $item->name }}</td>
+              </tr>
+            @endforeach
+            </tbody>
+          </table>
         </div>
 
         <div class="form-group">

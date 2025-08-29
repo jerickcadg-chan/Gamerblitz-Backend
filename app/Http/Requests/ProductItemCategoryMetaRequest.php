@@ -26,7 +26,6 @@ class ProductItemCategoryMetaRequest extends FormRequest
             $picture = 'image';
         }
         return [
-            'min_price' => 'integer|required',
             'picture' => $picture,
         ];
     }

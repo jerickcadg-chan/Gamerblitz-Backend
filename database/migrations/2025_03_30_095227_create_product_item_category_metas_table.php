@@ -13,7 +13,6 @@ return new class () extends Migration {
         Schema::create('product_item_category_metas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_item_category_id')->constrained();
-            $table->double('min_price');
             $table->timestamps();
         });
     }

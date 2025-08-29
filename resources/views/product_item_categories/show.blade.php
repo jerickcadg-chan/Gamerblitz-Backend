@@ -42,8 +42,7 @@
         <table class="table table-bordered">
           <thead>
           <tr>
-            <th>Harga Minimal</th>
-            <th>Ikon</th>
+            <th>Icon</th>
             <th>Action</th>
           </tr>
           </thead>
@@ -51,7 +50,6 @@
 
           @forelse ($productItemCategory->metas as $meta)
             <tr>
-              <td>{{ rp_format($meta->min_price) }}</td>
               <td>
                 <a href="{{ $meta->picture->url }}" target="_blank">
                   <img src="{{ $meta->picture->url }}" alt="{{ $productItemCategory->name }}" height="100" width="100">
