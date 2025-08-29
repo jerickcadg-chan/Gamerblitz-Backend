@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Discount;
 use App\Models\Order;
-use App\Models\ProductItem;
 use App\Models\PaymentMethod;
 use App\Constants\ProductConstant;
 use App\Constants\ProductItemTypeConstant;
-use App\Services\CustAccountService;
+use App\Models\Setting;
 use App\Transformers\DiscountTransformer;
 use Illuminate\Http\Request;
 use App\Services\OrderService;
@@ -23,7 +22,6 @@ use App\Transformers\PaymentMethodTransformer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -152,9 +150,10 @@ class OrderController extends Controller
 
     public function xenditCallback(Request $request, OrderService $orderService)
     {
+        $xenditCallbackKey = Setting::getByKey(Setting::KEY_XENDIT_CALLBACK_KEY);
         $hCallbackToken = $request->header('x-callback-token');
-        $client = client()?->xendit_callback_token == $hCallbackToken;
-        if (!$client) {
+        $validCallbackKey = $xenditCallbackKey == $hCallbackToken;
+        if (!$validCallbackKey) {
             return api_status_warning("callback token didn't register yet, or invalid token!!!!");
         }
 
@@ -168,8 +167,10 @@ class OrderController extends Controller
 
         switch ($request->status) {
             case 'COMPLETED':
-            case 'PAID':
+            case 'PAID': {
+                $orderService->processOrder($order);
                 return $this->setOrderSettlement($order, $orderService);
+            }
 
             case 'EXPIRED':
                 return $this->setOrderExpired($order, $orderService);

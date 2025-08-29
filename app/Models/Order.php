@@ -4,9 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Database\Factories\OrderFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
 use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
 use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
@@ -19,9 +16,6 @@ use IndexZer0\EloquentFiltering\Target\Target;
  */
 class Order extends Model implements IsFilterable
 {
-    /**
-     * @use HasFactory<OrderFactory>
-     */
     use HasFactory;
     use Filterable;
 
@@ -46,12 +40,16 @@ class Order extends Model implements IsFilterable
         'order_status',
         'qty',
         'price',
+        'capital',
         'admin_fee',
+        'discount_price',
         'total_price',
         'total_income',
         'note',
         'expired_at',
-        'mg_invoice'
+        'currency_code',
+        'converted_currency_code',
+        'exchange_rate',
     ];
 
     protected static function boot()
@@ -59,6 +57,16 @@ class Order extends Model implements IsFilterable
         parent::boot();
         static::creating(function ($model) {
             $model->attributes['code'] = 'INV' . date('ymd') . strtoupper(substr(uniqid(), -5));
+        });
+
+        static::saving(function ($order) {
+            $rate = $order->exchange_rate;
+
+            $order->converted_capital        = $order->capital * $rate;
+            $order->converted_admin_fee      = $order->admin_fee * $rate;
+            $order->converted_discount_price = $order->discount_price * $rate;
+            $order->converted_total_price    = $order->total_price * $rate;
+            $order->converted_total_income   = $order->total_income * $rate;
         });
     }
 
@@ -225,17 +233,6 @@ class Order extends Model implements IsFilterable
                 return $this->payment_status;
                 break;
         }
-    }
-
-    public function client(): BelongsTo
-    {
-        return $this->belongsTo(Client::class);
-    }
-
-    public function accounts(): HasMany
-    {
-        return $this->hasMany(Account::class, 'client_id', 'client_id')
-            ->where('product_item_id', $this->product_item_id);
     }
 
     // TODO:

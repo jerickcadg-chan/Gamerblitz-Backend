@@ -40,7 +40,7 @@ class SyncLapakGaming extends Command
 
         $response = Http::withToken($token)->get($categoriesUrl);
 
-        if (!$response->successful()) {
+        if ($response->failed()) {
             Log::error('LapakGaming: fetching categories failed', [
                 'status' => $response->status(),
                 'body' => $response->body(),
@@ -79,7 +79,7 @@ class SyncLapakGaming extends Command
                 'country_code' => $product->provider_country ?? 'id',
             ]);
 
-            if (!$itemsResponse->successful()) {
+            if ($itemsResponse->failed()) {
                 Log::error('LapakGaming: fetching product items failed', [
                     'status' => $itemsResponse->status(),
                     'body' => $itemsResponse->body(),

@@ -34,8 +34,8 @@
                   placeholder="Enter currency code" value="{{ old('currency_code', @$exchangeRate->currency_code) }}"
                   disabled />
               @else
-                <select id="input_currency_code" class="form-control" name="settings[base_currency]">
-                  @php $v = old('settings.base_currency', $settings['base_currency'] ?? 'USD'); @endphp
+                <select id="input_currency_code" class="form-control" name="currency_code">
+                  @php $v = old('currency_code', request()->input('currency_code') ?? 'USD'); @endphp
                   @foreach ($currencies as $currency)
                     @php
                       $symbol = $currency['symbol'] ?? null;

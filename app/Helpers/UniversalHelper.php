@@ -1,10 +1,8 @@
 <?php
 
-use App\Models\Client;
 use App\Models\Discount;
 use App\Models\Setting;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -20,6 +18,7 @@ if (!function_exists('calc_discount')) {
 if (!function_exists('get_active_discount')) {
     function get_active_discount($price, $productId, $productItemId): array
     {
+        // TODO: add currency to discount
         $discounts = Discount::active()->where('code', '')->orWhere('code', null)->get();
 
         foreach ($discounts as $discount) {

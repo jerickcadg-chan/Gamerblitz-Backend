@@ -46,16 +46,6 @@ return [
         'token' => env('LAPAKGAMING_TOKEN'),
         'ip' => env('LAPAKGAMING_IP'),
     ],
-    'bangjeff' => [
-        'url' => env('BANGJEFF_URL'),
-        'api_key' => env('BANGJEFF_APIKEY'),
-        'ip' => env('BANGJEFF_IP'),
-    ],
-    'xendit' => [
-        'url' => env('XENDIT_URL'),
-        'token' => env('XENDIT_TOKEN'),
-        'callback_token' => env('XENDIT_CALLBACK_TOKEN')
-    ],
     'mail' => [
         'notification' => env('MAIL_NOTIFICATION'),
         'no_reply' => config('MAIL_NO_REPLY')
@@ -113,15 +103,6 @@ return [
             'gopay' => '1.4%',
             'dana' => '2%',
         ]
-    ],
-    'xendit' => [
-        'token' => env('XENDIT_TOKEN'),
-        'url' => env('XENDIT_URL'),
-        'callback_token' => env('XENDIT_CALLBACK_TOKEN')
-
-    ],
-    'agen' => [
-        'callback_token' => env('AGEN_CALLBACK_TOKEN')
     ],
     'mail_no_reply' => env('MAIL_NO_REPLY'),
     'mail_notification' => env('MAIL_NOTIFICATION'),

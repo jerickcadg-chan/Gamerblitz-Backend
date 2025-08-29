@@ -17,7 +17,7 @@ class CreateProductItemsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->string('name');
-            $table->string('code')->nullable();
+            $table->string('code')->unique();
             $table->integer('stock')->nullable();
             $table->char('currency_code', 3);
             $table->decimal('capital', 19, 2);

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cache;
 
 class CurrencyConstant
 {
-    public const DEFAULT_BASE_CURRENCY = 'USD';
+    public const DEFAULT_BASE_CURRENCY = 'PHP';
 
     protected static array $priority = ['USD', 'PHP', 'IDR'];
 

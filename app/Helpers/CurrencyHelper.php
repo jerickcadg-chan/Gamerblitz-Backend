@@ -73,3 +73,12 @@ if (!function_exists('terbilang')) {
         return $alphabet[$number];
     }
 }
+
+if (!function_exists('calculate_exchange_rate')) {
+    /**
+     * Calculate exchange rate between two currency using USD as pivot currency
+     */
+    function pivot_exchange_rate($sourceToUSD, $targetToUSD) {
+        return $sourceToUSD / $targetToUSD;
+    }
+}

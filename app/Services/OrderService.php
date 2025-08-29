@@ -5,12 +5,16 @@ namespace App\Services;
 use App\Constants\ProductConstant;
 use App\Constants\ProductItemTypeConstant;
 use App\Constants\ProductJoki;
+use App\Constants\ProviderConstant;
 use App\Http\Requests\OrderRequest;
+use App\Jobs\LapakGamingOrderHandler;
 use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendSettlementNotif;
 use App\Models\Balance;
+use App\Models\ExchangeRate;
 use App\Models\Order;
+use App\Models\Setting;
 use App\Models\Voucher;
 use App\Models\Discount;
 use App\Models\PaymentMethod;
@@ -24,8 +28,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
 
 class OrderService
 {
@@ -44,20 +48,20 @@ class OrderService
             [$price, $error] = $this->calculatePrice($request, $productItem, $paymentMethod, $request->qty);
 
             if ($error != null) {
-                DB::commit();
+                DB::rollBack();
 
                 return $error;
             }
 
             if ($productItem->stock === 0) {
-                DB::commit();
+                DB::rollBack();
 
                 return trans('order.out_of_stock');
             };
 
             if ($request->payment_method === PaymentMethod::SALDO) {
                 if (!$authUser) {
-                    DB::commit();
+                    DB::rollBack();
 
                     return trans('auth.you_should_login');
                 }
@@ -70,7 +74,7 @@ class OrderService
                     )->first() ?? new Balance(['amount' => 0]);
 
                 if ($balance->amount < $price['total_price']) {
-                    DB::commit();
+                    DB::rollBack();
 
                     return trans('order.no_balance');
                 };
@@ -78,11 +82,26 @@ class OrderService
 
             $paymentStatus = $request->payment_method === PaymentMethod::SALDO ? Order::SETTLEMENT : Order::PENDING;
 
-            if ($request->payment_method === PaymentMethod::SALDO) {
-                $orderStatus = $productItem->type == ProductItemTypeConstant::ACCOUNT ? Order::DONE : Order::INPROCESS;
+            $orderStatus = $request->payment_method === PaymentMethod::SALDO ? Order::INPROCESS : $orderStatus = Order::WAITING_PAYMENT;
+
+            $baseCurrency = Setting::getBaseCurrency();
+            $userCurrency = $request->currency_code;
+            $exchangeRate = 0;
+
+            if ($baseCurrency === $userCurrency) {
+                $exchangeRate = 1;
             } else {
-                $orderStatus = Order::WAITING_PAYMENT;
+                $baseRate = ExchangeRate::effectiveRate($baseCurrency)->value('rate');
+                if (!$baseRate) {
+                    Log::critical('Missing exchange rate for base currency ' . $baseCurrency);
+                }
+                $userCurrencyRate = ExchangeRate::effectiveRate($userCurrency)->value('rate');
+                if (!$userCurrencyRate) {
+                    Log::critical('Missing exchange rate for currency ' . $userCurrency);
+                }
+                $exchangeRate = !$baseRate || !$userCurrencyRate ? 0 : pivot_exchange_rate($userCurrencyRate, $baseRate);
             }
+
 
             $order = new Order;
             $order->productItem()->associate($productItem);
@@ -103,6 +122,8 @@ class OrderService
             $order->total_income = $price['total_income'];
             $order->expired_at = Carbon::parse(now())->addHours(1);
             $order->note = $request->note;
+            $order->currency_code = $request->currency_code;
+            $order->exchange_rate = $exchangeRate;
             $order->save();
 
             if ($order->discount) {
@@ -126,10 +147,11 @@ class OrderService
             $this->createHistory($order->id, $orderStatus, 'order');
 
             if ($paymentMethod->name == PaymentMethod::SALDO) {
-                if ($productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI) {
-                    $this->sentAccountCredentialsToUser($order);
-                }
+                /* if ($productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI) { */
+                /*     $this->sentAccountCredentialsToUser($order); */
+                /* } */
                 $this->setOrderSettlement($order);
+                $this->processOrder($order);
 
                 BalanceService::update($balance, [
                     'balanceable_type' => Order::class,
@@ -156,42 +178,42 @@ class OrderService
     public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, $qty = 1): array
     {
         $price = $productItem->real_price;
-        if (str($productItem->product->category)->lower() == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) {
-            $joki = json_decode($request->note);
-            $validator = Validator::make((array) $joki, [
-                'startRank' => 'required|string',
-                'startRankGrade' => 'required|integer',
-                'startStars' => 'required|integer',
-                'targetRank' => 'required|string',
-                'targetRankGrade' => 'required|integer',
-                'targetStars' => 'required|integer'
-            ]);
-            if ($validator->fails()) {
-                return [null, $validator->messages()->toArray()];
-            }
-            $jokiResult = $this->calculateJokiMLPrice(
-                $joki->startRank,
-                $joki->startRankGrade,
-                $joki->startStars,
-                $joki->targetRank,
-                $joki->targetRankGrade,
-                $joki->targetStars
-            );
-
-            $price = $jokiResult['price'];
-            $capital = $jokiResult['capital'];
-
-            $disc = [
-                'disc_id' => null,
-                'nominal' => 0
-            ];
-        } else {
+        /* if (str($productItem->product->category)->lower() == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) { */
+            /* $joki = json_decode($request->note); */
+            /* $validator = Validator::make((array) $joki, [ */
+            /*     'startRank' => 'required|string', */
+            /*     'startRankGrade' => 'required|integer', */
+            /*     'startStars' => 'required|integer', */
+            /*     'targetRank' => 'required|string', */
+            /*     'targetRankGrade' => 'required|integer', */
+            /*     'targetStars' => 'required|integer' */
+            /* ]); */
+            /* if ($validator->fails()) { */
+            /*     return [null, $validator->messages()->toArray()]; */
+            /* } */
+            /* $jokiResult = $this->calculateJokiMLPrice( */
+            /*     $joki->startRank, */
+            /*     $joki->startRankGrade, */
+            /*     $joki->startStars, */
+            /*     $joki->targetRank, */
+            /*     $joki->targetRankGrade, */
+            /*     $joki->targetStars */
+            /* ); */
+            /**/
+            /* $price = $jokiResult['price']; */
+            /* $capital = $jokiResult['capital']; */
+            /**/
+            /* $disc = [ */
+            /*     'disc_id' => null, */
+            /*     'nominal' => 0 */
+            /* ]; */
+        /* } else { */
             $price = $productItem->real_price * $qty;
             $capital = $productItem->capital * $qty;
 
             // TODO: fix the logic of get_active_discount
             $disc = get_active_discount($price, $productItem->product_id, $productItem->id, $qty);
-        }
+        /* } */
 
         if ($request->discount_code) {
             $discount = Discount::active()->where('code', $request->discount_code)->first();
@@ -250,7 +272,16 @@ class OrderService
      */
     public function createXenditInvoice(Order $order)
     {
-        $xenditToken = client()->xendit_token;
+        $xenditApiUrl = Setting::getByKey(Setting::KEY_XENDIT_API_URL);
+        if (!$xenditApiUrl) {
+            throw new \Exception('Missing xendit url in setting');
+        }
+
+        $xenditToken = Setting::getByKey(Setting::KEY_XENDIT_SECRET_KEY);
+        if (!$xenditToken) {
+            throw new \Exception('Missing xendit secret key in setting');
+        }
+
         $headers = [
             'Content-Type' => 'application/json',
             'Authorization' => 'Basic ' . base64_encode($xenditToken . ':')
@@ -258,7 +289,7 @@ class OrderService
 
         switch ($order->payment_method) {
             case PaymentMethod::QRIS:
-                $response = Http::withHeaders($headers)->post(config('array.xendit.url') . '/qr_codes', [
+                $response = Http::withHeaders($headers)->post($xenditApiUrl . '/qr_codes', [
                     'external_id' => $order->code,
                     'type' => 'DYNAMIC',
                     'amount' => (int) $order->total_price,
@@ -267,7 +298,7 @@ class OrderService
                 break;
 
             default:
-                $response = Http::withHeaders($headers)->post(config('array.xendit.url') . '/v2/invoices', [
+                $response = Http::withHeaders($headers)->post($xenditApiUrl . '/v2/invoices', [
                     'external_id' => $order->code,
                     'amount' => (int) $order->total_price,
                     'payer_email' => $order->cust_email ?? config('array.mail.no_reply'),
@@ -279,39 +310,16 @@ class OrderService
         return json_decode($response->getBody());
     }
 
-    /**
-     * @deprecated will be removed
-     */
-    public function createBangJeffOrder(Order $order)
+    public function processOrder(Order $order)
     {
-        if (empty($order->productItem->product->code)) {
-            return false;
+        $productItem = $order->productItem;
+        $provider = $productItem->product->provider;
+
+        if ($provider === ProviderConstant::LAPAKGAMING) {
+            LapakGamingOrderHandler::dispatch($order);
         }
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . config('array.bangjeff.api_key'),
-            'Accept' => 'application/json'
-        ])->post(config('array.bangjeff.url') . '/api/v3/checkout', [
-            'code' => $order->productItem->code,
-            'referenceNumber' => $order->code,
-            'qty' => $order->qty,
-            'inputs' => json_decode($order->cust_account)
-        ]);
-
-        $response = $response->collect();
-
-        if ($response['error'] === true) {
-            if ($response['message'] === "Invalid ID") {
-                throw new Exception($response['message']);
-            } else {
-                Mail::to(config('array.mail.notification'))->queue(new SendErrorNotif($order, $response['message']));
-            }
-        } else {
-            $order->bangjeff_invoice = $response['data']['invoiceNumber'];
-            $order->save();
-        }
-
-        return $response;
+        // ... handle other provider
     }
 
     public function setOrderSettlement(Order $order)
@@ -327,9 +335,6 @@ class OrderService
         //            if ($order->productItem->product->category == ProductConstant::VOUCHER) {
         //                $this->sendVoucher($order);
         //            }
-        if ($order->productItem->type == ProductItemTypeConstant::TOPUP) {
-            $this->createMitraGamersOrder($order);
-        }
 
         $this->sendSettlementNotif($order);
     }
@@ -421,51 +426,6 @@ class OrderService
             $order->productItem->capital = $capital;
             $order->save();
         }
-    }
-
-
-    /**
-     * @throws \Exception
-     */
-    public function createMitraGamersOrder(Order $order)
-    {
-        if (empty($order->productItem->code)) {
-            return false;
-        }
-
-        $customer_no = CustAccountService::idExtractor($order->productItem->product->name, $order->cust_account);
-        $path = str(config('array.mitra-gamers.url'))->replaceEnd("/", "")->append('/api/v2/transaction')->value();
-
-        $response = Http::withHeaders([
-            'Valid-token' => base64_encode($order->client->user_api_token),
-            'Accept' => 'application/json'
-        ])->post($path, [
-            'ref_id' => $order->code,
-            'code' => $order->productItem->code,
-            'qty' => $order->qty,
-            'payment_method' => 'balance',
-            'platform' => 'api',
-            'customer_no' => $customer_no,
-            'note' => $order->note
-        ]);
-
-        if (!$response->ok()) {
-            $this->updateStatus(
-                order: $order,
-                orderStatus: Order::INPROCESS,
-            );
-            Mail::to(Client()->user->email)->queue(new SendErrorNotif($order, $response->json("message")));
-
-            return json_decode($response->collect());
-        }
-        $response = json_decode($response->collect());
-
-        if ($response->payload) {
-            $order->mg_invoice = $response->payload->id;
-            $order->save();
-        }
-
-        return $response;
     }
 
     public function sentAccountCredentialsToUser(Order $order)

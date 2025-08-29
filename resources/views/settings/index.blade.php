@@ -147,6 +147,11 @@
           <hr class="mb-4">
 
           <div class="form-group">
+            <label>API Url</label>
+            <input type="text" class="form-control" name="settings[xendit_api_url]"
+              value="{{ old('settings.xendit_api_url', $settings['xendit_api_url'] ?? '') }}">
+          </div>
+          <div class="form-group">
             <label>Secret Api Key</label>
             <input type="text" class="form-control" name="settings[xendit_secret_key]"
               value="{{ old('settings.xendit_secret_key', $settings['xendit_secret_key'] ?? '') }}">

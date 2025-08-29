@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,4 +18,9 @@ class ExchangeRate extends Model
         'rate',
         'effective_at',
     ];
+
+    public function scopeEffectiveRate(Builder $query, string $currency): void
+    {
+        $query->where('currency_code', $currency)->where('effective_at', '<=', now())->orderByDesc('effective_at');
+    }
 }

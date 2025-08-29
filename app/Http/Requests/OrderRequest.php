@@ -28,7 +28,8 @@ class OrderRequest extends FormRequest
             'cust_phone_number' => 'required',
             'product_item_id' => ['required', 'exists:product_items,id', 'integer'],
             'qty' => 'required',
-            'payment_method' => 'required'
+            'payment_method' => 'required',
+            'currency_code' => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/'],
         ];
     }
 }
