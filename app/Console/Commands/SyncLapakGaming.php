@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Constants\CurrencyConstant;
 use App\Constants\ProviderConstant;
 use App\Models\Product;
 use App\Models\ProductItem;
@@ -120,7 +119,7 @@ class SyncLapakGaming extends Command
                     $productItem->name = $item['name'];
                     $productItem->capital = $item['price'];
                     $productItem->stock = null;
-                    $productItem->currency_code = CurrencyConstant::IDR;
+                    $productItem->currency_code = 'IDR';
 
                     $productItem->margin = $marginPublicUser;
                     $productItem->margin_silver = $marginSilver;

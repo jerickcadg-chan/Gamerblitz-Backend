@@ -73,17 +73,18 @@
                               <th> <input type="checkbox" name="update_all" value="true"/> </th>
                               <th> # </th>
                               <th> Product </th>
-                              <th> Kode </th>
+                              <th> Code </th>
+                              <th> Currency </th>
                               <th> Margin </th>
                               <th> Margin Reseller Silver </th>
                               <th> Margin Reseller Gold </th>
                               <th> Margin Reseller VIP </th>
-                              <th> Harga </th>
-                              <th> Harga reseller Silver </th>
-                              <th> Harga reseller Gold </th>
-                              <th> Harga reseller VIP </th>
-                              <th> Stok </th>
-                              <th> Modal </th>
+                              <th> Public Price </th>
+                              <th> Reseller Silver Price </th>
+                              <th> Reseller Gold Price </th>
+                              <th> Reseller VIP Price </th>
+                              <th> Stock </th>
+                              <th> Capital </th>
                               <th> Action </th>
                           </tr>
                       </thead>
@@ -94,6 +95,7 @@
                               <td>{{ $loop->index + 1 }}</td>
                               <td>{{ $productItem->product->name }} {{ $productItem->name }}</td>
                               <td>{{ $productItem->code }}</td>
+                              <td>{{ $productItem->currency_code }}</td>
                               <td>{{ $productItem->margin_percentage ?? 0 }} %</td>
                               <td>{{ $productItem->margin_silver ?? 0 }} %</td>
                               <td>{{ $productItem->margin_gold ?? 0 }} %</td>

@@ -36,6 +36,7 @@
               <th> Name </th>
               <th> Category </th>
               <th> Provider </th>
+              <th> Items </th>
               <th> Status </th>
               <th> Action </th>
             </tr>
@@ -51,13 +52,18 @@
                 <td>{{ $product->productCategory?->name }}</td>
                 <td>
                   @isset($product->provider)
-                    <div class="mb-2">{{ \App\Constants\ProviderConstant::AVAILABLE_PROVIDER[$product->provider] }}
-                      ({{ \App\Constants\ProviderConstant::AVAILABLE_COUNTRY[$product->provider_country] }})
+                    <div class="mb-2">
+                      {{ App\Constants\ProviderConstant::AVAILABLE_PROVIDER[$product->provider] ?? '-' }}
+                      ({{ App\Constants\CountryConstant::name($product->provider_country) ?? '-' }})
                     </div>
                     <strong class="small">Code: {{ $product->provider_code }}</strong>
                   @else
                     -
                   @endisset
+                </td>
+                <td>
+                  <a
+                    href="{{ route('product_item.index', ['product_id' => $product->id]) }}">{{ $product->product_items_count }}</a>
                 </td>
                 <td>{!! $product->statusView !!}</td>
                 <td>

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\CountryConstant;
+use App\Constants\ProviderConstant;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Services\PictureService;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 
@@ -26,6 +27,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::latest()
+            ->withCount('productItems')
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%' . request('name') . '%');
             })
@@ -38,15 +40,18 @@ class ProductController extends Controller
         return view('products.index', compact('products', 'createLink', 'title'));
     }
 
-     public function create()
-     {
-         $formAction = route('product.store');
-         $indexLink = route('product.index');
+    public function create()
+    {
+        $formAction = route('product.store');
+        $indexLink = route('product.index');
 
-         $title = $this->title;
+        $title = $this->title;
 
-         return view('products.form', compact('formAction', 'indexLink', 'title'));
-     }
+        $providers = ProviderConstant::AVAILABLE_PROVIDER;
+        $countries = CountryConstant::all();
+
+        return view('products.form', compact('providers', 'countries', 'formAction', 'indexLink', 'title'));
+    }
 
     public function show(Product $product)
     {
@@ -63,8 +68,12 @@ class ProductController extends Controller
     {
         $pictureService = new PictureService();
 
-        if ($request->hasFile('cover'))   $request['default_cover']   = $pictureService->insert($request->cover);
-        if ($request->hasFile('picture')) $request['default_picture'] = $pictureService->insert($request->picture);
+        if ($request->hasFile('cover')) {
+            $request['default_cover']   = $pictureService->insert($request->cover);
+        }
+        if ($request->hasFile('picture')) {
+            $request['default_picture'] = $pictureService->insert($request->picture);
+        }
 
         Product::create($request->all());
 
@@ -80,15 +89,22 @@ class ProductController extends Controller
 
         $title = $this->title;
 
-        return view('products.form', compact('formAction', 'indexLink', 'product', 'title'));
+        $providers = ProviderConstant::AVAILABLE_PROVIDER;
+        $countries = CountryConstant::all();
+
+        return view('products.form', compact('providers', 'countries', 'formAction', 'indexLink', 'product', 'title'));
     }
 
     public function update(ProductRequest $request, Product $product)
     {
         $pictureService = new PictureService();
 
-        if ($request->hasFile('cover'))   $request['default_cover']   = $pictureService->insert($request->cover);
-        if ($request->hasFile('picture')) $request['default_picture'] = $pictureService->insert($request->picture);
+        if ($request->hasFile('cover')) {
+            $request['default_cover']   = $pictureService->insert($request->cover);
+        }
+        if ($request->hasFile('picture')) {
+            $request['default_picture'] = $pictureService->insert($request->picture);
+        }
 
         $product->update($request->all());
 
