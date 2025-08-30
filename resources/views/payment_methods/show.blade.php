@@ -68,6 +68,18 @@
             <td>{{ $paymentMethod->ordering ?? '-' }}</td>
           </tr>
           <tr>
+            <th>Picture</th>
+            <td><img src="{{ asset($paymentMethod->picture) }}" alt="picture" /></td>
+          </tr>
+          <tr>
+            <th>Supported Currencies</th>
+            <th>
+              @foreach($paymentMethod->currencyCodes as $currencyCode)
+                {{ $currencyCode->currency_code }}
+              @endforeach
+            </th>
+          </tr>
+          <tr>
             <th>Created At</th>
             <td>{{ parse_date($paymentMethod->created_at) }}</td>
           </tr>

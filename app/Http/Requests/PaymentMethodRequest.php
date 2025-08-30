@@ -42,6 +42,8 @@ class PaymentMethodRequest extends FormRequest
 
             'is_active' => ['required', 'boolean'],
             'ordering' => ['nullable', 'integer', 'min:0'],
+
+            'picture' => ['nullable', 'image', 'max:2048']
         ];
     }
 }

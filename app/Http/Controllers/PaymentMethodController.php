@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentMethodRequest;
+use App\Models\ExchangeRate;
 use App\Models\PaymentMethod;
+use App\Services\PictureService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -37,6 +39,7 @@ class PaymentMethodController extends Controller
     public function create()
     {
         $formAction = route('payment_method.store');
+
         $title = $this->title;
 
         return view('payment_methods.form', compact('formAction', 'title'));
@@ -44,7 +47,19 @@ class PaymentMethodController extends Controller
 
     public function store(PaymentMethodRequest $request)
     {
-        PaymentMethod::create($request->all());
+        $pictureService = new PictureService();
+
+        if ($request->hasFile('default_picture')) {
+            $request['picture'] = $pictureService->insert($request->default_picture);
+        }
+
+        $paymentMethod = PaymentMethod::create($request->all());
+
+        $codes = array_filter(array_map('trim', $request->input('currency_codes', [])));
+        $paymentMethod->currencyCodes()->delete();
+        foreach ($codes as $code) {
+            $paymentMethod->currencyCodes()->create(['currency_code' => $code]);
+        }
 
         toast(alert_created_text($this->title), 'success');
         return redirect()->route('payment_method.index');
@@ -53,6 +68,7 @@ class PaymentMethodController extends Controller
     public function edit(PaymentMethod $paymentMethod)
     {
         $formAction = route('payment_method.update', $paymentMethod);
+
         $title = $this->title;
 
         return view('payment_methods.form', compact('title', 'formAction', 'paymentMethod'));
@@ -60,7 +76,19 @@ class PaymentMethodController extends Controller
 
     public function update(PaymentMethodRequest $request, PaymentMethod $paymentMethod)
     {
+        $pictureService = new PictureService();
+
+        if ($request->hasFile('default_picture')) {
+            $request['picture'] = $pictureService->insert($request->default_picture);
+        }
+
         $paymentMethod->update($request->all());
+
+        $codes = array_filter(array_map('trim', $request->input('currency_codes', [])));
+        $paymentMethod->currencyCodes()->delete();
+        foreach ($codes as $code) {
+            $paymentMethod->currencyCodes()->create(['currency_code' => $code]);
+        }
 
         toast(alert_updated_text($this->title), 'success');
 

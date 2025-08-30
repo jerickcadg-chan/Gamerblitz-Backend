@@ -119,6 +119,37 @@
             @include('alerts.feedback', ['field' => 'ordering'])
           </div>
 
+          <div class="form-group">
+            <label class="required">Supported Currencies</label>
+            <select name="currency_codes[]" id="currency_codes"
+                    class="form-control {{ $errors->has('currency_codes') ? 'is-invalid' : '' }}"
+                    multiple required>
+              @php
+                $selected = old('currency_codes', isset($paymentMethod) ? @$paymentMethod->currencyCodes->pluck('currency_code')->toArray() : []);
+              @endphp
+              @foreach(\App\Constants\CurrencyConstant::all() as $currency)
+                <option value="{{ $currency['code'] }}" {{ in_array($currency['code'], $selected ?? []) ? 'selected' : '' }}>
+                  {{ $currency['code'] }}
+                </option>
+              @endforeach
+            </select>
+            @include('alerts.feedback', ['field' => 'currency_codes'])
+          </div>
+
+          <div class="form-group">
+            <label for="picture" class="required">Picture</label>
+            <input type="file" name="default_picture"
+                   class="form-control {{ $errors->has('default_picture') ? ' is-invalid' : '' }}" accept="image/*">
+            @include('alerts.feedback', ['field' => 'default_picture'])
+            @if (!empty($paymentMethod->picture))
+              <p class="d-block text-small mt-2">Current</p>
+              <a href="{{ asset($paymentMethod->picture) }}" target="_blank">
+                <img src="{{ asset($paymentMethod->picture) }}" height="100" alt="image preview" />
+              </a>
+            @endif
+            @include('alerts.feedback', ['field' => 'picture'])
+          </div>
+
           <button type="submit" class="btn btn-primary">Submit</button>
           <a href="{{ route('payment_method.index') }}" class="btn btn-light">Cancel</a>
         </form>

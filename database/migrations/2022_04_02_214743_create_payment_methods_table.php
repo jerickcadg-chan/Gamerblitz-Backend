@@ -26,6 +26,7 @@ class CreatePaymentMethodsTable extends Migration
             $table->string('category', 100)->nullable();
             $table->boolean('is_active')->default(1);
             $table->integer('ordering')->nullable();
+            $table->text('picture');
             $table->timestamps();
         });
     }
