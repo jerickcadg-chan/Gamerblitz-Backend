@@ -12,6 +12,10 @@ class Setting extends Model
     public const KEY_XENDIT_SECRET_KEY = 'xendit_secret_key';
     public const KEY_XENDIT_CALLBACK_KEY = 'xendit_callback_key';
 
+    public const KEY_LAPAKGAMING_API_URL = 'lapakgaming_api_url';
+    public const KEY_LAPAKGAMING_API_TOKEN = 'lapakgaming_api_token';
+    public const KEY_LAPAKGAMING_IP = 'lapakgaming_ip';
+
     protected $fillable = [
         'key', 'value'
     ];

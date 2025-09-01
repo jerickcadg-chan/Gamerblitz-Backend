@@ -137,9 +137,23 @@
           <hr class="mb-4">
 
           <div class="form-group">
-            <label>API Key</label>
-            <input type="text" class="form-control" name="settings[lapakgaming_api_key]"
-              value="{{ old('settings.lapakgaming_api_key', $settings['lapakgaming_api_key'] ?? '') }}">
+            <label>API Url</label>
+            <input type="text" class="form-control" name="settings[lapakgaming_api_url]"
+              placeholder="e.g. https://dev.lapakgaming.com"
+              value="{{ old('settings.lapakgaming_api_url', $settings['lapakgaming_api_url'] ?? '') }}">
+          </div>
+
+          <div class="form-group">
+            <label>API Key (Token)</label>
+            <input type="text" class="form-control" name="settings[lapakgaming_api_token]"
+              value="{{ old('settings.lapakgaming_api_token', $settings['lapakgaming_api_token'] ?? '') }}">
+          </div>
+
+          <div class="form-group">
+            <label>Whitelist IP <small><em>(Allow these IP to access the callback endpoint)</em></small></label>
+            <input type="text" class="form-control" name="settings[lapakgaming_ip]"
+              placeholder="e.g. '123.123.123.123,124.124.124.124'"
+              value="{{ old('settings.lapakgaming_ip', $settings['lapakgaming_ip'] ?? '') }}">
           </div>
 
           {{-- Xendit --}}

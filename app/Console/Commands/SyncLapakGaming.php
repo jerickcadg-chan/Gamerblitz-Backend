@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Constants\ProviderConstant;
 use App\Models\Product;
 use App\Models\ProductItem;
+use App\Models\Setting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -31,8 +32,17 @@ class SyncLapakGaming extends Command
      */
     public function handle(): void
     {
-        $token = config('array.lapakgaming.token');
-        $baseUrl = config('array.lapakgaming.url');
+        $token = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_TOKEN);
+        $baseUrl = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_URL);
+
+        if (!$token) {
+            throw new \Exception('Missing LapakGaming api token in setting');
+        }
+
+        if (!$baseUrl) {
+            throw new \Exception('Missing LapakGaming api url in setting');
+        }
+
         $categoriesUrl = $baseUrl . '/api/category';       // e.g., Mobile Legends, Genshin Impact
         $productItemsUrl = $baseUrl . '/api/product';      // e.g., Diamond 50, Diamond 100
 

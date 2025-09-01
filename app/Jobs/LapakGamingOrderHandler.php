@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Data\LapakGaming\OrderRequestPayload;
 use App\Models\Order;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -52,8 +53,8 @@ class LapakGamingOrderHandler implements ShouldQueue
      */
     public function handle(): void
     {
-        $token = config('array.lapakgaming.token');
-        $baseUrl = config('array.lapakgaming.url');
+        $token = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_TOKEN);
+        $baseUrl = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_URL);
         $orderUrl = $baseUrl . '/api/order';
 
         $order = $this->order;

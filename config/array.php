@@ -41,11 +41,6 @@ return [
     'deposit' => [
         'status' => [StatusConst::PENDING, StatusConst::PAID, StatusConst::EXPIRED]
     ],
-    'lapakgaming' => [
-        'url' => env('LAPAKGAMING_URL'),
-        'token' => env('LAPAKGAMING_TOKEN'),
-        'ip' => env('LAPAKGAMING_IP'),
-    ],
     'mail' => [
         'notification' => env('MAIL_NOTIFICATION'),
         'no_reply' => config('MAIL_NO_REPLY')
