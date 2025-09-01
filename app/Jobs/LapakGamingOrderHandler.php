@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Dto\LapakGaming\OrderRequestPayload;
+use App\Data\LapakGaming\OrderRequestPayload;
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -62,11 +62,16 @@ class LapakGamingOrderHandler implements ShouldQueue
         $payload = new OrderRequestPayload(
             count_order: $order->qty,
             product_code: $productItem->code,
-            price: $order->capital,
             partner_reference_id: $order->code,
+            // TODO: this may return price mismatch if the price is not up to date, in that case we need to sync the price immediately for this product item.
+            // price: $order->capital,
         );
 
-        Log::channel('lapakgaming')->info("LapakGamingOrderHandler attempt forwarding order", $payload);
+        $payload->fill($order->cust_account_array);
+
+        $payloadArray = collect($payload)->filter()->toArray();
+
+        Log::channel('lapakgaming')->info("LapakGamingOrderHandler attempt forwarding order", $payloadArray);
 
         // Success response
         // -----------------
@@ -112,12 +117,11 @@ class LapakGamingOrderHandler implements ShouldQueue
 
         $response = Http::withToken($token)
             ->timeout(15)
-            ->post($orderUrl, $payload->toArray());
+            ->post($orderUrl, $payloadArray);
 
         if ($response->failed()) {
             throw new \Exception("LapakGaming API call failed: " . $response->body());
         }
-
 
         $responseJson = $response->json();
 

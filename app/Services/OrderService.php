@@ -102,7 +102,6 @@ class OrderService
                 $exchangeRate = !$baseRate || !$userCurrencyRate ? 0 : pivot_exchange_rate($userCurrencyRate, $baseRate);
             }
 
-
             $order = new Order;
             $order->productItem()->associate($productItem);
             $order->user()->associate($authUser ?? null);
@@ -122,7 +121,8 @@ class OrderService
             $order->total_income = $price['total_income'];
             $order->expired_at = Carbon::parse(now())->addHours(1);
             $order->note = $request->note;
-            $order->currency_code = $request->currency_code;
+            $order->currency_code = $userCurrency;
+            $order->converted_currency_code = $baseCurrency;
             $order->exchange_rate = $exchangeRate;
             $order->save();
 
@@ -131,7 +131,7 @@ class OrderService
                 $order->discount->save();
             }
 
-            if ($paymentMethod->vendor == 'xendit') {
+            if ($paymentMethod->vendor === 'xendit') {
                 $invoice = $this->createXenditInvoice($order);
 
                 if ($order->payment_method == PaymentMethod::QRIS) {

@@ -52,6 +52,8 @@ class Order extends Model implements IsFilterable
         'exchange_rate',
     ];
 
+    protected $appends = ['cust_account_array'];
+
     protected static function boot()
     {
         parent::boot();
@@ -143,6 +145,17 @@ class Order extends Model implements IsFilterable
         }
 
         return $this->cust_account;
+    }
+
+    public function getCustAccountArrayAttribute()
+    {
+        if ($this->cust_account) {
+            $decoded = json_decode($this->cust_account, true);
+            if ($decoded) {
+                return $decoded;
+            }
+        }
+        return [];
     }
 
     public function getPaymentStatusRawAttribute()

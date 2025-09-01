@@ -16,11 +16,11 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
-            $table->string('provider_ref')->unique();
+            $table->string('provider_ref')->unique()->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('product_item_id');
             $table->unsignedBigInteger('discount_id')->nullable();
-            $table->string('cust_account')->nullable();
+            $table->text('cust_account')->nullable();
             $table->bigInteger('cust_phone_number');
             $table->string('cust_email')->nullable();
             $table->string('payment_method', 25)->nullable();
@@ -36,7 +36,7 @@ class CreateOrdersTable extends Migration
             $table->string('payment_url')->nullable();
             $table->text('payment_code')->nullable();
             $table->string('payment_id')->nullable();
-            $table->string('note')->nullable();
+            $table->text('note')->nullable();
             $table->dateTime('expired_at')->nullable();
             $table->char('currency_code', 3);
             $table->char('converted_currency_code', 3);
