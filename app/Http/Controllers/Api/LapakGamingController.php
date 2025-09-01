@@ -2,45 +2,38 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Data\LapakGaming\ProductUpdateCallbackPayload;
 use App\Http\Controllers\Controller;
 use App\Models\ProductItem;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class LapakGamingController extends Controller
 {
-    public function productUpdateCallback(Request $request): Response
+    public function productUpdateCallback(ProductUpdateCallbackPayload $payload): Response
     {
-        // {
-        //     "data": {
-        //         "code": "ML-100-S102",
-        //         "name": "100 Diamonds Automation",
-        //         "provider_code": "S102",
-        //         "price": 9565,
-        //     "status": "available"
-        // },
-        //     "meta": {
-        //         "level": "master",
-        //         "unix_timestamp": 1707470882
-        //     }
-        // }
-        $data = $request->input('data');
-        $meta = $request->input('meta');
+        $data = $payload->data;
+        $meta = $payload->meta;
 
-        $productItem = ProductItem::where('code', $data['code'])->first();
+        $productItem = ProductItem::where('code', $data->code)->first();
 
         if (!$productItem) {
             Log::info('LapakGaming: product Item not stored', [
-                'data' => $data
+                'data' => $payload->toArray()
             ]);
             // acknowledge callback, otherwise they will retry 3 times
-            return api_status_ok('SKIPPED');
+            return response([
+                'message' => 'SKIPPED',
+                'reason' => 'Product item not stored',
+            ], 200);
         }
 
-        if ($productItem->sync_at->timestamp > $meta['unix_timestamp']) {
+        if ($productItem->sync_at->timestamp > $meta->unix_timestamp) {
             // out of date, skip
-            return api_status_ok('OUT OF DATE');
+            return response([
+                'message' => 'SKIPPED',
+                'reason' => 'Data out of date',
+            ], 200);
         }
 
         $product = $productItem->product;
@@ -50,13 +43,16 @@ class LapakGamingController extends Controller
         $marginGold = $productItem->margin_gold ?: $product->markup_reseller_gold;
         $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
 
+        $productItem->capital = $data->price;
         $productItem->margin = $marginPublicUser;
         $productItem->margin_silver = $marginSilver;
         $productItem->margin_gold = $marginGold;
         $productItem->margin_vip = $marginVip;
-        $productItem->status = $data['status'] === 'available' ? 'active' : 'empty';
+        $productItem->status = $data->status === 'available' ? 'active' : 'empty';
         $productItem->sync_at = now();
         $productItem->save();
-        return api_status_ok('OK');
+        return response([
+            'message' => 'SUCCESS',
+        ], 200);
     }
 }

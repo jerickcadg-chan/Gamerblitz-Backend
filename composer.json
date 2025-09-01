@@ -19,6 +19,7 @@
         "predis/predis": "~2.0",
         "realrashid/sweet-alert": "^7.2",
         "sheenazien8/konstantiq": "^1.0",
+        "spatie/laravel-data": "^4.17",
         "spatie/laravel-fractal": "^6.2",
         "spatie/laravel-permission": "^6.10",
         "xendit/xendit-php-clients": "^6.0"
