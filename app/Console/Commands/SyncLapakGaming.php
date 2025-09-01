@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Constants\ProviderConstant;
+use App\Data\LapakGaming\Category;
+use App\Data\LapakGaming\ProductItem as AppProductItem;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\Setting;
@@ -58,12 +60,12 @@ class SyncLapakGaming extends Command
             return;
         }
 
-        $lgCategories = collect($response->json('data.categories'));
-
         Log::channel('lapakgaming')->info('categories', [
             'url' => $categoriesUrl,
-            'response' => $lgCategories,
+            'response' => $response->json(),
         ]);
+
+        $lgCategories = Category::collect($response->json('data.categories'));
 
         $products = Product::query()
             ->where('status', Product::ACTIVE)
@@ -71,7 +73,8 @@ class SyncLapakGaming extends Command
             ->get();
 
         foreach ($products as $product) {
-            $lgProduct = $lgCategories->firstWhere('code', $product->provider_code);
+            /** @var Category */
+            $lgProduct = collect($lgCategories)->firstWhere('code', $product->provider_code);
 
             if (!$lgProduct) {
                 continue; // skip products not in provider's response
@@ -83,7 +86,7 @@ class SyncLapakGaming extends Command
                 'country' => $product->provider_country,
             ]);
 
-            // TODO: fetch items concurrently
+            // PERF: fetch items concurrently
             $itemsResponse = Http::withToken($token)->get($productItemsUrl, [
                 'category_code' => $product->provider_code,
                 'country_code' => $product->provider_country ?? 'id',
@@ -97,7 +100,7 @@ class SyncLapakGaming extends Command
                 continue;
             }
 
-            $lgItems = collect($itemsResponse->json('data.products'));
+            $lgItems = AppProductItem::collect($itemsResponse->json('data.products'));
 
             Log::channel('lapakgaming')->info('product items', [
                 'url' => $productItemsUrl,
@@ -110,15 +113,14 @@ class SyncLapakGaming extends Command
                 DB::beginTransaction();
 
                 $product->update([
-                    // TODO: normalize forms as input_format
-                    'input_format' => $lgProduct['forms'] ?? $product->input_format,
+                    'input_format' => $lgProduct->forms ?? $product->input_format,
                     'updated_at' => now(),
                 ]);
 
                 foreach ($lgItems as $item) {
-                    $productItem = ProductItem::where('product_id', $product->id)->where('code', $item['code'])->firstOrNew([
+                    $productItem = ProductItem::where('product_id', $product->id)->where('code', $item->code)->firstOrNew([
                         'product_id' => $product->id,
-                        'code' => $item['code'],
+                        'code' => $item->code,
                     ]);
 
                     $marginPublicUser = $productItem->margin ?: $product->markup_user;
@@ -126,8 +128,8 @@ class SyncLapakGaming extends Command
                     $marginGold = $productItem->margin_gold ?: $product->markup_reseller_gold;
                     $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
 
-                    $productItem->name = $item['name'];
-                    $productItem->capital = $item['price'];
+                    $productItem->name = $item->name;
+                    $productItem->capital = $item->price;
                     $productItem->stock = null;
                     $productItem->currency_code = 'IDR';
 
@@ -135,7 +137,7 @@ class SyncLapakGaming extends Command
                     $productItem->margin_silver = $marginSilver;
                     $productItem->margin_gold = $marginGold;
                     $productItem->margin_vip = $marginVip;
-                    $productItem->status = $item['status'] === 'available' ? 'active' : 'empty';
+                    $productItem->status = $item->status === 'available' ? 'active' : 'empty';
                     $productItem->sync_at = now();
                     $productItem->save();
                 }

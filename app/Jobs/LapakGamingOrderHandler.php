@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Data\LapakGaming\OrderRequestPayload;
+use App\Data\LapakGaming\OrderResponse;
 use App\Models\Order;
 use App\Models\Setting;
 use Illuminate\Bus\Queueable;
@@ -74,48 +75,6 @@ class LapakGamingOrderHandler implements ShouldQueue
 
         Log::channel('lapakgaming')->info("LapakGamingOrderHandler attempt forwarding order", $payloadArray);
 
-        // Success response
-        // -----------------
-        // {
-        //   "code": "SUCCESS",
-        //   "data": {
-        //     "tid": "R161582713591477186",
-        //     "total_price": 33120
-        //   }
-        // }
-        //
-
-
-        // Test data to simulate each status
-        // -------------------------
-        // SUCCESS
-        // product_code : ML78_8-S2
-
-        // SUCCESS (for voucher)
-        // product_code : VCGS330-S22
-
-        // PRICE_NOT_MATCH
-        // product_code : ML78_8-S2
-        // price : 999999
-
-        // PRODUCT_NOT_FOUND
-        // product_code : ASD
-
-        // PRODUCT_EMPTY
-        // product_code : ML156_16-S42
-
-        // PROVIDER_NOT_FOUND
-        // product_code : ML234_23-S2
-
-        // PROVIDER_INACTIVE
-        // product_code : ML625_81-S2
-
-        // INSUFFICIENT_BALANCE
-        // product_code : ML7740_1548-S42
-
-        // SUCCESS with pending order
-        // product_code : ML4649_883-S42
-
         $response = Http::withToken($token)
             ->timeout(15)
             ->post($orderUrl, $payloadArray);
@@ -124,18 +83,16 @@ class LapakGamingOrderHandler implements ShouldQueue
             throw new \Exception("LapakGaming API call failed: " . $response->body());
         }
 
-        $responseJson = $response->json();
+        $orderResponse = OrderResponse::from($response->json);
 
-        if ($responseJson['code'] === 'SUCCESS') {
+        if ($orderResponse->code === 'SUCCESS') {
             Log::channel('lapakgaming')->info("Order {$this->order->id} successfully forwarded to LapakGaming.");
 
-            $order->provider_ref = $responseJson['data']['tid'];
+            $order->provider_ref = $orderResponse->data->tid;
             $order->save();
         } else {
-            Log::channel('lapakgaming')->error("Order {$this->order->id} error: " . $responseJson['code']);
+            Log::channel('lapakgaming')->error("Order {$this->order->id} error: " . $orderResponse->code);
         }
-
-        // update order provider ref
     }
 
     /**
