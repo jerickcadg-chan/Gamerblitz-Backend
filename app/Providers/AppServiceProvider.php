@@ -50,8 +50,7 @@ class AppServiceProvider extends ServiceProvider
             return $div;
         });
 
-        View::share('productCategories', ProductConstant::all()->except(ProductConstant::ACCOUNT));
-        View::share('productJoki', ProductJoki::all());
+        View::share('productCategories', ProductConstant::all());
 
         VerifyEmail::toMailUsing(function (User $notifiable) {
             $url = URL::temporarySignedRoute(

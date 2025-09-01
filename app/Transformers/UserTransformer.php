@@ -24,7 +24,6 @@ class UserTransformer extends TransformerAbstract
             'address' => $user->address,
             'created_at' => parse_date_time($user->created_at),
             'role' => $user->role,
-            'profile' => $user->profile,
         ];
     }
 }

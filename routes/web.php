@@ -48,14 +48,6 @@ Auth::routes([
     'verify' => true,
 ]);
 
-
-Route::get('/email/test', function () {
-    return new \App\Mail\SentVerificationLink(
-        user: \App\Models\User::query()->has('client')->first(),
-        url: 'https://client-admin.test/email/verify/78/f99f902b40e9db817eb01e2bbb8bff6c697d4116?expires=1735435546&signature=1db807130bef166003562e0affa1bc29d88b8ed3aca144fa049b837583ed1659'
-    );
-});
-
 Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 

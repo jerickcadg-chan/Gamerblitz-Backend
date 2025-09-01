@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -28,9 +29,9 @@ class SentVerificationLink extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Email verifikasi',
-            from: $this->user->client->user->email,
-            to: $this->user->email,
+            from: new Address(config('mail.from.address'), config('mail.from.name')),
+            to: [new Address($this->user->email, $this->user->name ?? null)],
+            subject: config('mail.from.name').' Email Verification',
         );
     }
 

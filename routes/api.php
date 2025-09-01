@@ -36,15 +36,7 @@ Route::post('forgot-password', [ForgotPassword::class, 'forgot']);
 Route::post('reset-password', [ForgotPassword::class, 'reset']);
 
 Route::get('slider', [SliderController::class, 'index']);
-
 Route::get('check-nickname', [OrderController::class, 'checkNickname']);
-
-Route::get('/clients/all', function () {
-    $clients = Client::get();
-
-    return api_status_ok(transformer($clients, \App\Transformers\ClientConfigurationTransformer::class));
-})->middleware('basic_auth');
-
 Route::get('category', CategoryController::class);
 Route::get('product-item-category', [ProductItemCategoryController::class, 'index']);
 Route::get('product-item-categories', [ProductItemCategoryController::class, 'indexWithMeta']);
