@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\WhereByClient;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +12,6 @@ use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
 use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
 use IndexZer0\EloquentFiltering\Filter\FilterType;
 use IndexZer0\EloquentFiltering\Filter\Traits\Filterable;
-use IndexZer0\EloquentFiltering\Target\Target;
 
 /**
  * @mixin IdeHelperAccount
@@ -22,7 +20,6 @@ class Account extends Model implements IsFilterable
 {
     /** @use HasFactory<\Database\Factories\AccountFactory> */
     use HasFactory;
-    use WhereByClient;
     use WithPictures;
     use Filterable;
 

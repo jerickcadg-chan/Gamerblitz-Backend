@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Data\LapakGaming\OrderCallbackPayload;
 use App\Data\LapakGaming\ProductUpdateCallbackPayload;
 use App\Http\Controllers\Controller;
+use App\Models\Balance;
 use App\Models\Order;
+use App\Models\PaymentMethod;
 use App\Models\ProductItem;
+use App\Services\BalanceService;
 use App\Services\OrderService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -81,6 +84,16 @@ class LapakGamingController extends Controller
                 break;
             case "REFUNDED":
                 $orderService->updateStatus($order, null, Order::REFUNDED);
+                if ($order->payment_method === PaymentMethod::SALDO) {
+                    $balance = Balance::where('user_id', $order->user_id)->first();
+
+                    BalanceService::update($balance, [
+                        'balanceable_type' => Order::class,
+                        'balanceable_id' => $order->id,
+                        'amount' => $order->total_price,
+                        'description' => "Refund $order->code"
+                    ]);
+                }
                 break;
             case "PENDING":
             default:

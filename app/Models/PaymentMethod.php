@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\WhereByClient;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +21,6 @@ class PaymentMethod extends Model implements IsFilterable
     use HasFactory;
     use WithPictures;
     use Filterable;
-    use WhereByClient;
 
     const QRIS = 'qris';
     const SALDO = 'saldo';

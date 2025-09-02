@@ -176,9 +176,9 @@
               value="{{ old('settings.xendit_callback_key', $settings['xendit_callback_key'] ?? '') }}">
           </div>
 
-          <h4 class="mb-2 mt-5">$ Currency</h4>
+          <h4 class="mb-2 mt-5">$ Base Currency</h4>
           <div class="form-group">
-            <label>System Base Currency (used for reports and displaying data in admin panel)</label>
+            <label>System Base Currency</label>
             <select class="form-control" name="settings[base_currency]">
               @php $v = old('settings.base_currency', $settings['base_currency'] ?? 'USD'); @endphp
               @foreach ($currencies as $currency)
@@ -191,6 +191,12 @@
                 </option>
               @endforeach
             </select>
+            <label>
+              <br />
+              <small>This will be used for reports and displaying data in admin panel.</small><br />
+              <small>⚠️ Please note that if you change the base currency, all future transactions will use the selected
+                currency for converting the transaction amounts.</small><br />
+            </label>
           </div>
 
           {{-- Social Media Setting --}}
