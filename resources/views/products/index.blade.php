@@ -26,7 +26,7 @@
             </form>
           </div>
           <div class="col-md-8 text-lg-end">
-            <a href="{{ $createLink }}" class="btn btn-primary">Tambah data</a>
+            <a href="{{ $createLink }}" class="btn btn-primary">Create data</a>
           </div>
         </div>
         <table class="table-bordered table-hover table">
