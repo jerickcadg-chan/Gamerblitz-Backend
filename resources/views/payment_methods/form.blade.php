@@ -120,16 +120,20 @@
           </div>
 
           <div class="form-group">
-            <label class="required">Supported Currencies</label>
-            <select name="currency_codes[]" id="currency_codes"
-                    class="form-control {{ $errors->has('currency_codes') ? 'is-invalid' : '' }}"
-                    multiple required>
+            <label class="required">Currency</label>
+            <select name="currency_code" id="currency_code"
+                    class="form-control {{ $errors->has('currency_code') ? 'is-invalid' : '' }}"
+                    required>
               @php
-                $selected = old('currency_codes', isset($paymentMethod) ? @$paymentMethod->currencyCodes->pluck('currency_code')->toArray() : []);
+                $v = old('currency_code', isset($paymentMethod) ? @$paymentMethod->currency_code : 'USD');
               @endphp
               @foreach(\App\Constants\CurrencyConstant::all() as $currency)
-                <option value="{{ $currency['code'] }}" {{ in_array($currency['code'], $selected ?? []) ? 'selected' : '' }}>
-                  {{ $currency['code'] }}
+                @php
+                  $symbol = $currency['symbol'] ?? null;
+                  $code = $currency['code'] ?? '';
+                @endphp
+                <option value="{{ $code }}" {{ $v === $code ? 'selected' : '' }}>
+                  {{ $symbol ? "($symbol) " : '' }}{{ $code }} / {{ $currency['name'] ?? '' }}
                 </option>
               @endforeach
             </select>

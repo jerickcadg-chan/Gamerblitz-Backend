@@ -28,6 +28,7 @@
                         <tr>
                             <th> # </th>
                             <th>Name</th>
+                            <th>Currency</th>
                             <th>Vendor</th>
                             <th> Action </th>
                         </tr>
@@ -37,6 +38,7 @@
                         <tr>
                             <td>{{ $paymentMethods->firstItem() + $index }}</td>
                             <td>{{ $paymentMethod->name }}</td>
+                            <td>{{ $paymentMethod->currency_code }}</td>
                             <td>{{ $paymentMethod->vendor }}</td>
                             <td>
                                 @include('master.action', [

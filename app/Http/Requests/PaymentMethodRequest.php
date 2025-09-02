@@ -33,6 +33,7 @@ class PaymentMethodRequest extends FormRequest
             'account_name' => ['nullable', 'string', 'max:250'],
             'account_number' => ['nullable', 'string', 'max:50'],
             'account_holder_name' => ['nullable', 'string', 'max:250'],
+            'currency_code' => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/'],
 
             'admin_fee' => ['required', 'numeric', 'min:0'],
             'admin_type' => ['required', Rule::in(['nominal', 'percentage', 'no-admin'])],

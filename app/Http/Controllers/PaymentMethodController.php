@@ -55,12 +55,6 @@ class PaymentMethodController extends Controller
 
         $paymentMethod = PaymentMethod::create($request->all());
 
-        $codes = array_filter(array_map('trim', $request->input('currency_codes', [])));
-        $paymentMethod->currencyCodes()->delete();
-        foreach ($codes as $code) {
-            $paymentMethod->currencyCodes()->create(['currency_code' => $code]);
-        }
-
         toast(alert_created_text($this->title), 'success');
         return redirect()->route('payment_method.index');
     }
@@ -83,12 +77,6 @@ class PaymentMethodController extends Controller
         }
 
         $paymentMethod->update($request->all());
-
-        $codes = array_filter(array_map('trim', $request->input('currency_codes', [])));
-        $paymentMethod->currencyCodes()->delete();
-        foreach ($codes as $code) {
-            $paymentMethod->currencyCodes()->create(['currency_code' => $code]);
-        }
 
         toast(alert_updated_text($this->title), 'success');
 

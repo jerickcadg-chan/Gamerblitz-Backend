@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
 use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
 use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
@@ -26,13 +25,15 @@ class PaymentMethod extends Model implements IsFilterable
     const SALDO = 'saldo';
 
     protected $fillable = [
-        'name', 'admin_fee', 'admin_type', 'slug', 'vendor', 'category', 'picture'
+        'name',
+        'admin_fee',
+        'admin_type',
+        'slug',
+        'vendor',
+        'category',
+        'picture',
+        'currency_code',
     ];
-
-    public function currencyCodes(): HasMany
-    {
-        return $this->hasMany(PaymentMethodCurrencyCode::class);
-    }
 
     public function getDisplayNameAttribute(): string
     {

@@ -16,7 +16,7 @@
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body table-responsive">
-        <table class="table table-nospace table-hover">
+        <table class="table-nospace table-hover table">
           <tr>
             <th>Name</th>
             <td>{{ $paymentMethod->name }}</td>
@@ -56,7 +56,7 @@
           <tr>
             <th>Status</th>
             <td>
-              @if($paymentMethod->is_active)
+              @if ($paymentMethod->is_active)
                 <span class="badge bg-success">Active</span>
               @else
                 <span class="badge bg-secondary">Inactive</span>
@@ -72,12 +72,10 @@
             <td><img src="{{ asset($paymentMethod->picture) }}" alt="picture" /></td>
           </tr>
           <tr>
-            <th>Supported Currencies</th>
-            <th>
-              @foreach($paymentMethod->currencyCodes as $currencyCode)
-                {{ $currencyCode->currency_code }}
-              @endforeach
-            </th>
+            <th>Currency</th>
+            <td>
+              {{ $paymentMethod->currency_code }}
+            </td>
           </tr>
           <tr>
             <th>Created At</th>
@@ -92,4 +90,3 @@
     </div>
   </div>
 @endsection
-
