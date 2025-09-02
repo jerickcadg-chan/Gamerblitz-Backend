@@ -19,9 +19,12 @@ class Order extends Model implements IsFilterable
     use HasFactory;
     use Filterable;
 
+    // payment status
     const PENDING = 'pending';
     const SETTLEMENT = 'settlement';
     const REFUNDED = 'refunded';
+
+    // order status
     const EXPIRED = 'expired';
     const CANCELED = 'canceled';
     const WAITING_PAYMENT = 'waiting-payment';

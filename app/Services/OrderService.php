@@ -175,7 +175,7 @@ class OrderService
         }
     }
 
-    public function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, $qty = 1): array
+    private function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, int $qty = 1): array
     {
         $price = $productItem->real_price;
         /* if (str($productItem->product->category)->lower() == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) { */
@@ -255,7 +255,7 @@ class OrderService
         return [$prices, null];
     }
 
-    public function calculateXenditFee(
+    private function calculateXenditFee(
         $realPrice,
         $adminFee,
         $adminType,
@@ -270,7 +270,7 @@ class OrderService
     /**
      * @throws GuzzleException
      */
-    public function createXenditInvoice(Order $order)
+    private function createXenditInvoice(Order $order)
     {
         $xenditApiUrl = Setting::getByKey(Setting::KEY_XENDIT_API_URL);
         if (!$xenditApiUrl) {

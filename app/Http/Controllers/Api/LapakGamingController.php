@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Data\LapakGaming\OrderCallbackPayload;
 use App\Data\LapakGaming\ProductUpdateCallbackPayload;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\ProductItem;
+use App\Services\OrderService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -51,6 +54,39 @@ class LapakGamingController extends Controller
         $productItem->status = $data->status === 'available' ? 'active' : 'empty';
         $productItem->sync_at = now();
         $productItem->save();
+        return response([
+            'message' => 'SUCCESS',
+        ], 200);
+    }
+
+    public function orderCallback(OrderCallbackPayload $payload, OrderService $orderService): Response
+    {
+        $order = Order::query()
+            ->where('code', $payload->data->reference_id)
+            ->where('provider_ref', $payload->data->tid)
+            ->first();
+
+        if (!$order) {
+            return response([
+                'message' => 'FAILED',
+                'reason' => 'Invalid ref id',
+            ]);
+        }
+
+        $productItem = $order->productItem;
+
+        switch ($payload->data->status) {
+            case "SUCCESS":
+                $orderService->updateStatus($order, null, Order::DONE);
+                break;
+            case "REFUNDED":
+                $orderService->updateStatus($order, null, Order::REFUNDED);
+                break;
+            case "PENDING":
+            default:
+                break;
+        }
+
         return response([
             'message' => 'SUCCESS',
         ], 200);

@@ -104,7 +104,7 @@ class OrderController extends Controller
         return api_status_ok(transformer($order, new OrderTransformer));
     }
 
-    public function store(OrderService $orderService, OrderRequest $request)
+    public function store(OrderRequest $request, OrderService $orderService)
     {
         try {
             $order = $orderService->store($request);
@@ -243,7 +243,7 @@ class OrderController extends Controller
             }
 
             if ($order->productItem->type == ProductItemTypeConstant::TOPUP) {
-                $orderService->createMitraGamersOrder($order);
+                $orderService->processOrder($order);
             }
 
             if ($order->productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI) {
