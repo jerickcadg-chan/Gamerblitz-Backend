@@ -99,7 +99,7 @@ if (!function_exists('parse_date')) {
         if ($date == null) {
             return '-';
         }
-        Carbon::setLocale('id');
+        Carbon::setLocale('en');
         //        $date = \Carbon\Carbon::parse($date)->format("%d %B %Y");
         $date = Carbon::parse($date);
         return $date->format('d') . '-' . get_month_simple($date->format('m')) . '-' . $date->format('Y');
@@ -112,7 +112,7 @@ if (!function_exists('parse_date_full')) {
         if ($date == null) {
             return '-';
         }
-        Carbon::setLocale('id');
+        Carbon::setLocale('en');
         //        $date = \Carbon\Carbon::parse($date)->format("%d %B %Y");
         $date = Carbon::parse($date);
         return $date->format('d') . ' ' . get_month_name($date->format('m')) . ' ' . $date->format('Y');
@@ -125,7 +125,7 @@ if (!function_exists('parse_date_time')) {
         if ($date == null) {
             return '-';
         }
-        Carbon::setLocale('id');
+        Carbon::setLocale('en');
         //        $date = \Carbon\Carbon::parse($date)->format("%d %B %Y, %I:%M:%S %p");
         $date = Carbon::parse($date);
         return $date->format('d') . '-' . get_month_simple($date->format('m')) . '-' . $date->format('Y') . ', ' . \Carbon\Carbon::parse($date)->format("H:i:s");
@@ -139,7 +139,7 @@ if (!function_exists('parse_date_time_full')) {
         if ($date == null) {
             return '-';
         }
-        Carbon::setLocale('id');
+        Carbon::setLocale('en');
 
         $date = Carbon::parse($date);
         return $date->format('d') . ' ' . get_month_name($date->format('m')) . ' ' . $date->format('Y') . ', ' . \Carbon\Carbon::parse($date)->format("H:i:s");
@@ -153,7 +153,7 @@ if (!function_exists('parse_month_year')) {
             return '-';
         }
 
-        Carbon::setLocale('id');
+        Carbon::setLocale('en');
 
         $date = Carbon::parse($date);
         return get_month_name($date->format('m')) . ' ' . $date->format('Y');
@@ -167,7 +167,7 @@ if (!function_exists('parse_year')) {
             return '-';
         }
 
-        Carbon::setLocale('id');
+        Carbon::setLocale('en');
 
         $date = Carbon::parse($date);
         return $date->format('Y');

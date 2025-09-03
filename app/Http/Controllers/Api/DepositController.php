@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DepositController extends Controller
 {
-    public $userId;
+    public string $userId;
 
     public function __construct()
     {

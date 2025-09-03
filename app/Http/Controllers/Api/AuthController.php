@@ -42,8 +42,8 @@ class AuthController extends Controller
             $user = User::whereEmail($credentials['email'])->first();
             if (!$user) {
                 $credentials = [
-                    'phone_number' => convert_to_62($request->username),
-                    'password' => $request->password,
+                   'phone_number' => $request->username,
+                   'password' => $request->password,
                 ];
 
                 $user = User::wherePhoneNumber($credentials['phone_number'])->first();
@@ -73,8 +73,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request['phone_number'] = convert_to_62($request->phone_number);
-
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
@@ -146,8 +144,6 @@ class AuthController extends Controller
                 $update['password'] = bcrypt($request->get('password'));
             }
             $user->update($update);
-
-            $validatedData['whatsapp_number'] = convert_to_62($validatedData['whatsapp_number']);
 
             $user->profile()->updateOrCreate(
                 ['user_id' => $user->id],

@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-    'activePage' => 'customer',
+    'activePage' => 'affiliate_withdraw',
 ])
 
 @section('content')
@@ -27,39 +27,33 @@
           <thead>
           <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Role</th>
-            <th>Verified At</th>
-            <th>Is Affiliate</th>
+            <th>Affiliate</th>
+            <th>User</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Method</th>
+            <th>Requested At</th>
+            <th>Processed At</th>
+            <th>Note</th>
             <th>Action</th>
           </tr>
           </thead>
           <tbody>
-          @forelse ($users as $index => $user)
+          @forelse ($affiliateWithdraws as $index => $withdraw)
             <tr>
-              <td>{{ $users->firstItem() + $index }}</td>
-              <td>{{ $user->name }}</td>
-              <td>{{ $user->email }}</td>
-              <td>{{ $user->phone_number }}</td>
-              <td>{{ $user->role }}</td>
-              <td>{{ $user->email_verified_at ? parse_date_time($user->email_verified_at) : "-" }}</td>
-              <td>{{ $user->affiliate ? "✅" : "❌ " }}</td>
+              <td>{{ $affiliateWithdraws->firstItem() + $index }}</td>
+              <td>{{ $withdraw->affiliate->code }}</td>
+              <td>{{ $withdraw->user->name }}</td>
+              <td>{{ $withdraw->amount }}</td>
+              <td>{{ $withdraw->status }}</td>
               <td>
-                @if ($user->id == 1)
-                  @include('master.action', [
-                      'view_url' => route('user.show', $user),
-                      'edit_url' => route('user.edit', $user),
-                  ])
-                @else
-                  @include('master.action', [
-                      'view_url' => route('user.show', $user),
-                      'edit_url' => route('user.edit', $user),
-                      'delete_url' => route('user.destroy', $user)
-                  ])
-                @endif
+                <p>{{ $withdraw->method }}</p>
+                <p>{{ $withdraw->destination }}</p>
               </td>
+              <td>{{ $withdraw->requested_at }}</td>
+              <td>{{ $withdraw->processed_at }}</td>
+              <td>{{ $withdraw->notes }}</td>
+              <td></td>
             </tr>
           @empty
             <tr>
@@ -69,7 +63,7 @@
           </tbody>
         </table>
         <div class="mt-2">
-          {!! $users->appends(request()->query())->links() !!}
+          {!! $affiliateWithdraws->appends(request()->query())->links() !!}
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AffiliateWithdrawController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DiscountController;
@@ -26,7 +27,6 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/email/verify/{id}/mail/{mailhash}', function ($id, $mailhash) {
     $user = \App\Models\User::query()->findOrFail($id);
     if (!hash_equals(sha1($user->getEmailForVerification()), (string) $mailhash)) {
@@ -40,7 +40,6 @@ Route::get('/email/verify/{id}/mail/{mailhash}', function ($id, $mailhash) {
 
     return redirect(config('app.fe_url') . '/login?verification=success');
 })->middleware('signed')->name('verification');
-
 
 Auth::routes([
     'register' => false,
@@ -67,6 +66,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
 
     // User router
     Route::get('user/customer', [UserController::class, 'getCustomer'])->name('user.customer');
+    Route::get('user/affiliate-withdraw', [AffiliateWithdrawController::class, 'index'])->name('user.affiliate-withdraw');
 
     // Report router
     Route::get('report', [ReportController::class, 'index'])->name('report.index');

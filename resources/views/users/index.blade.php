@@ -29,12 +29,13 @@
         <table class="table table-bordered table-hover">
           <thead>
           <tr>
-            <th> # </th>
-            <th> Name </th>
-            <th> Email </th>
-            <th> Phone Number </th>
-            <th> Role </th>
-            <th> Action </th>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Role</th>
+            <th>Verified At</th>
+            <th>Action</th>
           </tr>
           </thead>
           <tbody>
@@ -45,6 +46,7 @@
               <td>{{ $user->email }}</td>
               <td>{{ $user->phone_number }}</td>
               <td>{{ $user->role }}</td>
+              <td>{{ $user->email_verified_at ? parse_date_time($user->email_verified_at) : "-" }}</td>
               <td>
                 @if ($user->id == 1)
                   @include('master.action', [

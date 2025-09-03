@@ -62,15 +62,15 @@ class User extends Authenticatable
 
     public function scopeNonCustomer($query)
     {
-        return $query->whereHas('roles', function ($query) {
-            return $query->where('name', '!=', DefaultRole::CUSTOMER);
+        return $query->whereHas('roles', function ($q) {
+            $q->whereNotIn('name', [DefaultRole::CUSTOMER, DefaultRole::RESELLER_SILVER, DefaultRole::RESELLER_VIP, DefaultRole::RESELLER_GOLD]);
         });
     }
 
     public function scopeCustomer($query)
     {
         return $query->whereHas('roles', function ($query) {
-            return $query->where('name', DefaultRole::CUSTOMER);
+            $query->where('name', DefaultRole::CUSTOMER);
         });
     }
 
@@ -80,21 +80,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Get highest level
+     * Get the highest level
      *
      */
     public function getRoleAttribute(): string
     {
-        if ($this->hasRole(DefaultRole::RESELLER_VIP)) {
-            return DefaultRole::RESELLER_VIP;
-        }
-        if ($this->hasRole(DefaultRole::RESELLER_GOLD)) {
-            return DefaultRole::RESELLER_GOLD;
-        }
-        if ($this->hasRole(DefaultRole::RESELLER_SILVER)) {
-            return DefaultRole::RESELLER_SILVER;
-        }
-        return DefaultRole::CUSTOMER;
+        return $this->roles()->orderBy('id', 'desc')->first()->name;
     }
 
     public function client(): BelongsTo
