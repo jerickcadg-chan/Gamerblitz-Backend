@@ -88,6 +88,22 @@ class User extends Authenticatable
         return $this->roles()->orderBy('id', 'desc')->first()->name;
     }
 
+    public function getResellerLevelAttribute(): string
+    {
+        $resellerRoles = $this->roles()->whereIn('name', [DefaultRole::RESELLER_SILVER, DefaultRole::RESELLER_GOLD, DefaultRole::RESELLER_VIP])->pluck('name');
+
+        if ($resellerRoles->contains(DefaultRole::RESELLER_VIP)) {
+            return DefaultRole::RESELLER_VIP;
+        }
+        if ($resellerRoles->contains(DefaultRole::RESELLER_GOLD)) {
+            return DefaultRole::RESELLER_GOLD;
+        }
+        if ($resellerRoles->contains(DefaultRole::RESELLER_SILVER)) {
+            return DefaultRole::RESELLER_SILVER;
+        }
+        return DefaultRole::CUSTOMER;
+    }
+
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);

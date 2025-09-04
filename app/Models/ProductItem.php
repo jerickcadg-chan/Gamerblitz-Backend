@@ -97,7 +97,7 @@ class ProductItem extends Model implements IsFilterable
                 $user = Auth::user();
 
                 if ($user) {
-                    return match ($user->role) {
+                    return match ($user->reseller_level) {
                         DefaultRole::RESELLER_SILVER => $this->margin_silver,
                         DefaultRole::RESELLER_GOLD   => $this->margin_gold,
                         DefaultRole::RESELLER_VIP    => $this->margin_vip,
