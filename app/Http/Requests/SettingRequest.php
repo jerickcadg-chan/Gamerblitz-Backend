@@ -24,6 +24,7 @@ class SettingRequest extends FormRequest
         return [
             'settings' => ['nullable','array'],
             'files.logo' => ['nullable','image','max:5120'],
+            'files.logo_alt' => ['nullable','image','max:5120'],
             'files.favicon' => ['nullable','image','max:5120'],
             'files.popup_image' => ['nullable','image','max:5120'],
         ];

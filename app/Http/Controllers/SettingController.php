@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Constants\CurrencyConstant;
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class SettingController extends Controller
@@ -17,7 +16,7 @@ class SettingController extends Controller
         $settings = $pairs;
 
         // helper URL untuk preview file
-        foreach (['logo','favicon','popup_image'] as $fileKey) {
+        foreach (['logo', 'logo_alt','favicon','popup_image'] as $fileKey) {
             if (!empty($pairs[$fileKey])) {
                 $settings[$fileKey.'_url'] = asset('storage/'.$pairs[$fileKey]);
             }
@@ -33,7 +32,7 @@ class SettingController extends Controller
         $settings = $request->input('settings', []);
 
         // file uploads: {random}_{original_name}
-        foreach (['logo','favicon','popup_image'] as $key) {
+        foreach (['logo', 'logo_alt','favicon','popup_image'] as $key) {
             if ($request->hasFile("files.$key")) {
                 $file = $request->file("files.$key");
                 $filename = Str::random(10).'_'.$file->getClientOriginalName();

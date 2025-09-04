@@ -38,6 +38,18 @@
           </div>
 
           <div class="form-group">
+            <label>Alternative Logo</label>
+            <div class="mb-2">
+              @if (!empty($settings['logo_alt_url']))
+                <img src="{{ $settings['logo_alt_url'] }}" alt="Logo" style="height:64px">
+              @endif
+            </div>
+            <input type="file" class="form-control {{ $errors->has('files.logo_alt') ? 'is-invalid' : '' }}"
+              name="files[logo_alt]" accept="image/*">
+            @include('alerts.feedback', ['field' => 'files.logo_alt'])
+          </div>
+
+          <div class="form-group">
             <label>Favicon</label>
             <div class="mb-2">
               @if (!empty($settings['favicon_url']))

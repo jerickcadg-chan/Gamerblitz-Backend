@@ -11,8 +11,8 @@ use App\Http\Controllers\Api\LapakGamingController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductItemCategoryController;
+use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderController;
-use App\Models\Client;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +57,8 @@ Route::post('order', [OrderController::class, 'store']);
 Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('callback.xendit');
 Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->name('callback.bangjeff');
 Route::get('order/{order}', [OrderController::class, 'show']);
+
+Route::get('setting', [SettingController::class, 'index']);
 
 $lapakgamingIp = Setting::getByKey(Setting::KEY_LAPAKGAMING_IP);
 Route::middleware(['ip.whitelist:' . $lapakgamingIp])->group(function () {
