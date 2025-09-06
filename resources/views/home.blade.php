@@ -6,7 +6,7 @@
 <form>
   <div class="row">
     <div class="col">
-      <label for="month-input" class="d-block">Bulan</label>
+      <label for="month-input" class="d-block">Month</label>
       <select id="month-input" class="form-control" name="month" autocomplete="off">
         @foreach(get_months() as $monthIndex => $month)
         <option value="{{ $monthIndex + 1 }}" {{ intVal($selectedMonth) === $monthIndex + 1 ? 'selected' : '' }}>{{ $month }}</option>
@@ -14,7 +14,7 @@
       </select>
     </div>
     <div class="col">
-      <label for="year-input" class="d-block">Tahun</label>
+      <label for="year-input" class="d-block">Year</label>
       <select id="year-input" class="form-control" name="year" autocomplete="off">
         @foreach(get_years_reversed() as $year)
         <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>
@@ -29,25 +29,25 @@
 
 <div class="row pt-4 mb-4">
   <div class="col-md-4">
-    <div class="card bg-gradient-danger card-img-holder text-white">
+    <div class="card bg-gradient-dark card-img-holder text-white">
       <div class="card-body">
-        <h4 class="font-weight-normal mb-3">Jumlah Transaksi <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+        <h4 class="font-weight-normal mb-3">Orders Count <i class="mdi mdi-chart-line mdi-24px float-right"></i>
         </h4>
         <h2>{{ $orderSum['total'] }}</h2>
       </div>
     </div>
   </div>
   <div class="col-md-4">
-    <div class="card bg-gradient-info card-img-holder text-white">
+    <div class="card bg-gradient-dark card-img-holder text-white">
       <div class="card-body">
-        <h4 class="font-weight-normal mb-3">Omset <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+        <h4 class="font-weight-normal mb-3">Revenue <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
         </h4>
         <h2>{{ rp_format($orderSum['turnover']) }}</h2>
       </div>
     </div>
   </div>
   <div class="col-md-4">
-    <div class="card bg-gradient-success card-img-holder text-white">
+    <div class="card bg-gradient-dark card-img-holder text-white">
       <div class="card-body">
         <h4 class="font-weight-normal mb-3">Profit <i class="mdi mdi-diamond mdi-24px float-right"></i>
         </h4>
@@ -63,8 +63,8 @@
       <div class="card">
         <div class="card-body">
           <div class="page-header">
-            <h3 class="page-title"> Statistik Transaksi 1 Minggu Terakhir</h3>
-            <a href="{{ route('statistic.order') }}">Selengkapnya</a>
+            <h3 class="page-title">Latest 1 Week Transactions</h3>
+            <a href="{{ route('statistic.order') }}">Read more</a>
           </div>
           <div id="last-week-chart"></div>
         </div>
@@ -72,13 +72,13 @@
     </div>
   </div>
   <div class="col-md-4">
-    <div class="card bg-gradient-primary card-img-holder text-white">
+    <div class="card card-img-holder">
       <div class="card-body">
-        <h4 class="mb-0 font-weight-normal">Jumlah Transaksi Hari Ini</h4>
+        <h5 class="mb-0 font-weight-normal">Orders Count Today</h5>
         <h3 class="mb-4">{{ rp_format($orderToday['total']) }}</h3>
-        <h4 class="mb-0 font-weight-normal">Omset Hari ini</h4>
+        <h5 class="mb-0 font-weight-normal">Revenue Today</h5>
         <h3 class="mb-4">{{ rp_format($orderToday['turnover']) }}</h3>
-        <h4 class="mb-0 font-weight-normal">Profit Hari Ini</h4>
+        <h5 class="mb-0 font-weight-normal">Profit Today</h5>
         <h3 class="mb-4">{{ rp_format($orderToday['profit']) }}</h3>
       </div>
     </div>

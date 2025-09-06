@@ -61,14 +61,12 @@
                 <th rowspan="2">Price</th>
                 <th rowspan="2">Capital</th>
                 <th rowspan="2">Profit</th>
+                <th rowspan="2">Status</th>
                 <th colspan="2">Buyer</th>
-                <th colspan="2">Status</th>
               </tr>
               <tr class="text-center">
                 <th>Email</th>
                 <th>No HP</th>
-                <th>Payment</th>
-                <th>Order</th>
               </tr>
               </thead>
               <tbody>
@@ -90,12 +88,9 @@
                   <td>{{ rp_format($order->total_price) }}</td>
                   <td>{{ rp_format($order->capital) }}</td>
                   <td>{{ rp_format($order->total_income) }}</td>
-                  <td>{{ @$order->cust_email }}</td>
-                  <td><a href="https://wa.me/{{ $order->cust_phone_number }}&text=Hi" target="_blank">{{ $order->cust_phone_number }}</a></td>
-                  <td>{!! $order->payment_status_raw !!}</td>
                   <td>
                     <p>{!! $order->order_status_raw !!}</p>
-                    @if ($order->order_status == \App\Models\Order::INPROCESS)
+                    @if ($order->status == \App\Constants\StatusConst::ON_PROCESS)
                       <form action="{{ route('order.status') }}" method="post" class="mt-3">
                         @csrf
                         <input type="hidden" name="order_id" value="{{ $order->id }}">
@@ -105,6 +100,8 @@
                       </form>
                     @endif
                   </td>
+                  <td>{{ @$order->cust_email }}</td>
+                  <td><a href="https://wa.me/{{ $order->cust_phone_number }}&text=Hi" target="_blank">{{ $order->cust_phone_number }}</a></td>
                 </tr>
               @empty
                 <tr>

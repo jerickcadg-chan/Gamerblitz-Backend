@@ -27,7 +27,7 @@ class CreatePaymentMethodsTable extends Migration
             $table->char('currency_code', 3)->nullable();
             $table->boolean('is_active')->default(1);
             $table->integer('ordering')->nullable();
-            $table->text('picture');
+            $table->text('picture')->nullable();
             $table->timestamps();
         });
     }

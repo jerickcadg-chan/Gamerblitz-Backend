@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\StatusConst;
 use App\Models\Order;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -21,7 +21,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return View
      */
     public function index(): View
     {
@@ -33,12 +33,13 @@ class HomeController extends Controller
         $orderPastWeek = $this->getOrderPastWeek();
 
         $data = compact('orderSum', 'orderToday', 'orderPastWeek', 'selectedYear', 'selectedMonth');
+
         return view('home', $data);
     }
 
     protected function getOrderPastWeek()
     {
-        $query = Order::where('order_status', Order::DONE)
+        $query = Order::where('status', StatusConst::SUCCESS)
             ->selectRaw('DATE(created_at) as date, SUM(total_price) as total_price, SUM(total_income) as total_income')
             ->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()])
             ->groupBy('date')
@@ -62,7 +63,7 @@ class HomeController extends Controller
         $orderSumQuery = Order::query()
             ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
-            ->where('order_status', Order::DONE);
+            ->where('status', StatusConst::SUCCESS);
 
         $turnover = $orderSumQuery->sum('total_price');
         $profit = $orderSumQuery->sum('total_income');
@@ -83,7 +84,7 @@ class HomeController extends Controller
     {
         $orderTodayQuery = Order::query()
             ->whereRaw('DATE(created_at) = ?', [today()])
-            ->where('order_status', Order::DONE);
+            ->where('status', StatusConst::SUCCESS);
 
 
         $turnoverToday = $orderTodayQuery->sum('total_price');

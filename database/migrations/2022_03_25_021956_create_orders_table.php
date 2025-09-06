@@ -24,8 +24,7 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('cust_phone_number');
             $table->string('cust_email')->nullable();
             $table->string('payment_method', 25)->nullable();
-            $table->enum('payment_status', ['pending', 'settlement', 'refunded']);
-            $table->enum('order_status', ['waiting-payment', 'in-process', 'done', 'expired', 'canceled']);
+            $table->enum('status', config('array.order.status'));
             $table->integer('qty');
             $table->decimal('price', 19, 2);
             $table->decimal('capital', 19, 2);

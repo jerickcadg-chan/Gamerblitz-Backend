@@ -27,7 +27,7 @@
   <div class="card">
     <div class="card-body">
       <div class="page-header">
-        <h3 class="page-title"> Statistik Transaksi {{ parse_date_format($startDate) }} - {{ parse_date_format($endDate) }}</h3>
+        <h3 class="page-title">Orders Statistic {{ parse_date_format($startDate) }} - {{ parse_date_format($endDate) }}</h3>
       </div>
       <div id="order-statistic-chart"></div>
 
@@ -35,9 +35,9 @@
         <table class="table table-bordered table-hover">
           <thead>
             <tr>
-              <th>Tanggal</th>
-              <th>Jumlah</th>
-              <th>Omset</th>
+              <th>Date</th>
+              <th>Count</th>
+              <th>Revenue</th>
               <th>Profit</th>
               <th>Margin</th>
             </tr>
@@ -57,14 +57,14 @@
             </tr>
             @endforelse
             <tr>
-              <td><strong>Total Transaksi</strong></td>
+              <td><strong>Orders Total</strong></td>
               <td>{{ $orders->sum('count') }}</td>
               <td>{{ rp_format($orders->sum('turnover')) }}</td>
               <td>{{ rp_format($orders->sum('profit')) }}</td>
               <td>{{ $orders->sum('profit_margin') }}%</td>
             </tr>
             <tr>
-              <td><strong>Rata - rata</strong></td>
+              <td><strong>Average</strong></td>
               <td>{{ round($orders->avg('count')) }}</td>
               <td>{{ rp_format(round($orders->avg('turnover'))) }}</td>
               <td>{{ rp_format(round($orders->avg('profit'))) }}</td>
@@ -102,12 +102,19 @@ function initDaterange() {
 }
 
 function initChart() {
-  var options = {
+  let options = {
     chart: {
-      type: 'area'
+      type: "area",
+      height: "500",
+      width: '100%',
+      toolbar: {"show": false},
+      zoom: {"enabled": true},
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      foreColor: '#373d3f',
+      sparkline: {"enabled": false},
     },
     series: [{
-      name: 'Omset',
+      name: 'Revenue',
       data: {{ Js::from($orders->pluck('turnover')) }},
     }, {
       name: 'Profit',
@@ -123,7 +130,7 @@ function initChart() {
     }
   }
 
-  var chart = new ApexCharts(document.querySelector("#order-statistic-chart"), options);
+  let chart = new ApexCharts(document.querySelector("#order-statistic-chart"), options);
 
   chart.render();
 }

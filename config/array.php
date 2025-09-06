@@ -36,6 +36,15 @@ return [
             'expired' => \App\Models\Order::EXPIRED,
             'canceled' => \App\Models\Order::CANCELED,
         ],
+        'status' => [
+            StatusConst::PENDING,
+            StatusConst::ON_PROCESS,
+            StatusConst::SUCCESS,
+            StatusConst::FAILED,
+            StatusConst::DELAY,
+            StatusConst::EXPIRED,
+            StatusConst::REFUNDED
+        ],
         'expired_hours' => env('EXPIRED_HOURS')
     ],
     'deposit' => [

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\StatusConst;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
@@ -25,7 +26,7 @@ class StatisticController extends Controller
             return redirect()->back();
         }
 
-        $query = Order::where('order_status', Order::DONE)
+        $query = Order::where('status', StatusConst::SUCCESS)
             ->selectRaw(
                 '
                 DATE(created_at) as date,

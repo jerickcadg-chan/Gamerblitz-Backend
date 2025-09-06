@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Constants\StatusConst;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
 use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
 use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
@@ -75,32 +79,32 @@ class Order extends Model implements IsFilterable
         });
     }
 
-    public function productItem()
+    public function productItem(): BelongsTo
     {
         return $this->belongsTo(ProductItem::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function discount()
+    public function discount(): BelongsTo
     {
         return $this->belongsTo(Discount::class);
     }
 
-    public function vouchers()
+    public function vouchers(): HasMany
     {
         return $this->hasMany(Voucher::class);
     }
 
-    public function voucher()
+    public function voucher(): HasOne
     {
         return $this->hasOne(Voucher::class);
     }
 
-    public function histories()
+    public function histories(): HasMany
     {
         return $this->hasMany(OrderHistory::class);
     }
@@ -110,7 +114,7 @@ class Order extends Model implements IsFilterable
         return $query->where('payment_status', self::SETTLEMENT);
     }
 
-    public function getPaymentUrlFullAttribute()
+    public function getPaymentUrlFullAttribute(): ?string
     {
         $paymentMethod = PaymentMethod::where('name', $this->payment_method)->first();
 
@@ -129,7 +133,7 @@ class Order extends Model implements IsFilterable
         return $date ? $date->created_at : null;
     }
 
-    public function getCustAccountFormatAttribute()
+    public function getCustAccountFormatAttribute(): ?string
     {
         if ($this->cust_account) {
             if (preg_match('/#/', $this->cust_account)) {
@@ -161,44 +165,15 @@ class Order extends Model implements IsFilterable
         return [];
     }
 
-    public function getPaymentStatusRawAttribute()
+    public function getOrderStatusRawAttribute(): string
     {
-        switch ($this->payment_status) {
-            case 'pending':
-                return '<span class="text-warning">Menunggu Pembayaran</span>';
-
-            case 'settlement':
-                return '<span class="text-success">Lunas</span>';
-
-            case 'refunded':
-                return '<span class="text-danger">Dikembalikan</span>';
-
-            default:
-                return $this->payment_status;
-        }
-    }
-
-    public function getOrderStatusRawAttribute()
-    {
-        switch ($this->order_status) {
-            case 'waiting-payment':
-                return '<span class="text-warning">Menunggu Pembayaran</span>';
-
-            case 'in-process':
-                return '<span class="text-warning">Dalam Proses</span>';
-
-            case 'done':
-                return '<span class="text-success">Selesai</span>';
-
-            case 'expired':
-                return '<span class="text-danger">Kadaluarsa</span>';
-
-            case 'canceled':
-                return '<span class="text-danger">Dibatalkan</span>';
-
-            default:
-                return $this->order_status;
-        }
+        return match ($this->status) {
+            StatusConst::PENDING => '<span class="badge badge-warning">'.ucwords($this->status).'</span>',
+            StatusConst::ON_PROCESS => '<span class="badge badge-info">'.ucwords($this->status).'</span>',
+            StatusConst::SUCCESS => '<span class="badge badge-success">'.ucwords($this->status).'</span>',
+            StatusConst::EXPIRED, StatusConst::FAILED, StatusConst::REFUNDED => '<span class="badge badge-danger">'.ucwords($this->status).'</span>',
+            default => $this->order,
+        };
     }
 
     public function getPaymentStatusTranslatedAttribute()
