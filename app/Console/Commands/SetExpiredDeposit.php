@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Constants\StatusConst;
 use App\Models\Deposit;
 use App\Models\Order;
 use App\Services\DepositService;
@@ -36,17 +37,17 @@ class SetExpiredDeposit extends Command
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
-        $deposits = Deposit::where('status', Order::PENDING)
+        $deposits = Deposit::where('status', StatusConst::PENDING)
             ->where('expired_at', '<=', now()->format('Y-m-d H:i:s'))
             ->get();
 
         if ($deposits->count() > 0) {
             foreach ($deposits as $deposit) {
-                DepositService::updateStatus($deposit, Order::EXPIRED);
+                DepositService::updateStatus($deposit, StatusConst::EXPIRED);
 
                 $this->info($deposit->code);
             }

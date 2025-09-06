@@ -49,7 +49,7 @@
               <td>{{ parse_date_time($deposit->created_at) }}</td>
               <td>{{ $deposit->code }}</td>
               <td>{{ $deposit->user->name }}</td>
-              <td>{{ rp_format($deposit->total_amount) }}</td>
+              <td>{{ currency_format($deposit->total_amount) }}</td>
               <td>{!! $deposit->status_raw !!}</td>
               <td>
                 @include('master.action', [

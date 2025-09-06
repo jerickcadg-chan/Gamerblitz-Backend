@@ -40,16 +40,16 @@ class HomeController extends Controller
     protected function getOrderPastWeek()
     {
         $query = Order::where('status', StatusConst::SUCCESS)
-            ->selectRaw('DATE(created_at) as date, SUM(total_price) as total_price, SUM(total_income) as total_income')
+            ->selectRaw('DATE(created_at) as date, SUM(converted_price) as converted_price, SUM(converted_total_income) as converted_total_income')
             ->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()])
             ->groupBy('date')
             ->orderBy('date');
-        $turnover = $query->pluck('total_price')->map(
+        $turnover = $query->pluck('converted_price')->map(
             function ($total) {
                 return round($total);
             }
         );
-        $profit = $query->pluck('total_income')->map(
+        $profit = $query->pluck('converted_total_income')->map(
             function($total) {
                 return round($total);
             }
@@ -65,17 +65,16 @@ class HomeController extends Controller
             ->whereYear('created_at', $year)
             ->where('status', StatusConst::SUCCESS);
 
-        $turnover = $orderSumQuery->sum('total_price');
-        $profit = $orderSumQuery->sum('total_income');
+        $turnover = $orderSumQuery->sum('converted_price');
+        $profit = $orderSumQuery->sum('converted_total_income');
         $profitMargin = $turnover === 0 ? 0 : round(($profit / $turnover) * 100);
-        $orderSum = [
+
+        return [
             'total' => $orderSumQuery->count(),
             'turnover' => $turnover,
             'profit' => $profit,
             'profitMargin' => $profitMargin,
         ];
-
-        return $orderSum;
     }
     /**
      * @return array<string,mixed>
@@ -87,13 +86,13 @@ class HomeController extends Controller
             ->where('status', StatusConst::SUCCESS);
 
 
-        $turnoverToday = $orderTodayQuery->sum('total_price');
-        $profitToday = $orderTodayQuery->sum('total_income');
-        $orderToday = [
+        $turnoverToday = $orderTodayQuery->sum('converted_price');
+        $profitToday = $orderTodayQuery->sum('converted_total_income');
+
+        return [
             'total' => $orderTodayQuery->count(),
             'turnover' => $turnoverToday,
             'profit' => $profitToday,
         ];
-        return $orderToday;
     }
 }

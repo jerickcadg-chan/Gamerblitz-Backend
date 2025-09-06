@@ -43,11 +43,11 @@
           </tr>
           <tr>
             <th>Max Use</th>
-            <td>{{ currency_format($discount->maximum) }}</td>
+            <td>{{ numbering($discount->maximum) }}</td>
           </tr>
           <tr>
             <th>Used</th>
-            <td>{{ currency_format($discount->used) }}</td>
+            <td>{{ numbering($discount->used) }}</td>
           </tr>
           <tr>
             <th>Created At</th>

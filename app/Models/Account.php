@@ -83,7 +83,7 @@ class Account extends Model implements IsFilterable
         return Attribute::make(
             get: fn () => $this->discount_type == 'percentage'
                 ? ((float) $this->discount_amount) . '%'
-                : rp_format($this->discount_amount)
+                : currency_format($this->discount_amount)
         );
     }
 

@@ -22,7 +22,8 @@
         "spatie/laravel-data": "^4.17",
         "spatie/laravel-fractal": "^6.2",
         "spatie/laravel-permission": "^6.10",
-        "xendit/xendit-php-clients": "^6.0"
+        "xendit/xendit-php-clients": "^6.0",
+        "ext-intl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

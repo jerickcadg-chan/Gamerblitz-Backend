@@ -78,7 +78,7 @@ class DepositController extends Controller
         $balance = Balance::where('user_id', $this->userId)->value('amount') ?? 0;
 
         return api_status_ok([
-            'balance' => rp_format($balance),
+            'balance' => currency_format($balance),
             'pagination' => paginateTransformer($mutations, new MutationTransformer())
         ]);
     }

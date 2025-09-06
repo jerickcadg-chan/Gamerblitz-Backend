@@ -22,6 +22,6 @@ class DevSeeder extends Seeder
         $this->call(PaymentMethodsTableSeeder::class);
         $this->call(CustomersTableSeeder::class);
         $this->call(ExchangeRateSeeder::class);
-        $this->call(OrderSeeder::class);
+        $this->call(OrdersTableSeeder::class);
     }
 }

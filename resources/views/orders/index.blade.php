@@ -85,9 +85,9 @@
                     </p>
                     <span class="text-muted">{{ @$order->productItem->product->name }}</span>
                   </td>
-                  <td>{{ rp_format($order->total_price) }}</td>
-                  <td>{{ rp_format($order->capital) }}</td>
-                  <td>{{ rp_format($order->total_income) }}</td>
+                  <td>{{ currency_format($order->converted_price) }}</td>
+                  <td>{{ currency_format($order->converted_capital) }}</td>
+                  <td>{{ currency_format($order->converted_total_income) }}</td>
                   <td>
                     <span class="d-block">{!! $order->order_status_raw !!}</span>
                     @if ($order->status == \App\Constants\StatusConst::ON_PROCESS)

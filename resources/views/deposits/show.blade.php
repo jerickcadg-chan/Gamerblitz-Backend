@@ -35,7 +35,7 @@
           </tr>
           <tr>
             <th width="200">Amount</th>
-            <td>{{ rp_format($deposit->amount) }}</td>
+            <td>{{ currency_format($deposit->amount) }}</td>
           </tr>
           <tr>
             <th width="200">Unique Code</th>
@@ -43,7 +43,7 @@
           </tr>
           <tr>
             <th width="200">Total Deposit</th>
-            <td>{{ rp_format($deposit->total_amount) }}</td>
+            <td>{{ currency_format($deposit->total_amount) }}</td>
           </tr>
           <tr>
             <th width="200">Payment Method</th>

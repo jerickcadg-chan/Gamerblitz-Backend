@@ -34,23 +34,12 @@ class Discount extends Model
         'used'
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($discount) {
-            if (Auth::check()) {
-                $discount->client_id = client()?->id;
-            }
-        });
-    }
-
     public function products(): HasMany
     {
         return $this->hasMany(DiscountProduct::class);
     }
 
-    // TODO: ther is no
+    // TODO: their is no
     public function scopeActive($query)
     {
         $now = now()->format('Y-m-d 00:00:00');
@@ -61,14 +50,14 @@ class Discount extends Model
             ->whereDate('end_date', '>=', $now);
     }
 
-    public function setCodeAttribute($value)
+    public function setCodeAttribute($value): void
     {
         $this->attributes['code'] = strtoupper($value);
     }
 
     public function getDiscountAttribute()
     {
-        return $this->disc_type == 'percentage' ? $this->nominal . '%' : rp_format($this->nominal);
+        return $this->disc_type == 'percentage' ? $this->nominal . '%' : currency_format($this->nominal);
     }
 
     public function getStatusAttribute(): string
@@ -90,46 +79,33 @@ class Discount extends Model
         }
     }
 
-    public function getStatusLabelAttribute()
+    public function getStatusLabelAttribute(): string
     {
-        switch ($this->status) {
-            case 'active':
-                return '<label class="badge badge-success">Aktif</label>';
-                break;
-
-            case 'inactive':
-                return '<label class="badge badge-danger">Tidak Aktif</label>';
-                break;
-
-            default:
-                return $this->status;
-                break;
-        }
+        return match ($this->status) {
+            'active' => '<label class="badge badge-success">Active</label>',
+            'inactive' => '<label class="badge badge-danger">Inactive</label>',
+            default => $this->status,
+        };
     }
 
     public function getProductTypeDescAttribute()
     {
         switch ($this->product_type) {
             case \App\Models\Discount::ALL:
-                return 'Berlaku untuk semua produk';
+                return 'For all products';
                 break;
 
             case \App\Models\Discount::PRODUCT_TYPE:
-                return 'Berlaku untuk produk tertentu';
+                return 'For selected product';
                 break;
 
             case \App\Models\Discount::PRODUCT_ITEM:
-                return 'Berlaku untuk produk item tertentu';
+                return 'For selected product item';
                 break;
 
             default:
                 $this->product_type;
                 break;
         }
-    }
-
-    public function client(): BelongsTo
-    {
-        return $this->belongsTo(Client::class);
     }
 }

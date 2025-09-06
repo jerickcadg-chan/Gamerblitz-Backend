@@ -50,24 +50,27 @@
               </tr>
               <tr>
                 <th>Price</th>
-                <td>
-                  <p>{{ rp_format($order->price) }}</p>
-                  <span class="text-muted">Discount = {{ rp_format($order->discount_price) }} {{ @$order->discount->name }}</span> <br>
-                  <span class="text-muted">Admin Fee = {{ rp_format($order->admin_fee) }}</span> <br>
-                  <span class="text-muted">Customer Payment Price = {{ rp_format($order->total_price) }}</span> <br>
-                </td>
+                <td>{{ currency_format($order->converted_price) }}</td>
               </tr>
               <tr>
                 <th>Discount</th>
-                <td>{{ rp_format($order->discount_price) }}</td>
+                <td>{{ currency_format($order->converted_discount_price) }}</td>
               </tr>
               <tr>
-                <th>Capital</th>
-                <td>{{ rp_format($order->capital) }}</td>
+                <th>Admin Fee</th>
+                <td>{{ currency_format($order->converted_admin_fee) }}</td>
               </tr>
               <tr>
                 <th>Total Price</th>
-                <td>{{ rp_format($order->total_income) }}</td>
+                <td>{{ currency_format($order->converted_total_price) }}</td>
+              </tr>
+              <tr>
+                <th>Capital</th>
+                <td>{{ currency_format($order->converted_capital) }}</td>
+              </tr>
+              <tr>
+                <th>Revenue</th>
+                <td>{{ currency_format($order->converted_total_income) }}</td>
               </tr>
               <tr>
                 <th>Payment Method</th>

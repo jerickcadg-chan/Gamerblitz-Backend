@@ -61,7 +61,7 @@ class Order extends Model implements IsFilterable
 
     protected $appends = ['cust_account_array'];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
         static::creating(function ($model) {
@@ -71,6 +71,7 @@ class Order extends Model implements IsFilterable
         static::saving(function ($order) {
             $rate = $order->exchange_rate;
 
+            $order->converted_price          = $order->price * $rate;
             $order->converted_capital        = $order->capital * $rate;
             $order->converted_admin_fee      = $order->admin_fee * $rate;
             $order->converted_discount_price = $order->discount_price * $rate;
@@ -136,7 +137,7 @@ class Order extends Model implements IsFilterable
     public function getCustAccountFormatAttribute(): ?string
     {
         if ($this->cust_account) {
-            if (preg_match('/#/', $this->cust_account)) {
+            if (str_contains($this->cust_account, '#')) {
                 return $this->cust_account;
             } else {
                 if (!json_decode($this->cust_account)) {
@@ -174,56 +175,6 @@ class Order extends Model implements IsFilterable
             StatusConst::EXPIRED, StatusConst::FAILED, StatusConst::REFUNDED => '<span class="badge badge-danger">'.ucwords($this->status).'</span>',
             default => $this->order,
         };
-    }
-
-    public function getPaymentStatusTranslatedAttribute()
-    {
-        switch ($this->payment_status) {
-            case 'pending':
-                return 'Belum Dibayar';
-                break;
-
-            case 'settlement':
-                return 'Lunas';
-                break;
-
-            case 'refunded':
-                return 'Dikembalikan';
-                break;
-
-            default:
-                return $this->payment_status;
-                break;
-        }
-    }
-
-    public function getOrderStatusTranslatedAttribute()
-    {
-        switch ($this->order_status) {
-            case 'waiting-payment':
-                return 'Menunggu Pembayaran';
-                break;
-
-            case 'in-process':
-                return 'Dalam Proses';
-                break;
-
-            case 'done':
-                return 'Selesai';
-                break;
-
-            case 'expired':
-                return 'Kadaluarsa';
-                break;
-
-            case 'canceled':
-                return 'Dibatalkan';
-                break;
-
-            default:
-                return $this->payment_status;
-                break;
-        }
     }
 
     // TODO:

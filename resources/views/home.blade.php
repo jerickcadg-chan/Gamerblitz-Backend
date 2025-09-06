@@ -1,3 +1,4 @@
+@php use App\Constants\CurrencyConstant; @endphp
 @extends('layouts.app', [
     'activePage' => 'dashboard',
 ])
@@ -42,7 +43,7 @@
       <div class="card-body">
         <h4 class="font-weight-normal mb-3">Revenue <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
         </h4>
-        <h2>{{ rp_format($orderSum['turnover']) }}</h2>
+        <h2>{{ currency_format($orderSum['turnover']) }}</h2>
       </div>
     </div>
   </div>
@@ -51,7 +52,7 @@
       <div class="card-body">
         <h4 class="font-weight-normal mb-3">Profit <i class="mdi mdi-diamond mdi-24px float-right"></i>
         </h4>
-        <h2>{{ rp_format($orderSum['profit']) }} <small>({{ $orderSum['profitMargin'] }}%)</small></h2>
+        <h2>{{ currency_format($orderSum['profit']) }} <small>({{ $orderSum['profitMargin'] }}%)</small></h2>
       </div>
     </div>
   </div>
@@ -75,17 +76,21 @@
     <div class="card card-img-holder">
       <div class="card-body">
         <h5 class="mb-0 font-weight-normal">Orders Count Today</h5>
-        <h3 class="mb-4">{{ rp_format($orderToday['total']) }}</h3>
+        <h3 class="mb-4">{{ currency_format($orderToday['total']) }}</h3>
         <h5 class="mb-0 font-weight-normal">Revenue Today</h5>
-        <h3 class="mb-4">{{ rp_format($orderToday['turnover']) }}</h3>
+        <h3 class="mb-4">{{ currency_format($orderToday['turnover']) }}</h3>
         <h5 class="mb-0 font-weight-normal">Profit Today</h5>
-        <h3 class="mb-4">{{ rp_format($orderToday['profit']) }}</h3>
+        <h3 class="mb-4">{{ currency_format($orderToday['profit']) }}</h3>
       </div>
     </div>
   </div>
 </div>
-
 @endsection
+
+@php
+    $currencyCode = \App\Models\Setting::getByKey(\App\Models\Setting::KEY_BASE_CURRENCY);
+    $meta = CurrencyConstant::metadata($currencyCode);
+@endphp
 
 @push('js')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -118,9 +123,9 @@ chart.render();
 function formatRupiah(value, options) {
   const round = options?.round || true;
   const roundedVal = round ? Math.round(value) : value;
-  return new Intl.NumberFormat("id-ID", {
+  return new Intl.NumberFormat("{{ $meta['locale'] }}", {
     style: "currency",
-    currency: "IDR",
+    currency: "{{ $currencyCode }}",
     minimumFractionDigits: 0,
   }).format(roundedVal);
 }

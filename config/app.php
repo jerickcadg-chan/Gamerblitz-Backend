@@ -84,6 +84,8 @@ return [
 
     'locale' => 'en',
 
+    'base_currency' => env('APP_BASE_CURRENCY', 'IDR'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
@@ -193,7 +195,6 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
-
 
     'basic_auth' => [
         'username' => env('BASIC_AUTH_USERNAME', 'mitra-gamers'),

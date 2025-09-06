@@ -3,6 +3,9 @@
 namespace App\Transformers;
 
 use App\Models\Order;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use League\Fractal\Resource\NullResource;
 use League\Fractal\TransformerAbstract;
 
 class OrderTransformer extends TransformerAbstract
@@ -24,9 +27,10 @@ class OrderTransformer extends TransformerAbstract
     /**
      * A Fractal transformer.
      *
+     * @param Order $order
      * @return array
      */
-    public function transform(Order $order)
+    public function transform(Order $order): array
     {
         return [
             'id' => $order->id,
@@ -36,16 +40,14 @@ class OrderTransformer extends TransformerAbstract
             'created_at_simple' => parse_date($order->created_at),
             'cust_email' => $order->cust_email,
             'cust_phone_number' => $order->cust_phone_number,
-            'cust_account' => $order->productItem?->product?->slug !== 'mobile-legends-joki-rank' ? json_decode($order->cust_account ): '',
+            'cust_account' => json_decode($order->cust_account),
             'payment_method' => $order->payment_method,
-            'payment_status' => $order->payment_status_translated,
-            'order_status' => $order->order_status_translated,
-            'order_status_raw' => $order->order_status_raw,
+            'status' => $order->status,
             'qty' => $order->qty,
-            'price' => rp_format($order->price),
-            'discount_price' => rp_format($order->discount_price),
-            'admin_fee' => rp_format($order->admin_fee),
-            'total_price' => rp_format($order->total_price),
+            'price' => currency_format($order->price, $order->currency_code),
+            'discount_price' => currency_format($order->discount_price, $order->currency_code),
+            'admin_fee' => currency_format($order->admin_fee, $order->currency_code),
+            'total_price' => currency_format($order->total_price, $order->currency_code),
             'discount_name' => $order->discount->name ?? null,
             'payment_url' => $order->payment_url,
             'payment_url_full' => $order->payment_url_full,
@@ -57,17 +59,17 @@ class OrderTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeProductItem(Order $order)
+    public function includeProductItem(Order $order): Item
     {
         return $this->item($order->productItem, new ProductItemTransformer);
     }
 
-    public function includeProduct(Order $order)
+    public function includeProduct(Order $order): Item
     {
         return $this->item($order->productItem->product, new ProductTransformer);
     }
 
-    public function includeVouchers(Order $order)
+    public function includeVouchers(Order $order): NullResource|Collection
     {
         if ($order->vouchers) {
             return $this->collection($order->vouchers, new VoucherTransformer);
@@ -76,7 +78,7 @@ class OrderTransformer extends TransformerAbstract
         return $this->null();
     }
 
-    public function includeUser(Order $order)
+    public function includeUser(Order $order): NullResource|Item
     {
         if ($order->user) {
             return $this->item($order->user, new UserTransformer);

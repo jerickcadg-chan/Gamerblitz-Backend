@@ -59,7 +59,7 @@
                              onchange="toggleRow(this)">
                     </td>
                     <td>{{ $productItem->name }}</td>
-                    <td class="text-end">{{ idr_format($productItem->price ?? 0) }}</td>
+                    <td class="text-end">{{ currency_format($productItem->price ?? 0) }}</td>
                     <td>
                       <input type="number" min="0" step="1"
                              class="form-control form-control-sm fs-price {{ $errors->has("items.$productItem->id.price") ? 'is-invalid' : '' }}"

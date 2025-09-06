@@ -100,12 +100,12 @@
                               <td>{{ $productItem->margin_silver ?? 0 }} %</td>
                               <td>{{ $productItem->margin_gold ?? 0 }} %</td>
                               <td>{{ $productItem->margin_vip ?? 0 }} %</td>
-                              <td>{{ rp_format($productItem->margin_price_public) }}</td>
-                              <td>{{ rp_format($productItem->margin_price_silver) }}</td>
-                              <td>{{ rp_format($productItem->margin_price_gold) }}</td>
-                              <td>{{ rp_format($productItem->margin_price_vip) }}</td>
+                              <td>{{ currency_format($productItem->margin_price_public, $productItem->currency_code) }}</td>
+                              <td>{{ currency_format($productItem->margin_price_silver, $productItem->currency_code) }}</td>
+                              <td>{{ currency_format($productItem->margin_price_gold, $productItem->currency_code) }}</td>
+                              <td>{{ currency_format($productItem->margin_price_vip, $productItem->currency_code) }}</td>
                               <td>{{ $productItem->stock === null ? '∞' : $productItem->stock }}</td>
-                              <td>{{ rp_format($productItem->capital) }}</td>
+                              <td>{{ currency_format($productItem->capital, $productItem->currency_code) }}</td>
                               <td>
                                   @include('master.action', [
                                       'view_url' => route('product_item.show', $productItem),

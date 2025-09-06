@@ -1,5 +1,8 @@
 <?php
 
+use App\Constants\CurrencyConstant;
+use App\Models\Setting;
+
 if (!function_exists('idr_format')) {
     function idr_format($price, $zeroValue = 'IDR 0')
     {
@@ -14,10 +17,53 @@ if (!function_exists('rp_format')) {
     }
 }
 
-if (!function_exists('currency_format')) {
-    function currency_format($price, $point = 0, $decimalSeparator = ".", $thousandSeparator = ",")
+if (!function_exists('numbering')) {
+    function numbering($value): int|string
     {
-        return (int) $price != 0 ? number_format($price, $point, $decimalSeparator, $thousandSeparator) : $price;
+        return (int) $value != 0 ? number_format($value,0,',','.') : 0;
+    }
+}
+
+if (!function_exists('currency_format')) {
+    /**
+     * Number formater based on locale
+     *
+     * @param float|int|null $amount
+     * @param string|null $currencyCode default dari CurrencyConstant::DEFAULT_BASE_CURRENCY
+     * @param string|null $zeroValue custom if amount is 0
+     * @return string
+     */
+    function currency_format(float|int|null $amount, ?string $currencyCode = null, ?string $zeroValue = null): string
+    {
+        $currencyCode = $currencyCode ?: Setting::getByKey(Setting::KEY_BASE_CURRENCY);
+        $meta = CurrencyConstant::metadata($currencyCode);
+
+        if (!$meta) {
+            return $currencyCode . ' ' . number_format($amount, 2);
+        }
+
+        $locale = $meta['locale'] ?? 'en-US';
+
+        $formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+
+        $formatted = $formatter->formatCurrency($amount, $currencyCode);
+
+        $symbol = CurrencyConstant::symbol($currencyCode);
+
+        if ($symbol && str_starts_with($formatted, $symbol) && !str_starts_with($formatted, $symbol.' ')) {
+            $formatted = preg_replace('/^'.preg_quote($symbol, '/').'/', $symbol.' ', $formatted);
+        }
+
+        if ($formatted === false) {
+            $symbol = $meta['symbol'] ?? $currencyCode;
+            $formatted = $symbol . '' . number_format($amount, 2, $meta['decimal'] ?? '.', ',');
+        }
+
+        if ((int)$amount === 0 && $zeroValue) {
+            return $zeroValue;
+        }
+
+        return $formatted;
     }
 }
 

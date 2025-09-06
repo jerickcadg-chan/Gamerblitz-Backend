@@ -38,7 +38,7 @@
                         <tr>
                             <td>{{ $flash_sales->firstItem() + $index }}</td>
                             <td>{{ $flash_sale->productItem->full_name }}</td>
-                            <td>{{ idr_format($flash_sale->price) }}</td>
+                            <td>{{ currency_format($flash_sale->price) }}</td>
                             <td>{{ $flash_sale->stock }}</td>
                             <td>
                                 @include('master.action', [

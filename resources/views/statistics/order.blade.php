@@ -47,8 +47,8 @@
             <tr>
               <td>{{ $order['date'] }}</td>
               <td>{{ $order['count'] }}</td>
-              <td>{{ rp_format($order['turnover']) }}</td>
-              <td>{{ rp_format($order['profit']) }}</td>
+              <td>{{ currency_format($order['turnover']) }}</td>
+              <td>{{ currency_format($order['profit']) }}</td>
               <td>{{ $order['profit_margin'] }}%</td>
             </tr>
             @empty
@@ -59,15 +59,15 @@
             <tr>
               <td><strong>Orders Total</strong></td>
               <td>{{ $orders->sum('count') }}</td>
-              <td>{{ rp_format($orders->sum('turnover')) }}</td>
-              <td>{{ rp_format($orders->sum('profit')) }}</td>
+              <td>{{ currency_format($orders->sum('turnover')) }}</td>
+              <td>{{ currency_format($orders->sum('profit')) }}</td>
               <td>{{ $orders->sum('profit_margin') }}%</td>
             </tr>
             <tr>
               <td><strong>Average</strong></td>
               <td>{{ round($orders->avg('count')) }}</td>
-              <td>{{ rp_format(round($orders->avg('turnover'))) }}</td>
-              <td>{{ rp_format(round($orders->avg('profit'))) }}</td>
+              <td>{{ currency_format(round($orders->avg('turnover'))) }}</td>
+              <td>{{ currency_format(round($orders->avg('profit'))) }}</td>
               <td>{{ round($orders->avg('profit_margin')) }}%</td>
             </tr>
           </tbody>

@@ -23,9 +23,10 @@ class ProductItemTransformer extends TransformerAbstract
     /**
      * A Fractal transformer.
      *
+     * @param ProductItem $productItem
      * @return array
      */
-    public function transform(ProductItem $productItem)
+    public function transform(ProductItem $productItem): array
     {
         return [
             'id' => $productItem->id,
@@ -33,12 +34,9 @@ class ProductItemTransformer extends TransformerAbstract
             'name' => $productItem->name,
             'stock' => $productItem->stock,
             'product_item_category_id' => $productItem->product_item_category_id,
-            'original_price' => rp_format($productItem->real_price),
-            'discount_price' => rp_format($productItem->discount_price),
-            'total_price' => rp_format($productItem->total_price),
-            'original_price_raw' => (int) $productItem->real_price,
-            'discount_price_raw' => $productItem->discount_price,
-            'total_price_raw' => $productItem->total_price,
+            'original_price' => $productItem->real_price,
+            'discount_price' => $productItem->discount_price,
+            'total_price' => $productItem->total_price,
         ];
     }
 

@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Cache;
 
 class CurrencyConstant
 {
-    public const DEFAULT_BASE_CURRENCY = 'PHP';
+    public const DEFAULT_BASE_CURRENCY = 'IDR';
 
-    protected static array $priority = ['USD', 'PHP', 'IDR'];
+    protected static array $priority = ['USD', 'PHP', 'IDR', 'SGD', 'MYR'];
 
     public static function all(): array
     {

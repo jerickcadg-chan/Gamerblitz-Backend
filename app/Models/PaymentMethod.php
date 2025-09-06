@@ -40,9 +40,9 @@ class PaymentMethod extends Model implements IsFilterable
         return strtoupper(\str_replace('_', ' ', $this->name));
     }
 
-    public function getAdminFeeTranslatedAttribute()
+    public function getAdminFeeTranslatedAttribute(): string
     {
-        return $this->admin_type == 'percentage' ? (float)$this->admin_fee.'%' : rp_format($this->admin_fee);
+        return $this->admin_type == 'percentage' ? (float)$this->admin_fee.'%' : currency_format($this->admin_fee, $this->currency_code);
     }
 
     public function allowedFilters(): AllowedFilterList
