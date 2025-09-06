@@ -90,12 +90,12 @@
 @push('js')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-var options = {
+let options = {
   chart: {
     type: 'area'
   },
   series: [{
-    name: 'Omset',
+    name: 'Revenue',
     data: {{ Js::from($orderPastWeek['turnover']) }},
   }, {
     name: 'Profit',
@@ -111,7 +111,7 @@ var options = {
   }
 }
 
-var chart = new ApexCharts(document.querySelector("#last-week-chart"), options);
+let chart = new ApexCharts(document.querySelector("#last-week-chart"), options);
 
 chart.render();
 

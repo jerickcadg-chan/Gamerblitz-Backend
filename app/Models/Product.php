@@ -55,7 +55,7 @@ class Product extends Model
         'provider_country' => '',
     ];
 
-    public function productItems()
+    public function productItems(): HasMany
     {
         return $this->hasMany(ProductItem::class)->latest();
     }
@@ -65,15 +65,15 @@ class Product extends Model
         return $query->where('status', self::ACTIVE);
     }
 
-    public function productCategory()
+    public function productCategory(): BelongsTo
     {
         return $this->belongsTo(ProductCategory::class);
     }
-    public function getStatusViewAttribute()
+    public function getStatusViewAttribute(): string
     {
         return match ($this->status) {
-            'active' => '<label class="badge badge-success">Aktif</label>',
-            'inactive' => '<label class="badge badge-danger">Tidak aktif</label>',
+            'active' => '<label class="badge badge-success">Active</label>',
+            'inactive' => '<label class="badge badge-danger">Inactive</label>',
             default => '<label class="badge badge-warning">'. $this->status .'</label>',
         };
     }
@@ -83,7 +83,7 @@ class Product extends Model
 //        return "https://" . str(client()->host)->replaceFirst("admin.", "") . '/topup/' . $this->slug;
 //    }
 
-    public function setNameAttribute($value)
+    public function setNameAttribute($value): void
     {
         $this->attributes['name'] = $value;
         $this->attributes['slug'] = \slugify($value);

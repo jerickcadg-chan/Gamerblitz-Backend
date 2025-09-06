@@ -10,7 +10,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('product.index') }}">{{ $title }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Semua Data</li>
+        <li class="breadcrumb-item active" aria-current="page">Data List</li>
       </ol>
     </nav>
   </div>
@@ -21,7 +21,7 @@
         <div class="row mb-2">
           <div class="col-md-4 mb-2">
             <form method="get">
-              <input type="text" class="form-control" name="name" placeholder="Cari nama produk"
+              <input type="text" class="form-control" name="name" placeholder="Search product name"
                 value="{{ request('name') }}">
             </form>
           </div>

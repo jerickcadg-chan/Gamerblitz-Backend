@@ -31,7 +31,7 @@
                 <th>Order</th>
                 <td>
                   <p>{{ $order->productItem->name }} ({{ $order->qty }} Item)</p>
-                  <span class="text-muted">{{ $order->productItem->product->name }} ({{ ucfirst($order->productItem->product->category) }})</span>
+                  <span class="text-muted">{{ $order->productItem->product->name }} ({{ ucfirst($order->productItem->product->productCategory->name) }})</span>
                 </td>
               </tr>
               <tr>
@@ -86,10 +86,6 @@
                 <td>{{ $order->payment_id }}</td>
               </tr>
               <tr>
-                <th>Payment Status</th>
-                <td>{!! $order->payment_status_raw !!}</td>
-              </tr>
-              <tr>
                 <th>Status Order</th>
                 <td>{!! $order->order_status_raw !!}</td>
               </tr>
@@ -107,39 +103,7 @@
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-header">
-            <h4>Payment Status History</h4>
-          </div>
-          <div class="card-body table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead>
-              <tr>
-                <th>#</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-              </thead>
-              <tbody>
-              @forelse ($order->histories->where('type', 'payment') as $payment)
-                <tr>
-                  <td>{{ $loop->iteration }}</td>
-                  <td>{{ $payment->status }}</td>
-                  <td>{{ parse_date_time($payment->created_at) }}</td>
-                </tr>
-              @empty
-                <tr>
-                  <td colspan="100%">No Data</td>
-                </tr>
-              @endforelse
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-header">
-            <h4>Order Status History</h4>
+            <b>Order Status History</b>
           </div>
           <div class="card-body table-responsive">
             <table class="table table-bordered table-hover">

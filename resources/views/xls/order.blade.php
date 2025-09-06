@@ -12,7 +12,7 @@
             <th rowspan="2">Harga</th>
             <th rowspan="2">Biaya Admin</th>
             <th rowspan="2">Total Harga</th>
-            <th rowspan="2">Diskon</th>
+            <th rowspan="2">Discount</th>
             <th rowspan="2">Modal</th>
             <th rowspan="2">Total Pendapatan</th>
             <th colspan="2">Status</th>

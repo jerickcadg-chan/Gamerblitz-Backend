@@ -77,7 +77,7 @@
                     <p class="mt-3">
                       <a href="{{ route('order.show', $order->id) }}">{{ $order->code }}</a>
                     </p>
-                    <span class="text-muted">{{ parse_date_time($order->created_at) }}<span>
+                    <span class="text-muted">{{ parse_date_time($order->created_at) }}</span>
                   </td>
                   <td>
                     <p class="mt-3">
@@ -89,7 +89,7 @@
                   <td>{{ rp_format($order->capital) }}</td>
                   <td>{{ rp_format($order->total_income) }}</td>
                   <td>
-                    <p>{!! $order->order_status_raw !!}</p>
+                    <span class="d-block">{!! $order->order_status_raw !!}</span>
                     @if ($order->status == \App\Constants\StatusConst::ON_PROCESS)
                       <form action="{{ route('order.status') }}" method="post" class="mt-3">
                         @csrf

@@ -14,7 +14,7 @@ class DiscountController extends Controller
 
     public function __construct()
     {
-        $this->title = 'Diskon';
+        $this->title = 'Discount';
 
         $this->middleware(['permission:View Discount'])->only('index', 'show');
         $this->middleware(['permission:Create Discount'])->only(['create', 'store']);
@@ -62,31 +62,7 @@ class DiscountController extends Controller
     {
         $discount = Discount::create($request->all());
 
-        switch ($request->product_type) {
-            case Discount::PRODUCT_TYPE:
-                foreach ($request->product_id as $product) {
-                    DB::table('discount_product')->insert([
-                        'discount_id' => $discount->id,
-                        'productable_id' => $product,
-                        'productable_type' => \App\Models\Product::class,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-                break;
-
-            case Discount::PRODUCT_ITEM:
-                foreach ($request->product_item_id as $product) {
-                    DB::table('discount_product')->insert([
-                        'discount_id' => $discount->id,
-                        'productable_id' => $product,
-                        'productable_type' => \App\Models\ProductItem::class,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-                break;
-        }
+        $this->extracted($request, $discount);
 
         toast(alert_created_text($this->title),'success');
         return redirect()->route('discount.index');
@@ -108,6 +84,27 @@ class DiscountController extends Controller
 
         DB::table('discount_product')->where('discount_id', $discount->id)->delete();
 
+        $this->extracted($request, $discount);
+
+        toast(alert_updated_text($this->title),'success');
+        return redirect()->route('discount.index');
+    }
+
+    public function destroy(Discount $discount)
+    {
+        $discount->delete();
+
+        toast(alert_deleted_text($this->title),'success');
+        return redirect()->route('discount.index');
+    }
+
+    /**
+     * @param DiscountRequest $request
+     * @param Discount $discount
+     * @return void
+     */
+    public function extracted(DiscountRequest $request, Discount $discount): void
+    {
         switch ($request->product_type) {
             case Discount::PRODUCT_TYPE:
                 foreach ($request->product_id as $product) {
@@ -133,16 +130,5 @@ class DiscountController extends Controller
                 }
                 break;
         }
-
-        toast(alert_updated_text($this->title),'success');
-        return redirect()->route('discount.index');
-    }
-
-    public function destroy(Discount $discount)
-    {
-        $discount->delete();
-
-        toast(alert_deleted_text($this->title),'success');
-        return redirect()->route('discount.index');
     }
 }

@@ -71,16 +71,16 @@
           </div>
           <div id="discount_form" style="display: none;">
             <div class="form-group">
-              <label for="discount_type" class="required">Tipe diskon</label>
+              <label for="discount_type" class="required">Tipe Discount</label>
               <select class="form-control {{ $errors->has('discount_type') ? ' is-invalid' : '' }}" name="discount_type" id="discount_type">
-                <option value="">Pilih tipe diskon</option>
+                <option value="">Pilih tipe Discount</option>
                 <option value="percentage" {{ old('discount_type') == 'percentage' ? 'selected' : '' }}>Percentage</option>
                 <option value="nominal" {{ old('discount_type') == 'nominal' ? 'selected' : '' }}>Nominal</option>
               </select>
               @include('alerts.feedback', ['field' => 'discount_type'])
             </div>
             <div class="form-group">
-              <label for="discount_amount" class="required">Jumlah diskon</label>
+              <label for="discount_amount" class="required">Jumlah Discount</label>
               <input type="number" step="0.1" class="form-control {{ $errors->has('discount_amount') ? ' is-invalid' : '' }}" name="discount_amount" id="discount_amount" placeholder="Enter Discount Amount" value="{{ old('discount_amount') }}">
               @include('alerts.feedback', ['field' => 'discount_amount'])
             </div>

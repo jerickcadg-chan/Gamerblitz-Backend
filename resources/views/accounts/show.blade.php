@@ -58,7 +58,7 @@
             <td>{{ rp_format($account->price) }}</td>
           </tr>
           <tr>
-            <th>Diskon</th>
+            <th>Discount</th>
             <td>{{ $account->discount }}</td>
           </tr>
           <tr>
