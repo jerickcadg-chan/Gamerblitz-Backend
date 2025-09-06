@@ -32,6 +32,8 @@ class SettingTableSeeder extends Seeder
 
             // Lapak Gaming
             'lapakgaming_api_key',
+            'lapakgaming_api_url',
+            'lapakgaming_ip',
 
             // Xendit
             'xendit_secret_key',
