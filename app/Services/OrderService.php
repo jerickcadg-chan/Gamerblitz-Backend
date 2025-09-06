@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Constants\ProductConstant;
-use App\Constants\ProductItemTypeConstant;
-use App\Constants\ProductJoki;
 use App\Constants\ProviderConstant;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\LapakGamingOrderHandler;
@@ -24,15 +22,20 @@ use App\Models\ProductItem;
 use App\Models\User;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class OrderService
 {
+    /**
+     * @throws Exception|Throwable
+     */
     public function store(OrderRequest $request): Order|string|array
     {
         try {
@@ -80,9 +83,7 @@ class OrderService
                 };
             }
 
-            $paymentStatus = $request->payment_method === PaymentMethod::SALDO ? Order::SETTLEMENT : Order::PENDING;
-
-            $orderStatus = $request->payment_method === PaymentMethod::SALDO ? Order::INPROCESS : $orderStatus = Order::WAITING_PAYMENT;
+            $orderStatus = $request->payment_method === PaymentMethod::SALDO ? Order::INPROCESS : $orderStatus = Order::PENDING;
 
             $baseCurrency = Setting::getBaseCurrency();
             $userCurrency = $request->currency_code;
@@ -110,8 +111,7 @@ class OrderService
             $order->cust_email = $request->cust_email;
             $order->cust_phone_number = $request->cust_phone_number;
             $order->payment_method = $request->payment_method;
-            $order->payment_status = $paymentStatus;
-            $order->order_status = $orderStatus;
+            $order->status = $orderStatus;
             $order->qty = $request->qty;
             $order->price = $price['price'];
             $order->capital = $price['capital'];
@@ -143,13 +143,9 @@ class OrderService
                 $order->save();
             }
 
-            $this->createHistory($order->id, $paymentStatus, 'payment');
             $this->createHistory($order->id, $orderStatus, 'order');
 
             if ($paymentMethod->name == PaymentMethod::SALDO) {
-                /* if ($productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI) { */
-                /*     $this->sentAccountCredentialsToUser($order); */
-                /* } */
                 $this->setOrderSettlement($order);
                 $this->processOrder($order);
 
@@ -259,7 +255,8 @@ class OrderService
         $realPrice,
         $adminFee,
         $adminType,
-    ) {
+    ): float|int
+    {
         return match ($adminType) {
             'percentage' => ceil($realPrice / ((100 - $adminFee) / 100)) - $realPrice,
             'nominal' => $adminFee,
@@ -268,7 +265,8 @@ class OrderService
     }
 
     /**
-     * @throws GuzzleException
+     * @throws ConnectionException
+     * @throws Exception
      */
     private function createXenditInvoice(Order $order)
     {
@@ -287,30 +285,25 @@ class OrderService
             'Authorization' => 'Basic ' . base64_encode($xenditToken . ':')
         ];
 
-        switch ($order->payment_method) {
-            case PaymentMethod::QRIS:
-                $response = Http::withHeaders($headers)->post($xenditApiUrl . '/qr_codes', [
-                    'external_id' => $order->code,
-                    'type' => 'DYNAMIC',
-                    'amount' => (int) $order->total_price,
-                    'callback_url' => route('callback.xendit'),
-                ]);
-                break;
-
-            default:
-                $response = Http::withHeaders($headers)->post($xenditApiUrl . '/v2/invoices', [
-                    'external_id' => $order->code,
-                    'amount' => (int) $order->total_price,
-                    'payer_email' => $order->cust_email ?? config('array.mail.no_reply'),
-                    'description' => $order->productItem->name . " " . $order->productItem->product->name
-                ]);
-                break;
-        }
+        $response = match ($order->payment_method) {
+            PaymentMethod::QRIS => Http::withHeaders($headers)->post($xenditApiUrl . '/qr_codes', [
+                'external_id' => $order->code,
+                'type' => 'DYNAMIC',
+                'amount' => (int)$order->total_price,
+                'callback_url' => route('callback.xendit'),
+            ]),
+            default => Http::withHeaders($headers)->post($xenditApiUrl . '/v2/invoices', [
+                'external_id' => $order->code,
+                'amount' => (int)$order->total_price,
+                'payer_email' => $order->cust_email ?? config('array.mail.no_reply'),
+                'description' => $order->productItem->name . " " . $order->productItem->product->name
+            ]),
+        };
 
         return json_decode($response->getBody());
     }
 
-    public function processOrder(Order $order)
+    public function processOrder(Order $order): void
     {
         $productItem = $order->productItem;
         $provider = $productItem->product->provider;
@@ -322,7 +315,7 @@ class OrderService
         // ... handle other provider
     }
 
-    public function setOrderSettlement(Order $order)
+    public function setOrderSettlement(Order $order): void
     {
         if ($order->payment_status === Order::PENDING) {
             $this->updateStatus($order, Order::SETTLEMENT, Order::INPROCESS);
@@ -339,7 +332,7 @@ class OrderService
         $this->sendSettlementNotif($order);
     }
 
-    public function updateStatus(Order $order, $paymentStatus = null, $orderStatus = null, $note = null)
+    public function updateStatus(Order $order, $paymentStatus = null, $orderStatus = null, $note = null): void
     {
         if ($paymentStatus) {
             $order->payment_status = $paymentStatus;
@@ -410,13 +403,13 @@ class OrderService
         return $productItem->stock;
     }
 
-    public function updateNote(Order $order, $note)
+    public function updateNote(Order $order, $note): void
     {
         $order->note = $note;
         $order->save();
     }
 
-    public function updateCapital(Order $order, $capital)
+    public function updateCapital(Order $order, $capital): void
     {
         if ($capital !== $order->productItem->capital) {
             $order->capital = $capital;
@@ -428,7 +421,7 @@ class OrderService
         }
     }
 
-    public function sentAccountCredentialsToUser(Order $order)
+    public function sentAccountCredentialsToUser(Order $order): void
     {
         $order->productItem->stock = 0;
         $order->productItem->save();
