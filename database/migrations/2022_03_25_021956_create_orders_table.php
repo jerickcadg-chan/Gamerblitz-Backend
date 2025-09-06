@@ -40,6 +40,7 @@ class CreateOrdersTable extends Migration
             $table->char('currency_code', 3);
             $table->char('converted_currency_code', 3);
             $table->decimal('exchange_rate', 18, 8);
+            $table->decimal('converted_price', 19, 2);
             $table->decimal('converted_capital', 19, 2);
             $table->decimal('converted_admin_fee', 19, 2)->default(0);
             $table->decimal('converted_discount_price', 19, 2)->default(0);

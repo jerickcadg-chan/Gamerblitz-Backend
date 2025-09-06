@@ -37,6 +37,7 @@ class OrderSeeder extends Seeder
             $totalIncome = ($price - $capital) * $qty + $adminFee - $discountPrice;
 
             $exchangeRate = 0.000065; // contoh IDR ke USD
+            $convertedPrice = round($price * $exchangeRate, 2);
             $convertedCapital = round($capital * $exchangeRate, 2);
             $convertedAdminFee = round($adminFee * $exchangeRate, 2);
             $convertedDiscountPrice = round($discountPrice * $exchangeRate, 2);
@@ -69,6 +70,7 @@ class OrderSeeder extends Seeder
                 'currency_code' => 'IDR',
                 'converted_currency_code' => 'USD',
                 'exchange_rate' => $exchangeRate,
+                'converted_price' => $convertedPrice,
                 'converted_capital' => $convertedCapital,
                 'converted_admin_fee' => $convertedAdminFee,
                 'converted_discount_price' => $convertedDiscountPrice,

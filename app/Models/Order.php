@@ -24,16 +24,16 @@ class Order extends Model implements IsFilterable
     use Filterable;
 
     // payment status
-    const PENDING = 'pending';
-    const SETTLEMENT = 'settlement';
-    const REFUNDED = 'refunded';
+    public const PENDING = 'pending';
+    public const SETTLEMENT = 'settlement';
+    public const REFUNDED = 'refunded';
 
     // order status
-    const EXPIRED = 'expired';
-    const CANCELED = 'canceled';
-    const WAITING_PAYMENT = 'waiting-payment';
-    const INPROCESS = 'in-process';
-    const DONE = 'done';
+    public const EXPIRED = 'expired';
+    public const CANCELED = 'canceled';
+    public const WAITING_PAYMENT = 'waiting-payment';
+    public const INPROCESS = 'in-process';
+    public const DONE = 'done';
 
     protected $fillable = [
         'code',
@@ -71,6 +71,7 @@ class Order extends Model implements IsFilterable
         static::saving(function ($order) {
             $rate = $order->exchange_rate;
 
+            $order->converted_price          = $order->price * $rate;
             $order->converted_capital        = $order->capital * $rate;
             $order->converted_admin_fee      = $order->admin_fee * $rate;
             $order->converted_discount_price = $order->discount_price * $rate;
