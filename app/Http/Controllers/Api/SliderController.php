@@ -10,8 +10,7 @@ class SliderController extends Controller
 {
     public function index()
     {
-        $sliders = Slider::whereByClient()
-            ->get();
+        $sliders = Slider::get();
 
         return api_status_ok(transformer($sliders, new SliderTransformer));
     }
