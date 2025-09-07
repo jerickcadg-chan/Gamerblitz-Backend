@@ -44,7 +44,7 @@
 
         <div class="form-group">
           <div class="form-group">
-            <input type="text" class="form-control mb-3" id="search-input" placeholder="Cari produk item...">
+            <input type="text" class="form-control mb-3" id="search-input" placeholder="Search product item...">
           </div>
 
           <table class="table table-bordered table-hover" id="product-table">

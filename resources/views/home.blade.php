@@ -7,7 +7,7 @@
 <form>
   <div class="row">
     <div class="col">
-      <label for="month-input" class="d-block">Month</label>
+      <label for="month-input" class="d-block mb-2">Month</label>
       <select id="month-input" class="form-control" name="month" autocomplete="off">
         @foreach(get_months() as $monthIndex => $month)
         <option value="{{ $monthIndex + 1 }}" {{ intVal($selectedMonth) === $monthIndex + 1 ? 'selected' : '' }}>{{ $month }}</option>
@@ -15,7 +15,7 @@
       </select>
     </div>
     <div class="col">
-      <label for="year-input" class="d-block">Year</label>
+      <label for="year-input" class="d-block mb-2">Year</label>
       <select id="year-input" class="form-control" name="year" autocomplete="off">
         @foreach(get_years_reversed() as $year)
         <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>
