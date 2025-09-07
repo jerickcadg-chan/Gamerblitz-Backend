@@ -26,7 +26,7 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th> # </th>
+                            <th>No</th>
                             <th>Name</th>
                             <th>Currency</th>
                             <th>Vendor</th>

@@ -45,7 +45,7 @@
                     <p><a href="{{ route('user.show', $order->user->id) }}" target="_blank">{{ $order->user->name }}</a></p>
                   @endif
                   <span class="text-muted">Email = {{ $order->cust_email }}</span><br>
-                  <span class="text-muted">No HP = <a href="https://web.whatsapp.com/send?phone={{ $order->cust_phone_number }}&text=Hai Kak" target="_blank">{{ $order->cust_phone_number }}</a></span>
+                  <span class="text-muted">Whatsapp = <a href="https://web.whatsapp.com/send?phone={{ $order->cust_phone_number }}&text=Hai Kak" target="_blank">{{ $order->cust_phone_number }}</a></span>
                 </td>
               </tr>
               <tr>

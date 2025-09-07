@@ -26,7 +26,7 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th> # </th>
+                            <th>No</th>
                             <th> Title </th>
                             <th> Price </th>
                             <th> Kode </th>

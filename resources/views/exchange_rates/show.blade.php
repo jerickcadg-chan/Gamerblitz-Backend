@@ -19,7 +19,7 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th> # </th>
+                            <th>No</th>
                             <th> Rate </th>
                             <th> Effective Date </th>
                         </tr>

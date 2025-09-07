@@ -27,7 +27,10 @@ class ProductItemController extends Controller
             ->active()
             ->latest()->with('product')
             ->when(request('name'), function ($query) {
-                return $query->where('code', 'like', '%'.request("name").'%');
+                return $query->where('name', 'like', '%'.request("name").'%');
+            })
+            ->when(request('code'), function ($query) {
+                return $query->where('code', 'like', '%'.request("code").'%');
             })
             ->when(request('product_id'), function ($query) {
                 return $query->where('product_id', request('product_id'));

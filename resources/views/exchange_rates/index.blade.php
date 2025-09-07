@@ -30,7 +30,7 @@
         <table class="table-bordered table-hover table">
           <thead>
             <tr>
-              <th> # </th>
+              <th>No</th>
               <th> Currency </th>
               <th> Rate </th>
               <th> Action </th>

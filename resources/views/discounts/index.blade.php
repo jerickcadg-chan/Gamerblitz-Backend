@@ -29,7 +29,7 @@
         <table class="table table-bordered table-hover">
           <thead>
           <tr>
-            <th> # </th>
+            <th>No</th>
             <th> Name </th>
             <th> Discount </th>
             <th> Period </th>

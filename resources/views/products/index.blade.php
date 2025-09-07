@@ -32,19 +32,25 @@
         <table class="table-bordered table-hover table">
           <thead>
             <tr>
-              <th> # </th>
-              <th> Name </th>
-              <th> Category </th>
-              <th> Provider </th>
-              <th> Items </th>
-              <th> Status </th>
-              <th> Action </th>
+              <th>No</th>
+              <th>Picture</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Provider</th>
+              <th>Items</th>
+              <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
             @forelse ($products as $index => $product)
               <tr>
                 <td>{{ $products->firstItem() + $index }}</td>
+                <td>
+                  <a href="{{ asset($product->default_picture) }}" target="_blank">
+                    <img src="{{ asset($product->default_picture) }}" class="w-25" alt="{{ $product->name }}"/>
+                  </a>
+                </td>
                 <td>
                   <div class="mb-2">{{ $product->name }}</div>
                   <strong class="small">Code: {{ $product->code }}</strong>

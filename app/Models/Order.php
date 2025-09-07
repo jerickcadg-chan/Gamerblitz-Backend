@@ -136,20 +136,22 @@ class Order extends Model implements IsFilterable
 
     public function getCustAccountFormatAttribute(): ?string
     {
-        if ($this->cust_account) {
-            if (str_contains($this->cust_account, '#')) {
-                return $this->cust_account;
-            } else {
-                if (!json_decode($this->cust_account)) {
-                    return $this->cust_account;
-                } else {
-                    $custAccount = '';
-                    foreach (json_decode($this->cust_account) as $key => $value) {
-                        $custAccount .= "<p>{$key} = {$value}</p>";
-                    }
-                    return $custAccount;
-                }
+        if (! $this->cust_account) {
+            return null;
+        }
+
+        if (str_contains($this->cust_account, '#')) {
+            return $this->cust_account;
+        }
+
+        $decoded = json_decode($this->cust_account, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            $custAccount = '';
+            foreach ($decoded as $key => $value) {
+                $custAccount .= "<p>{$key}: {$value}</p>";
             }
+            return $custAccount;
         }
 
         return $this->cust_account;

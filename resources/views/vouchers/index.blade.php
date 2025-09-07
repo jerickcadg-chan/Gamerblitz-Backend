@@ -31,7 +31,7 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th> # </th>
+                            <th>No</th>
                             <th> Serial Number </th>
                             <th> Status </th>
                             <th> Modal </th>
