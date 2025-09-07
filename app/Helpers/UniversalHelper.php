@@ -231,12 +231,23 @@ if (!function_exists('paginateTransformer')) {
     }
 }
 
-if (! function_exists('get_setting')) {
-    function get_setting(string $key): array
+if (! function_exists('brand_name')) {
+    function brand_name(): string
     {
-        return Setting::select(['value', 'key'])->where('key', $key)->first()?->toArray() ?? [
-            'key' => $key,
-            'value' => ''
-        ];
+        return Setting::getByKey('brand_name');
+    }
+}
+
+if (! function_exists('get_favicon')) {
+    function get_favicon(): string
+    {
+        return asset(Setting::getByKey('favicon'));
+    }
+}
+
+if (! function_exists('get_logo')) {
+    function get_logo(): string
+    {
+        return asset(Setting::getByKey('logo'));
     }
 }

@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Panel {{ get_setting('brand_name')['value'] }} {{ isset($title) ? ' - ' . $title : null }}</title>
+    <title>Panel {{ brand_name() }} {{ isset($title) ? ' - ' . $title : null }}</title>
 
     {{--  Script--}}
     <script src="{{ asset('js/vendor.bundle.base.js') }}"></script>
@@ -16,14 +16,25 @@
     <!-- Styles -->
     @stack('assets')
     <link href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}" rel="stylesheet">
-    @vite(['resources/css/style.css'])
 
     <!-- Select2 -->
     <link href="{{ asset('vendors/select2/select2.min.css') }}" rel="stylesheet">
     <script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
 
     <!-- Shortcut icon -->
-    <link rel="shortcut icon" href="{{ asset('/storage/'.get_setting('favicon')['value']) }}" />
+    <link rel="shortcut icon" href="{{ get_favicon() }}" />
+
+    @php
+      $primary = \App\Models\Setting::getByKey('primary_color') ?? '#445264';
+    @endphp
+
+    <style>
+      :root {
+        --color-primary: {{ $primary }};
+      }
+    </style>
+
+    @vite(['resources/css/style.css'])
 </head>
 <body>
     @auth

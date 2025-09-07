@@ -75,6 +75,16 @@
             @include('alerts.feedback', ['field' => 'settings.meta_description'])
           </div>
 
+          <div class="form-group">
+            <label>Primary Color</label>
+            <input type="color"
+                   class="form-control form-control-color {{ $errors->has('primary_color') ? ' is-invalid' : '' }}"
+                   name="settings[primary_color]"
+                   value="{{ old('primary_color', $settings['primary_color']) }}"
+                   title="Choose your color">
+            @include('alerts.feedback', ['field' => 'primary_color'])
+          </div>
+
           {{-- Pop Up Setting --}}
           <h4 class="mb-2 mt-5">Pop Up Setting</h4>
           <hr class="mb-4">
@@ -191,7 +201,7 @@
           <h4 class="mb-2 mt-5">$ Base Currency</h4>
           <div class="form-group">
             <label>System Base Currency</label>
-            <select class="form-control" name="settings[base_currency]">
+            <select class="form-control" name="settings[base_currency]" @isset($settings['base_currency']) disabled @endisset>
               @php $v = old('settings.base_currency', $settings['base_currency'] ?? 'USD'); @endphp
               @foreach ($currencies as $currency)
                 @php

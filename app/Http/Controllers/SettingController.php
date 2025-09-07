@@ -18,7 +18,7 @@ class SettingController extends Controller
         // helper URL untuk preview file
         foreach (['logo', 'logo_alt','favicon','popup_image'] as $fileKey) {
             if (!empty($pairs[$fileKey])) {
-                $settings[$fileKey.'_url'] = asset('storage/'.$pairs[$fileKey]);
+                $settings[$fileKey.'_url'] = asset($pairs[$fileKey]);
             }
         }
 

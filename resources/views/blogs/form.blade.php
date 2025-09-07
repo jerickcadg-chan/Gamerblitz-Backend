@@ -72,7 +72,7 @@
               <input type="file" name="thumbnail" class="form-control {{ $errors->has('thumbnail') ? 'is-invalid' : '' }}" accept="image/*">
               @if($isEdit && $blog->thumbnail)
                 <div class="mt-2">
-                  <img src="{{ asset('storage/'.$blog->thumbnail) }}" alt="thumb" style="height:80px">
+                  <img src="{{ asset($blog->thumbnail) }}" alt="thumb" style="height:80px">
                 </div>
               @endif
               @include('alerts.feedback', ['field' => 'thumbnail'])

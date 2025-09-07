@@ -23,7 +23,7 @@
       </select>
     </div>
     <div class="col d-flex align-items-center">
-      <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+      <button type="submit" class="btn btn-sm btn-primary mt-3">Filter</button>
     </div>
   </div>
 </form>
@@ -34,7 +34,7 @@
       <div class="card-body">
         <h4 class="font-weight-normal mb-3">Orders Count <i class="mdi mdi-chart-line mdi-24px float-right"></i>
         </h4>
-        <h2>{{ $orderSum['total'] }}</h2>
+        <h2>{{ numbering($orderSum['total']) }}</h2>
       </div>
     </div>
   </div>
@@ -76,7 +76,7 @@
     <div class="card card-img-holder">
       <div class="card-body">
         <h5 class="mb-0 font-weight-normal">Orders Count Today</h5>
-        <h3 class="mb-4">{{ currency_format($orderToday['total']) }}</h3>
+        <h3 class="mb-4">{{ numbering($orderToday['total']) }}</h3>
         <h5 class="mb-0 font-weight-normal">Revenue Today</h5>
         <h3 class="mb-4">{{ currency_format($orderToday['turnover']) }}</h3>
         <h5 class="mb-0 font-weight-normal">Profit Today</h5>

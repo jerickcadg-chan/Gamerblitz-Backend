@@ -28,7 +28,7 @@
           <span class="ms-2 text-small">{{ $blog->category?->name }} • by {{ $blog->author?->name }}</span>
         </div>
         @if($blog->thumbnail)
-          <img src="{{ asset('storage/'.$blog->thumbnail) }}" alt="thumb" class="mb-3" style="max-height:220px">
+          <img src="{{ asset($blog->thumbnail) }}" alt="thumb" class="mb-3" style="max-height:220px">
         @endif
         <div class="content">
           {!! $blog->content !!}

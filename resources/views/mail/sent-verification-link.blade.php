@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>{{ get_setting('brand_name')['value'] }} - Verification Link</title>
+        <title>{{ brand_name() }} - Verification Link</title>
         <style>
             body {
                 background: #000;
@@ -29,7 +29,7 @@
     </head>
     <body>
         <center>
-            <img src="{{ asset('/storage/'.get_setting('logo')['value']) }}" width="200px" alt="{{ get_setting('brand_name')['value'] }}">
+            <img src="{{ get_logo() }}" width="200px" alt="{{ brand_name() }}">
             <div class="card">
                 <h1>Verification Link</h1>
                 <p>Click this link to verify your account</p>

@@ -17,6 +17,8 @@ class SettingTableSeeder extends Seeder
             'favicon',
             'keywords',
             'meta_description',
+            'base_currency',
+            'primary_color',
 
             // Pop Up Setting
             'popup_title',
@@ -50,10 +52,20 @@ class SettingTableSeeder extends Seeder
             'terms',
         ];
 
+        $defaults = [
+            'brand_name'       => 'Whitelabel',
+            'title'            => 'Top Up Game Online',
+            'logo'             => '/img/dummy-logo.png',
+            'favicon'          => '/img/dummy-favicon.svg',
+            'keywords'         => 'top up game, voucher, mobile legends, free fire',
+            'base_currency'    => config('app.base_currency'),
+            'primary_color'    => '#445264'
+        ];
+
         foreach ($keys as $key) {
             Setting::firstOrCreate(
                 ['key' => $key],
-                ['value' => '']
+                ['value' => $defaults[$key] ?? '']
             );
         }
     }

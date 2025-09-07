@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <title>{{ get_setting('brand_name')['value'] }} - Order Invoice</title>
+  <title>{{ brand_name() }} - Order Invoice</title>
   <style>
     body {
       background: #000;
@@ -34,7 +34,7 @@
 </head>
 <body>
 <center>
-  <img src="{{ asset('/storage/'.get_setting('logo')['value']) }}" width="200px" alt="logo">
+  <img src="{{ get_logo() }}" width="200px" alt="logo">
   <div class="card">
     @if ($order->payment_status == \App\Constants\StatusConst::PENDING)
       <h3>Hi, please complete your payment before {{ parse_date_full($order->expired_at) }}</h3>
