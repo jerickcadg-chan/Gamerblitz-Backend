@@ -11,7 +11,7 @@ class ProductItemRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,34 +21,19 @@ class ProductItemRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        switch ($this->method()) {
-            case 'POST':
-                return [
-                    'name' => 'required|string',
-                    'price' => 'required',
-                    'price_silver' => 'required',
-                    'price_gold' => 'required',
-                    'price_vip' => 'required',
-                    'capital' => 'required',
-                    'stock' => 'required|integer',
-                ];
-            case 'PUT':
-            case 'PATCH':
-                return [
-                    'name' => 'required|string',
-                    'price' => 'required',
-                    'price_silver' => 'required',
-                    'price_gold' => 'required',
-                    'price_vip' => 'required',
-                    'capital' => 'required',
-                    'stock' => 'required|integer',
-                ];
+        return [
+            'product_id' => ['required', 'exists:products,id'],
+            'code'       => ['required', 'string', 'max:100'],
+            'name'       => ['required', 'string', 'max:255'],
+            'capital'    => ['required', 'numeric', 'min:0'],
+            'stock'      => ['nullable', 'integer', 'min:0'],
 
-            default:
-                break;
-
-        }
+            'margin'        => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'margin_silver' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'margin_gold'   => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'margin_vip'    => ['nullable', 'numeric', 'min:0', 'max:100'],
+        ];
     }
 }

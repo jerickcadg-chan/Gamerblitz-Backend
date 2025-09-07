@@ -67,6 +67,7 @@
                 <td>
                   @include('master.action', [
                       'view_url' => route('product_item.show', $productItem),
+                      'edit_url' => route('product_item.edit', $productItem)
                   ])
                 </td>
               </tr>

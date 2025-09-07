@@ -48,14 +48,14 @@ class ProductItemController extends Controller
 
     public function create()
     {
-        $storeLink = route('product_item.store');
+        $actionLink = route('product_item.store');
         $indexLink = route('product_item.index');
 
         $title = $this->title;
 
         $products = Product::all();
 
-        return view('product_items.create', compact('products', 'storeLink', 'indexLink', 'title'));
+        return view('product_items.form', compact('products', 'actionLink', 'indexLink', 'title'));
     }
 
     public function show(ProductItem $productItem)
@@ -79,14 +79,14 @@ class ProductItemController extends Controller
 
     public function edit(ProductItem $productItem)
     {
-        $updateLink = route('product_item.update', $productItem);
+        $actionLink = route('product_item.update', $productItem);
         $indexLink = route('product_item.index');
 
         $title = $this->title;
 
         $products = Product::all();
 
-        return view('product_items.edit', compact('products', 'updateLink', 'indexLink', 'productItem', 'title'));
+        return view('product_items.form', compact('products', 'actionLink', 'indexLink', 'productItem', 'title'));
     }
 
     public function update(ProductItemRequest $request, ProductItem $productItem)
