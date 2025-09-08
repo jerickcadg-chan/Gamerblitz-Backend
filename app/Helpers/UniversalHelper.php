@@ -241,13 +241,13 @@ if (! function_exists('brand_name')) {
 if (! function_exists('get_favicon')) {
     function get_favicon(): string
     {
-        return asset(Setting::getByKey('favicon'));
+        return asset('storage/'.Setting::getByKey('favicon'));
     }
 }
 
 if (! function_exists('get_logo')) {
     function get_logo(): string
     {
-        return asset(Setting::getByKey('logo'));
+        return asset('storage/'.Setting::getByKey('logo'));
     }
 }

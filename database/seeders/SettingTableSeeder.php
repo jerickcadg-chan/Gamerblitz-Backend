@@ -55,8 +55,8 @@ class SettingTableSeeder extends Seeder
         $defaults = [
             'brand_name'       => 'Whitelabel',
             'title'            => 'Top Up Game Online',
-            'logo'             => '/img/dummy-logo.png',
-            'favicon'          => '/img/dummy-favicon.svg',
+            'logo'             => 'img/dummy-logo.png',
+            'favicon'          => 'img/dummy-favicon.svg',
             'keywords'         => 'top up game, voucher, mobile legends, free fire',
             'base_currency'    => config('app.base_currency'),
             'primary_color'    => '#445264'
