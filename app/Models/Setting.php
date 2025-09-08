@@ -16,6 +16,8 @@ class Setting extends Model
     public const KEY_LAPAKGAMING_API_TOKEN = 'lapakgaming_api_token';
     public const KEY_LAPAKGAMING_IP = 'lapakgaming_ip';
 
+    protected static ?array $loaded = null;
+
     protected $fillable = [
         'key', 'value'
     ];
@@ -27,7 +29,10 @@ class Setting extends Model
 
     public static function getByKey(string $key)
     {
-        // TODO: cache
-        return static::where('key', $key)->value('value');
+        if (static::$loaded === null) {
+            static::$loaded = static::pluck('value', 'key')->all();
+        }
+
+        return static::$loaded[$key] ?? null;
     }
 }
