@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -33,8 +34,8 @@ class SendSettlementNotif extends Mailable
     {
         return new Envelope(
             from: config('mail.from.address'),
-            to: $this->order->client->user->email,
-            subject: 'Ada Orderan Dibayar Lunas #'.$this->order->code,
+            to: Setting::getByKey('notif_mail'),
+            subject: "There's paid order #".$this->order->code,
         );
     }
 

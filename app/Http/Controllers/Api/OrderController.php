@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\StatusConst;
 use App\Http\Controllers\Controller;
 use App\Models\Discount;
 use App\Models\Order;
 use App\Models\PaymentMethod;
-use App\Constants\ProductConstant;
 use App\Constants\ProductItemTypeConstant;
 use App\Models\Setting;
 use App\Transformers\DiscountTransformer;
@@ -167,17 +167,20 @@ class OrderController extends Controller
 
         switch ($request->status) {
             case 'COMPLETED':
-            case 'PAID': {
+            case 'PAID':
                 $orderService->processOrder($order);
-                return $this->setOrderSettlement($order, $orderService);
-            }
+                $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+                break;
 
             case 'EXPIRED':
-                return $this->setOrderExpired($order, $orderService);
+                $orderService->updateStatus($order, StatusConst::EXPIRED);
+                break;
 
             default:
                 return api_status_warning('Invalid request status');
         }
+
+        return api_status_ok(transformer($order, new OrderTransformer));
     }
 
     public function agenCallback(Request $request, OrderService $orderService)
@@ -221,63 +224,7 @@ class OrderController extends Controller
                 return api_status_warning('Invalid request status');
         }
 
-        if ($order->cust_email) {
-            // Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
-        }
-
         return api_status_ok($order);
-    }
-
-
-    public function setOrderSettlement(Order $order, OrderService $orderService)
-    {
-        if ($order->payment_status != Order::SETTLEMENT) {
-            $orderService->updateStatus($order, Order::SETTLEMENT, Order::INPROCESS);
-
-            if ($order->productItem->product->category == ProductConstant::VOUCHER) {
-                $orderService->sendVoucher($order);
-            } else {
-                if ($order->cust_email) {
-                    Mail::to($order->cust_email)->send(new SendOrderNotif($order));
-                }
-            }
-
-            if ($order->productItem->type == ProductItemTypeConstant::TOPUP) {
-                $orderService->processOrder($order);
-            }
-
-            if ($order->productItem->type == ProductItemTypeConstant::ACCOUNT && $order->productItem->product->category != ProductConstant::JOKI) {
-                $orderService->sentAccountCredentialsToUser($order);
-            }
-
-            $orderService->sendSettlementNotif($order);
-
-            return api_status_ok(transformer($order, new OrderTransformer));
-        }
-
-        return api_status_ok('Order sudah terbayar');
-    }
-
-    public function setOrderFailed($order, $orderService)
-    {
-        $orderService->updateStatus($order, null, Order::CANCELED);
-
-        if ($order->cust_email) {
-            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
-        }
-
-        return api_status_ok(transformer($order, new OrderTransformer));
-    }
-
-    public function setOrderExpired($order, OrderService $orderService)
-    {
-        $orderService->updateStatus($order, null, Order::EXPIRED);
-
-        if ($order->cust_email) {
-            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
-        }
-
-        return api_status_ok(transformer($order, new OrderTransformer));
     }
 
     public function checkNickname()

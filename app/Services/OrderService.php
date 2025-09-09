@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Constants\ProductConstant;
 use App\Constants\ProviderConstant;
+use App\Constants\StatusConst;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\LapakGamingOrderHandler;
 use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
+use App\Mail\SendOrderNotif;
 use App\Mail\SendSettlementNotif;
 use App\Models\Balance;
 use App\Models\ExchangeRate;
@@ -146,7 +148,7 @@ class OrderService
             $this->createHistory($order->id, $orderStatus, 'order');
 
             if ($paymentMethod->name == PaymentMethod::SALDO) {
-                $this->setOrderSettlement($order);
+                $this->updateStatus($order, StatusConst::ON_PROCESS);
                 $this->processOrder($order);
 
                 BalanceService::update($balance, [
@@ -315,38 +317,20 @@ class OrderService
         // ... handle other provider
     }
 
-    public function setOrderSettlement(Order $order): void
+    public function updateStatus(Order $order, $status, $note = null): void
     {
-        if ($order->payment_status === Order::PENDING) {
-            $this->updateStatus($order, Order::SETTLEMENT, Order::INPROCESS);
+        $order->status = $status;
+        $order->save();
 
-            if ($order->cust_email) {
-                // \Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
-            }
+        if ($status === StatusConst::ON_PROCESS) {
+            $this->sendSettlementNotif($order);
         }
 
-        //            if ($order->productItem->product->category == ProductConstant::VOUCHER) {
-        //                $this->sendVoucher($order);
-        //            }
-
-        $this->sendSettlementNotif($order);
-    }
-
-    public function updateStatus(Order $order, $paymentStatus = null, $orderStatus = null, $note = null): void
-    {
-        if ($paymentStatus) {
-            $order->payment_status = $paymentStatus;
-            $order->save();
-
-            $this->createHistory($order->id, $paymentStatus, 'payment', $note);
+        if ($order->cust_email) {
+            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
         }
 
-        if ($orderStatus) {
-            $order->order_status = $orderStatus;
-            $order->save();
-
-            $this->createHistory($order->id, $orderStatus, 'order', $note);
-        }
+        $this->createHistory($order->id, $status, 'order', $note);
     }
 
     public function createHistory($orderId, $status, $type, $note = null): bool
@@ -427,7 +411,7 @@ class OrderService
         $order->productItem->save();
         $this->updateStatus(
             order: $order,
-            orderStatus: Order::DONE,
+            status: StatusConst::SUCCESS,
         );
 
         Mail::to($order->cust_email)->queue(new OrderAccountSucceed($order));

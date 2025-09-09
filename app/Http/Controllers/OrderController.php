@@ -69,10 +69,6 @@ class OrderController extends Controller
 
         $orderService->updateStatus($order, null, $request->status);
 
-        if ($request->status === Order::CANCELED) {
-            $orderService->updateStatus($order, Order::REFUNDED, null);
-        }
-
         if ($order->payment_method == PaymentMethod::SALDO) {
             $balance = Balance::where('user_id', $order->user_id)->first();
 
@@ -82,10 +78,6 @@ class OrderController extends Controller
                 'amount' => $order->total_price,
                 'description' => "Refund $order->code"
             ]);
-        }
-
-        if ($order->cust_email) {
-            // \Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
         }
 
         toast('Changed order status to '. $order->status, 'success');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\StatusConst;
 use App\Data\LapakGaming\OrderCallbackPayload;
 use App\Data\LapakGaming\ProductUpdateCallbackPayload;
 use App\Http\Controllers\Controller;
@@ -80,10 +81,10 @@ class LapakGamingController extends Controller
 
         switch ($payload->data->status) {
             case "SUCCESS":
-                $orderService->updateStatus($order, null, Order::DONE);
+                $orderService->updateStatus($order, StatusConst::SUCCESS);
                 break;
             case "REFUNDED":
-                $orderService->updateStatus($order, null, Order::REFUNDED);
+                $orderService->updateStatus($order, StatusConst::FAILED);
                 if ($order->payment_method === PaymentMethod::SALDO) {
                     $balance = Balance::where('user_id', $order->user_id)->first();
 
