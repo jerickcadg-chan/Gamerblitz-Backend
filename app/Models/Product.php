@@ -89,12 +89,12 @@ class Product extends Model
         $this->attributes['slug'] = \slugify($value);
     }
 
-    public function productCover(): string
+    public function getProductCoverAttribute(): string
     {
         return $this->default_cover ? asset($this->default_cover) : asset('images/no-image.png');
     }
 
-    public function productPicture(): string
+    public function getProductPictureAttribute(): string
     {
         return $this->default_picture ? asset($this->default_picture) : asset('images/no-image.png');
     }
