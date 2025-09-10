@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\CurrencyConstant;
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SettingController extends Controller
@@ -18,7 +19,7 @@ class SettingController extends Controller
         // helper URL untuk preview file
         foreach (['logo', 'logo_alt','favicon','popup_image'] as $fileKey) {
             if (!empty($pairs[$fileKey])) {
-                $settings[$fileKey.'_url'] = asset('storage/'.$pairs[$fileKey]);
+                $settings[$fileKey.'_url'] = Storage::url($pairs[$fileKey]);
             }
         }
 

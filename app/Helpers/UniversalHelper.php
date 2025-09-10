@@ -5,6 +5,7 @@ use App\Models\Setting;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('calc_discount')) {
     function calc_discount($price, $type, $nominal)
@@ -241,13 +242,13 @@ if (! function_exists('brand_name')) {
 if (! function_exists('get_favicon')) {
     function get_favicon(): string
     {
-        return asset('storage/'.Setting::getByKey('favicon'));
+        return Storage::url(Setting::getByKey('favicon'));
     }
 }
 
 if (! function_exists('get_logo')) {
     function get_logo(): string
     {
-        return asset('storage/'.Setting::getByKey('logo'));
+        return Storage::url(Setting::getByKey('logo'));
     }
 }

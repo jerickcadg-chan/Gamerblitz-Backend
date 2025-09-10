@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin IdeHelperProduct
@@ -91,12 +92,12 @@ class Product extends Model
 
     public function getProductCoverAttribute(): string
     {
-        return $this->default_cover ? asset($this->default_cover) : asset('images/no-image.png');
+        return $this->default_cover ? Storage::url($this->default_cover) : asset('images/no-image.png');
     }
 
     public function getProductPictureAttribute(): string
     {
-        return $this->default_picture ? asset($this->default_picture) : asset('images/no-image.png');
+        return $this->default_picture ? Storage::url($this->default_picture) : asset('images/no-image.png');
     }
 
     public function productItemCategories(): HasMany

@@ -167,8 +167,8 @@
             @include('alerts.feedback', ['field' => 'cover'])
             @if ($isEdit && !empty($product->default_cover))
               <p class="d-block text-small mt-2">Current</p>
-              <a href="{{ asset($product->default_cover) }}" target="_blank">
-                <img src="{{ asset($product->default_cover) }}" height="100" alt="image preview" />
+              <a href="{{ $product->product_cover }}" target="_blank">
+                <img src="{{ $product->product_cover }}" height="100" alt="image preview" />
               </a>
             @endif
             @include('alerts.feedback', ['field' => 'cover'])
@@ -181,8 +181,8 @@
             @include('alerts.feedback', ['field' => 'picture'])
             @if ($isEdit && !empty($product->default_picture))
               <p class="d-block text-small mt-2">Current</p>
-              <a href="{{ asset($product->default_picture) }}" target="_blank">
-                <img src="{{ asset($product->default_picture) }}" height="100" alt="image preview" />
+              <a href="{{ $product->product_picture }}" target="_blank">
+                <img src="{{ $product->product_picture }}" height="100" alt="image preview" />
               </a>
             @endif
             @include('alerts.feedback', ['field' => 'picture'])

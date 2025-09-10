@@ -47,8 +47,8 @@
               <tr>
                 <td>{{ $products->firstItem() + $index }}</td>
                 <td>
-                  <a href="{{ asset($product->default_picture) }}" target="_blank">
-                    <img src="{{ asset($product->default_picture) }}" class="w-25" alt="{{ $product->name }}"/>
+                  <a href="{{ $product->product_picture }}" target="_blank">
+                    <img src="{{ $product->product_picture }}" class="w-25" alt="{{ $product->name }}"/>
                   </a>
                 </td>
                 <td>

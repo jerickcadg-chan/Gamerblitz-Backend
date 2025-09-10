@@ -142,6 +142,6 @@ class BlogController extends Controller
         $filename = Str::random(10).'_'.$file->getClientOriginalName();
         $path = $file->storeAs('blogs/content', $filename, 'public');
 
-        return response()->json(['location' => asset('storage/'.$path)]);
+        return response()->json(['location' => Storage::url($path)]);
     }
 }
