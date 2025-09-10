@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AffiliateWithdrawController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\DepositController;
 use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\ForgotPassword;
@@ -59,6 +60,7 @@ Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->na
 Route::get('order/{order}', [OrderController::class, 'show']);
 
 Route::get('setting', [SettingController::class, 'index']);
+Route::get('currencies', [CurrencyController::class, 'index']);
 
 $lapakgamingIp = Setting::getByKey(Setting::KEY_LAPAKGAMING_IP);
 Route::middleware(['ip.whitelist:' . $lapakgamingIp])->group(function () {
