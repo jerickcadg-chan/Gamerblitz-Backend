@@ -24,14 +24,7 @@ class ProductController extends Controller
                 return $query->where('name', 'like', '%'.\request('name').'%');
             })
             ->orderBy('ordering')
-            ->get()
-            ->filter(function ($product) {
-                if ($product->productClient->first() && ! $product->productClient->first()?->is_active) {
-                    return false;
-                }
-
-                return true;
-            });
+            ->get();
 
         return api_status_ok(transformer($products, new ProductTransformer));
     }
