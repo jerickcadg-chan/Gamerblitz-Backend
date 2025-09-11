@@ -28,7 +28,7 @@ class ProductsTableSeeder extends Seeder
             'description' => 'Mobile Legends: Bang Bang adalah sebuah permainan piranti bergerak berjenis arena pertarungan daring multipemain yang dikembangkan dan diterbitkan oleh Moonton, Yang kini menjadi anak perusahaan dari ByteDance.',
             'company' => 'Moonton',
             'how_to_order' => '<p><b>Cara Melihat Player ID / Server ID Mobile Legends</b></p><p><img src="https://mitragamers.com/assets/img/game/ml.jpg" class="w-100"></p><p>Untuk mengetahui informasi player ID dan server ID Mobile Legends, silahkan masuk ke menu "profile", lalu lihat bagian kanan atas.</p>',
-            'input_format' => '{}',
+            'input_format' => '',
             'slug' => 'mobile-legends',
             'markup_reseller_silver' => 1,
             'markup_reseller_gold' => 1,
