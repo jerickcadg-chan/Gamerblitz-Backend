@@ -34,6 +34,9 @@ class CreateProductsTable extends Migration
             $table->decimal('markup_reseller_vip', 19, 2)->default(0);
             $table->string('default_picture')->nullable();
             $table->string('default_cover')->nullable();
+            $table->text('meta_title')->nullable();
+            $table->text('meta_keyword')->nullable();
+            $table->text('meta_description')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

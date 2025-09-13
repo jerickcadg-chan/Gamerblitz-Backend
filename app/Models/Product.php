@@ -48,6 +48,9 @@ class Product extends Model
         'provider',
         'provider_code',
         'provider_country',
+        'meta_title',
+        'meta_keyword',
+        'meta_description'
     ];
 
     protected $attributes = [

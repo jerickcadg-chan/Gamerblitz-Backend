@@ -41,6 +41,21 @@
           </div>
 
           <div class="form-group">
+            <label for="category_input" class="required">Category</label>
+            <select class="form-control {{ $errors->has('product_category_id') ? ' is-invalid' : '' }}"
+                    name="product_category_id" id="category_input" required>
+              <option value="">Select category</option>
+              @foreach (\App\Models\ProductCategory::all() as $category)
+                <option value="{{ $category->id }}"
+                  {{ (string) old('product_category_id', $product->product_category_id ?? '') === (string) $category->id ? 'selected' : '' }}>
+                  {{ $category->name }}
+                </option>
+              @endforeach
+            </select>
+            @include('alerts.feedback', ['field' => 'product_category_id'])
+          </div>
+
+          <div class="form-group">
             <label for="provider_input" class="required">Provider</label>
             <select id="provider_input" class="form-control" name="provider">
               @php $v = old('provider', $product->provider ?? ''); @endphp
@@ -125,21 +140,6 @@
           </div>
 
           <div class="form-group">
-            <label for="category_input" class="required">Category</label>
-            <select class="form-control {{ $errors->has('product_category_id') ? ' is-invalid' : '' }}"
-              name="product_category_id" id="category_input" required>
-              <option value="">Select category</option>
-              @foreach (\App\Models\ProductCategory::all() as $category)
-                <option value="{{ $category->id }}"
-                  {{ (string) old('product_category_id', $product->product_category_id ?? '') === (string) $category->id ? 'selected' : '' }}>
-                  {{ $category->name }}
-                </option>
-              @endforeach
-            </select>
-            @include('alerts.feedback', ['field' => 'product_category_id'])
-          </div>
-
-          <div class="form-group">
             <label for="description_input" class="required">Description</label>
             <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }} tinymce" name="description"
               id="description_input" placeholder="Enter Description">{{ old('description', $product->description ?? '') }}</textarea>
@@ -206,6 +206,27 @@
           @else
             <input type="hidden" name="status" value="active">
           @endif
+
+          <div class="form-group">
+            <label for="input_meta_title">Meta Title</label>
+            <input type="text" class="form-control {{ $errors->has('meta_title') ? ' is-invalid' : '' }}" name="meta_title"
+                   id="input_meta_title" value="{{ old('meta_title', $product->meta_title ?? '') }}">
+            @include('alerts.feedback', ['field' => 'meta_title'])
+          </div>
+
+          <div class="form-group">
+            <label for="input_meta_keyword">Meta Keyword</label>
+            <input type="text" class="form-control {{ $errors->has('meta_keyword') ? ' is-invalid' : '' }}" name="meta_keyword"
+                   id="input_meta_keyword" value="{{ old('meta_keyword', $product->meta_keyword ?? '') }}">
+            @include('alerts.feedback', ['field' => 'meta_keyword'])
+          </div>
+
+          <div class="form-group">
+            <label for="input_meta_description">Meta Description</label>
+            <textarea class="form-control {{ $errors->has('meta_description') ? ' is-invalid' : '' }}" name="meta_description"
+                      id="input_meta_description">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
+            @include('alerts.feedback', ['field' => 'meta_description'])
+          </div>
 
           <button type="submit" class="btn btn-primary">Submit</button>
           <a href="{{ route('product.index') }}" class="btn btn-light">Cancel</a>
