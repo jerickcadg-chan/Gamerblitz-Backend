@@ -56,7 +56,7 @@
                 <td>{{ parse_date($blog->published_at) }}</td>
                 <td>
                   @include('master.action', [
-                    'view_url' => route('blog.show', $blog),
+                    'view_url' => config('app.app.fe_url').'/blog/'.$blog->slug,
                     'edit_url' => route('blog.edit', $blog),
                     'delete_url' => route('blog.destroy', $blog),
                 ])

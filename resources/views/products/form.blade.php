@@ -147,16 +147,16 @@
           </div>
 
           <div class="form-group">
-            <label for="input_format_input" class="required">Format Input</label>
+            <label for="input_format_input" class="required">Input Format</label>
             <textarea class="form-control {{ $errors->has('input_format') ? ' is-invalid' : '' }}" name="input_format"
-              id="input_format_input" placeholder="Enter Format Input" required>{{ old('input_format', $product->input_format ?? '') }}</textarea>
+              id="input_format_input" placeholder="Enter Input Format" required>{{ old('input_format', $product->input_format ?? '') }}</textarea>
             @include('alerts.feedback', ['field' => 'input_format'])
           </div>
 
           <div class="form-group">
             <label for="how_to_order_input" class="required">How to Order</label>
             <textarea class="form-control {{ $errors->has('how_to_order') ? ' is-invalid' : '' }} tinymce" name="how_to_order"
-              id="how_to_order_input" placeholder="Enter Cara Order">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
+              id="how_to_order_input" placeholder="Enter How to Order">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
             @include('alerts.feedback', ['field' => 'how_to_order'])
           </div>
 

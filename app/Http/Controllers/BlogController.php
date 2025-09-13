@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BlogRequest;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -70,9 +71,11 @@ class BlogController extends Controller
 
         $blog = Blog::create($data);
 
+        $this->updateTags($blog, $request);
+
         toast(alert_created_text($this->title), 'success');
 
-        return redirect()->route('blog.show', $blog);
+        return redirect()->route('blog.index');
     }
 
     public function show(Blog $blog)
@@ -115,9 +118,11 @@ class BlogController extends Controller
 
         $blog->update($data);
 
+        $this->updateTags($blog, $request);
+
         toast(alert_updated_text($this->title), 'success');
 
-        return redirect()->route('blog.show', $blog);
+        return redirect()->route('blog.index');
     }
 
     public function destroy(Blog $blog)
@@ -143,5 +148,21 @@ class BlogController extends Controller
         $path = $file->storeAs('blogs/content', $filename, 'public');
 
         return response()->json(['location' => Storage::url($path)]);
+    }
+
+    private function updateTags($blog, $request) {
+        $tagIds = collect($request->tags)->map(function ($tag) {
+            if (is_numeric($tag)) {
+                return (int) $tag;
+            }
+
+            $newTag = Tag::firstOrCreate(
+                ['slug' => Str::slug($tag)],
+                ['name' => $tag]
+            );
+            return $newTag->id;
+        });
+
+        $blog->tags()->sync($tagIds);
     }
 }

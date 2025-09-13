@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->longText('content');
             $table->text('meta_description')->nullable();
+            $table->text('meta_keyword')->nullable();
             $table->string('thumbnail')->nullable();
 
             $table->foreignId('blog_category_id')->constrained('blog_categories')->cascadeOnDelete();

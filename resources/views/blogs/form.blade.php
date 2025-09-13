@@ -66,6 +66,26 @@
             @include('alerts.feedback', ['field' => 'meta_description'])
           </div>
 
+          <div class="form-group">
+            <label>Meta Keyword</label>
+            <input type="text" name="meta_keyword" class="form-control {{ $errors->has('meta_keyword') ? 'is-invalid' : '' }}" value="{{ old('meta_keyword', $blog->meta_keyword) }}"></input>
+            @include('alerts.feedback', ['field' => 'meta_keyword'])
+          </div>
+
+          <div class="form-group">
+            <label for="tags_input">Tags</label>
+            <select id="tags_input" name="tags[]"
+                    class="form-control select2"
+                    multiple="multiple" style="width: 100%;">
+              @foreach (\App\Models\Tag::all() as $tag)
+                <option value="{{ $tag->id }}"
+                  {{ isset($blog) && $blog->tags->pluck('id')->contains($tag->id) ? 'selected' : '' }}>
+                  {{ $tag->name }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
           <div class="row">
             <div class="form-group col-md-6">
               <label>Thumbnail</label>
@@ -77,6 +97,7 @@
               @endif
               @include('alerts.feedback', ['field' => 'thumbnail'])
             </div>
+
             <div class="form-group col-md-6">
               <label class="required">Status</label>
               @php $st = old('status', $blog->status ?: 'draft'); @endphp
@@ -193,6 +214,12 @@
             $sel.prop('disabled', false);
           });
       });
+    });
+
+    $('#tags_input').select2({
+      tags: true,   // bisa input baru langsung
+      tokenSeparators: [','],
+      placeholder: "Select or type tags"
     });
   </script>
 @endpush
