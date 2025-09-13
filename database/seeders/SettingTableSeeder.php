@@ -60,6 +60,7 @@ class SettingTableSeeder extends Seeder
             'favicon'          => 'img/dummy-favicon.svg',
             'keywords'         => 'top up game, voucher, mobile legends, free fire',
             'base_currency'    => config('app.base_currency'),
+            'base_inv_code'    => config('app.base_inv_code'),
             'primary_color'    => '#445264'
         ];
 

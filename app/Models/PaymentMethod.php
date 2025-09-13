@@ -23,6 +23,10 @@ class PaymentMethod extends Model implements IsFilterable
 
     const QRIS = 'qris';
     const SALDO = 'saldo';
+    const QR = 'QR';
+    const EWALLET = 'E-Wallet';
+    const BANK_VA = 'Bank Virtual Account';
+    const RETAIL = 'Retail Outlet';
 
     protected $fillable = [
         'name',

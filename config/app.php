@@ -86,6 +86,8 @@ return [
 
     'base_currency' => env('APP_BASE_CURRENCY', 'IDR'),
 
+    'base_inv_code' => env('APP_BASE_INV_CODE', 'INV'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale

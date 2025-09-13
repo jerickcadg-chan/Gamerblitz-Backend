@@ -134,15 +134,7 @@ class OrderService
             }
 
             if ($paymentMethod->vendor === 'xendit') {
-                $invoice = $this->createXenditInvoice($order);
-
-                if ($order->payment_method == PaymentMethod::QRIS) {
-                    $order->payment_code = $invoice->qr_string;
-                }
-
-                $order->payment_url = $invoice->invoice_url ?? null;
-                $order->payment_id = $invoice->id;
-                $order->save();
+                app(XenditService::class)->createXenditInvoice($order);
             }
 
             $this->createHistory($order->id, $orderStatus, 'order');
@@ -264,45 +256,6 @@ class OrderService
             'nominal' => $adminFee,
             default => 0,
         };
-    }
-
-    /**
-     * @throws ConnectionException
-     * @throws Exception
-     */
-    private function createXenditInvoice(Order $order)
-    {
-        $xenditApiUrl = Setting::getByKey(Setting::KEY_XENDIT_API_URL);
-        if (!$xenditApiUrl) {
-            throw new \Exception('Missing xendit url in setting');
-        }
-
-        $xenditToken = Setting::getByKey(Setting::KEY_XENDIT_SECRET_KEY);
-        if (!$xenditToken) {
-            throw new \Exception('Missing xendit secret key in setting');
-        }
-
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Basic ' . base64_encode($xenditToken . ':')
-        ];
-
-        $response = match ($order->payment_method) {
-            PaymentMethod::QRIS => Http::withHeaders($headers)->post($xenditApiUrl . '/qr_codes', [
-                'external_id' => $order->code,
-                'type' => 'DYNAMIC',
-                'amount' => (int)$order->total_price,
-                'callback_url' => route('callback.xendit'),
-            ]),
-            default => Http::withHeaders($headers)->post($xenditApiUrl . '/v2/invoices', [
-                'external_id' => $order->code,
-                'amount' => (int)$order->total_price,
-                'payer_email' => $order->cust_email ?? config('array.mail.no_reply'),
-                'description' => $order->productItem->name . " " . $order->productItem->product->name
-            ]),
-        };
-
-        return json_decode($response->getBody());
     }
 
     public function processOrder(Order $order): void

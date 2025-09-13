@@ -32,7 +32,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('discount_price', 19, 2)->default(0);
             $table->decimal('total_price', 19, 2);
             $table->decimal('total_income', 19, 2);
-            $table->string('payment_url')->nullable();
+            $table->text('payment_url')->nullable();
             $table->text('payment_code')->nullable();
             $table->string('payment_id')->nullable();
             $table->text('note')->nullable();

@@ -50,7 +50,6 @@ class OrderTransformer extends TransformerAbstract
             'total_price' => currency_format($order->total_price, $order->currency_code),
             'discount_name' => $order->discount->name ?? null,
             'payment_url' => $order->payment_url,
-            'payment_url_full' => $order->payment_url_full,
             'payment_code' => $order->payment_code,
             'payment_id' => $order->payment_id,
             'expired_at' => parse_date_time_full($order->expired_at),
