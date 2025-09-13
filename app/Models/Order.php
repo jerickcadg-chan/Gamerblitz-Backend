@@ -65,7 +65,7 @@ class Order extends Model implements IsFilterable
     {
         parent::boot();
         static::creating(function ($model) {
-            $model->attributes['code'] = 'INV' . date('ymd') . strtoupper(substr(uniqid(), -5));
+            $model->attributes['code'] = Setting::getByKey('base_inv_code') . date('ymd') . strtoupper(substr(uniqid(), -5));
         });
 
         static::saving(function ($order) {
