@@ -42,11 +42,10 @@ class OrderService
     {
         try {
             DB::beginTransaction();
-            /** @var User $authUser */
+
             $authUser = Auth::user();
 
-            /** @var ProductItem $productItem */
-            $productItem = ProductItem::find($request->product_item_id);
+            $productItem = ProductItem::with('product')->find($request->product_item_id);
 
             $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
 
@@ -113,6 +112,7 @@ class OrderService
             $order->cust_email = $request->cust_email;
             $order->cust_phone_number = $request->cust_phone_number;
             $order->payment_method = $request->payment_method;
+            $order->provider = $productItem->product->provider;
             $order->status = $orderStatus;
             $order->qty = $request->qty;
             $order->price = $price['price'];
@@ -137,7 +137,7 @@ class OrderService
                 app(XenditService::class)->createXenditInvoice($order);
             }
 
-            $this->createHistory($order->id, $orderStatus, 'order');
+            $this->updateStatus($order, StatusConst::PENDING);
 
             if ($paymentMethod->slug == PaymentMethod::BALANCE) {
                 $this->updateStatus($order, StatusConst::ON_PROCESS);
@@ -275,12 +275,12 @@ class OrderService
         $order->status = $status;
         $order->save();
 
-        if ($status === StatusConst::ON_PROCESS) {
-            $this->sendSettlementNotif($order);
+        if ($status === StatusConst::ON_PROCESS && $order->provider === ProviderConstant::MANUAL) {
+            Mail::queue(new SendSettlementNotif($order));
         }
 
         if ($order->cust_email) {
-            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
+            Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
         }
 
         $this->createHistory($order->id, $status, 'order', $note);
@@ -296,38 +296,6 @@ class OrderService
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-    }
-
-    public function sendVoucher($order)
-    {
-        $voucher = Voucher::ready()->where('product_item_id', $order->product_item_id)->first();
-
-        if (is_null($voucher)) {
-            return api_status_warning('Voucher not found');
-        }
-
-        if ($order->cust_email) {
-            // \Mail::to($order->cust_email)->queue(new \App\Mail\SendVoucher($order, $voucher));
-        }
-
-        $productItem = ProductItem::find($order->product_item_id);
-
-        $voucher->update([
-            'status' => 'used',
-            'order_id' => $order->id
-        ]);
-
-        $order->capital = $voucher->capital;
-        $order->total_income = $order->price - $voucher->capital;
-        $order->save();
-
-        $this->updateVoucherStock($productItem);
-        $this->updateStatus($order, null, Order::DONE);
-    }
-
-    public function sendSettlementNotif(Order $order): void
-    {
-        Mail::queue(new SendSettlementNotif($order));
     }
 
     public function updateVoucherStock($productItem)

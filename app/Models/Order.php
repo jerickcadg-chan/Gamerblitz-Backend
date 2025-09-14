@@ -42,6 +42,7 @@ class Order extends Model implements IsFilterable
         'cust_phone_number',
         'product_item_id',
         'cust_account',
+        'provider',
         'payment_method',
         'payment_status',
         'order_status',

@@ -77,9 +77,6 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('statistic/order', [StatisticController::class, 'showOrderStatistic'])->name('statistic.order');
     Route::get('statistic/user', [StatisticController::class, 'showUserStatistic'])->name('statistic.user');
 
-//    Route::resource('account', AccountController::class);
-//    Route::post('account/{account}/show-information', [AccountController::class, 'showTheInformation'])->name('account.show-information');
-
     // product item
     Route::get('product-item/price-form', [ProductItemPriceController::class, 'index'])->name('product-item.price-form');
     Route::put('product-item/price-form', [ProductItemPriceController::class, 'update'])->name('product-item.price-form-update');

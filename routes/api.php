@@ -43,8 +43,6 @@ Route::get('check-nickname', [OrderController::class, 'checkNickname']);
 Route::get('category', CategoryController::class);
 Route::get('product-item-category', [ProductItemCategoryController::class, 'index']);
 Route::get('product-item-categories', [ProductItemCategoryController::class, 'indexWithMeta']);
-Route::get('product/account', [AccountController::class, 'index'])->name('product.account');
-Route::get('product/{account:slug}/account', [AccountController::class, 'show'])->name('product.account.show');
 Route::get('product', [ProductController::class, 'index']);
 Route::get('product/paginate', [ProductController::class, 'paginate']);
 Route::get('product/{product}', [ProductController::class, 'showProduct']);

@@ -15,7 +15,7 @@ class SendSettlementNotif extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $order;
+    public Order $order;
 
     /**
      * Create a new message instance.

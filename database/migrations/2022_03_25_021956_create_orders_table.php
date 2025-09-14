@@ -24,6 +24,7 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('cust_phone_number');
             $table->string('cust_email')->nullable();
             $table->string('payment_method', 25)->nullable();
+            $table->string('provider');
             $table->enum('status', config('array.order.status'));
             $table->integer('qty');
             $table->decimal('price', 19, 2);
