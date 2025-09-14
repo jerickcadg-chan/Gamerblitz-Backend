@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
 class Blog extends Model
 {
@@ -26,5 +27,10 @@ class Blog extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'blog_tag');
+    }
+
+    public function getThumbnailUrlAttribute()
+    {
+        return Storage::url($this->thumbnail);
     }
 }

@@ -42,7 +42,7 @@ class BlogTransformer extends TransformerAbstract
             $arr['excerpt'] = Str::limit($plain, 200); // 200 chars max
         }
 
-        $arr['thumbnail_url'] = Storage::url($blog->thumbnail);
+        $arr['thumbnail_url'] = $blog->thumbnail_url;
         $arr['category'] = $blog->category->name;
         $arr['author'] = $blog->author->name;
 
