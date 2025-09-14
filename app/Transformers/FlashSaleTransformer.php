@@ -11,7 +11,8 @@ class FlashSaleTransformer extends TransformerAbstract
      * List of resources to automatically include
      */
     protected array $defaultIncludes = [
-        'product_item'
+        'product_item',
+        'product',
     ];
 
     /**
@@ -39,5 +40,10 @@ class FlashSaleTransformer extends TransformerAbstract
     public function includeProductItem(FlashSale $flashSale)
     {
         return $this->item($flashSale->productItem, new ProductItemTransformer());
+    }
+
+    public function includeProduct(FlashSale $flashSale)
+    {
+        return $this->item($flashSale->productItem->product, new ProductTransformer());
     }
 }
