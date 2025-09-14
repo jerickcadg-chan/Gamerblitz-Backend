@@ -12,28 +12,29 @@ class ProductItemCategoryController extends Controller
     public function index()
     {
         return api_status_ok(
-            array_values(ProductItemCategory::active()
-                ->get()
-                ->filter(function (ProductItemCategory $item) {
-                    return $item->name !=
-                        ProductConstant::getTitle("account") &&
-                        $item->name != ProductConstant::getTitle("joki");
-                })
-                ->map(function ($item) {
-                    return [
-                        "id" => $item->id,
-                        "key" => $item->slug,
-                        "label" => $item->name,
-                    ];
-                })
-                ->toArray())
+            array_values(
+                ProductItemCategory::get()
+                    ->filter(function (ProductItemCategory $item) {
+                        return $item->name !=
+                            ProductConstant::getTitle("account") &&
+                            $item->name != ProductConstant::getTitle("joki");
+                    })
+                    ->map(function ($item) {
+                        return [
+                            "id" => $item->id,
+                            "key" => $item->slug,
+                            "label" => $item->name,
+                        ];
+                    })
+                    ->toArray()
+            )
         );
     }
 
     public function indexWithMeta(Request $request)
     {
         $productId = $request->query('product_id');
-        $q = ProductItemCategory::active()->with("metas.picture");
+        $q = ProductItemCategory::with("metas.picture");
         if ($productId) {
             $q->where('product_id', $productId);
         }
