@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AffiliateWithdrawController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\DepositController;
@@ -62,6 +63,9 @@ Route::get('order/{order}', [OrderController::class, 'show']);
 
 Route::get('setting', [SettingController::class, 'index']);
 Route::get('currencies', [CurrencyController::class, 'index']);
+
+Route::get('blogs', [BlogController::class, 'index']);
+Route::get('blogs/{blog}', [BlogController::class, 'show']);
 
 $lapakgamingIp = Setting::getByKey(Setting::KEY_LAPAKGAMING_IP);
 Route::middleware(['ip.whitelist:' . $lapakgamingIp])->group(function () {
