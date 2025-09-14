@@ -3,7 +3,6 @@
 namespace App\Transformers;
 
 use App\Models\FlashSale;
-use App\Models\FlashSaleProductItem;
 use League\Fractal\TransformerAbstract;
 
 class FlashSaleTransformer extends TransformerAbstract
@@ -12,7 +11,7 @@ class FlashSaleTransformer extends TransformerAbstract
      * List of resources to automatically include
      */
     protected array $defaultIncludes = [
-        //
+        'productItem'
     ];
 
     /**
@@ -32,25 +31,13 @@ class FlashSaleTransformer extends TransformerAbstract
         return [
             'id' => $flashSale->id,
             'name' => $flashSale->name,
-            'start_date' => $flashSale->start_date->format('Y-m-d H:i:s'),
-            'end_date' => $flashSale->end_date->format('Y-m-d H:i:s'),
-            'items' => $flashSale->items->map(function (FlashSaleProductItem $item) {
-                return [
-                    'id' => $item->id,
-                    'slug' => $item->productItem?->product?->slug,
-                    'flash_price' => $item->price,
-                    'stock' => (float) $item->stock,
-                    'real_price' => $item->productItem?->real_price,
-                    'product_name' => $item->productItem?->product?->name,
-                    'product_item' => [
-                        'id' => $item->productItem?->id,
-                        'name' => $item->productItem?->name,
-                        'code' => $item->productItem?->code,
-                        'cover' => $item->productItem?->product?->product_cover,
-                        'picture' => $item->productItem?->product?->product_picture,
-                    ],
-                ];
-            })->toArray(),
+            'stock' => $flashSale->stock,
+            'price' => $flashSale->price,
         ];
+    }
+
+    public function includeProductItem(FlashSale $flashSale)
+    {
+        return $this->item($flashSale->productItem, new ProductItemTransformer());
     }
 }

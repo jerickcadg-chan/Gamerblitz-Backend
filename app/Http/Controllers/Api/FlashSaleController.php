@@ -10,8 +10,7 @@ class FlashSaleController extends Controller
 {
     public function __invoke()
     {
-        $query = FlashSale::active()
-            ->with('items.productItem.product.productClient')->first();
+        $query = FlashSale::active()->get();
 
         return api_status_ok(transformer(
             query: $query,
