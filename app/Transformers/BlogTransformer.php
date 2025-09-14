@@ -35,6 +35,8 @@ class BlogTransformer extends TransformerAbstract
     {
         $arr = $blog->toArray();
         $arr['thumbnail_url'] = Storage::url($blog->thumbnail);
+        $arr['category'] = $blog->category->name;
+        $arr['author'] = $blog->author->name;
         return $arr;
     }
 }
