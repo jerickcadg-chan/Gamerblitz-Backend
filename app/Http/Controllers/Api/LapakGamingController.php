@@ -85,7 +85,7 @@ class LapakGamingController extends Controller
                 break;
             case "REFUNDED":
                 $orderService->updateStatus($order, StatusConst::FAILED);
-                if ($order->payment_method === PaymentMethod::SALDO) {
+                if ($order->payment_method === PaymentMethod::BALANCE) {
                     $balance = Balance::where('user_id', $order->user_id)->first();
 
                     BalanceService::update($balance, [

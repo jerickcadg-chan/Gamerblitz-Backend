@@ -70,7 +70,7 @@ class AppServiceProvider extends ServiceProvider
 
 
         ResetPassword::createUrlUsing(function (User $user, string $token) {
-            $resetUrl = $user->client->frontend_host . '/reset-password';
+            $resetUrl = config('app.fe_url') . '/reset-password';
 
             return $resetUrl.'?token='.$token.'&email='.$user->email;
         });

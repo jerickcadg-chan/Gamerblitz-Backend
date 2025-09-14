@@ -209,7 +209,7 @@ class OrderController extends Controller
                 $orderService->updateStatus($order, null, Order::REFUNDED);
                 $orderService->updateNote($order, $request->status_desc);
 
-                if ($request->payment_method === PaymentMethod::SALDO) {
+                if ($request->payment_method === PaymentMethod::BALANCE) {
                     $balance = Balance::where('user_id', $order->user_id)->first();
 
                     BalanceService::update($balance, [

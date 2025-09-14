@@ -85,7 +85,7 @@ class OrderControllerTest extends TestCase
 
     public function test_order_failed_because_stock_not_enough()
     {
-        $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::SALDO]);
+        $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::BALANCE]);
         $product = Product::factory()->create();
         $productItem = ProductItem::factory()
             ->for($product)
@@ -106,7 +106,7 @@ class OrderControllerTest extends TestCase
 
     public function test_order_failed_bacause_no_balance_without_auth(): void
     {
-        $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::SALDO]);
+        $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::BALANCE]);
         $product = Product::factory()->create();
         $productItem = ProductItem::factory()
             ->for($product)
@@ -123,7 +123,7 @@ class OrderControllerTest extends TestCase
 
     public function test_order_failed_bacause_no_balance_with_auth(): void
     {
-        $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::SALDO]);
+        $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::BALANCE]);
         $product = Product::factory()->create();
         $productItem = ProductItem::factory()
             ->for($product)
@@ -153,7 +153,7 @@ class OrderControllerTest extends TestCase
         try {
             config(['array.mail.notification' => 'test@test.com']);
             Mail::fake();
-            $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::SALDO]);
+            $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::BALANCE]);
             $product = Product::factory()->create();
             $amountBalance = 1000000;
             $balance = Balance::factory()
@@ -234,7 +234,7 @@ class OrderControllerTest extends TestCase
         try {
             config(['array.mail.notification' => 'test@test.com']);
             Mail::fake();
-            $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::SALDO]);
+            $payementMethod = PaymentMethod::factory()->create(['vendor' => PaymentMethod::BALANCE]);
             $product = Product::factory()->create();
             $amountBalance = 1000000;
             $balance = Balance::factory()

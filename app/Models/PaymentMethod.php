@@ -21,8 +21,8 @@ class PaymentMethod extends Model implements IsFilterable
     use WithPictures;
     use Filterable;
 
-    const QRIS = 'qris';
-    const SALDO = 'saldo';
+    const XENDIT = 'xendit';
+    const BALANCE = 'balance';
     const QR = 'QR';
     const EWALLET = 'E-Wallet';
     const BANK_VA = 'Bank Virtual Account';

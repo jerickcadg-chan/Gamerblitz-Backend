@@ -81,7 +81,7 @@
           </div>
 
           <div class="form-group">
-            <label for="vendor_input" class="required">Admin Type</label>
+            <label for="vendor_input" class="required">Vendor</label>
             <select class="form-control {{ $errors->has('vendor') ? ' is-invalid' : '' }}" name="vendor" id="vendor_input" required>
               @foreach(['xendit' => 'Xendit', 'paypal' => 'Paypal', 'manual' => 'Manual'] as $val => $label)
                 <option value="{{ $val }}" {{ old('vendor', $paymentMethod->vendor ?? '') == $val ? 'selected' : '' }}>

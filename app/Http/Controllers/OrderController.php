@@ -67,9 +67,9 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($request->order_id);
 
-        $orderService->updateStatus($order, null, $request->status);
+        $orderService->updateStatus($order, $request->status);
 
-        if ($order->payment_method == PaymentMethod::SALDO) {
+        if ($order->payment_method == PaymentMethod::BALANCE) {
             $balance = Balance::where('user_id', $order->user_id)->first();
 
             BalanceService::update($balance, [

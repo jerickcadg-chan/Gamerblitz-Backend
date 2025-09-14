@@ -40,7 +40,7 @@ class DepositService
                 'balanceable_type' => Deposit::class,
                 'balanceable_id' => $deposit->id,
                 'amount' => $deposit->total_amount,
-                'description' => "Topup Saldo $deposit->code"
+                'description' => "Topup Balance $deposit->code"
             ]);
         }
 

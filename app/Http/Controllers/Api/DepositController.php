@@ -9,6 +9,7 @@ use App\Models\Balance;
 use App\Models\BalanceHistory;
 use App\Models\Deposit;
 use App\Models\PaymentMethod;
+use App\Models\Setting;
 use App\Transformers\DepositTransformer;
 use App\Transformers\MutationTransformer;
 use Illuminate\Database\Eloquent\Builder;
@@ -47,7 +48,9 @@ class DepositController extends Controller
 
     public function store(DepositRequest $request)
     {
-        $uniqueCode = rand(10, 100);
+        $baseCurrency = Setting::getByKey('base_currency');
+
+        $uniqueCode = $this->generateUniqueAmount($request->amount, $baseCurrency);
 
         $paymentMethod = PaymentMethod::find($request->payment_method_id);
 
@@ -56,7 +59,7 @@ class DepositController extends Controller
             : $request->amount + $paymentMethod->admin_fee;
 
         $deposit = Deposit::create([
-            'code' => "DP".date('ymd').rand(1000, 9999),
+            'code' => "DP".date('ymd').rand(1000, 999999),
             'user_id' => $this->userId,
             'payment_method_id' => $paymentMethod->id,
             'amount' => $amount,
@@ -81,5 +84,17 @@ class DepositController extends Controller
             'balance' => currency_format($balance),
             'pagination' => paginateTransformer($mutations, new MutationTransformer())
         ]);
+    }
+
+    public function generateUniqueAmount(float $baseAmount, string $currency): float {
+        switch (strtoupper($currency)) {
+            case 'IDR':
+                $uniqueCode = rand(1, 999);
+                return $baseAmount + $uniqueCode;
+
+            default:
+                $uniqueCode = rand(1, 99);
+                return $baseAmount + ($uniqueCode / 100);
+        }
     }
 }

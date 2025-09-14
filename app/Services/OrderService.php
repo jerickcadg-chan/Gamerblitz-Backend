@@ -64,7 +64,7 @@ class OrderService
                 return trans('order.out_of_stock');
             };
 
-            if ($request->payment_method === PaymentMethod::SALDO) {
+            if ($paymentMethod->slug === PaymentMethod::BALANCE) {
                 if (!$authUser) {
                     DB::rollBack();
 
@@ -85,7 +85,7 @@ class OrderService
                 };
             }
 
-            $orderStatus = $request->payment_method === PaymentMethod::SALDO ? Order::INPROCESS : $orderStatus = Order::PENDING;
+            $orderStatus = $request->payment_method === PaymentMethod::BALANCE ? Order::INPROCESS : $orderStatus = Order::PENDING;
 
             $baseCurrency = Setting::getBaseCurrency();
             $userCurrency = $request->currency_code;
@@ -133,13 +133,13 @@ class OrderService
                 $order->discount->save();
             }
 
-            if ($paymentMethod->vendor === 'xendit') {
+            if ($paymentMethod->vendor === PaymentMethod::XENDIT) {
                 app(XenditService::class)->createXenditInvoice($order);
             }
 
             $this->createHistory($order->id, $orderStatus, 'order');
 
-            if ($paymentMethod->name == PaymentMethod::SALDO) {
+            if ($paymentMethod->slug == PaymentMethod::BALANCE) {
                 $this->updateStatus($order, StatusConst::ON_PROCESS);
                 $this->processOrder($order);
 
@@ -147,7 +147,7 @@ class OrderService
                     'balanceable_type' => Order::class,
                     'balanceable_id' => $order->id,
                     'amount' => -$order->total_price,
-                    'description' => "Transaksi $order->code"
+                    'description' => "Transaction $order->code"
                 ]);
             }
 
@@ -223,7 +223,7 @@ class OrderService
         );
         $forAdmin = 0;
 
-        if ($xenditFee == 'no-admin' && $paymentMethod->name != PaymentMethod::SALDO) {
+        if ($xenditFee == 'no-admin' && $paymentMethod->slug != PaymentMethod::BALANCE) {
             $xenditFee = rand(30, 100);
             $forAdmin = $xenditFee;
         }
@@ -325,7 +325,7 @@ class OrderService
         $this->updateStatus($order, null, Order::DONE);
     }
 
-    public function sendSettlementNotif(Order $order)
+    public function sendSettlementNotif(Order $order): void
     {
         Mail::queue(new SendSettlementNotif($order));
     }

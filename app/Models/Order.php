@@ -57,6 +57,9 @@ class Order extends Model implements IsFilterable
         'currency_code',
         'converted_currency_code',
         'exchange_rate',
+        'payment_url',
+        'payment_url',
+        'payment_id'
     ];
 
     protected $appends = ['cust_account_array'];

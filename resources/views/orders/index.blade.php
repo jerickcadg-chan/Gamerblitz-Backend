@@ -96,8 +96,8 @@
                       <form action="{{ route('order.status') }}" method="post" class="mt-3">
                         @csrf
                         <input type="hidden" name="order_id" value="{{ $order->id }}">
-                        <button type="submit" name="status" class="btn btn-sm btn-primary" onclick="$('#status-{{ $order->id }}').val('{{ \App\Models\Order::DONE }}')">Done</button>
-                        <button type="submit" name="status" class="btn btn-sm btn-danger" onclick="$('#status-{{ $order->id }}').val('{{ \App\Models\Order::CANCELED }}');return confirm('Are You Sure?');">Cancel</button>
+                        <button type="submit" name="status" class="btn btn-sm btn-primary" onclick="$('#status-{{ $order->id }}').val('{{ \App\Constants\StatusConst::SUCCESS }}')">Done</button>
+                        <button type="submit" name="status" class="btn btn-sm btn-danger" onclick="$('#status-{{ $order->id }}').val('{{ \App\Constants\StatusConst::FAILED }}');return confirm('Are You Sure?');">Cancel</button>
                         <input type="hidden" id="status-{{ $order->id }}" name="status">
                       </form>
                     @endif

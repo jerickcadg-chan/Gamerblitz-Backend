@@ -84,7 +84,7 @@
     <p><a href="{{ $order->payment_url_full }}" class="button" target="_blank">Pay Now</a></p>
   @endif
   <p>This email was generated automatically</p>
-  <a href="{{$order->client->frontend_host}}" target="_blank">{{$order->client->frontend_host}}</a>
+  <a href="{{ config('app.fe_url') }}" target="_blank">{{ config('app.fe_url') }}</a>
 </center>
 </body>
 </html>

@@ -27,7 +27,7 @@
           {!! decrypt($order->accounts->first()->information) !!}
         </div>
         <p>Email dibuat secara otomatis</p>
-        <a href="{{$order->client->frontend_host}}" target="_blank">{{$order->client->frontend_host}}</a>
+        <a href="{{config('app.fe_url')}}" target="_blank">{{config('app.fe_url')}}</a>
       </center>
     </body>
 </html>

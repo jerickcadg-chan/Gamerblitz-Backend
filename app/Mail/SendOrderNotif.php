@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -31,8 +32,8 @@ class SendOrderNotif extends Mailable
     public function build()
     {
         $order = $this->order;
-        $client = $this->order->client;
+        $brandName = Setting::getByKey('brand_name');
 
-        return $this->subject($client->name.' - Order Invoice #'.$order->code)->view('mail.order-notif');
+        return $this->subject($brandName.' - Order Invoice #'.$order->code)->view('mail.order-notif');
     }
 }

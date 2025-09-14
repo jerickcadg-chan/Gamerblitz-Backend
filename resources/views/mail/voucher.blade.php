@@ -26,7 +26,7 @@
     <h1>Terimakasih Atas Pembelian Anda 😊</h1>
     <table>
       <tr>
-        <td>Kode Transaksi</td>
+        <td>Transaction Code</td>
         <td>{{ $order->code }}</td>
       </tr>
       <tr>
@@ -34,7 +34,7 @@
         <td>{{ $order->productItem->name }} {{ $order->productItem->product->name }}</td>
       </tr>
       <tr>
-        <td>Nominal Transaksi</td>
+        <td>Amount</td>
         <td>{{ currency_format($order->total_price) }}</td>
       </tr>
       <tr>
@@ -47,7 +47,7 @@
     </table>
   </div>
   <p>Email dibuat secara otomatis</p>
-  <a href="{{$order->client->frontend_host}}" target="_blank">{{$order->client->frontend_host}}</a>
+  <a href="{{ config('app.fe_url') }}" target="_blank">{{ config('app.fe_url') }}</a>
 </center>
 </body>
 </html>

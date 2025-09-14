@@ -12,7 +12,7 @@
           <hr class="mb-4">
 
           <div class="form-group">
-            <label>Website Name</label>
+            <label>Brand Name</label>
             <input type="text" class="form-control {{ $errors->has('settings.brand_name') ? 'is-invalid' : '' }}"
               name="settings[brand_name]" value="{{ old('settings.brand_name', $settings['brand_name'] ?? '') }}">
             @include('alerts.feedback', ['field' => 'settings.brand_name'])
@@ -66,6 +66,13 @@
             <input type="text" class="form-control {{ $errors->has('settings.keywords') ? 'is-invalid' : '' }}"
               name="settings[keywords]" value="{{ old('settings.keywords', $settings['keywords'] ?? '') }}">
             @include('alerts.feedback', ['field' => 'settings.keywords'])
+          </div>
+
+          <div class="form-group">
+            <label>Notification Email</label>
+            <input type="text" class="form-control {{ $errors->has('settings.notif_mail') ? 'is-invalid' : '' }}"
+                   name="settings[notif_mail]" value="{{ old('settings.notif_mail', $settings['notif_mail'] ?? '') }}">
+            @include('alerts.feedback', ['field' => 'settings.notif_mail'])
           </div>
 
           <div class="form-group">
