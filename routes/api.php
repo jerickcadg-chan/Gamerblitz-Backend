@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\DepositController;
+use App\Http\Controllers\Api\DiscountController;
 use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\ForgotPassword;
 use App\Http\Controllers\Api\LapakGamingController;
@@ -52,7 +53,9 @@ Route::get('product-item/{id}', [ProductController::class, 'showProductItem']);
 Route::get('flash-sale', FlashSaleController::class);
 
 Route::get('payment-method', [OrderController::class, 'getPaymentMethods']);
-Route::post('discount', [OrderController::class, 'getDiscount']);
+
+Route::get('discounts', [DiscountController::class, 'index']);
+Route::post('check-discount', [OrderController::class, 'checkDiscountCode']);
 
 Route::post('order', [OrderController::class, 'store']);
 Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('callback.xendit');

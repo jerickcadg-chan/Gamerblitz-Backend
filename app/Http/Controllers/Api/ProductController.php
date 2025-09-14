@@ -63,7 +63,7 @@ class ProductController extends Controller
                 WHEN name RLIKE '^[A-Za-z]' THEN 1
                 WHEN name RLIKE '^[0-9]' THEN 2
                 ELSE 3
-            END, price ASC")
+            END")
             ->where(function ($query) {
                 $query
                     ->where('stock', '>', 0)

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Constants\ProductConstant;
-use App\Constants\WebsiteLevel;
 use App\Http\Controllers\Controller;
 use App\Models\ProductCategory;
 
@@ -12,8 +11,7 @@ class CategoryController extends Controller
     public function __invoke()
     {
         return api_status_ok(
-            array_values(ProductCategory::active()
-                ->get()
+            array_values(ProductCategory::get()
                 ->filter(function (ProductCategory $item) {
                     return $item->name != ProductConstant::getTitle('account') && $item->name != ProductConstant::getTitle('joki');
 

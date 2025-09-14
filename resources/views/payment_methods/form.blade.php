@@ -31,7 +31,7 @@
           <div class="form-group">
             <label for="slug_input" class="required">Slug</label>
             <input type="text" class="form-control {{ $errors->has('slug') ? ' is-invalid' : '' }}"
-                   name="slug" id="slug_input" placeholder="slug unik (contoh: bca-va, qris)"
+                   name="slug" id="slug_input" placeholder="Unique slug (e.g.: bca-va, qris)"
                    value="{{ old('slug', $paymentMethod->slug ?? '') }}" required>
             @include('alerts.feedback', ['field' => 'slug'])
           </div>
@@ -39,7 +39,7 @@
           <div class="form-group">
             <label for="account_name_input">Account Name</label>
             <input type="text" class="form-control {{ $errors->has('account_name') ? ' is-invalid' : '' }}"
-                   name="account_name" id="account_name_input" placeholder="Name bank / e-wallet"
+                   name="account_name" id="account_name_input" placeholder="Bank / E-Wallet"
                    value="{{ old('account_name', $paymentMethod->account_name ?? '') }}">
             @include('alerts.feedback', ['field' => 'account_name'])
           </div>
@@ -47,7 +47,7 @@
           <div class="form-group">
             <label for="account_number_input">Account Number</label>
             <input type="text" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }}"
-                   name="account_number" id="account_number_input" placeholder="Nomor rekening / no e-wallet"
+                   name="account_number" id="account_number_input" placeholder="Account No. / E-Wallet No."
                    value="{{ old('account_number', $paymentMethod->account_number ?? '') }}">
             @include('alerts.feedback', ['field' => 'account_number'])
           </div>
@@ -55,7 +55,7 @@
           <div class="form-group">
             <label for="account_holder_name_input">Account Holder Name</label>
             <input type="text" class="form-control {{ $errors->has('account_holder_name') ? ' is-invalid' : '' }}"
-                   name="account_holder_name" id="account_holder_name_input" placeholder="Name pemilik rekening"
+                   name="account_holder_name" id="account_holder_name_input" placeholder="Account holder name"
                    value="{{ old('account_holder_name', $paymentMethod->account_holder_name ?? '') }}">
             @include('alerts.feedback', ['field' => 'account_holder_name'])
           </div>
