@@ -44,7 +44,7 @@
                 <tr>
                   <th style="width:36px;"></th>
                   <th>Item</th>
-                  <th class="text-end">Harga Normal</th>
+                  <th class="text-end">Normal Price</th>
                   <th style="width:160px;">Flash Price</th>
                   <th style="width:140px;">Stock</th>
                 </tr>
