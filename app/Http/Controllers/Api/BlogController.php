@@ -4,22 +4,60 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\BlogCategory;
+use App\Transformers\BlogCategoryTransformer;
 use App\Transformers\BlogTransformer;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $blogs = Blog::where('status', 'published')->get();
-        return api_status_ok(transformer(
-            query: $blogs,
-            transformer: new BlogTransformer(),
-        ));
+        $blogs = Blog::select([
+            'id',
+            'title',
+            'slug',
+            'meta_description',
+            'thumbnail',
+            'blog_category_id',
+            'user_id',
+            'status',
+            'published_at',
+            'created_at',
+            'updated_at',
+            'meta_keyword'
+        ])
+            ->where('status', 'published');
+
+        return api_status_ok(
+            paginateTransformer($blogs, new BlogTransformer(), [], request('limit') ?? 10)
+        );
     }
+
+    public function latestPerCategory()
+    {
+        $categories = BlogCategory::with(['blogs' => function ($q) {
+            $q->select([
+                'id',
+                'title',
+                'slug',
+                'meta_description',
+                'thumbnail',
+                'blog_category_id',
+                'user_id',
+                'status',
+                'published_at',
+                'created_at',
+                'updated_at',
+                'meta_keyword'
+            ])
+                ->where('status', 'published')
+                ->limit(5);
+        }])->get();
+
+        return api_status_ok(transformer($categories, new BlogCategoryTransformer()));
+    }
+
 
     /**
      * Store a newly created resource in storage.

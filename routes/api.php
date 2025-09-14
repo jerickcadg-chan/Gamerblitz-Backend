@@ -65,6 +65,7 @@ Route::get('setting', [SettingController::class, 'index']);
 Route::get('currencies', [CurrencyController::class, 'index']);
 
 Route::get('blogs', [BlogController::class, 'index']);
+Route::get('blog-categories', [BlogController::class, 'latestPerCategory']);
 Route::get('blogs/{blog}', [BlogController::class, 'show']);
 
 $lapakgamingIp = Setting::getByKey(Setting::KEY_LAPAKGAMING_IP);
