@@ -71,8 +71,12 @@ class BlogController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Blog $blog)
+    public function show(string $slug)
     {
+        $blog = Blog::where('slug', $slug)->first();
+        if (!$blog) {
+            return api_status_warning('Blog not found', 404);
+        }
         return api_status_ok(transformer($blog, new BlogTransformer()));
     }
 
