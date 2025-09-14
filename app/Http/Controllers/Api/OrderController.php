@@ -4,16 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Constants\StatusConst;
 use App\Http\Controllers\Controller;
-use App\Models\Discount;
 use App\Models\Order;
 use App\Models\PaymentMethod;
-use App\Constants\ProductItemTypeConstant;
 use App\Models\Setting;
-use App\Transformers\DiscountTransformer;
 use Illuminate\Http\Request;
 use App\Services\OrderService;
 use App\Http\Requests\OrderRequest;
-use App\Mail\SendOrderNotif;
 use App\Models\Balance;
 use App\Models\Product;
 use App\Services\BalanceService;
@@ -22,7 +18,6 @@ use App\Transformers\PaymentMethodTransformer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
@@ -132,21 +127,8 @@ class OrderController extends Controller
         return api_status_ok(transformer($paymentMethod, new PaymentMethodTransformer));
     }
 
-    public function getDiscount(Request $request)
-    {
-        $request->validate([
-            'code' => 'required'
-        ]);
-
-        $promo = Discount::active()->where('code', $request->code)->first();
-
-        if (empty($promo)) {
-            return api_status_warning('Kode voucher tidak ditemukan', 201);
-        }
-
-        return api_status_ok(transformer($promo, new DiscountTransformer));
+    public function getAvailableDiscounts() {
     }
-
 
     public function xenditCallback(Request $request, OrderService $orderService)
     {
