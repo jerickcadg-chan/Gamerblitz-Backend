@@ -40,6 +40,7 @@ class BlogController extends Controller
             $q->select([
                 'id',
                 'title',
+                'content',
                 'slug',
                 'meta_description',
                 'thumbnail',
