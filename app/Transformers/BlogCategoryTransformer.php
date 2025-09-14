@@ -7,31 +7,21 @@ use League\Fractal\TransformerAbstract;
 
 class BlogCategoryTransformer extends TransformerAbstract
 {
-    /**
-     * List of resources to automatically include
-     *
-     * @var array
-     */
-    protected array $defaultIncludes = [
-        //
-    ];
+    protected array $defaultIncludes = ['blogs'];
 
-    /**
-     * List of resources possible to include
-     *
-     * @var array
-     */
-    protected array $availableIncludes = [
-        //
-    ];
-
-    /**
-     * A Fractal transformer.
-     *
-     * @return array
-     */
     public function transform(BlogCategory $cat)
     {
-        return $cat->toArray();
+        return [
+            'id'         => $cat->id,
+            'name'       => $cat->name,
+            'slug'       => $cat->slug,
+            'created_at' => $cat->created_at,
+            'updated_at' => $cat->updated_at,
+        ];
+    }
+
+    public function includeBlogs(BlogCategory $cat)
+    {
+        return $this->collection($cat->blogs, new BlogTransformer());
     }
 }
