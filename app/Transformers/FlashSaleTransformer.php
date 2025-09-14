@@ -11,7 +11,7 @@ class FlashSaleTransformer extends TransformerAbstract
      * List of resources to automatically include
      */
     protected array $defaultIncludes = [
-        'productItem'
+        'product_item'
     ];
 
     /**
