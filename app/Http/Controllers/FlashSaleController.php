@@ -59,12 +59,12 @@ class FlashSaleController extends Controller
         DB::transaction(function() use ($request) {
             foreach (($request->items ?? []) as $productItemId => $payload) {
                 if (!isset($payload['selected']) || $payload['selected'] != 1) continue;
-                $price = (int) ($payload['price'] ?? 0);
-                $stock = (int) ($payload['stock'] ?? 0);
-                if ($price <= 0) continue;
+                $price = ($payload['price'] ?? 0);
+                $stock = ($payload['stock'] ?? 0);
+                if ($price <= -1) continue;
 
                 FlashSale::create([
-                    'product_item_id' => (int) $productItemId,
+                    'product_item_id' => $productItemId,
                     'price'           => $price,
                     'stock'           => $stock,
                 ]);

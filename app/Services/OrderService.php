@@ -167,43 +167,8 @@ class OrderService
 
     private function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, int $qty = 1): array
     {
-        $price = $productItem->real_price;
-        /* if (str($productItem->product->category)->lower() == ProductConstant::JOKI && $productItem->product->product_joki == ProductJoki::JOKI_RANK) { */
-            /* $joki = json_decode($request->note); */
-            /* $validator = Validator::make((array) $joki, [ */
-            /*     'startRank' => 'required|string', */
-            /*     'startRankGrade' => 'required|integer', */
-            /*     'startStars' => 'required|integer', */
-            /*     'targetRank' => 'required|string', */
-            /*     'targetRankGrade' => 'required|integer', */
-            /*     'targetStars' => 'required|integer' */
-            /* ]); */
-            /* if ($validator->fails()) { */
-            /*     return [null, $validator->messages()->toArray()]; */
-            /* } */
-            /* $jokiResult = $this->calculateJokiMLPrice( */
-            /*     $joki->startRank, */
-            /*     $joki->startRankGrade, */
-            /*     $joki->startStars, */
-            /*     $joki->targetRank, */
-            /*     $joki->targetRankGrade, */
-            /*     $joki->targetStars */
-            /* ); */
-            /**/
-            /* $price = $jokiResult['price']; */
-            /* $capital = $jokiResult['capital']; */
-            /**/
-            /* $disc = [ */
-            /*     'disc_id' => null, */
-            /*     'nominal' => 0 */
-            /* ]; */
-        /* } else { */
-            $price = $productItem->real_price * $qty;
-            $capital = $productItem->capital * $qty;
-
-            // TODO: fix the logic of get_active_discount
-            $disc = get_active_discount($price, $productItem->product_id, $productItem->id, $qty);
-        /* } */
+        $price = $productItem->real_price * $qty;
+        $capital = $productItem->capital * $qty;
 
         if ($request->discount_code) {
             $discount = Discount::active()->where('code', $request->discount_code)->first();
@@ -213,7 +178,12 @@ class OrderService
                 'nominal' => $discount->nominal ? calc_discount($productItem->real_price, $discount->disc_type, $discount->nominal) : 0
             ];
         } else {
-            $disc = get_active_discount($productItem->real_price, $productItem->product_id, $productItem->id);
+            $flashSale = get_active_flash_sale($productItem);
+
+            $disc = [
+                'disc_id' => null,
+                'nominal' => $flashSale
+            ];
         }
 
         $xenditFee = $this->calculateXenditFee(

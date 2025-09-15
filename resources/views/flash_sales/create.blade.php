@@ -59,16 +59,16 @@
                              onchange="toggleRow(this)">
                     </td>
                     <td>{{ $productItem->name }}</td>
-                    <td class="text-end">{{ currency_format($productItem->price ?? 0) }}</td>
+                    <td class="text-end">{{ currency_format($productItem->margin_price_public, $productItem->currency_code) }}</td>
                     <td>
-                      <input type="number" min="0" step="1"
+                      <input type="number" min="0" step="0.01"
                              class="form-control form-control-sm fs-price {{ $errors->has("items.$productItem->id.price") ? 'is-invalid' : '' }}"
                              name="items[{{ $productItem->id }}][price]"
                              value="{{ old("items.$productItem->id.price") }}"
                         {{ old("items.$productItem->id.selected") ? '' : 'disabled' }}>
                     </td>
                     <td>
-                      <input type="number" min="0" step="1"
+                      <input type="number" min="0" step="0.01"
                              class="form-control form-control-sm fs-stock {{ $errors->has("items.$productItem->id.stock") ? 'is-invalid' : '' }}"
                              name="items[{{ $productItem->id }}][stock]"
                              value="{{ old("items.$productItem->id.stock") }}"

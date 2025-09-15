@@ -23,7 +23,7 @@ class FlashSaleRequest extends FormRequest
     {
         return [
             'items' => ['nullable','array'],
-            'items.*.price' => ['nullable','numeric','min:1'],
+            'items.*.price' => ['nullable','numeric','min:0'],
             'items.*.stock' => ['nullable','integer','min:0'],
         ];
     }

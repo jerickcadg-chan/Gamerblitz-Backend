@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Discount;
+use App\Models\FlashSale;
 use App\Models\Setting;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +68,19 @@ if (!function_exists('get_active_discount')) {
             'disc_id' => null,
             'nominal' => 0,
         ];
+    }
+}
+
+if (!function_exists('get_active_flash_sale')) {
+    function get_active_flash_sale($productItem)
+    {
+        $flashSale = FlashSale::active()->where('product_item_id', $productItem->id)->first();
+
+        if ($flashSale) {
+            return $productItem->margin_price - $flashSale->price;
+        }
+
+        return 0;
     }
 }
 
