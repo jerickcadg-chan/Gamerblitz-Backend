@@ -189,26 +189,26 @@ class OrderService
             }
         }
 
-        $xenditFee = $this->calculateXenditFee(
+        $adminFee = $this->calculateAdminFee(
             realPrice: $price,
             adminFee: $paymentMethod->admin_fee,
             adminType: $paymentMethod->admin_type,
         );
         $forAdmin = 0;
 
-        if ($xenditFee == 'no-admin' && $paymentMethod->slug != PaymentMethod::BALANCE) {
-            $xenditFee = rand(30, 100);
-            $forAdmin = $xenditFee;
+        if ($adminFee == 'no-admin' && $paymentMethod->slug != PaymentMethod::BALANCE) {
+            $adminFee = rand(30, 100);
+            $forAdmin = $adminFee;
         }
 
-        $totalPrice = $price - $disc['nominal'] + $xenditFee;
+        $totalPrice = $price - $disc['nominal'] + $adminFee;
 
         $totalIncome = $price - $disc['nominal'] + $forAdmin - $capital;
 
         $prices = [
             'price' => $price,
             'capital' => $capital,
-            'admin_fee' => $xenditFee,
+            'admin_fee' => $adminFee,
             'discount_price' => $disc['nominal'],
             'total_price' => $totalPrice,
             'total_income' => $totalIncome,
@@ -218,7 +218,7 @@ class OrderService
         return [$prices, null];
     }
 
-    private function calculateXenditFee(
+    private function calculateAdminFee(
         $realPrice,
         $adminFee,
         $adminType,
