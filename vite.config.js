@@ -14,6 +14,7 @@ export default defineConfig({
         vue(),
     ],
     build: {
+        outDir: 'public/build',
         // Generate manifest.json in outDir
         rollupOptions: {
             // Ensure the vendor bundle is created

@@ -8,7 +8,7 @@
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> Page {{ $title }} </h3>
+    <h3 class="page-title"> Page {{ $title }}</h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('product.index') }}">{{ $title }}</a></li>
@@ -141,8 +141,8 @@
 
           <div class="form-group">
             <label for="description_input" class="required">Description</label>
-            <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }} tinymce" name="description"
-              id="description_input" placeholder="Enter Description">{{ old('description', $product->description ?? '') }}</textarea>
+            <div class="quill-editor">{!! old('description', $product->description ?? '') !!}</div>
+            <textarea class="d-none quill-editor-hidden" name="description" id="description_input"></textarea>
             @include('alerts.feedback', ['field' => 'description'])
           </div>
 
@@ -155,8 +155,8 @@
 
           <div class="form-group">
             <label for="how_to_order_input" class="required">How to Order</label>
-            <textarea class="form-control {{ $errors->has('how_to_order') ? ' is-invalid' : '' }} tinymce" name="how_to_order"
-              id="how_to_order_input" placeholder="Enter How to Order">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
+            <div class="quill-editor">{!! old('how_to_order', $product->how_to_order ?? '') !!}</div>
+            <textarea class="d-none quill-editor-hidden" name="how_to_order" id="how_to_order_input"></textarea>
             @include('alerts.feedback', ['field' => 'how_to_order'])
           </div>
 
@@ -236,6 +236,4 @@
   </div>
 @endsection
 
-@push('js')
-  <x-tinymce-script />
-@endpush
+<x-quill-editor />
