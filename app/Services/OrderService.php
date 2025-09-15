@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\DefaultRole;
 use App\Constants\ProductConstant;
 use App\Constants\ProviderConstant;
 use App\Constants\StatusConst;
@@ -170,20 +171,22 @@ class OrderService
         $price = $productItem->real_price * $qty;
         $capital = $productItem->capital * $qty;
 
-        if ($request->discount_code) {
-            $discount = Discount::active()->where('code', $request->discount_code)->first();
+        if (!auth()->user() || auth()?->user()?->role === DefaultRole::CUSTOMER) {
+            if ($request->discount_code) {
+                $discount = Discount::active()->where('code', $request->discount_code)->first();
 
-            $disc = [
-                'disc_id' => $discount->id ?? null,
-                'nominal' => $discount->nominal ? calc_discount($productItem->real_price, $discount->disc_type, $discount->nominal) : 0
-            ];
-        } else {
-            $flashSale = get_active_flash_sale($productItem);
+                $disc = [
+                    'disc_id' => $discount->id ?? null,
+                    'nominal' => $discount->nominal ? calc_discount($productItem->real_price, $discount->disc_type, $discount->nominal) : 0
+                ];
+            } else {
+                $flashSale = get_active_flash_sale($productItem);
 
-            $disc = [
-                'disc_id' => null,
-                'nominal' => $flashSale
-            ];
+                $disc = [
+                    'disc_id' => null,
+                    'nominal' => $flashSale
+                ];
+            }
         }
 
         $xenditFee = $this->calculateXenditFee(
