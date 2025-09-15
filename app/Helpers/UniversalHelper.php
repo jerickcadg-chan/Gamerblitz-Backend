@@ -252,3 +252,44 @@ if (! function_exists('get_logo')) {
         return Storage::url(Setting::getByKey('logo'));
     }
 }
+
+if (!function_exists('get_product_input_format_sample')) {
+    function get_product_input_format_sample(): string
+    {
+        $fields = [
+            [
+                'name' => 'user_id',
+                'type' => 'tel',
+                'label' => 'User ID',
+                'placeholder' => 'Enter user ID',
+            ],
+            [
+                'name' => 'additional_id',
+                'type' => 'option',
+                'label' => 'Server',
+                'placeholder' => 'Select a server',
+                'options' => [
+                    ['name' => 'US East', 'value' => 'us-east'],
+                    ['name' => 'US West', 'value' => 'us-west'],
+                    ['name' => 'Europe', 'value' => 'europe'],
+                    ['name' => 'Asia', 'value' => 'asia'],
+                ],
+            ],
+            [
+                'name' => 'additional_information',
+                'type' => 'tel',
+                'label' => 'Additional Information',
+                'placeholder' => 'Enter additional info',
+            ],
+            [
+                'name' => 'orderdetail',
+                'type' => 'tel',
+                'label' => 'Order Detail',
+                'placeholder' => 'Enter order details',
+            ],
+        ];
+
+        return json_encode($fields, JSON_PRETTY_PRINT);
+    }
+}
+

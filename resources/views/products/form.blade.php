@@ -36,14 +36,15 @@
           <div class="form-group">
             <label for="code_input" class="required">Code</label>
             <input type="text" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" name="code"
-              id="code_input" placeholder="e.g. ML, VAL, FF, etc" value="{{ old('code', $product->code ?? '') }}" required>
+              id="code_input" placeholder="e.g. ML, VAL, FF, etc" value="{{ old('code', $product->code ?? '') }}"
+              required>
             @include('alerts.feedback', ['field' => 'code'])
           </div>
 
           <div class="form-group">
             <label for="category_input" class="required">Category</label>
             <select class="form-control {{ $errors->has('product_category_id') ? ' is-invalid' : '' }}"
-                    name="product_category_id" id="category_input" required>
+              name="product_category_id" id="category_input" required>
               <option value="">Select category</option>
               @foreach (\App\Models\ProductCategory::all() as $category)
                 <option value="{{ $category->id }}"
@@ -92,7 +93,8 @@
           <div class="form-group">
             <label for="company_input" class="required">Company</label>
             <input type="text" class="form-control {{ $errors->has('company') ? ' is-invalid' : '' }}" name="company"
-              id="company_input" placeholder="e.g. Moonton" value="{{ old('company', $product->company ?? '') }}" required>
+              id="company_input" placeholder="e.g. Moonton" value="{{ old('company', $product->company ?? '') }}"
+              required>
             @include('alerts.feedback', ['field' => 'company'])
           </div>
 
@@ -149,7 +151,11 @@
           <div class="form-group">
             <label for="input_format_input" class="required">Input Format</label>
             <textarea class="form-control {{ $errors->has('input_format') ? ' is-invalid' : '' }}" name="input_format"
-              id="input_format_input" placeholder="Enter Input Format" required>{{ old('input_format', $product->input_format ?? '') }}</textarea>
+              id="input_format_input" rows="20" placeholder="Enter Input Format" required>{{ old('input_format', $product->input_format ?? '') }}</textarea>
+            <div class="mt-3">
+              <p><small>Sample input format (Please consult the format for each game from provider):</small></p>
+              <pre style="background: rgba(0,0,0, 0.1)">{{ get_product_input_format_sample() }}</pre>
+            </div>
             @include('alerts.feedback', ['field' => 'input_format'])
           </div>
 
@@ -209,22 +215,23 @@
 
           <div class="form-group">
             <label for="input_meta_title">Meta Title</label>
-            <input type="text" class="form-control {{ $errors->has('meta_title') ? ' is-invalid' : '' }}" name="meta_title"
-                   id="input_meta_title" value="{{ old('meta_title', $product->meta_title ?? '') }}">
+            <input type="text" class="form-control {{ $errors->has('meta_title') ? ' is-invalid' : '' }}"
+              name="meta_title" id="input_meta_title" value="{{ old('meta_title', $product->meta_title ?? '') }}">
             @include('alerts.feedback', ['field' => 'meta_title'])
           </div>
 
           <div class="form-group">
             <label for="input_meta_keyword">Meta Keyword</label>
-            <input type="text" class="form-control {{ $errors->has('meta_keyword') ? ' is-invalid' : '' }}" name="meta_keyword"
-                   id="input_meta_keyword" value="{{ old('meta_keyword', $product->meta_keyword ?? '') }}">
+            <input type="text" class="form-control {{ $errors->has('meta_keyword') ? ' is-invalid' : '' }}"
+              name="meta_keyword" id="input_meta_keyword"
+              value="{{ old('meta_keyword', $product->meta_keyword ?? '') }}">
             @include('alerts.feedback', ['field' => 'meta_keyword'])
           </div>
 
           <div class="form-group">
             <label for="input_meta_description">Meta Description</label>
             <textarea class="form-control {{ $errors->has('meta_description') ? ' is-invalid' : '' }}" name="meta_description"
-                      id="input_meta_description">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
+              id="input_meta_description">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
             @include('alerts.feedback', ['field' => 'meta_description'])
           </div>
 
