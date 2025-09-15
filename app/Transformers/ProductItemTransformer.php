@@ -38,8 +38,8 @@ class ProductItemTransformer extends TransformerAbstract
             'original_price' => $productItem->real_price,
             'discount_price' => $productItem->discount_price,
             'total_price' => $productItem->total_price,
-            'category' => $meta->productItemCategory->name,
-            'picture' => $meta->picture->url,
+            'category' => $meta?->productItemCategory->name,
+            'picture' => $meta?->picture->url,
         ];
     }
 
