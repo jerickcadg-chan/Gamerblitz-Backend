@@ -83,3 +83,24 @@
     </div>
   </div>
 @endsection
+
+
+@push('js')
+  <script>
+    document.getElementById("search-input").addEventListener("input", function () {
+      const filter = this.value.toLowerCase();
+      const rows = document.querySelectorAll("#product-table tbody tr");
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+      });
+    });
+
+    document.getElementById("select-all").addEventListener("change", function () {
+      const checkboxes = document.querySelectorAll(".product-checkbox");
+      checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+  </script>
+@endpush
+

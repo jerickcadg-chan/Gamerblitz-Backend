@@ -174,16 +174,8 @@ class ProductItem extends Model implements IsFilterable
         return $query->where('status', 'active');
     }
 
-    /* public function flashSaleProductItem(): HasOne */
-    /* { */
-    /*     return $this->hasOne(FlashSaleProductItem::class) */
-    /*         ->whereHas('flashSale', function ($query) { */
-    /*             $query->active(); */
-    /*         }); */
-    /* } */
-
-    public function productItemCategory(): BelongsTo
+    public function productItemCategoryMeta(): BelongsTo
     {
-        return $this->belongsTo(ProductItemCategory::class);
+        return $this->belongsTo(ProductItemCategoryMeta::class);
     }
 }

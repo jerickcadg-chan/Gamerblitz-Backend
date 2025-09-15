@@ -28,15 +28,18 @@ class ProductItemTransformer extends TransformerAbstract
      */
     public function transform(ProductItem $productItem): array
     {
+        $meta = $productItem->productItemCategoryMeta;
+
         return [
             'id' => $productItem->id,
             'code' => $productItem->code,
             'name' => $productItem->name,
             'stock' => $productItem->stock,
-            'product_item_category_id' => $productItem->product_item_category_id,
             'original_price' => $productItem->real_price,
             'discount_price' => $productItem->discount_price,
             'total_price' => $productItem->total_price,
+            'category' => $meta->productItemCategory->name,
+            'picture' => $meta->picture->url,
         ];
     }
 
