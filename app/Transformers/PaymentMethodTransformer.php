@@ -24,7 +24,8 @@ class PaymentMethodTransformer extends TransformerAbstract
             'admin_type' => $paymentMethod->admin_type,
             'vendor' => $paymentMethod->vendor,
             'slug' => $paymentMethod->slug,
-            'picture_url' => $paymentMethod->picture->url
+            'picture_url' => $paymentMethod->picture?->url,
+            'currency_code' => $paymentMethod->currency_code,
         ];
     }
 }
