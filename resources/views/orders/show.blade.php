@@ -57,6 +57,10 @@
                 <td>{{ currency_format($order->converted_discount_price) }}</td>
               </tr>
               <tr>
+                <th>Turnover</th>
+                <td>{{ currency_format($order->converted_turnover) }}</td>
+              </tr>
+              <tr>
                 <th>Admin Fee</th>
                 <td>{{ currency_format($order->converted_admin_fee) }}</td>
               </tr>
@@ -69,7 +73,7 @@
                 <td>{{ currency_format($order->converted_capital) }}</td>
               </tr>
               <tr>
-                <th>Revenue</th>
+                <th>Profit</th>
                 <td>{{ currency_format($order->converted_total_income) }}</td>
               </tr>
               <tr>

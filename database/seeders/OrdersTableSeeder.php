@@ -33,6 +33,7 @@ class OrdersTableSeeder extends Seeder
             $capital = $price - fake()->numberBetween(1000, 5000);
             $adminFee = fake()->randomElement([0, 1000, 2000]);
             $discountPrice = $discountId ? fake()->randomElement([1000, 2000, 5000]) : 0;
+            $turnover = $price - $discountPrice;
             $totalPrice = ($price * $qty) + $adminFee - $discountPrice;
             $totalIncome = ($price - $capital) * $qty + $adminFee - $discountPrice;
 
@@ -40,6 +41,7 @@ class OrdersTableSeeder extends Seeder
             $convertedCapital = round($capital * $exchangeRate, 2);
             $convertedAdminFee = round($adminFee * $exchangeRate, 2);
             $convertedDiscountPrice = round($discountPrice * $exchangeRate, 2);
+            $convertedTurnover = round($turnover * $exchangeRate, 2);
             $convertedTotalPrice = round($totalPrice * $exchangeRate, 2);
             $convertedTotalIncome = round($totalIncome * $exchangeRate, 2);
 
@@ -47,6 +49,7 @@ class OrdersTableSeeder extends Seeder
                 'code' => strtoupper(Str::random(10)),
                 'provider_ref' => strtoupper(Str::random(12)),
                 'user_id' => $userId,
+                'provider' => 'lapakgaming',
                 'product_item_id' => $productItemId,
                 'discount_id' => $discountId,
                 'cust_account' => fake()->userName(),
@@ -57,6 +60,7 @@ class OrdersTableSeeder extends Seeder
                 'qty' => $qty,
                 'price' => $price,
                 'capital' => $capital,
+                'turnover' => $turnover,
                 'admin_fee' => $adminFee,
                 'discount_price' => $discountPrice,
                 'total_price' => $totalPrice,
@@ -69,6 +73,7 @@ class OrdersTableSeeder extends Seeder
                 'currency_code' => 'IDR',
                 'converted_currency_code' => config('app.base_currency'),
                 'exchange_rate' => $exchangeRate,
+                'converted_turnover' => $convertedTurnover,
                 'converted_capital' => $convertedCapital,
                 'converted_admin_fee' => $convertedAdminFee,
                 'converted_discount_price' => $convertedDiscountPrice,

@@ -49,6 +49,7 @@ class Order extends Model implements IsFilterable
         'qty',
         'price',
         'capital',
+        'turnover',
         'admin_fee',
         'discount_price',
         'total_price',
@@ -77,6 +78,7 @@ class Order extends Model implements IsFilterable
 
             $order->converted_price          = $order->price * $rate;
             $order->converted_capital        = $order->capital * $rate;
+            $order->converted_turnover       = $order->turnover * $rate;
             $order->converted_admin_fee      = $order->admin_fee * $rate;
             $order->converted_discount_price = $order->discount_price * $rate;
             $order->converted_total_price    = $order->total_price * $rate;

@@ -59,7 +59,7 @@
                 <th rowspan="2">Code</th>
                 <th rowspan="2">Product</th>
                 <th rowspan="2">Customer Number</th>
-                <th rowspan="2">Price</th>
+                <th rowspan="2">Turnover</th>
                 <th rowspan="2">Capital</th>
                 <th rowspan="2">Profit</th>
                 <th rowspan="2">Status</th>
@@ -87,7 +87,7 @@
                     <span class="text-muted">{{ @$order->productItem->product->name }}</span>
                   </td>
                   <td>{!! $order->cust_account_format !!}</td>
-                  <td>{{ currency_format($order->converted_price) }}</td>
+                  <td>{{ currency_format($order->converted_turnover) }}</td>
                   <td>{{ currency_format($order->converted_capital) }}</td>
                   <td>{{ currency_format($order->converted_total_income) }}</td>
                   <td>

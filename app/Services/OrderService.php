@@ -118,6 +118,7 @@ class OrderService
             $order->qty = $request->qty;
             $order->price = $price['price'];
             $order->capital = $price['capital'];
+            $order->turnover = $price['turnover'];
             $order->admin_fee = $price['admin_fee'];
             $order->discount_price = $price['discount_price'];
             $order->total_price = $price['total_price'];
@@ -201,13 +202,16 @@ class OrderService
             $forAdmin = $adminFee;
         }
 
-        $totalPrice = $price - $disc['nominal'] + $adminFee;
+        $totalTurnover =  $price - $disc['nominal'];
 
-        $totalIncome = $price - $disc['nominal'] + $forAdmin - $capital;
+        $totalPrice = $totalTurnover + $adminFee;
+
+        $totalIncome = $totalTurnover + $forAdmin - $capital;
 
         $prices = [
             'price' => $price,
             'capital' => $capital,
+            'turnover' => $totalTurnover,
             'admin_fee' => $adminFee,
             'discount_price' => $disc['nominal'],
             'total_price' => $totalPrice,

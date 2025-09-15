@@ -41,7 +41,7 @@
   <div class="col-md-4">
     <div class="card bg-gradient-dark card-img-holder text-white">
       <div class="card-body">
-        <h4 class="font-weight-normal mb-3">Revenue <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+        <h4 class="font-weight-normal mb-3">Turnover <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
         </h4>
         <h2>{{ currency_format($orderSum['turnover']) }}</h2>
       </div>
@@ -77,7 +77,7 @@
       <div class="card-body">
         <h5 class="mb-0 font-weight-normal">Orders Count Today</h5>
         <h3 class="mb-4">{{ numbering($orderToday['total']) }}</h3>
-        <h5 class="mb-0 font-weight-normal">Revenue Today</h5>
+        <h5 class="mb-0 font-weight-normal">Turnover Today</h5>
         <h3 class="mb-4">{{ currency_format($orderToday['turnover']) }}</h3>
         <h5 class="mb-0 font-weight-normal">Profit Today</h5>
         <h3 class="mb-4">{{ currency_format($orderToday['profit']) }}</h3>
@@ -100,7 +100,7 @@ let options = {
     type: 'area'
   },
   series: [{
-    name: 'Revenue',
+    name: 'Turnover',
     data: {{ Js::from($orderPastWeek['turnover']) }},
   }, {
     name: 'Profit',

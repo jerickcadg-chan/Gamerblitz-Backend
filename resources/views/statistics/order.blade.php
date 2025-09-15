@@ -37,7 +37,7 @@
             <tr>
               <th>Date</th>
               <th>Count</th>
-              <th>Revenue</th>
+              <th>Turnover</th>
               <th>Profit</th>
               <th>Margin</th>
             </tr>
@@ -114,7 +114,7 @@ function initChart() {
       sparkline: {"enabled": false},
     },
     series: [{
-      name: 'Revenue',
+      name: 'Turnover',
       data: {{ Js::from($orders->pluck('turnover')) }},
     }, {
       name: 'Profit',

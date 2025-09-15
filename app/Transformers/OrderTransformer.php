@@ -46,6 +46,7 @@ class OrderTransformer extends TransformerAbstract
             'qty' => $order->qty,
             'price' => currency_format($order->price, $order->currency_code),
             'discount_price' => currency_format($order->discount_price, $order->currency_code),
+            'turnover' => currency_format($order->turnover, $order->currency_code),
             'admin_fee' => currency_format($order->admin_fee, $order->currency_code),
             'total_price' => currency_format($order->total_price, $order->currency_code),
             'discount_name' => $order->discount->name ?? null,

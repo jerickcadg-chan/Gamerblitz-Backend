@@ -29,6 +29,7 @@ class CreateOrdersTable extends Migration
             $table->integer('qty');
             $table->decimal('price', 19, 2);
             $table->decimal('capital', 19, 2);
+            $table->decimal('turnover', 19, 2);
             $table->decimal('admin_fee', 19, 2)->default(0);
             $table->decimal('discount_price', 19, 2)->default(0);
             $table->decimal('total_price', 19, 2);
@@ -43,6 +44,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('exchange_rate', 18, 8);
             $table->decimal('converted_price', 19, 2);
             $table->decimal('converted_capital', 19, 2);
+            $table->decimal('converted_turnover', 19, 2);
             $table->decimal('converted_admin_fee', 19, 2)->default(0);
             $table->decimal('converted_discount_price', 19, 2)->default(0);
             $table->decimal('converted_total_price', 19, 2);
