@@ -30,6 +30,7 @@
                             <th>Name</th>
                             <th>Currency</th>
                             <th>Vendor</th>
+                            <th>Category</th>
                             <th> Action </th>
                         </tr>
                     </thead>
@@ -40,6 +41,7 @@
                             <td>{{ $paymentMethod->name }}</td>
                             <td>{{ $paymentMethod->currency_code }}</td>
                             <td>{{ $paymentMethod->vendor }}</td>
+                            <td>{{ $paymentMethod->category }}</td>
                             <td>
                                 @include('master.action', [
                                     'view_url' => route('payment_method.show', $paymentMethod),
