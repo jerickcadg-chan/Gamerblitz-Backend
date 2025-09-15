@@ -77,10 +77,14 @@
 
           <div class="form-group">
             <label>Meta Description</label>
-            <textarea class="form-control tinymce {{ $errors->has('settings.meta_description') ? 'is-invalid' : '' }}"
-              name="settings[meta_description]">{{ old('settings.meta_description', $settings['meta_description'] ?? '') }}</textarea>
+            <div class="quill-editor">{!! old('settings.meta_description', $settings['meta_description'] ?? '') !!}</div>
+            <textarea
+              name="settings[meta_description]"
+              class="quill-editor-hidden d-none {{ $errors->has('settings.meta_description') ? 'is-invalid' : '' }}"
+            >{!! old('settings.meta_description', $settings['meta_description'] ?? '') !!}</textarea>
             @include('alerts.feedback', ['field' => 'settings.meta_description'])
           </div>
+
 
           <div class="form-group">
             <label>Primary Color</label>
@@ -104,8 +108,14 @@
 
           <div class="form-group">
             <label>Pop Up Description</label>
-            <textarea class="form-control tinymce" name="settings[popup_description]">{{ old('settings.popup_description', $settings['popup_description'] ?? '') }}</textarea>
+            <div class="quill-editor">{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</div>
+            <textarea
+              name="settings[popup_description]"
+              class="quill-editor-hidden d-none {{ $errors->has('settings.popup_description') ? 'is-invalid' : '' }}"
+            >{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</textarea>
+            @include('alerts.feedback', ['field' => 'settings.popup_description'])
           </div>
+
 
           <div class="form-group">
             <label>Pop Up Image</label>
@@ -269,7 +279,13 @@
           <hr class="mb-4">
 
           <div class="form-group">
-            <textarea class="form-control tinymce" name="settings[terms]">{{ old('settings.terms', $settings['terms'] ?? '') }}</textarea>
+            <div class="quill-editor">{!! old('settings.terms', $settings['terms'] ?? '') !!}</div>
+            <textarea
+              name="settings[terms]"
+              id="input_terms"
+              class="quill-editor-hidden d-none {{ $errors->has('settings.terms') ? 'is-invalid' : '' }}"
+            >{!! old('settings.terms', $settings['terms'] ?? '') !!}</textarea>
+            @include('alerts.feedback', ['field' => 'settings.terms'])
           </div>
 
           <button type="submit" class="btn btn-primary">Save</button>
@@ -279,6 +295,4 @@
   </div>
 @endsection
 
-@push('js')
-  <x-tinymce-script />
-@endpush
+  <x-quill-editor />

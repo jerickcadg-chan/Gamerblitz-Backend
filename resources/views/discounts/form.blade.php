@@ -87,8 +87,8 @@
 
           <div class="form-group">
             <label for="description_input">Description</label>
-            <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }} tinymce"
-                      name="description" id="description_input" placeholder="Enter Description">{{ old('description', $discount->description ?? '') }}</textarea>
+            <div class="quill-editor">{!! old('description', $discount->description ?? '') !!}</div>
+            <textarea class="d-none quill-editor-hidden" name="description" id="description_input"></textarea>
             @include('alerts.feedback', ['field' => 'description'])
           </div>
 
@@ -175,8 +175,9 @@
   </div>
 @endsection
 
+<x-quill-editor />
+
 @push('js')
-  <x-tinymce-script />
   <script>
     document.addEventListener('DOMContentLoaded', checkProductType);
 

@@ -57,7 +57,6 @@ return [
     'store' => [
         'url' => env('STORE_URL')
     ],
-    'tiny_mce_key' => env('TINY_MCE_KEY'),
     'enable_log' => env('ENABLE_LOG'),
     'discount' => [
         'disc_type' => [

@@ -54,9 +54,8 @@
 
           <div class="form-group">
             <label class="required">Content</label>
-            <textarea name="content" class="form-control tinymce {{ $errors->has('content') ? 'is-invalid' : '' }}" rows="16" required>
-              {{ old('content', $blog->content) }}
-            </textarea>
+            <div class="quill-editor">{!! old('content', $blog->content) !!}</div>
+            <textarea name="content" class="d-none quill-editor-hidden {{ $errors->has('content') ? 'is-invalid' : '' }}" required></textarea>
             @include('alerts.feedback', ['field' => 'content'])
           </div>
 
@@ -109,7 +108,7 @@
             </div>
           </div>
 
-          <button class="btn btn-primary">{{ $isEdit ? 'Save Changes' : 'Create' }}</button>
+          <button type="submit" class="btn btn-primary">{{ $isEdit ? 'Save Changes' : 'Create' }}</button>
           <a href="{{ route('blog.index') }}" class="btn btn-light">Cancel</a>
         </form>
       </div>
@@ -117,44 +116,10 @@
   </div>
 @endsection
 
+<x-quill-editor />
+
 @push('js')
-  <script src="https://cdn.tiny.cloud/1/{{ config('array.tiny_mce_key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
   <script>
-    tinymce.init({
-      selector: 'textarea.tinymce',
-      height: 500,
-      menubar: 'insert format view',
-      plugins: 'image link lists code table media autoresize',
-      toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image media | code',
-      automatic_uploads: true,
-      convert_urls: false,
-
-      images_upload_handler: (blobInfo, progress) => {
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', '{{ route('blog.upload_image') }}', true);
-          xhr.responseType = 'json';
-          xhr.upload.onprogress = (e) => {
-            if (e.lengthComputable) progress(e.loaded / e.total * 100);
-          };
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300 && xhr.response && typeof xhr.response.location === 'string') {
-              resolve(xhr.response.location); // << penting: resolve(url)
-            } else {
-              const msg = (xhr.response && xhr.response.message) ? xhr.response.message : ('HTTP ' + xhr.status);
-              reject('Upload failed: ' + msg);
-            }
-          };
-          xhr.onerror = () => reject('XHR transport error');
-
-          const formData = new FormData();
-          formData.append('file', blobInfo.blob(), blobInfo.filename());
-          formData.append('_token', '{{ csrf_token() }}'); // CSRF
-          xhr.send(formData);
-        });
-      }
-    });
-
     $(function () {
       const $sel = $('#blog_category_select');
 
