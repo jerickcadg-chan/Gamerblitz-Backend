@@ -27,7 +27,8 @@ class BlogController extends Controller
             'updated_at',
             'meta_keyword'
         ])
-            ->where('status', 'published');
+            ->where('status', 'published')
+            ->orderBy('published_at', 'desc');
 
         return api_status_ok(
             paginateTransformer($blogs, new BlogTransformer(), [], request('limit') ?? 10)
@@ -53,6 +54,7 @@ class BlogController extends Controller
                 'meta_keyword'
             ])
                 ->where('status', 'published')
+                ->orderBy('published_at', 'desc')
                 ->limit(5);
         }])->get();
 
