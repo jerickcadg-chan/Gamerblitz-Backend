@@ -40,6 +40,7 @@ class PaymentMethodsTableSeeder extends Seeder
             'slug' => '#dana',
             'vendor' => 'xendit',
             'currency_code' => 'IDR',
+            'category' => 'E-Wallet',
         ]);
 
         $dana->picture()->create([
@@ -54,6 +55,7 @@ class PaymentMethodsTableSeeder extends Seeder
             'slug' => '#shopeepay',
             'vendor' => 'xendit',
             'currency_code' => 'IDR',
+            'category' => 'E-Wallet',
         ]);
 
         $shopeepay->picture()->create([
@@ -68,6 +70,7 @@ class PaymentMethodsTableSeeder extends Seeder
             'slug' => '#alfamart',
             'vendor' => 'xendit',
             'currency_code' => 'IDR',
+            'category' => 'E-Wallet',
         ]);
 
         $alfamart->picture()->create([
@@ -83,6 +86,7 @@ class PaymentMethodsTableSeeder extends Seeder
                 'slug' => 'saldo',
                 'vendor' => 'saldo',
                 'currency_code' => 'IDR',
+                'category' => 'E-Wallet',
             ],
             [
                 'name' => 'qris',
@@ -91,6 +95,7 @@ class PaymentMethodsTableSeeder extends Seeder
                 'slug' => '#ewallet',
                 'vendor' => 'xendit',
                 'currency_code' => 'IDR',
+                'category' => 'E-Wallet',
             ]
         ]);
     }
