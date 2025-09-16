@@ -122,13 +122,9 @@ class OrderController extends Controller
 
     public function getPaymentMethods()
     {
-        $paymentMethod = PaymentMethod::filter($this->filter())->orderBy('created_at', 'asc');
+        $paymentMethod = PaymentMethod::filter($this->filter())->orderBy('created_at', 'asc')->get();
 
-        if (request('currency_code')) {
-            $paymentMethod->where('currency_code', request('currency_code'));
-        }
-
-        return api_status_ok(transformer($paymentMethod->get(), new PaymentMethodTransformer));
+        return api_status_ok(transformer($paymentMethod, new PaymentMethodTransformer));
     }
 
     public function getAvailableDiscounts() {
