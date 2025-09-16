@@ -50,7 +50,11 @@ class OrderService
 
             $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
 
-            [$price, $error] = $this->calculatePrice($request, $productItem, $paymentMethod, $request->qty);
+            $baseCurrency = Setting::getBaseCurrency();
+            $userCurrency = $request->currency_code;
+            $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
+
+            [$price, $error] = $this->calculatePrice($request, $productItem, $paymentMethod, $request->qty, $exchangeRate);
 
             if ($error != null) {
                 DB::rollBack();
@@ -87,24 +91,6 @@ class OrderService
 
             $orderStatus = $request->payment_method === PaymentMethod::BALANCE ? Order::INPROCESS : $orderStatus = Order::PENDING;
 
-            $baseCurrency = Setting::getBaseCurrency();
-            $userCurrency = $request->currency_code;
-            $exchangeRate = 0;
-
-            if ($baseCurrency === $userCurrency) {
-                $exchangeRate = 1;
-            } else {
-                $baseRate = ExchangeRate::effectiveRate($baseCurrency)->value('rate');
-                if (!$baseRate) {
-                    Log::critical('Missing exchange rate for base currency ' . $baseCurrency);
-                }
-                $userCurrencyRate = ExchangeRate::effectiveRate($userCurrency)->value('rate');
-                if (!$userCurrencyRate) {
-                    Log::critical('Missing exchange rate for currency ' . $userCurrency);
-                }
-                $exchangeRate = !$baseRate || !$userCurrencyRate ? 0 : pivot_exchange_rate($userCurrencyRate, $baseRate);
-            }
-
             $order = new Order;
             $order->productItem()->associate($productItem);
             $order->user()->associate($authUser ?? null);
@@ -125,8 +111,8 @@ class OrderService
             $order->total_income = $price['total_income'];
             $order->expired_at = Carbon::parse(now())->addHours(1);
             $order->note = $request->note;
-            $order->currency_code = $userCurrency;
-            $order->converted_currency_code = $baseCurrency;
+            $order->currency_code = $baseCurrency;
+            $order->converted_currency_code = $userCurrency;
             $order->exchange_rate = $exchangeRate;
             $order->save();
 
@@ -136,7 +122,7 @@ class OrderService
             }
 
             if ($paymentMethod->vendor === PaymentMethod::XENDIT) {
-                app(XenditService::class)->createXenditInvoice($order);
+                /* app(XenditService::class)->createXenditInvoice($order); */
             }
 
             $this->updateStatus($order, StatusConst::PENDING);
@@ -167,7 +153,7 @@ class OrderService
         }
     }
 
-    private function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, int $qty = 1): array
+    private function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, int $qty = 1, float $exchangeRate): array
     {
         $price = $productItem->real_price * $qty;
         $capital = $productItem->capital * $qty;
@@ -194,6 +180,7 @@ class OrderService
             realPrice: $price,
             adminFee: $paymentMethod->admin_fee,
             adminType: $paymentMethod->admin_type,
+            exchangeRate: $exchangeRate
         );
         $forAdmin = 0;
 
@@ -226,13 +213,15 @@ class OrderService
         $realPrice,
         $adminFee,
         $adminType,
+        $exchangeRate,
     ): float|int
     {
-        return match ($adminType) {
+        $amount = match ($adminType) {
             'percentage' => ceil($realPrice / ((100 - $adminFee) / 100)) - $realPrice,
             'nominal' => $adminFee,
             default => 0,
         };
+        return $amount * $exchangeRate;
     }
 
     public function processOrder(Order $order): void

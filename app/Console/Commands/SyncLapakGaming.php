@@ -72,6 +72,9 @@ class SyncLapakGaming extends Command
             ->where('provider', ProviderConstant::LAPAKGAMING)
             ->get();
 
+        $lapakGamingCurrency = 'IDR';
+        $exchangeRate = get_exchange_rate($lapakGamingCurrency, Setting::getBaseCurrency());
+
         foreach ($products as $product) {
             /** @var Category */
             $lgProduct = collect($lgCategories)->firstWhere('code', $product->provider_code);
@@ -129,9 +132,8 @@ class SyncLapakGaming extends Command
                     $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
 
                     $productItem->name = $item->name;
-                    $productItem->capital = $item->price;
+                    $productItem->capital = $item->price * $exchangeRate;
                     $productItem->stock = null;
-                    $productItem->currency_code = 'IDR';
 
                     $productItem->margin = $marginPublicUser;
                     $productItem->margin_silver = $marginSilver;

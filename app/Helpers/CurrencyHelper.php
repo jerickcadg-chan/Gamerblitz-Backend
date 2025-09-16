@@ -1,7 +1,9 @@
 <?php
 
 use App\Constants\CurrencyConstant;
+use App\Models\ExchangeRate;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Log;
 
 if (!function_exists('idr_format')) {
     function idr_format($price, $zeroValue = 'IDR 0')
@@ -125,6 +127,28 @@ if (!function_exists('calculate_exchange_rate')) {
      * Calculate exchange rate between two currency using USD as pivot currency
      */
     function pivot_exchange_rate($sourceToUSD, $targetToUSD) {
-        return $sourceToUSD / $targetToUSD;
+        return $targetToUSD / $sourceToUSD;
+    }
+}
+
+if (!function_exists('get_exchange_rate')) {
+    function get_exchange_rate(string $sourceCurrency, string $targetCurrency) {
+        $exchangeRate = 0;
+
+        if ($sourceCurrency === $targetCurrency) {
+            $exchangeRate = 1;
+        } else {
+            $sourceRate = ExchangeRate::effectiveRate($sourceCurrency)->value('rate');
+            if (!$sourceRate) {
+                Log::critical('Missing exchange rate for currency ' . $sourceCurrency);
+            }
+            $targetCurrencyRate = ExchangeRate::effectiveRate($targetCurrency)->value('rate');
+            if (!$targetCurrencyRate) {
+                Log::critical('Missing exchange rate for currency ' . $targetCurrency);
+            }
+            $exchangeRate = !$sourceCurrency || !$targetCurrencyRate ? 0 : pivot_exchange_rate($sourceRate, $targetCurrencyRate);
+        }
+
+        return $exchangeRate;
     }
 }

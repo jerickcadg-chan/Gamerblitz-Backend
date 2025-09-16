@@ -44,11 +44,22 @@ class OrderTransformer extends TransformerAbstract
             'payment_method' => $order->payment_method,
             'status' => $order->status,
             'qty' => $order->qty,
-            'price' => currency_format($order->price, $order->currency_code),
-            'discount_price' => currency_format($order->discount_price, $order->currency_code),
-            'turnover' => currency_format($order->turnover, $order->currency_code),
-            'admin_fee' => currency_format($order->admin_fee, $order->currency_code),
-            'total_price' => currency_format($order->total_price, $order->currency_code),
+
+            'price' => $order->price,
+            'discount_price' => $order->discount_price,
+            'turnover' => $order->turnover,
+            'admin_fee' => $order->admin_fee,
+            'total_price' => $order->total_price,
+
+            'converted_price' => $order->converted_price,
+            'converted_discount_price' => $order->converted_discount_price,
+            'converted_turnover' => $order->converted_turnover,
+            'converted_admin_fee' => $order->converted_admin_fee,
+            'converted_total_price' => $order->converted_total_price,
+
+            'currency_code' => $order->currency_code,
+            'converted_currency_code' => $order->converted_currency_code,
+
             'discount_name' => $order->discount->name ?? null,
             'payment_url' => $order->payment_url,
             'payment_code' => $order->payment_code,

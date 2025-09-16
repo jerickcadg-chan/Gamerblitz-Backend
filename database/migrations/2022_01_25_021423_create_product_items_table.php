@@ -19,7 +19,6 @@ class CreateProductItemsTable extends Migration
             $table->string('name');
             $table->string('code')->unique();
             $table->integer('stock')->nullable();
-            $table->char('currency_code', 3);
             $table->decimal('capital', 19, 2);
             $table->decimal('margin', 19, 2)->default(0);
             $table->decimal('margin_silver', 19, 2)->default(0);

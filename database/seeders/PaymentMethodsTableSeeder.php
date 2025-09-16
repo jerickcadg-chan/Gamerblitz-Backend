@@ -38,7 +38,8 @@ class PaymentMethodsTableSeeder extends Seeder
             'admin_fee' => 1.50,
             'admin_type' => 'percentage',
             'slug' => '#dana',
-            'vendor' => 'xendit'
+            'vendor' => 'xendit',
+            'currency_code' => 'IDR',
         ]);
 
         $dana->picture()->create([
@@ -51,7 +52,8 @@ class PaymentMethodsTableSeeder extends Seeder
             'admin_fee' => 2,
             'admin_type' => 'percentage',
             'slug' => '#shopeepay',
-            'vendor' => 'xendit'
+            'vendor' => 'xendit',
+            'currency_code' => 'IDR',
         ]);
 
         $shopeepay->picture()->create([
@@ -64,7 +66,8 @@ class PaymentMethodsTableSeeder extends Seeder
             'admin_fee' => 5000,
             'admin_type' => 'nominal',
             'slug' => '#alfamart',
-            'vendor' => 'xendit'
+            'vendor' => 'xendit',
+            'currency_code' => 'IDR',
         ]);
 
         $alfamart->picture()->create([
@@ -78,14 +81,16 @@ class PaymentMethodsTableSeeder extends Seeder
                 'admin_fee' => 0,
                 'admin_type' => 'no-admin',
                 'slug' => 'saldo',
-                'vendor' => 'saldo'
+                'vendor' => 'saldo',
+                'currency_code' => 'IDR',
             ],
             [
                 'name' => 'qris',
                 'admin_fee' => '0.90',
                 'admin_type' => 'percentage',
                 'slug' => '#ewallet',
-                'vendor' => 'xendit'
+                'vendor' => 'xendit',
+                'currency_code' => 'IDR',
             ]
         ]);
     }

@@ -7,6 +7,11 @@ use League\Fractal\TransformerAbstract;
 
 class ProductItemTransformer extends TransformerAbstract
 {
+    public float $exchangeRate;
+
+    public function __construct(float $exchangeRate = 1) {
+        $this->exchangeRate = $exchangeRate;
+    }
     /**
      * List of resources to automatically include
      */
@@ -35,9 +40,12 @@ class ProductItemTransformer extends TransformerAbstract
             'code' => $productItem->code,
             'name' => $productItem->name,
             'stock' => $productItem->stock,
-            'original_price' => $productItem->real_price,
-            'discount_price' => $productItem->discount_price,
-            'total_price' => $productItem->total_price,
+            'original_price' => $productItem->real_price * $this->exchangeRate,
+            'discount_price' => $productItem->discount_price * $this->exchangeRate,
+            'total_price' => $productItem->total_price * $this->exchangeRate,
+            '_original_price' => $productItem->real_price,
+            '_discount_price' => $productItem->discount_price,
+            '_total_price' => $productItem->total_price,
             'category' => $meta?->productItemCategory->name,
             'picture' => $meta?->picture->url,
         ];

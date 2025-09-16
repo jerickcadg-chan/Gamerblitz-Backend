@@ -22,7 +22,7 @@ class DevSeeder extends Seeder
         $this->call(PaymentMethodsTableSeeder::class);
         $this->call(CustomersTableSeeder::class);
         $this->call(ExchangeRateSeeder::class);
-        $this->call(ProductItemsTableSeeder::class);
+        // $this->call(ProductItemsTableSeeder::class);
         $this->call(OrdersTableSeeder::class);
     }
 }

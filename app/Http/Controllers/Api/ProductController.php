@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductItem;
+use App\Models\Setting;
 use App\Services\OrderService;
 use App\Transformers\ProductItemTransformer;
 use App\Transformers\ProductTransformer;
@@ -54,6 +55,9 @@ class ProductController extends Controller
 
     public function getProductItems($productId)
     {
+        $baseCurrency = Setting::getBaseCurrency();
+        $currencyCode = request('currency_code') ? request('currency_code') : $baseCurrency;
+
         $productItems = ProductItem::query()
             ->with('product.productCategory')
             ->filter($this->filter())
@@ -71,7 +75,9 @@ class ProductController extends Controller
             })
             ->get();
 
-        return api_status_ok(transformer($productItems, new ProductItemTransformer));
+        $exchangeRate = get_exchange_rate($baseCurrency, $currencyCode);
+
+        return api_status_ok(transformer($productItems, new ProductItemTransformer($exchangeRate)));
     }
 
     public function showProductItem($id)

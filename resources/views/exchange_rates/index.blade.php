@@ -41,7 +41,7 @@
               <tr>
                 <td>{{ 1 + $index }}</td>
                 <td>{{ $exchangeRate->currency_code }}</td>
-                <td>{{ currency_format($exchangeRate->rate, 8) }}</td>
+                <td>{{ $exchangeRate->rate }}</td>
                 <td>
                   @if ($exchangeRate->currency_code !== 'USD')
                     @include('master.action', [
