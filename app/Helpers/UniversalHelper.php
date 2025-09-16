@@ -2,6 +2,7 @@
 
 use App\Models\Discount;
 use App\Models\FlashSale;
+use App\Models\ProductItem;
 use App\Models\Setting;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\DB;
@@ -81,6 +82,65 @@ if (!function_exists('get_active_flash_sale')) {
         }
 
         return 0;
+    }
+}
+
+if (!function_exists('validate_discount_code')) {
+    /**
+     * Discount validation for specific discount type
+     *
+     * @param string $code
+     * @param int|null $productItemId
+     * @return array
+     * @throws ValidationException
+     */
+    function validate_discount_code(string $code, ?int $productItemId = null): array
+    {
+        $discount = Discount::active()->where('code', $code)->first();
+
+        if (!$discount) {
+            return [
+                'status' => false,
+                'message' => "Discount code doesn't exist",
+            ];
+        }
+
+        if ($discount->product_type === Discount::PRODUCT_ITEM) {
+            $isValid = DB::table('discount_product')
+                ->where('discount_id', $discount->id)
+                ->where('productable_type', ProductItem::class)
+                ->where('productable_id', $productItemId)
+                ->exists();
+
+            if (!$isValid) {
+                return [
+                    'status' => false,
+                    'message' => "Discount code can't applied to item you selected",
+                ];
+            }
+        }
+
+        if ($discount->product_type === Discount::PRODUCT_TYPE) {
+            $productId = ProductItem::find($productItemId)?->product_id;
+
+            $isValid = DB::table('discount_product')
+                ->where('discount_id', $discount->id)
+                ->where('productable_type', \App\Models\Product::class)
+                ->where('productable_id', $productId)
+                ->exists();
+
+            if (!$isValid) {
+                return [
+                    'status' => false,
+                    'message' => "Discount code can't applied to product you selected",
+                ];
+            }
+        }
+
+        return [
+            'status' => true,
+            'discount' => $discount
+        ];
     }
 }
 

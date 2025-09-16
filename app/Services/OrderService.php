@@ -50,11 +50,22 @@ class OrderService
 
             $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
 
+            $discount = null;
+
+            if ($request->discount_code) {
+                $validateDiscountCode = validate_discount_code($request->discount_code, $productItem->id);
+                if ($validateDiscountCode['status'] === true) {
+                    $discount = $validateDiscountCode['discount'];
+                } else {
+                    return $validateDiscountCode['message'];
+                }
+            }
+
             $baseCurrency = Setting::getBaseCurrency();
             $userCurrency = $request->currency_code;
             $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
 
-            [$price, $error] = $this->calculatePrice($request, $productItem, $paymentMethod, $request->qty, $exchangeRate);
+            [$price, $error] = $this->calculatePrice($request, $productItem, $paymentMethod, $exchangeRate, $request->qty, $discount);
 
             if ($error != null) {
                 DB::rollBack();
@@ -153,15 +164,13 @@ class OrderService
         }
     }
 
-    private function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, int $qty = 1, float $exchangeRate): array
+    private function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, float $exchangeRate, int $qty = 1, Discount $discount = null): array
     {
         $price = $productItem->real_price * $qty;
         $capital = $productItem->capital * $qty;
 
         if (!auth()->user() || auth()?->user()?->role === DefaultRole::CUSTOMER) {
-            if ($request->discount_code) {
-                $discount = Discount::active()->where('code', $request->discount_code)->first();
-
+            if ($discount !== null) {
                 $disc = [
                     'disc_id' => $discount->id ?? null,
                     'nominal' => $discount->nominal ? calc_discount($productItem->real_price, $discount->disc_type, $discount->nominal) : 0
