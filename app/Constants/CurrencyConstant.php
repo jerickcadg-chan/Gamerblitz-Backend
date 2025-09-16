@@ -8,7 +8,7 @@ class CurrencyConstant
 {
     public const DEFAULT_BASE_CURRENCY = 'IDR';
 
-    protected static array $supported = ['USD', 'PHP', 'IDR', 'SGD', 'MYR'];
+    protected static array $priorities = ['USD', 'PHP', 'IDR', 'SGD', 'MYR'];
 
     public static function all(): array
     {
@@ -21,8 +21,8 @@ class CurrencyConstant
 
         // Prioritize supported currencies
         uksort($data, function ($a, $b) {
-            $posA = array_search($a, self::$supported, true);
-            $posB = array_search($b, self::$supported, true);
+            $posA = array_search($a, self::$priorities, true);
+            $posB = array_search($b, self::$priorities, true);
 
             $posA = $posA === false ? PHP_INT_MAX : $posA;
             $posB = $posB === false ? PHP_INT_MAX : $posB;
@@ -32,11 +32,13 @@ class CurrencyConstant
 
         return $data;
     }
-
-    public static function allSupported(): array
+    /**
+     * @param array<string> $codes
+     */
+    public static function getByCodes(array $codes): array
     {
         $data = self::all();
-        return array_intersect_key($data, array_flip(self::$supported));
+        return array_intersect_key($data, array_flip($codes));
     }
 
     public static function metadata(string $code): ?array
