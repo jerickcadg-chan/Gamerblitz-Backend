@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Constants\CurrencyConstant;
 use App\Http\Controllers\Controller;
+use App\Models\ExchangeRate;
 use Illuminate\Http\Request;
 
 class CurrencyController extends Controller
@@ -13,7 +14,8 @@ class CurrencyController extends Controller
      */
     public function index()
     {
-        $allSupported = CurrencyConstant::allSupported();
+        $availableCurrencies = ExchangeRate::pluck('currency_code');
+        $allSupported = CurrencyConstant::getByCodes($availableCurrencies->toArray());
         return api_status_ok($allSupported);
     }
 
@@ -49,4 +51,3 @@ class CurrencyController extends Controller
         //
     }
 }
-
