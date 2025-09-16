@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\ProductItem;
+use App\Models\Setting;
 use League\Fractal\TransformerAbstract;
 
 class ProductItemTransformer extends TransformerAbstract
@@ -43,9 +44,10 @@ class ProductItemTransformer extends TransformerAbstract
             'original_price' => $productItem->real_price * $this->exchangeRate,
             'discount_price' => $productItem->discount_price * $this->exchangeRate,
             'total_price' => $productItem->total_price * $this->exchangeRate,
-            '_original_price' => $productItem->real_price,
-            '_discount_price' => $productItem->discount_price,
-            '_total_price' => $productItem->total_price,
+            'source_original_price' => $productItem->real_price,
+            'source_discount_price' => $productItem->discount_price,
+            'source_total_price' => $productItem->total_price,
+            'source_currency' => Setting::getBaseCurrency(),
             'category' => $meta?->productItemCategory->name,
             'picture' => $meta?->picture->url,
         ];
