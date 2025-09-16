@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 use IndexZer0\EloquentFiltering\Contracts\IsFilterable;
 use IndexZer0\EloquentFiltering\Filter\Contracts\AllowedFilterList;
 use IndexZer0\EloquentFiltering\Filter\Filterable\Filter;
@@ -55,5 +56,10 @@ class PaymentMethod extends Model implements IsFilterable
             Filter::field('vendor', [FilterType::EQUAL]),
             Filter::field('currency_code', [FilterType::EQUAL]),
         );
+    }
+
+    public function getPictureUrlAttribute()
+    {
+        return $this->picture ? Storage::url($this->picture) : null;
     }
 }
