@@ -77,14 +77,12 @@
 
           <div class="form-group">
             <label>Meta Description</label>
-            <div class="quill-editor">{!! old('settings.meta_description', $settings['meta_description'] ?? '') !!}</div>
             <textarea
               name="settings[meta_description]"
-              class="quill-editor-hidden d-none {{ $errors->has('settings.meta_description') ? 'is-invalid' : '' }}"
-            >{!! old('settings.meta_description', $settings['meta_description'] ?? '') !!}</textarea>
+              class="form-control {{ $errors->has('settings.meta_description') ? 'is-invalid' : '' }}"
+            >{{ old('settings.meta_description', $settings['meta_description'] ?? '') }}</textarea>
             @include('alerts.feedback', ['field' => 'settings.meta_description'])
           </div>
-
 
           <div class="form-group">
             <label>Primary Color</label>
