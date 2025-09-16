@@ -6,6 +6,7 @@ use App\Mail\SendOrderNotif;
 use App\Models\Balance;
 use App\Models\PaymentMethod;
 use App\Services\BalanceService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Services\OrderService;
@@ -25,8 +26,8 @@ class OrderController extends Controller
     {
         $orders = Order::latest()
             ->with('productItem', 'user')
-            ->when(request('status'), function ($query) {
-                return $query->where('order_status', request('status'));
+            ->when(request('cust_account'), function ($query) {
+                return $query->where('cust_account', 'like', '%'. request('cust_account') .'%');
             })
             ->when(request('order_code'), function ($query) {
                 return $query->where('code', 'like', '%'. request('order_code') .'%');
@@ -43,11 +44,12 @@ class OrderController extends Controller
                     return $query->where('product_id', request('product_id'));
                 });
             })
-            ->when(request('payment_status'), function ($query) {
-                return $query->where('payment_status', request('payment_status'));
+            ->when(request('status'), function ($query) {
+                return $query->where('status', request('status'));
             })
-            ->when(request('date'), function ($query) {
-                return $query->whereDate('created_at', request('date'));
+            ->when(request('dates'), function (Builder $q) {
+                $range = get_start_and_end_date_with_hours(request('dates'));
+                return $q->whereBetween('created_at', [$range['start_date'], $range['end_date']]);
             })
             ->paginate();
 

@@ -19,31 +19,31 @@
         <div class="mt-3">
           <form>
             <div class="row mb-3 g-xl-2">
+              @include('master.date-range', [
+                'col' => 'col-md-3',
+                'timePicker' => true,
+             ])
               <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
                 <input class="form-control" type="text" name="order_code" value="{{ request('order_code') }}" placeholder="Invoice Code">
               </div>
               <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
-                <input class="form-control" type="text" name="customer_name" value="{{ request('customer_name') }}" placeholder="Buyer Name">
+                <input class="form-control" type="text" name="cust_account" value="{{ request('cust_account') }}" placeholder="Customer Account">
               </div>
               <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
                 <select class="form-control select2" name="status">
-                  <option value="">All Orders</option>
-                  <option value="in-process" {{ request('status') == 'in-process' ? 'selected' : null }}>In Process</option>
-                  <option value="done" {{ request('status') == 'done' ? 'selected' : null }}>Done</option>
-                  <option value="expired" {{ request('status') == 'expired' ? 'selected' : null }}>Expired</option>
-                  <option value="canceled" {{ request('status') == 'canceled' ? 'selected' : null }}>Canceled</option>
+                  <option value="">-- All Status --</option>
+                  @foreach(config('array.order.status') as $status)
+                    <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : null }}>{{ ucwords($status) }}</option>
+                  @endforeach
                 </select>
               </div>
-              <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
+              <div class="col-md-6 col-lg-4 col-xl-3 mb-2">
                 <select class="form-control select2" name="product_id">
-                  <option value="">Select Product</option>
+                  <option value="">-- All Products --</option>
                   @foreach (\App\Models\Product::all() as $product)
                     <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : null }}>{{ $product->name }}</option>
                   @endforeach
                 </select>
-              </div>
-              <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
-                <input type="date" class="form-control" name="date" value="{{ request('date') }}" placeholder="Date">
               </div>
               <div class="col-md-6 col-lg-4 col-xl-2 mb-2 pt-2">
                 <button type="submit" class="btn btn-sm btn-primary">Search</button>
@@ -58,7 +58,7 @@
                 <th rowspan="2">#</th>
                 <th rowspan="2">Code</th>
                 <th rowspan="2">Product</th>
-                <th rowspan="2">Customer Number</th>
+                <th rowspan="2">Customer Account</th>
                 <th rowspan="2">Turnover</th>
                 <th rowspan="2">Capital</th>
                 <th rowspan="2">Profit</th>

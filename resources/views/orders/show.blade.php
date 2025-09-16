@@ -35,7 +35,7 @@
                 </td>
               </tr>
               <tr>
-                <th>Customer Number</th>
+                <th>Customer Account</th>
                 <td>{!! $order->cust_account_format !!}</td>
               </tr>
               <tr>

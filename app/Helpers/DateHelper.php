@@ -252,3 +252,17 @@ if (!function_exists('get_date_array')) {
         return $dates;
     }
 }
+
+if (!function_exists('get_start_and_end_date_with_hours')) {
+    function get_start_and_end_date_with_hours($dates): array
+    {
+        $range = explode(' - ', $dates);
+
+        $start = Carbon::createFromFormat('m/d/Y H:i:s', $range[0])->toDateTimeString();
+        $end = Carbon::createFromFormat('m/d/Y H:i:s', $range[1])->toDateTimeString();
+        return [
+            'start_date' => $start,
+            'end_date' => $end
+        ];
+    }
+}
