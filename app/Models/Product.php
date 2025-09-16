@@ -48,6 +48,7 @@ class Product extends Model
         'provider',
         'provider_code',
         'provider_country',
+        'check_uid',
         'meta_title',
         'meta_keyword',
         'meta_description'

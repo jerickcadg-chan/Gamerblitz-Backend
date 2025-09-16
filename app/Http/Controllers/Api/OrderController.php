@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Constants\StatusConst;
+use App\Data\LapakGaming\CheckUidRequest;
+use App\Data\LapakGaming\CheckUidResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\PaymentMethod;
@@ -62,7 +64,7 @@ class OrderController extends Controller
                 return $query->where('code', 'like', '%' . request('order_code') . '%');
             });
 
-        return api_status_ok(paginateTransformer($orders, new OrderTransformer, [], \request('limit') ?? 10));
+        return api_status_ok(paginateTransformer($orders, new OrderTransformer(), [], \request('limit') ?? 10));
     }
 
     public function stats()
@@ -93,10 +95,10 @@ class OrderController extends Controller
                 return api_status_warning('User id not match!');
             }
 
-            return api_status_ok(transformer($order, new OrderTransformer, ['vouchers']));
+            return api_status_ok(transformer($order, new OrderTransformer(), ['vouchers']));
         }
 
-        return api_status_ok(transformer($order, new OrderTransformer));
+        return api_status_ok(transformer($order, new OrderTransformer()));
     }
 
     public function store(OrderRequest $request, OrderService $orderService)
@@ -112,7 +114,7 @@ class OrderController extends Controller
                 return api_status_warning($order);
             }
 
-            return api_status_ok(transformer($order, new OrderTransformer));
+            return api_status_ok(transformer($order, new OrderTransformer()));
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -124,7 +126,7 @@ class OrderController extends Controller
     {
         $paymentMethod = PaymentMethod::filter($this->filter())->orderBy('created_at', 'asc')->get();
 
-        return api_status_ok(transformer($paymentMethod, new PaymentMethodTransformer));
+        return api_status_ok(transformer($paymentMethod, new PaymentMethodTransformer()));
     }
 
     public function xenditCallback(Request $request, OrderService $orderService)
@@ -159,7 +161,7 @@ class OrderController extends Controller
                 return api_status_warning('Invalid request status');
         }
 
-        return api_status_ok(transformer($order, new OrderTransformer));
+        return api_status_ok(transformer($order, new OrderTransformer()));
     }
 
     public function agenCallback(Request $request, OrderService $orderService)
@@ -183,8 +185,8 @@ class OrderController extends Controller
                 $orderService->updateNote($order, $note);
                 $orderService->updateCapital($order, $request->total_price);
                 break;
-            case 'REFUNDED';
-            case 'Gagal';
+            case 'REFUNDED':
+            case 'Gagal':
                 $orderService->updateStatus($order, null, Order::REFUNDED);
                 $orderService->updateNote($order, $request->status_desc);
 
@@ -206,32 +208,53 @@ class OrderController extends Controller
         return api_status_ok($order);
     }
 
-    public function checkNickname()
+    public function checkUid()
     {
-        if (in_array(request('game'), ['Free Fire', 'Mobile Legends'])) {
-            $checkNickname = Http::get(config('array.mitra-gamers.url') . '/api/check-nickname', [
-                'customer_no' => request('customer_no'),
-                'game' => request('game')
-            ]);
+        $product = Product::where('id', request('product_id'))->firstOrFail();
 
-            $checkNickname = json_decode($checkNickname->collect());
+        $checkUidRequest = new CheckUidRequest(
+            $product->provider_code,
+            request('user_id'),
+            request('additional_id'),
+            request('additional_information'),
+        );
 
-            if (empty($checkNickname->name)) {
-                return api_status_ok([
-                    'nickname' => null,
-                    'error' => 'ID yang anda masukkan salah, cek kembali ID anda atau baca petunjuk pengisian ID yang berada bawah ini'
-                ]);
-            }
-
+        if ($product->check_uid !== "active") {
             return api_status_ok([
-                'nickname' => $checkNickname->name,
-                'error' => null
+                'error' => null,
+                'name' => null,
             ]);
         }
 
-        return api_status_ok([
-            'nickname' => "Game not supported",
-            'error' => null
-        ]);
+        $token = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_TOKEN);
+        $baseUrl = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_URL);
+        $checkUidUrl = $baseUrl . '/api/uid-check';
+
+        $query = http_build_query($checkUidRequest->toArray());
+
+        $response = Http::withToken($token)->withOptions([
+            'query' => $query,
+        ])->post($checkUidUrl);
+
+        if ($response->failed()) {
+            return api_status_ok([
+                'error' => $response->body(),
+                'name' => null,
+            ]);
+        }
+
+        $checkUidResponse = CheckUidResponse::from($response->json());
+
+        if ($checkUidResponse->code === "SUCCESS") {
+            return api_status_ok([
+                'error' => null,
+                'name' => $checkUidResponse->data->name,
+            ]);
+        } else {
+            return api_status_ok([
+                'error' => $checkUidResponse->code,
+                'name' => null,
+            ]);
+        }
     }
 }
