@@ -20,6 +20,7 @@ class SettingTableSeeder extends Seeder
             'base_currency',
             'primary_color',
             'notif_mail',
+            'base_inv_code',
 
             // Pop Up Setting
             'popup_title',
