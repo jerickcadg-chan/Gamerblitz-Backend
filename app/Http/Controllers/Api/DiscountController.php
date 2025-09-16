@@ -10,26 +10,21 @@ use Illuminate\Support\Facades\DB;
 
 class DiscountController extends Controller
 {
-    public function index()
-    {
-        $discounts = Discount::active()->get();
-
-        return api_status_ok(transformer($discounts, new DiscountTransformer));
-    }
-
     public function checkDiscountCode(Request $request)
     {
         $request->validate([
-            'code' => 'required'
+            'code' => 'required',
+            'product_item_id' => 'nullable|exists:product_items,id',
+
         ]);
 
-        $promo = Discount::active()->where('code', $request->code)->first();
+        $validDiscountCode = validate_discount_code($request->code, $request->product_item_id);
 
-        if (empty($promo)) {
-            return api_status_warning('Discount not found', 201);
+        if ($validDiscountCode['status'] === false) {
+            return api_status_warning($validDiscountCode['message']);
         }
 
-        return api_status_ok(transformer($promo, new DiscountTransformer));
+        return api_status_ok(transformer($validDiscountCode['discount'], new DiscountTransformer));
     }
 
     public function availableDiscount()

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AffiliateWithdrawController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
@@ -53,8 +52,8 @@ Route::get('flash-sale', FlashSaleController::class);
 
 Route::get('payment-method', [OrderController::class, 'getPaymentMethods']);
 
-Route::get('discounts', [DiscountController::class, 'index']);
-Route::post('check-discount', [OrderController::class, 'checkDiscountCode']);
+Route::get('available-discounts', [DiscountController::class, 'availableDiscount']);
+Route::post('check-discount', [DiscountController::class, 'checkDiscountCode']);
 
 Route::post('order', [OrderController::class, 'store']);
 Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('callback.xendit');

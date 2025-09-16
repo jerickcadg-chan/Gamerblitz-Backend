@@ -127,9 +127,6 @@ class OrderController extends Controller
         return api_status_ok(transformer($paymentMethod, new PaymentMethodTransformer));
     }
 
-    public function getAvailableDiscounts() {
-    }
-
     public function xenditCallback(Request $request, OrderService $orderService)
     {
         $xenditCallbackKey = Setting::getByKey(Setting::KEY_XENDIT_CALLBACK_KEY);
