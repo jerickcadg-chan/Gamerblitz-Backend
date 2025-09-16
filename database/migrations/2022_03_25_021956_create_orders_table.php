@@ -21,7 +21,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('product_item_id');
             $table->unsignedBigInteger('discount_id')->nullable();
             $table->text('cust_account')->nullable();
-            $table->bigInteger('cust_phone_number');
+            $table->string('cust_phone_number');
             $table->string('cust_email')->nullable();
             $table->string('payment_method', 25)->nullable();
             $table->string('provider');
