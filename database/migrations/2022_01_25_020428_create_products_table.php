@@ -28,6 +28,7 @@ class CreateProductsTable extends Migration
             $table->string('provider'); // lapakgaming, manual, etc
             $table->string('provider_code')->nullable(); // product code from provider ML, VAL, FF etc
             $table->string('provider_country')->nullable(); // id, my, ph, etc
+            $table->string('check_uid')->nullable(); // available for uid checking. active, inactive
             $table->decimal('markup_user', 19, 2)->default(0);
             $table->decimal('markup_reseller_silver', 19, 2)->default(0);
             $table->decimal('markup_reseller_gold', 19, 2)->default(0);

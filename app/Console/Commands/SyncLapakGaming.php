@@ -117,6 +117,7 @@ class SyncLapakGaming extends Command
 
                 $product->update([
                     'input_format' => $lgProduct->forms ?? $product->input_format,
+                    'check_uid' => $lgProduct->check_id,
                     'updated_at' => now(),
                 ]);
 
