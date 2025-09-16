@@ -232,9 +232,12 @@ class OrderController extends Controller
 
         $query = http_build_query($checkUidRequest->toArray());
 
-        $response = Http::withToken($token)->withOptions([
-            'query' => $query,
-        ])->post($checkUidUrl);
+        $response = Http::withToken($token)
+            ->withOptions([
+                'query' => $query,
+            ])
+            ->withHeader('X-COUNTRY', $product->provider_country)
+            ->post($checkUidUrl);
 
         if ($response->failed()) {
             return api_status_ok([
