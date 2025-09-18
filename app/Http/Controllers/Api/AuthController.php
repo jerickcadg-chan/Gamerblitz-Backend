@@ -167,6 +167,6 @@ class AuthController extends Controller
     {
         $balance = Balance::where('user_id', auth()->user()->id)->first();
 
-        return api_status_ok(currency_format($balance?->amount ?? 0));
+        return api_status_ok($balance?->amount ?? 0);
     }
 }
