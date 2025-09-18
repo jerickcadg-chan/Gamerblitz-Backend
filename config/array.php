@@ -48,6 +48,7 @@ return [
         'expired_hours' => env('EXPIRED_HOURS')
     ],
     'deposit' => [
+        'min_amount' => 500,
         'status' => [StatusConst::PENDING, StatusConst::PAID, StatusConst::EXPIRED]
     ],
     'mail' => [

@@ -21,6 +21,7 @@ class SettingTableSeeder extends Seeder
             'primary_color',
             'notif_mail',
             'base_inv_code',
+            'deposit_min_amount',
 
             // Pop Up Setting
             'popup_title',
@@ -55,14 +56,15 @@ class SettingTableSeeder extends Seeder
         ];
 
         $defaults = [
-            'brand_name'       => 'Whitelabel',
-            'title'            => 'Top Up Game Online',
-            'logo'             => 'img/dummy-logo.png',
-            'favicon'          => 'img/dummy-favicon.svg',
-            'keywords'         => 'top up game, voucher, mobile legends, free fire',
-            'base_currency'    => config('app.base_currency'),
-            'base_inv_code'    => config('app.base_inv_code'),
-            'primary_color'    => '#445264'
+            'brand_name'            => 'Whitelabel',
+            'title'                 => 'Top Up Game Online',
+            'logo'                  => 'img/dummy-logo.png',
+            'favicon'               => 'img/dummy-favicon.svg',
+            'keywords'              => 'top up game, voucher, mobile legends, free fire',
+            'base_currency'         => config('app.base_currency'),
+            'base_inv_code'         => config('app.base_inv_code'),
+            'primary_color'         => '#445264',
+            'deposit_min_amount'    => config('array.deposit.min_amount'),
         ];
 
         foreach ($keys as $key) {

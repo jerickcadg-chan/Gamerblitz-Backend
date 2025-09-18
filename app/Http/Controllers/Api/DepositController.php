@@ -10,11 +10,13 @@ use App\Models\BalanceHistory;
 use App\Models\Deposit;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
+use App\Services\DepositService;
 use App\Services\XenditService;
 use App\Transformers\DepositTransformer;
 use App\Transformers\MutationTransformer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class DepositController extends Controller
 {
@@ -52,6 +54,12 @@ class DepositController extends Controller
         $baseCurrency = Setting::getBaseCurrency();
         $userCurrency = $request->currency_code;
         $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
+
+        $minAmount = DepositService::getDepositMinAmount($userCurrency);
+
+        if ($request->amount < $minAmount) {
+            return api_status_warning('Min deposit amount is ' . currency_format($minAmount, $userCurrency));
+        }
 
         $uniqueCode = $this->generateUniqueAmount($request->amount, $baseCurrency);
 
@@ -96,7 +104,22 @@ class DepositController extends Controller
         ]);
     }
 
-    private function generateUniqueAmount(float $baseAmount, string $currency): float {
+    public function metadata(Request $request)
+    {
+        $request->validate([
+            'currency_code' => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/'],
+        ]);
+
+        $userCurrency = $request->currency_code;
+
+        return api_status_ok([
+            'min_amount' => DepositService::getDepositMinAmount($userCurrency),
+            'currency_code' => $userCurrency,
+        ]);
+    }
+
+    private function generateUniqueAmount(float $baseAmount, string $currency): float
+    {
         switch (strtoupper($currency)) {
             case 'IDR':
                 $uniqueCode = rand(1, 999);

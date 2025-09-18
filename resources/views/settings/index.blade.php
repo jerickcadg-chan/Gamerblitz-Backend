@@ -213,6 +213,13 @@
               value="{{ old('settings.xendit_callback_key', $settings['xendit_callback_key'] ?? '') }}">
           </div>
 
+          <h4 class="mb-2 mt-5">Deposit Setting</h4>
+          <div class="form-group">
+            <label>Minimum Deposit Amount</label>
+            <input type="text" class="form-control" name="settings[deposit_min_amount]"
+              value="{{ old('settings.deposit_min_amount', $settings['deposit_min_amount'] ?? '') }}">
+          </div>
+
           <h4 class="mb-2 mt-5">$ Base Currency</h4>
           <div class="form-group">
             <label>System Base Currency</label>

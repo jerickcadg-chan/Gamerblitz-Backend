@@ -81,6 +81,7 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
 
     Route::get('product-items/{productId}/auth', [ProductController::class, 'getProductItems']);
 
+    Route::get('deposit-metadata', [DepositController::class, 'metadata']);
     Route::get('deposit/{code}', [DepositController::class, 'show']);
     Route::get('deposit', [DepositController::class, 'index']);
     Route::post('deposit', [DepositController::class, 'store']);

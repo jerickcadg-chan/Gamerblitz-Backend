@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Deposit;
 use App\Models\Balance;
 use App\Models\Order;
+use App\Models\Setting;
 
 class DepositService
 {
@@ -48,5 +49,13 @@ class DepositService
             'status' => true,
             'data' => $deposit
         ];
+    }
+
+    public static function getDepositMinAmount(string $userCurrency)
+    {
+        $baseCurrency = Setting::getBaseCurrency();
+        $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
+        $depositMinAmount = Setting::getByKey('deposit_min_amount');
+        return $depositMinAmount * $exchangeRate;
     }
 }
