@@ -133,7 +133,7 @@ class OrderService
             }
 
             if ($paymentMethod->vendor === PaymentMethod::XENDIT) {
-                app(XenditService::class)->createXenditInvoice($order);
+                app(XenditService::class)->createOrderXenditInvoice($order);
             }
 
             $this->updateStatus($order, StatusConst::PENDING);

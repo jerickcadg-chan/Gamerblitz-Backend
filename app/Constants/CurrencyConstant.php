@@ -52,9 +52,15 @@ class CurrencyConstant
         return self::metadata($code)['symbol'] ?? null;
     }
 
-    public static function countryByCode(string $code): ?string
+    public static function localeByCode(string $code): ?string
     {
-        return self::metadata($code)['country'] ?? null;
+        return self::metadata($code)['locale'] ?? null;
+    }
+
+    public static function countryCodeByCurrency(string $code): ?string
+    {
+        $locale =  self::localeByCode($code);
+        return $locale ? explode("-", $locale)[1] : null;
     }
 
     public static function codeByCountry(string $country): ?string

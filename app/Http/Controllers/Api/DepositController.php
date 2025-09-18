@@ -10,6 +10,7 @@ use App\Models\BalanceHistory;
 use App\Models\Deposit;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
+use App\Services\XenditService;
 use App\Transformers\DepositTransformer;
 use App\Transformers\MutationTransformer;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,7 +36,7 @@ class DepositController extends Controller
         return api_status_ok(paginateTransformer($deposits, new DepositTransformer()));
     }
 
-    public function show($code)
+    public function show(string $code)
     {
         try {
             $deposit = Deposit::with(['user', 'paymentMethod'])->where('code', $code)->firstOrFail();
@@ -46,9 +47,11 @@ class DepositController extends Controller
         }
     }
 
-    public function store(DepositRequest $request)
+    public function store(DepositRequest $request, XenditService $xendit)
     {
         $baseCurrency = Setting::getBaseCurrency();
+        $userCurrency = $request->currency_code;
+        $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
 
         $uniqueCode = $this->generateUniqueAmount($request->amount, $baseCurrency);
 
@@ -66,8 +69,15 @@ class DepositController extends Controller
             'unique_code' => $uniqueCode,
             'total_amount' => $amount + $uniqueCode,
             'expired_at' => now()->addHours(3),
-            'status' => StatusConst::PENDING
+            'status' => StatusConst::PENDING,
+            'currency_code' => $baseCurrency,
+            'converted_currency_code' => $userCurrency,
+            'exchange_rate' => $exchangeRate,
         ]);
+
+        if ($paymentMethod->vendor === PaymentMethod::XENDIT) {
+            $xendit->createDepositXenditInvoice($deposit);
+        }
 
         return api_status_ok($deposit);
     }
@@ -86,7 +96,7 @@ class DepositController extends Controller
         ]);
     }
 
-    public function generateUniqueAmount(float $baseAmount, string $currency): float {
+    private function generateUniqueAmount(float $baseAmount, string $currency): float {
         switch (strtoupper($currency)) {
             case 'IDR':
                 $uniqueCode = rand(1, 999);

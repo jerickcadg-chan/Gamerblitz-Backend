@@ -83,7 +83,7 @@ class LapakGamingOrderHandler implements ShouldQueue
             throw new \Exception("LapakGaming API call failed: " . $response->body());
         }
 
-        $orderResponse = OrderResponse::from($response->json);
+        $orderResponse = OrderResponse::from($response->json());
 
         if ($orderResponse->code === 'SUCCESS') {
             Log::channel('lapakgaming')->info("Order {$this->order->id} successfully forwarded to LapakGaming.");

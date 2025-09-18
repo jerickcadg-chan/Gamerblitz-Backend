@@ -60,7 +60,7 @@ class Order extends Model implements IsFilterable
         'converted_currency_code',
         'exchange_rate',
         'payment_url',
-        'payment_url',
+        'payment_code',
         'payment_id'
     ];
 
