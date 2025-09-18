@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\CurrencyConstant;
 use App\Http\Requests\ExchangeRateRequest;
 use App\Models\ExchangeRate;
+use App\Models\Setting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -71,6 +72,7 @@ class ExchangeRateController extends Controller
     {
         $exchangeRate = new ExchangeRate();
         $exchangeRate->currency_code = $request->input('currency_code');
+        $exchangeRate->target_currency = Setting::getBaseCurrency();
         $exchangeRate->rate = $request->input('rate');
         $exchangeRate->effective_at = now();
         $exchangeRate->save();
@@ -112,6 +114,7 @@ class ExchangeRateController extends Controller
         if (floatval($request->input('rate')) !== floatval($exchangeRate->rate)) {
             $newRate = new ExchangeRate();
             $newRate->currency_code = $exchangeRate->currency_code;
+            $newRate->target_currency = Setting::getBaseCurrency();
             $newRate->rate = $request->input('rate');
             $newRate->effective_at = now();
             $newRate->save();
