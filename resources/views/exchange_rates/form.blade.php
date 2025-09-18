@@ -51,7 +51,7 @@
               @include('alerts.feedback', ['field' => 'currency_code'])
             </div>
             <div class="form-group">
-              <label for="input_rate" class="required">Rate</label>
+              <label for="input_rate" class="required">Rate to {{ get_base_currency() }}</label>
               <input type="text" name="rate" class="form-control {{ $errors->has('rate') ? ' is-invalid' : '' }}"
                 id="input_rate" placeholder="Enter rate" value="{{ old('rate', @$exchangeRate->rate) }}" required />
               @include('alerts.feedback', ['field' => 'rate'])

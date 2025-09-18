@@ -122,12 +122,18 @@ if (!function_exists('terbilang')) {
     }
 }
 
+if (!function_exists('get_base_currency')) {
+    function get_base_currency() {
+        return Setting::getBaseCurrency();
+    }
+}
+
 if (!function_exists('calculate_exchange_rate')) {
     /**
-     * Calculate exchange rate between two currency using USD as pivot currency
+     * Calculate exchange rate between two currency using BASE CURRENCY as pivot currency
      */
-    function pivot_exchange_rate($sourceToUSD, $targetToUSD) {
-        return $targetToUSD / $sourceToUSD;
+    function pivot_exchange_rate($sourceToBase, $targetToBase) {
+        return $targetToBase / $sourceToBase;
     }
 }
 

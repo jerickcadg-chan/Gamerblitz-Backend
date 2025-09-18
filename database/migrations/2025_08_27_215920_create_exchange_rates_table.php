@@ -12,12 +12,13 @@ return new class () extends Migration {
     {
         Schema::create('exchange_rates', function (Blueprint $table) {
             $table->id();
-            $table->string('currency_code', 3);  // target currency code (e.g., PHP, IDR)
-            $table->decimal('rate', 20, 8);      // 1 USD = rate in currency_code
+            $table->string('currency_code', 3);
+            $table->string('target_currency', 3);
+            $table->decimal('rate', 20, 8);      // N rate in currency_code = 1 target_currency
             $table->timestamp('effective_at');   // when this rate becomes effective
             $table->timestamps();
 
-            $table->unique(['currency_code', 'effective_at']);
+            $table->unique(['currency_code', 'target_currency', 'effective_at']);
         });
     }
 

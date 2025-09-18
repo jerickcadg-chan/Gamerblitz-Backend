@@ -30,8 +30,8 @@
         <table class="table-bordered table-hover table">
           <thead>
             <tr>
-              <th>No</th>
               <th> Currency </th>
+              <th> Target </th>
               <th> Rate </th>
               <th> Action </th>
             </tr>
@@ -39,11 +39,11 @@
           <tbody>
             @forelse ($exchangeRates as $index => $exchangeRate)
               <tr>
-                <td>{{ 1 + $index }}</td>
                 <td>{{ $exchangeRate->currency_code }}</td>
+                <td>{{ get_base_currency() }}</td>
                 <td>{{ $exchangeRate->rate }}</td>
                 <td>
-                  @if ($exchangeRate->currency_code !== 'USD')
+                  @if ($exchangeRate->currency_code !== get_base_currency())
                     @include('master.action', [
                         'view_url' => route('exchange_rate.show', $exchangeRate),
                         'edit_url' => route('exchange_rate.edit', $exchangeRate),
