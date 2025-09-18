@@ -48,11 +48,11 @@ class DepositController extends Controller
 
     public function store(DepositRequest $request)
     {
-        $baseCurrency = Setting::getByKey('base_currency');
+        $baseCurrency = Setting::getBaseCurrency();
 
         $uniqueCode = $this->generateUniqueAmount($request->amount, $baseCurrency);
 
-        $paymentMethod = PaymentMethod::find($request->payment_method_id);
+        $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
 
         $amount = $paymentMethod->admin_type === 'percentage'
             ? $request->amount + ($request->amount * ($paymentMethod->admin_fee / 100))
@@ -93,8 +93,7 @@ class DepositController extends Controller
                 return $baseAmount + $uniqueCode;
 
             default:
-                $uniqueCode = rand(1, 99);
-                return $baseAmount + ($uniqueCode / 100);
+                return 0;
         }
     }
 }

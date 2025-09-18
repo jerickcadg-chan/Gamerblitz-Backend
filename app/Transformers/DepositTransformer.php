@@ -23,7 +23,7 @@ class DepositTransformer extends TransformerAbstract
             'code' => $deposit->code,
             'user' => $deposit->user->name,
             'payment_method' => $deposit->paymentMethod->name,
-            'status' => $deposit->status_translated,
+            'status' => $deposit->status,
             'amount' => currency_format($deposit->amount),
             'unique_code' => $deposit->unique_code,
             'total_amount' => currency_format($deposit->total_amount),
