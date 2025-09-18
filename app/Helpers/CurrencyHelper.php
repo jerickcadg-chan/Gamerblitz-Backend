@@ -133,7 +133,7 @@ if (!function_exists('calculate_exchange_rate')) {
      * Calculate exchange rate between two currency using BASE CURRENCY as pivot currency
      */
     function pivot_exchange_rate($sourceToBase, $targetToBase) {
-        return $targetToBase / $sourceToBase;
+        return $sourceToBase / $targetToBase;
     }
 }
 
