@@ -11,12 +11,12 @@ class PaymentCallbackPayload extends Data
         public string $event,
         public string $business_id,
         public string $created,
-        public PaymentData $data,
+        public PaymentCallbackData $data,
     ) {
     }
 }
 
-class PaymentData extends Data
+class PaymentCallbackData extends Data
 {
     public function __construct(
         public string $payment_id,
@@ -31,7 +31,7 @@ class PaymentData extends Data
         public string $channel_code,
         /** @var array<string, mixed> */
         public array $channel_properties,
-        /** @var \App\Data\CaptureData[] */
+        /** @var \App\Data\Xendit\PaymentCallbackCaptureData[] */
         public DataCollection $captures,
         public string $status,
         public PaymentDetailsData $payment_details,
@@ -43,7 +43,7 @@ class PaymentData extends Data
     }
 }
 
-class CaptureData extends Data
+class PaymentCallbackCaptureData extends Data
 {
     public function __construct(
         public string $capture_timestamp,

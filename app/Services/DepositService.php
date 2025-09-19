@@ -4,8 +4,9 @@ namespace App\Services;
 
 use App\Models\Deposit;
 use App\Models\Balance;
-use App\Models\Order;
+use App\Constants\StatusConst;
 use App\Models\Setting;
+use Illuminate\Support\Facades\DB;
 
 class DepositService
 {
@@ -27,8 +28,8 @@ class DepositService
         $deposit->status = $status;
         $deposit->save();
 
-        if ($status !== Order::EXPIRED) {
-            $balance = Balance::firstOrCreate(
+        if ($status !== StatusConst::EXPIRED) {
+            $balance = Balance::query()->lockForUpdate()->firstOrCreate(
                 [
                     'user_id' => $deposit->user_id
                 ],
@@ -49,6 +50,49 @@ class DepositService
             'status' => true,
             'data' => $deposit
         ];
+    }
+
+    public function handlePaymentSettlement(Deposit $deposit)
+    {
+        if ($deposit->status === StatusConst::EXPIRED) {
+            return 'Deposit expired';
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $balance = Balance::query()
+                ->lockForUpdate()
+                ->firstOrCreate(
+                    ['user_id' => $deposit->user_id],
+                    ['amount' => 0]
+                );
+
+            $deposit->status === StatusConst::PAID;
+            $deposit->save();
+
+            BalanceService::update($balance, [
+                'balanceable_type' => Deposit::class,
+                'balanceable_id' => $deposit->id,
+                'amount' => $deposit->amount,
+                'description' => "Topup Balance $deposit->code"
+            ]);
+
+            DB::commit();
+
+            return null;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    public function handlePaymentExpired(Deposit $deposit)
+    {
+        $deposit->status === StatusConst::EXPIRED;
+        $deposit->save();
+
+        return null;
     }
 
     public static function getDepositMinAmount(string $userCurrency)

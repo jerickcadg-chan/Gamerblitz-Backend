@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Constants\StatusConst;
 use App\Data\LapakGaming\CheckUidRequest;
 use App\Data\LapakGaming\CheckUidResponse;
+use App\Data\Xendit\PaymentCallbackPayload;
 use App\Http\Controllers\Controller;
+use App\Models\Deposit;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
+use App\Services\DepositService;
+use App\Transformers\DepositTransformer;
 use Illuminate\Http\Request;
 use App\Services\OrderService;
 use App\Http\Requests\OrderRequest;
@@ -129,7 +133,7 @@ class OrderController extends Controller
         return api_status_ok(transformer($paymentMethod, new PaymentMethodTransformer()));
     }
 
-    public function xenditCallback(Request $request, OrderService $orderService)
+    public function xenditCallback(Request $request, OrderService $orderService, DepositService $depositService)
     {
         $xenditCallbackKey = Setting::getByKey(Setting::KEY_XENDIT_CALLBACK_KEY);
         $hCallbackToken = $request->header('x-callback-token');
@@ -138,29 +142,60 @@ class OrderController extends Controller
             return api_status_warning("callback token didn't register yet, or invalid token!!!!");
         }
 
-        $code = $request->data->payment_id;
+        $payload = PaymentCallbackPayload::from($request->all());
+        $paymentId = $payload->data->payment_id;
+        $type = $payload->data->metadata['type'] ?? 'order';
 
-        $order = Order::where('payment_id', $code)->first();
+        switch ($type) {
+            case 'order':
+                $order = Order::where('payment_id', $paymentId)->first();
 
-        if (empty($order)) {
-            return api_status_warning('Order not found');
-        }
+                if (empty($order)) {
+                    return api_status_warning('Order not found');
+                }
 
-        switch ($request->data->status) {
-            case 'SUCCEEDED':
-                $orderService->processOrder($order);
-                $orderService->updateStatus($order, StatusConst::ON_PROCESS);
-                break;
+                switch ($payload->data->status) {
+                    case 'SUCCEEDED':
+                        $orderService->processOrder($order);
+                        $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+                        break;
 
-            case 'EXPIRED':
-                $orderService->updateStatus($order, StatusConst::EXPIRED);
-                break;
+                    case 'EXPIRED':
+                        $orderService->updateStatus($order, StatusConst::EXPIRED);
+                        break;
 
+                    default:
+                        return api_status_warning('Invalid request status');
+                }
+
+                return api_status_ok([
+                    'order' => transformer($order, new OrderTransformer())
+                ]);
+            case 'deposit':
+                $deposit = Deposit::where('payment_id', $paymentId)->first();
+
+                if (!$deposit) {
+                    return api_status_warning("Deposit not found");
+                }
+
+                $err = match ($payload->data->status) {
+                    'SUCCEEDED' => $depositService->handlePaymentSettlement($deposit),
+                    'EXPIRED' => $depositService->handlePaymentExpired($deposit),
+                    default => 'Invalid request status'
+                };
+
+                if ($err) {
+                    return api_status_warning($err);
+                }
+
+                return api_status_ok([
+                    'deposit' => transformer($deposit, new DepositTransformer())
+                ]);
             default:
-                return api_status_warning('Invalid request status');
+            break;
         }
 
-        return api_status_ok(transformer($order, new OrderTransformer()));
+        return api_status_warning('Transaction not found');
     }
 
     public function agenCallback(Request $request, OrderService $orderService)

@@ -45,6 +45,7 @@ class XenditService
             ],
             'description' => "{$order->productItem->product->name} {$order->productItem->name}",
             'metadata'    => [
+                'type' => 'order',
                 'order_code' => $externalId,
             ],
         ];
@@ -53,6 +54,8 @@ class XenditService
             ->withHeaders(['api-version' => '2024-11-11', 'Content-Type' => 'application/json'])
             ->post(Setting::getByKey('xendit_api_url').'/v3/payment_requests', $payload)
             ->json();
+
+        Log::info('Xendit payment requests response', $r);
 
         $paymentUrl = null;
         $paymentCode = null;
@@ -103,6 +106,7 @@ class XenditService
             ],
             'description' => "Deposit {$deposit->amount}",
             'metadata'    => [
+                'type' => 'deposit',
                 'deposit_code' => $externalId,
             ],
         ]);
