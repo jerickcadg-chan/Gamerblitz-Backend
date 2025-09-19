@@ -22,6 +22,7 @@ class SettingTableSeeder extends Seeder
             'notif_mail',
             'base_inv_code',
             'deposit_min_amount',
+            'affiliate_percentage',
 
             // Pop Up Setting
             'popup_title',

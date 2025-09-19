@@ -220,6 +220,12 @@
               value="{{ old('settings.deposit_min_amount', $settings['deposit_min_amount'] ?? '') }}">
           </div>
 
+          <div class="form-group">
+            <label>Affiliate Percentage</label>
+            <input type="text" class="form-control" name="settings[affiliate_percentage]"
+                   value="{{ old('settings.affiliate_percentage', $settings['affiliate_percentage'] ?? '') }}">
+          </div>
+
           <h4 class="mb-2 mt-5">$ Base Currency</h4>
           <div class="form-group">
             <label>System Base Currency</label>
