@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Mail\SentVerificationLink;
 use App\Models\Balance;
+use App\Models\Setting;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
@@ -163,10 +164,19 @@ class AuthController extends Controller
         return api_status_ok(transformer(auth()->user(), UserTransformer::class), trans('auth.loged_out'));
     }
 
-    public function myBalance()
+    public function myBalance(Request $request)
     {
+        $request->validate([
+            'currency_code' => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/'],
+        ]);
+
+        $userCurrency = $request->currency_code;
+
+        $exchangeRate = get_exchange_rate(Setting::getBaseCurrency(), $userCurrency);
         $balance = Balance::where('user_id', auth()->user()->id)->first();
 
-        return api_status_ok($balance?->amount ?? 0);
+        $amount = $balance ? $balance->amount * $exchangeRate : 0;
+
+        return api_status_ok($amount);
     }
 }
