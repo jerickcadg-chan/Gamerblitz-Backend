@@ -63,28 +63,38 @@ class DepositController extends Controller
             return api_status_warning('Invalid currency for payment method ' . $paymentMethod->name);
         }
 
-        if ($request->amount < $minAmount) {
+        $amount = $request->amount;
+        if ($amount < $minAmount) {
             return api_status_warning('Min deposit amount is ' . currency_format($minAmount, $userCurrency));
         }
 
-        $uniqueCode = $this->generateUniqueAmount($request->amount, $baseCurrency);
+        $uniqueCode = $this->generateUniqueAmount($amount, $baseCurrency);
 
-        $amount = $paymentMethod->admin_type === 'percentage'
-            ? $request->amount + ($request->amount * ($paymentMethod->admin_fee / 100))
-            : $request->amount + $paymentMethod->admin_fee;
+        $adminFee = match ($paymentMethod->admin_type) {
+            'percentage' => ceil($amount / ((100 - $paymentMethod->admin_fee) / 100)) - $amount,
+            'nominal' => $paymentMethod->admin_fee,
+            default => 0,
+        };
+
+        $totalAmount = $amount + $adminFee + $uniqueCode;
 
         $deposit = Deposit::create([
             'code' => "DP".date('ymd').rand(1000, 999999),
             'user_id' => $this->userId,
             'payment_method_id' => $paymentMethod->id,
-            'amount' => $amount,
-            'unique_code' => $uniqueCode,
-            'total_amount' => $amount + $uniqueCode,
-            'expired_at' => now()->addHours(3),
-            'status' => StatusConst::PENDING,
             'currency_code' => $baseCurrency,
             'converted_currency_code' => $userCurrency,
             'exchange_rate' => $exchangeRate,
+            'amount' => $amount,
+            'admin_fee' => $adminFee,
+            'unique_code' => $uniqueCode,
+            'total_amount' => $totalAmount,
+            'converted_amount' => $amount * $exchangeRate,
+            'converted_admin_fee' => $adminFee * $exchangeRate,
+            'converted_unique_code' => $uniqueCode * $exchangeRate,
+            'converted_total_amount' => $totalAmount * $exchangeRate,
+            'expired_at' => now()->addHours(3),
+            'status' => StatusConst::PENDING,
         ]);
 
         if ($paymentMethod->vendor === PaymentMethod::XENDIT) {

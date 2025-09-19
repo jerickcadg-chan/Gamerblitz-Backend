@@ -22,6 +22,8 @@ return new class extends Migration
             $table->decimal('converted_amount', 18, 8);
             $table->decimal('converted_unique_code', 18, 8);
             $table->decimal('converted_total_amount', 19, 2);
+            $table->decimal('admin_fee', 18, 8);
+            $table->decimal('converted_admin_fee', 18, 8);
         });
     }
 
@@ -37,6 +39,8 @@ return new class extends Migration
             $table->dropColumn('payment_id');
             $table->dropColumn('exchange_rate');
             $table->dropColumn('currency_code');
+            $table->dropColumn('admin_fee');
+            $table->dropColumn('converted_admin_fee');
             $table->dropColumn('converted_currency_code');
             $table->dropColumn('converted_amount');
             $table->dropColumn('converted_unique_code');

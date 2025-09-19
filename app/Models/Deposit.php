@@ -15,8 +15,13 @@ class Deposit extends Model
         'user_id',
         'payment_method_id',
         'amount',
+        'admin_fee',
         'unique_code',
         'total_amount',
+        'converted_amount',
+        'converted_admin_fee',
+        'converted_unique_code',
+        'converted_total_amount',
         'status',
         'expired_at',
         'paid_at',
@@ -30,24 +35,14 @@ class Deposit extends Model
 
     protected $casts = [
         'amount' => 'string',
+        'admin_fee' => 'string',
         'unique_code' => 'string',
         'total_amount' => 'string',
         'converted_amount' => 'string',
+        'converted_admin_fee' => 'string',
         'converted_unique_code' => 'string',
         'converted_total_amount' => 'string',
     ];
-
-    protected static function boot(): void
-    {
-        parent::boot();
-        static::saving(function ($deposit) {
-            $rate = $deposit->exchange_rate;
-
-            $deposit->converted_amount       = $deposit->amount * $rate;
-            $deposit->converted_unique_code  = $deposit->unique_code * $rate;
-            $deposit->converted_total_amount = $deposit->total_amount * $rate;
-        });
-    }
 
     public function user(): BelongsTo
     {
