@@ -117,7 +117,7 @@ class DepositController extends Controller
         $userCurrency = $request->currency_code;
 
         return api_status_ok([
-            'min_amount' => DepositService::getDepositMinAmount($userCurrency),
+            'min_amount' => (string) DepositService::getDepositMinAmount($userCurrency),
             'currency_code' => $userCurrency,
         ]);
     }
