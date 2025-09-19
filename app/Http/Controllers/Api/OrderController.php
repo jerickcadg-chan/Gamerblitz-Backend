@@ -138,17 +138,16 @@ class OrderController extends Controller
             return api_status_warning("callback token didn't register yet, or invalid token!!!!");
         }
 
-        $code = isset($request->qr_code) ? $request->qr_code['external_id'] : $request->external_id;
+        $code = $request->data->payment_id;
 
-        $order = Order::where('code', $code)->first();
+        $order = Order::where('payment_id', $code)->first();
 
-        if (is_null($request->id) || is_null($order)) {
+        if (empty($order)) {
             return api_status_warning('Order not found');
         }
 
-        switch ($request->status) {
-            case 'COMPLETED':
-            case 'PAID':
+        switch ($request->data->status) {
+            case 'SUCCEEDED':
                 $orderService->processOrder($order);
                 $orderService->updateStatus($order, StatusConst::ON_PROCESS);
                 break;
