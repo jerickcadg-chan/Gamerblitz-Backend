@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('deposits', function (Blueprint $table) {
             $table->text('payment_url')->nullable();
             $table->text('payment_code')->nullable();
+            $table->string('payment_descriptor')->nullable();
             $table->string('payment_id')->nullable();
             $table->char('currency_code', 3);
             $table->char('converted_currency_code', 3);
@@ -32,11 +33,13 @@ return new class extends Migration
         Schema::table('deposits', function (Blueprint $table) {
             $table->dropColumn('payment_url');
             $table->dropColumn('payment_code');
+            $table->dropColumn('payment_descriptor');
             $table->dropColumn('payment_id');
+            $table->dropColumn('exchange_rate');
             $table->dropColumn('currency_code');
             $table->dropColumn('converted_currency_code');
-            $table->dropColumn('exchange_amount');
-            $table->dropColumn('exchange_unique_code');
+            $table->dropColumn('converted_amount');
+            $table->dropColumn('converted_unique_code');
             $table->dropColumn('converted_total_amount');
         });
     }

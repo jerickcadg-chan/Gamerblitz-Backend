@@ -28,6 +28,12 @@ class Deposit extends Model
         'payment_id'
     ];
 
+    protected $casts = [
+        'amount' => 'string',
+        'unique_code' => 'string',
+        'total_amount' => 'string',
+    ];
+
     protected static function boot(): void
     {
         parent::boot();

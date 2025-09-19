@@ -127,6 +127,7 @@ class XenditService
             $paymentCode = $response->actions[0]->value;
         }
 
+        $deposit->payment_descriptor = $response->actions[0]->descriptor;
         $deposit->payment_url = $paymentUrl;
         $deposit->payment_code = $paymentCode;
         $deposit->payment_id = $response->payment_request_id ?? null;

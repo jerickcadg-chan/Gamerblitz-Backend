@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Models\Deposit;
 use League\Fractal\TransformerAbstract;
 
 class DepositTransformer extends TransformerAbstract
@@ -17,7 +18,7 @@ class DepositTransformer extends TransformerAbstract
     /**
      * A Fractal transformer.
      */
-    public function transform($deposit): array
+    public function transform(Deposit $deposit): array
     {
         return [
             'code' => $deposit->code,
@@ -34,6 +35,7 @@ class DepositTransformer extends TransformerAbstract
             'converted_total_amount' => $deposit->converted_total_amount,
             'payment_url' => $deposit->payment_url,
             'payment_code' => $deposit->payment_code,
+            'payment_descriptor' => $deposit->payment_descriptor,
             'payment_id' => $deposit->payment_id,
             'paid_at' => $deposit->paid_at,
             'expired_at' => $deposit->expired_at,

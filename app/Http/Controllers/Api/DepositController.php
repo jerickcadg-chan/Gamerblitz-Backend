@@ -57,13 +57,17 @@ class DepositController extends Controller
 
         $minAmount = DepositService::getDepositMinAmount($userCurrency);
 
+        $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
+
+        if ($request->currency_code !== $paymentMethod->currency_code) {
+            return api_status_warning('Invalid currency for payment method ' . $paymentMethod->name);
+        }
+
         if ($request->amount < $minAmount) {
             return api_status_warning('Min deposit amount is ' . currency_format($minAmount, $userCurrency));
         }
 
         $uniqueCode = $this->generateUniqueAmount($request->amount, $baseCurrency);
-
-        $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
 
         $amount = $paymentMethod->admin_type === 'percentage'
             ? $request->amount + ($request->amount * ($paymentMethod->admin_fee / 100))
