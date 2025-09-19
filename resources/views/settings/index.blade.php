@@ -160,14 +160,14 @@
           </div>
 
           {{-- Flash Sale Setting --}}
-          <h4 class="mb-2 mt-5">Flash Sale Setting</h4>
+          {{--<h4 class="mb-2 mt-5">Flash Sale Setting</h4>
           <hr class="mb-4">
 
           <div class="form-group">
             <label>Flash Sale Expiry (date time)</label>
             <input type="datetime-local" class="form-control" name="settings[flash_sale_expiry]"
               value="{{ old('settings.flash_sale_expiry', $settings['flash_sale_expiry'] ?? '') }}">
-          </div>
+          </div>--}}
 
           {{-- Lapak Gaming --}}
           <h4 class="mb-2 mt-5">Lapak Gaming</h4>

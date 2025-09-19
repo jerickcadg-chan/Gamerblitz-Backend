@@ -34,7 +34,7 @@ class SettingTableSeeder extends Seeder
             'popup_status',
 
             // Flash Sale Setting
-            'flash_sale_expiry',
+            // 'flash_sale_expiry',
 
             // Lapak Gaming
             'lapakgaming_api_key',
