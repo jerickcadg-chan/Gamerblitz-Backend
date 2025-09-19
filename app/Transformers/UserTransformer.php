@@ -7,6 +7,9 @@ use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
+    public function __construct(public float $exchangeRate = 1)
+    {
+    }
     /**
      * A Fractal transformer.
      *
@@ -25,9 +28,9 @@ class UserTransformer extends TransformerAbstract
             'created_at' => parse_date_time($user->created_at),
             'role' => $user->role,
             'affiliate' => [
-                'code' => $user->affiliate->code ?? "",
-                'status' => $user->affiliate->status ?? "inactive",
-                'balance' => $user->affiliate->balance ?? 0,
+                'code' => $user->affiliate?->code ?? "",
+                'status' => $user->affiliate?->status ?? "inactive",
+                'balance' => ($user->affiliate?->balance ?? 0) * $this->exchangeRate,
             ],
         ];
     }

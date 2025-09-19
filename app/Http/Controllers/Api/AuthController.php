@@ -117,7 +117,10 @@ class AuthController extends Controller
 
     public function me()
     {
-        return api_status_ok(transformer(auth()->user(), UserTransformer::class));
+        $baseCurrency = Setting::getBaseCurrency();
+        $userCurrencyCode = request('currency_code', $baseCurrency);
+        $exchangeRate = get_exchange_rate($baseCurrency, $userCurrencyCode);
+        return api_status_ok(transformer(auth()->user(), new UserTransformer($exchangeRate)));
     }
 
     public function updateMe(Request $request)
