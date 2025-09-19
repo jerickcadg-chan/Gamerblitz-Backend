@@ -109,12 +109,17 @@ class XenditService
 
         $r = Http::withBasicAuth(Setting::getByKey('xendit_secret_key'), '')
             ->withHeaders(['api-version' => '2024-11-11', 'Content-Type' => 'application/json'])
-            ->post(Setting::getByKey('xendit_api_url').'/v3/payment_requests', $payload->toArray())
-            ->json();
+            ->post(Setting::getByKey('xendit_api_url').'/v3/payment_requests', $payload->toArray());
 
-        Log::info('Xendit payment requests response', $r);
+        $json = $r->json();
 
-        $response = PaymentRequestResponse::from($r);
+        Log::info('Xendit payment requests response', $json);
+
+        if ($r->failed()) {
+            throw new \Exception("Failed to create payment: " . $json['message']);
+        }
+
+        $response = PaymentRequestResponse::from($json);
 
         $paymentUrl = null;
         $paymentCode = null;
@@ -133,7 +138,7 @@ class XenditService
         $deposit->payment_id = $response->payment_request_id ?? null;
         $deposit->save();
 
-        return $r;
+        return $json;
 
     }
 }
