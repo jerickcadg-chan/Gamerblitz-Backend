@@ -85,7 +85,7 @@ class XenditService
         $countryCode = CurrencyConstant::countryCodeByCurrency($method->currency_code);
         $channelCode = $method->slug;
 
-        $returnUrl = config('app.fe_url').'/dashboard/deposits/' . $externalId;
+        $returnUrl = config('app.fe_url').'/dashboard/deposit/' . $externalId;
 
         $payload = PaymentRequestPayload::from([
             'reference_id'   => $externalId,
