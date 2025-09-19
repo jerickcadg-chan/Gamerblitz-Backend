@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AffiliateWithdraw;
-use App\Models\User;
-use Illuminate\Http\Request;
 
 class AffiliateWithdrawController extends Controller
 {

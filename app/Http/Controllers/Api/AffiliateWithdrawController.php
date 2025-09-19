@@ -43,9 +43,6 @@ class AffiliateWithdrawController extends Controller
             'affiliate_id' => $affiliate->id,
             'user_id' => $user->id,
             'amount' => $affiliate->balance,
-            'method' => $request->method,
-            'destination' => $request->destination,
-            'notes' => $request->notes,
             'requested_at' => now()
         ]);
 

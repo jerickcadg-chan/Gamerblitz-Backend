@@ -19,6 +19,7 @@ class AffiliateWithdrawTransformer extends TransformerAbstract
             'user_id' => $affiliate->user_id,
             'amount' => $affiliate->amount,
             'status' => $affiliate->status,
+            // amount will be converted to balance, which use system base currency
             'currency_code' => Setting::getBaseCurrency(),
             'requested_at' => $affiliate->requested_at,
             'processed_at' => $affiliate->processed_at,

@@ -12,9 +12,6 @@ class AffiliateWithdraw extends Model
         'user_id',
         'amount',
         'status',
-        'method',
-        'destination',
-        'notes',
         'requested_at',
         'processed_at',
     ];
