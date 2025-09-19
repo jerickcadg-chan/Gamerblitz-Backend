@@ -2,7 +2,7 @@
 
 namespace App\Transformers;
 
-use App\Models\Affiliate;
+use App\Models\Setting;
 use League\Fractal\TransformerAbstract;
 
 class AffiliateWithdrawTransformer extends TransformerAbstract
@@ -19,9 +19,7 @@ class AffiliateWithdrawTransformer extends TransformerAbstract
             'user_id' => $affiliate->user_id,
             'amount' => $affiliate->amount,
             'status' => $affiliate->status,
-            'method' => $affiliate->method,
-            'destination' => $affiliate->destination,
-            'notes' => $affiliate->notes,
+            'currency_code' => Setting::getBaseCurrency(),
             'requested_at' => $affiliate->requested_at,
             'processed_at' => $affiliate->processed_at,
         ];
