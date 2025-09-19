@@ -32,6 +32,9 @@ class Deposit extends Model
         'amount' => 'string',
         'unique_code' => 'string',
         'total_amount' => 'string',
+        'converted_amount' => 'string',
+        'converted_unique_code' => 'string',
+        'converted_total_amount' => 'string',
     ];
 
     protected static function boot(): void

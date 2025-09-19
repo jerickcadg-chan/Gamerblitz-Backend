@@ -91,7 +91,7 @@ class DepositController extends Controller
             $xendit->createDepositXenditInvoice($deposit);
         }
 
-        return api_status_ok($deposit);
+        return api_status_ok(transformer($deposit, new DepositTransformer()));
     }
 
     public function mutation()
