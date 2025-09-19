@@ -31,10 +31,8 @@
             <th>User</th>
             <th>Amount</th>
             <th>Status</th>
-            <th>Method</th>
             <th>Requested At</th>
             <th>Processed At</th>
-            <th>Note</th>
             <th>Action</th>
           </tr>
           </thead>
@@ -46,13 +44,8 @@
               <td>{{ $withdraw->user->name }}</td>
               <td>{{ $withdraw->amount }}</td>
               <td>{{ $withdraw->status }}</td>
-              <td>
-                <p>{{ $withdraw->method }}</p>
-                <p>{{ $withdraw->destination }}</p>
-              </td>
               <td>{{ $withdraw->requested_at }}</td>
               <td>{{ $withdraw->processed_at }}</td>
-              <td>{{ $withdraw->notes }}</td>
               <td></td>
             </tr>
           @empty
