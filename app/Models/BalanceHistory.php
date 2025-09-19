@@ -18,4 +18,9 @@ class BalanceHistory extends Model
     {
         return $this->belongsTo(Balance::class);
     }
+
+    public function balanceable()
+    {
+        return $this->morphTo();
+    }
 }
