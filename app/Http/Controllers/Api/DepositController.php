@@ -53,7 +53,7 @@ class DepositController extends Controller
     {
         $baseCurrency = Setting::getBaseCurrency();
         $userCurrency = $request->currency_code;
-        $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
+        $exchangeRateToBase = get_exchange_rate($userCurrency, $baseCurrency);
 
         $minAmount = DepositService::getDepositMinAmount($userCurrency);
 
@@ -76,10 +76,14 @@ class DepositController extends Controller
 
         if ($paymentMethod->vendor === PaymentMethod::MANUAL) {
             $uniqueCode = $this->generateUniqueAmount($amount, $userCurrency);
-            $adminFee = $uniqueCode / $exchangeRate;
+            $adminFee = $uniqueCode;
         }
 
         $totalAmount = $amount + $adminFee;
+
+        $baseAmount = $amount * $exchangeRateToBase;
+        $baseAdminFee = $adminFee * $exchangeRateToBase;
+        $baseTotalAmount = $totalAmount * $exchangeRateToBase;
 
         $deposit = Deposit::create([
             'code' => "DP".date('ymd').rand(1000, 999999),
@@ -87,13 +91,13 @@ class DepositController extends Controller
             'payment_method_id' => $paymentMethod->id,
             'currency_code' => $baseCurrency,
             'converted_currency_code' => $userCurrency,
-            'exchange_rate' => $exchangeRate,
-            'amount' => $amount,
-            'admin_fee' => $adminFee,
-            'total_amount' => $totalAmount,
-            'converted_amount' => $amount * $exchangeRate,
-            'converted_admin_fee' => $adminFee * $exchangeRate,
-            'converted_total_amount' => $totalAmount * $exchangeRate,
+            'exchange_rate' => $exchangeRateToBase,
+            'amount' => $baseAmount,
+            'admin_fee' => $baseAdminFee,
+            'total_amount' => $baseTotalAmount,
+            'converted_amount' => $amount,
+            'converted_admin_fee' => $adminFee,
+            'converted_total_amount' => $totalAmount,
             'expired_at' => now()->addHours(3),
             'status' => StatusConst::PENDING,
         ]);
@@ -137,8 +141,7 @@ class DepositController extends Controller
     {
         switch (strtoupper($currency)) {
             case 'IDR':
-                $uniqueCode = rand(1, 999);
-                return $baseAmount + $uniqueCode;
+                return rand(1, 999);
 
             default:
                 return 0;
