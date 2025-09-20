@@ -57,7 +57,7 @@ class DepositController extends Controller
 
         $minAmount = DepositService::getDepositMinAmount($userCurrency);
 
-        $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
+        $paymentMethod = PaymentMethod::find($request->payment_method_id);
 
         if ($request->currency_code !== $paymentMethod->currency_code) {
             return api_status_warning('Invalid currency for payment method ' . $paymentMethod->name);
@@ -68,15 +68,18 @@ class DepositController extends Controller
             return api_status_warning('Min deposit amount is ' . currency_format($minAmount, $userCurrency));
         }
 
-        $uniqueCode = $this->generateUniqueAmount($amount, $baseCurrency);
-
         $adminFee = match ($paymentMethod->admin_type) {
             'percentage' => ceil($amount / ((100 - $paymentMethod->admin_fee) / 100)) - $amount,
             'nominal' => $paymentMethod->admin_fee,
             default => 0,
         };
 
-        $totalAmount = $amount + $adminFee + $uniqueCode;
+        if ($paymentMethod->vendor === PaymentMethod::MANUAL) {
+            $uniqueCode = $this->generateUniqueAmount($amount, $userCurrency);
+            $adminFee = $uniqueCode / $exchangeRate;
+        }
+
+        $totalAmount = $amount + $adminFee;
 
         $deposit = Deposit::create([
             'code' => "DP".date('ymd').rand(1000, 999999),
@@ -87,11 +90,9 @@ class DepositController extends Controller
             'exchange_rate' => $exchangeRate,
             'amount' => $amount,
             'admin_fee' => $adminFee,
-            'unique_code' => $uniqueCode,
             'total_amount' => $totalAmount,
             'converted_amount' => $amount * $exchangeRate,
             'converted_admin_fee' => $adminFee * $exchangeRate,
-            'converted_unique_code' => $uniqueCode * $exchangeRate,
             'converted_total_amount' => $totalAmount * $exchangeRate,
             'expired_at' => now()->addHours(3),
             'status' => StatusConst::PENDING,

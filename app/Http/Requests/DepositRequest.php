@@ -25,7 +25,7 @@ class DepositRequest extends FormRequest
     {
         return [
             'amount' => 'required',
-            'payment_method' => 'required|exists:payment_methods,name',
+            'payment_method_id' => 'required|exists:payment_methods,id',
             'currency_code' => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/'],
         ];
     }

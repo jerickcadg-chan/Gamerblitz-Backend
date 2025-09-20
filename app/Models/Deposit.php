@@ -16,11 +16,9 @@ class Deposit extends Model
         'payment_method_id',
         'amount',
         'admin_fee',
-        'unique_code',
         'total_amount',
         'converted_amount',
         'converted_admin_fee',
-        'converted_unique_code',
         'converted_total_amount',
         'status',
         'expired_at',
@@ -36,11 +34,9 @@ class Deposit extends Model
     protected $casts = [
         'amount' => 'string',
         'admin_fee' => 'string',
-        'unique_code' => 'string',
         'total_amount' => 'string',
         'converted_amount' => 'string',
         'converted_admin_fee' => 'string',
-        'converted_unique_code' => 'string',
         'converted_total_amount' => 'string',
     ];
 

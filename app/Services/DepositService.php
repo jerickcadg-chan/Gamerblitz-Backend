@@ -21,7 +21,6 @@ class DepositService
 
         if ($amount) {
             $deposit->amount = $amount;
-            $deposit->unique_code = 0;
             $deposit->total_amount = $amount;
         }
 
