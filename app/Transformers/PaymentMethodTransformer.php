@@ -18,6 +18,7 @@ class PaymentMethodTransformer extends TransformerAbstract
             'id' => $paymentMethod->id,
             'category' => $paymentMethod->category,
             'name' => $paymentMethod->name,
+            'account_number' => $paymentMethod->account_number,
             'display_name' => $paymentMethod->display_name,
             'admin_fee' => $paymentMethod->admin_fee_translated,
             'admin_fee_raw' => $paymentMethod->admin_fee,
