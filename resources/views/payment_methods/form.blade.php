@@ -34,7 +34,7 @@
                    name="slug" id="slug_input" placeholder="Unique slug (e.g.: bca-va, qris)"
                    value="{{ old('slug', $paymentMethod->slug ?? '') }}"
                    required
-                   @if($paymentMethod->slug === \App\Models\PaymentMethod::BALANCE) readonly @endif>
+                   @if($paymentMethod->slug ?? "" === \App\Models\PaymentMethod::BALANCE) readonly @endif>
             @include('alerts.feedback', ['field' => 'slug'])
           </div>
 

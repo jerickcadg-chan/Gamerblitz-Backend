@@ -90,7 +90,7 @@ class OrderTransformer extends TransformerAbstract
         return $this->null();
     }
 
-    public function includePaymentMethod(Order $order): Item
+    public function includePaymentMethod(Order $order)
     {
         return $this->item($order->paymentMethod, new PaymentMethodTransformer());
     }

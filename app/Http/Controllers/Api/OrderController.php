@@ -61,7 +61,7 @@ class OrderController extends Controller
             $filter = array_merge([$itemNameProductFilter], $filter);
         }
 
-        $orders = Order::with('user', 'productItem.product')->latest()
+        $orders = Order::with('user', 'productItem.product', 'paymentMethod')->latest()
             ->filter($filter)
             ->where('user_id', $this->userId)
             ->when(request('order_code'), function ($query) {
