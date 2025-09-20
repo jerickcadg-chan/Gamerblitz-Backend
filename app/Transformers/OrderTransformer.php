@@ -14,7 +14,7 @@ class OrderTransformer extends TransformerAbstract
      * List of resources to automatically include
      */
     protected array $defaultIncludes = [
-        'productItem', 'product', 'user',
+        'productItem', 'product', 'user', 'paymentMethod',
     ];
 
     /**
@@ -41,7 +41,7 @@ class OrderTransformer extends TransformerAbstract
             'cust_email' => $order->cust_email,
             'cust_phone_number' => $order->cust_phone_number,
             'cust_account' => json_decode($order->cust_account),
-            'payment_method' => $order->payment_method,
+            'payment_method_id' => $order->payment_method_id,
             'status' => $order->status,
             'qty' => $order->qty,
 
@@ -87,6 +87,11 @@ class OrderTransformer extends TransformerAbstract
         }
 
         return $this->null();
+    }
+
+    public function includePaymentMethod(Order $order): Item
+    {
+        return $this->item($order->paymentMethod, new PaymentMethodTransformer());
     }
 
     public function includeUser(Order $order): NullResource|Item

@@ -48,7 +48,7 @@ class OrderService
 
             $productItem = ProductItem::with('product')->find($request->product_item_id);
 
-            $paymentMethod = PaymentMethod::where('name', $request->payment_method)->first();
+            $paymentMethod = PaymentMethod::find($request->payment_method_id);
 
             $discount = null;
 
@@ -100,7 +100,7 @@ class OrderService
                 };
             }
 
-            $orderStatus = $request->payment_method === PaymentMethod::BALANCE ? Order::INPROCESS : $orderStatus = Order::PENDING;
+            $orderStatus = $paymentMethod->slug === PaymentMethod::BALANCE ? Order::INPROCESS : $orderStatus = Order::PENDING;
 
             $order = new Order;
             $order->productItem()->associate($productItem);
@@ -109,7 +109,7 @@ class OrderService
             $order->cust_account = $request->cust_account;
             $order->cust_email = $request->cust_email;
             $order->cust_phone_number = $request->cust_phone_number;
-            $order->payment_method = $request->payment_method;
+            $order->payment_method_id = $paymentMethod->id;
             $order->provider = $productItem->product->provider;
             $order->status = $orderStatus;
             $order->qty = $request->qty;

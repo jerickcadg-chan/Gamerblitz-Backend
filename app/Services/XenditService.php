@@ -7,7 +7,6 @@ use App\Data\Xendit\PaymentRequestResponse;
 use App\Data\Xendit\PaymentRequestPayload;
 use App\Models\Deposit;
 use App\Models\Order;
-use App\Models\PaymentMethod;
 use App\Models\Setting;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
@@ -24,7 +23,7 @@ class XenditService
         $externalId = $order->code;
         $expiresAt = now()->addHour(1)->toIso8601String();
 
-        $method = PaymentMethod::where('name', $order->payment_method)->firstOrFail();
+        $method = $order->paymentMethod;
 
         $country = app(CurrencyConstant::class)->metadata($method->currency_code);
         $countryLocale = explode('-', $country['locale'])[1];
@@ -68,6 +67,7 @@ class XenditService
             $paymentCode = $r['actions'][0]['value'];
         }
 
+        $order->payment_descriptor = $r['actions'][0]['descriptor'];
         $order->payment_url = $paymentUrl;
         $order->payment_code = $paymentCode;
         $order->payment_id = $r['id'] ?? $r['payment_request_id'] ?? null;
