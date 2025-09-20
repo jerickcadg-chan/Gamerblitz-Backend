@@ -32,32 +32,10 @@
             <label for="slug_input" class="required">Slug</label>
             <input type="text" class="form-control {{ $errors->has('slug') ? ' is-invalid' : '' }}"
                    name="slug" id="slug_input" placeholder="Unique slug (e.g.: bca-va, qris)"
-                   value="{{ old('slug', $paymentMethod->slug ?? '') }}" required>
+                   value="{{ old('slug', $paymentMethod->slug ?? '') }}"
+                   required
+                   @if($paymentMethod->slug === \App\Models\PaymentMethod::BALANCE) readonly @endif>
             @include('alerts.feedback', ['field' => 'slug'])
-          </div>
-
-          <div class="form-group">
-            <label for="account_name_input">Account Name</label>
-            <input type="text" class="form-control {{ $errors->has('account_name') ? ' is-invalid' : '' }}"
-                   name="account_name" id="account_name_input" placeholder="Bank / E-Wallet"
-                   value="{{ old('account_name', $paymentMethod->account_name ?? '') }}">
-            @include('alerts.feedback', ['field' => 'account_name'])
-          </div>
-
-          <div class="form-group">
-            <label for="account_number_input">Account Number</label>
-            <input type="text" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }}"
-                   name="account_number" id="account_number_input" placeholder="Account No. / E-Wallet No."
-                   value="{{ old('account_number', $paymentMethod->account_number ?? '') }}">
-            @include('alerts.feedback', ['field' => 'account_number'])
-          </div>
-
-          <div class="form-group">
-            <label for="account_holder_name_input">Account Holder Name</label>
-            <input type="text" class="form-control {{ $errors->has('account_holder_name') ? ' is-invalid' : '' }}"
-                   name="account_holder_name" id="account_holder_name_input" placeholder="Account holder name"
-                   value="{{ old('account_holder_name', $paymentMethod->account_holder_name ?? '') }}">
-            @include('alerts.feedback', ['field' => 'account_holder_name'])
           </div>
 
           <div class="form-group">
@@ -93,11 +71,23 @@
           </div>
 
           <div class="form-group">
+            <label for="account_number_input">Account Number (For Manual)</label>
+            <input type="text" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }}"
+                   name="account_number" id="account_number_input" placeholder="Account No. / E-Wallet No."
+                   value="{{ old('account_number', $paymentMethod->account_number ?? '') }}">
+            @include('alerts.feedback', ['field' => 'account_number'])
+          </div>
+
+          <div class="form-group">
             <label for="category_input" class="required">Category</label>
-            <input type="text" class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}"
-                   name="category" id="category_input" placeholder="E-Wallet, VA, Retail"
-                   value="{{ old('category', $paymentMethod->category ?? '') }}" required>
-            @include('alerts.feedback', ['field' => 'category'])
+            <select name="category"  id="category_input" class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}" required>
+              @foreach(\App\Constants\PaymentCategoryConstant::all() as $key => $label)
+                <option value="{{ $label }}"
+                  {{ old('category', $paymentMethod->category ?? '') == $label ? 'selected' : '' }}>
+                  {{ $label }}
+                </option>
+              @endforeach
+            </select>
           </div>
 
           <div class="form-group">
@@ -114,7 +104,7 @@
           <div class="form-group">
             <label for="ordering_input">Ordering</label>
             <input type="number" class="form-control {{ $errors->has('ordering') ? ' is-invalid' : '' }}"
-                   name="ordering" id="ordering_input" placeholder="Urutan tampil"
+                   name="ordering" id="ordering_input"
                    value="{{ old('ordering', $paymentMethod->ordering ?? '') }}">
             @include('alerts.feedback', ['field' => 'ordering'])
           </div>

@@ -23,11 +23,9 @@ class PaymentMethod extends Model implements IsFilterable
     use Filterable;
 
     const XENDIT = 'xendit';
+    const MANUAL = 'manual';
     const BALANCE = 'balance';
-    const QR = 'QR';
-    const EWALLET = 'E-Wallet';
-    const BANK_VA = 'Bank Virtual Account';
-    const RETAIL = 'Retail Outlet';
+    const ALL = 'ALL';
 
     protected $fillable = [
         'name',
