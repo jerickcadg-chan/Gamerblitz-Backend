@@ -63,6 +63,7 @@ class OrderTransformer extends TransformerAbstract
             'discount_name' => $order->discount->name ?? null,
             'payment_url' => $order->payment_url,
             'payment_code' => $order->payment_code,
+            'payment_descriptor' => $order->payment_descriptor,
             'payment_id' => $order->payment_id,
             'expired_at' => parse_date_time_full($order->expired_at),
             'expired_at_raw' => $order->expired_at,
