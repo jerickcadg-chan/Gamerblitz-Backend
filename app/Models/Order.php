@@ -32,7 +32,7 @@ class Order extends Model implements IsFilterable
     public const EXPIRED = 'expired';
     public const CANCELED = 'canceled';
     public const WAITING_PAYMENT = 'waiting-payment';
-    public const INPROCESS = 'in-process';
+    public const INPROCESS = 'on-process';
     public const DONE = 'done';
 
     protected $fillable = [

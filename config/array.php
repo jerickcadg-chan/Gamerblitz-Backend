@@ -31,7 +31,7 @@ return [
         ],
         'order_status' => [
             'waiting-payment' => \App\Models\Order::WAITING_PAYMENT,
-            'in-process' => \App\Models\Order::INPROCESS,
+            'on-process' => \App\Models\Order::INPROCESS,
             'done' => \App\Models\Order::DONE,
             'expired' => \App\Models\Order::EXPIRED,
             'canceled' => \App\Models\Order::CANCELED,

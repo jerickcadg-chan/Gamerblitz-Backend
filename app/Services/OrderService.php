@@ -220,7 +220,7 @@ class OrderService
         $paymentMethod,
         $exchangeRate,
     ): float|int {
-        if ($paymentMethod->vendor === PaymentMethod::MANUAL) {
+        if ($paymentMethod->vendor === PaymentMethod::MANUAL && $paymentMethod->slug !== PaymentMethod::BALANCE) {
             return $this->generateUniqueCode($paymentMethod->currency_code);
         }
 
