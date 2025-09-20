@@ -198,50 +198,6 @@ class OrderController extends Controller
         return api_status_warning('Transaction not found');
     }
 
-    public function agenCallback(Request $request, OrderService $orderService)
-    {
-        // TODO: fix auth
-        $order = Order::where('code', $request->code)->first();
-
-        if (empty($order)) {
-            return api_status_warning("Wrong number!");
-        }
-
-        $productItem = $order->productItem;
-
-        switch ($request->status) {
-            case 'SUCCESS':
-            case 'Sukses':
-                $orderService->updateStatus($order, null, Order::DONE);
-
-                $note = strtolower($productItem->product->category) === Product::VOUCHER ? $request->voucher : "Nickname : $request->nickname - $request->status_desc";
-
-                $orderService->updateNote($order, $note);
-                $orderService->updateCapital($order, $request->total_price);
-                break;
-            case 'REFUNDED':
-            case 'Gagal':
-                $orderService->updateStatus($order, null, Order::REFUNDED);
-                $orderService->updateNote($order, $request->status_desc);
-
-                if ($request->payment_method === PaymentMethod::BALANCE) {
-                    $balance = Balance::where('user_id', $order->user_id)->first();
-
-                    BalanceService::update($balance, [
-                        'balanceable_type' => Order::class,
-                        'balanceable_id' => $order->id,
-                        'amount' => $order->total_price,
-                        'description' => "Refund $order->code"
-                    ]);
-                }
-                break;
-            default:
-                return api_status_warning('Invalid request status');
-        }
-
-        return api_status_ok($order);
-    }
-
     public function checkUid()
     {
         $product = Product::where('id', request('product_id'))->firstOrFail();
