@@ -102,7 +102,7 @@ class OrderService
 
             $orderStatus = $paymentMethod->slug === PaymentMethod::BALANCE ? Order::INPROCESS : $orderStatus = Order::PENDING;
 
-            $order = new Order;
+            $order = new Order();
             $order->productItem()->associate($productItem);
             $order->user()->associate($authUser ?? null);
             $order->discount()->associate($price['discount']);
@@ -191,6 +191,10 @@ class OrderService
             exchangeRate: $exchangeRate
         );
 
+        if ($paymentMethod->vendor === PaymentMethod::MANUAL) {
+            $adminFee = $this->generateUniqueCode($paymentMethod->currency_code) / $exchangeRate;
+        }
+
         $totalTurnover =  $price - $disc['nominal'];
 
         $totalPrice = $totalTurnover + $adminFee;
@@ -215,8 +219,7 @@ class OrderService
         $realPrice,
         $paymentMethod,
         $exchangeRate,
-    ): float|int
-    {
+    ): float|int {
         if ($paymentMethod->vendor === PaymentMethod::MANUAL) {
             return $this->generateUniqueCode($paymentMethod->currency_code);
         }
@@ -298,7 +301,7 @@ class OrderService
         }
     }
 
-    function generateUniqueCode(string $currency = 'IDR'): string
+    public function generateUniqueCode(string $currency = 'IDR'): string
     {
         switch (strtoupper($currency)) {
             case 'IDR':
