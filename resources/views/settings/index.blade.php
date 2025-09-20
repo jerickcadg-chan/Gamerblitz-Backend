@@ -94,6 +94,53 @@
             @include('alerts.feedback', ['field' => 'primary_color'])
           </div>
 
+          <!-- Fallback margin setting -->
+          <h4 class="mb-2 mt-5">Fallback Margin Setting</h4>
+          <hr class="mb-4">
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="margin_public_input" class="required">Margin Public User (%)</label>
+                <input type="number" min="0"
+                  class="form-control {{ $errors->has('margin_public') ? ' is-invalid' : '' }}" name="margin_public"
+                  id="margin_public_input" placeholder="0" value="{{ old('margin_public', $product->margin_public ?? '') }}"
+                  required>
+                @include('alerts.feedback', ['field' => 'margin_public'])
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="margin_silver_input" class="required">Margin Reseller Silver (%)</label>
+                <input type="number" min="0"
+                  class="form-control {{ $errors->has('margin_silver') ? ' is-invalid' : '' }}"
+                  name="margin_silver" id="margin_silver_input" placeholder="0"
+                  value="{{ old('margin_silver', $product->margin_silver ?? '') }}" required>
+                @include('alerts.feedback', ['field' => 'margin_silver'])
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="margin_gold_input" class="required">Margin Reseller Gold (%)</label>
+                <input type="number" min="0"
+                  class="form-control {{ $errors->has('margin_gold') ? ' is-invalid' : '' }}"
+                  name="margin_gold" id="margin_gold_input" placeholder="0"
+                  value="{{ old('margin_gold', $product->margin_gold ?? '') }}" required>
+                @include('alerts.feedback', ['field' => 'margin_gold'])
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="margin_vip_input" class="required">Margin Reseller VIP (%)</label>
+                <input type="number" min="0"
+                  class="form-control {{ $errors->has('margin_vip') ? ' is-invalid' : '' }}"
+                  name="margin_vip" id="margin_vip_input" placeholder="0"
+                  value="{{ old('margin_vip', $product->margin_vip ?? '') }}" required>
+                @include('alerts.feedback', ['field' => 'margin_vip'])
+              </div>
+            </div>
+          </div>
+
           {{-- Pop Up Setting --}}
           <h4 class="mb-2 mt-5">Pop Up Setting</h4>
           <hr class="mb-4">

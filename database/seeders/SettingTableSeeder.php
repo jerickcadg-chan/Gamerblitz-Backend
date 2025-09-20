@@ -24,6 +24,12 @@ class SettingTableSeeder extends Seeder
             'deposit_min_amount',
             'affiliate_percentage',
 
+            // Fallback Margin
+            'margin_public',
+            'margin_silver',
+            'margin_gold',
+            'margin_vip',
+
             // Pop Up Setting
             'popup_title',
             'popup_description',
