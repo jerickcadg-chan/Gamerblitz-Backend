@@ -73,10 +73,10 @@ class OrderController extends Controller
     {
         $orders = Order::where('user_id', $this->userId)
             ->selectRaw("
-                COALESCE(SUM(CASE WHEN order_status = 'done' THEN 1 ELSE 0 END), 0) as `done`,
-                COALESCE(SUM(CASE WHEN order_status = 'on-process' THEN 1 ELSE 0 END), 0) as `on-process`,
-                COALESCE(SUM(CASE WHEN order_status = 'expired' THEN 1 ELSE 0 END), 0) as `expired`,
-                COALESCE(SUM(CASE WHEN order_status = 'canceled' THEN 1 ELSE 0 END), 0) as `canceled`
+                COALESCE(SUM(CASE WHEN status = 'done' THEN 1 ELSE 0 END), 0) as `done`,
+                COALESCE(SUM(CASE WHEN status = 'on-process' THEN 1 ELSE 0 END), 0) as `on-process`,
+                COALESCE(SUM(CASE WHEN status = 'expired' THEN 1 ELSE 0 END), 0) as `expired`,
+                COALESCE(SUM(CASE WHEN status = 'canceled' THEN 1 ELSE 0 END), 0) as `canceled`
             ")
             ->first()
             ->toArray();
