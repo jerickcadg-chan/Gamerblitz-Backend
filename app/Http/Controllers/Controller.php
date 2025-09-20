@@ -34,7 +34,7 @@ class Controller extends BaseController
                 $filter['value'] = Carbon::parse($filter['value'])->format('Y-m-d H:i:s');
             }
 
-            if ($filter['type'] == FilterType::BETWEEN->value) {
+            if ($filter['type'] === FilterType::BETWEEN->value || $filter['type'] === FilterType::IN->value) {
                 $filter['value'] = Str::of($filter['value'])->explode(',')->toArray();
             }
 
