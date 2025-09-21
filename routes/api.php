@@ -67,11 +67,13 @@ Route::get('blogs', [BlogController::class, 'index']);
 Route::get('blog-categories', [BlogController::class, 'latestPerCategory']);
 Route::get('blogs/{slug}', [BlogController::class, 'show']);
 
-$lapakgamingIp = Setting::getByKey(Setting::KEY_LAPAKGAMING_IP);
-Route::middleware(['ip.whitelist:' . $lapakgamingIp])->group(function () {
-    Route::post('callback/lapakgaming/product', [LapakGamingController::class, 'productUpdateCallback']);
-    Route::post('callback/lapakgaming/order', [LapakGamingController::class, 'orderCallback']);
-});
+if (Schema::hasTable('settings')) {
+    $lapakgamingIp = Setting::getByKey(Setting::KEY_LAPAKGAMING_IP);
+    Route::middleware(['ip.whitelist:' . $lapakgamingIp])->group(function () {
+        Route::post('callback/lapakgaming/product', [LapakGamingController::class, 'productUpdateCallback']);
+        Route::post('callback/lapakgaming/order', [LapakGamingController::class, 'orderCallback']);
+    });
+}
 
 Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::put('me', [AuthController::class, 'updateMe']);
