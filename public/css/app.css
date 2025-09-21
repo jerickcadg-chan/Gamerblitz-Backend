@@ -13756,7 +13756,6 @@ dl {
       .navbar .navbar-brand-wrapper .navbar-brand img {
         width: calc(260px - 120px);
         max-width: 100%;
-        height: 28px;
         margin: auto;
         vertical-align: middle; }
       .navbar .navbar-brand-wrapper .navbar-brand.brand-logo-mini {
