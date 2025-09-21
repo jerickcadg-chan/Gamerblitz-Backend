@@ -149,13 +149,71 @@
           </div>
 
           <div class="form-group">
-            <label for="input_format_input" class="required">Input Format</label>
-            <textarea class="form-control {{ $errors->has('input_format') ? ' is-invalid' : '' }}" name="input_format"
-              id="input_format_input" rows="20" placeholder="Enter Input Format" required>{{ old('input_format', $product->input_format ?? '') }}</textarea>
-            <div class="mt-3">
-              <p><small>Sample input format (Please consult the format for each game from provider):</small></p>
-              <pre style="background: rgba(0,0,0, 0.1)">{{ get_product_input_format_sample() }}</pre>
+            <label class="required">Input Format</label>
+
+            {{-- Builder UI --}}
+            <div x-data="inputFormatBuilder">
+              <template x-for="(field, i) in fields" :key="i">
+                <div class="border p-3 mb-3 rounded">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="Name"
+                             x-model="field.name" @input="updateHidden()">
+                    </div>
+                    <div class="col-md-2">
+                      <select class="form-control" x-model="field.type" @change="updateHidden()">
+                        <option value="text">Text</option>
+                        <option value="number">Number</option>
+                        <option value="option">Option</option>
+                        <option value="email">Email</option>
+                        <option value="password">Password</option>
+                        <option value="tel">Tel</option>
+                        <option value="textarea">Textarea</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="Label"
+                             x-model="field.label" @input="updateHidden()">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="Placeholder"
+                             x-model="field.placeholder" @input="updateHidden()">
+                    </div>
+                    <div class="col-md-1 text-end">
+                      <button type="button" class="btn btn-danger btn-sm" @click="removeField(i)">✕</button>
+                    </div>
+                  </div>
+
+                  {{-- Kalau type = option, tampilkan sub-option --}}
+                  <div class="mt-2" x-show="field.type === 'option'">
+                    <h6>Options</h6>
+                    <template x-for="(opt, j) in field.options" :key="j">
+                      <div class="row mb-2">
+                        <div class="col-md-5">
+                          <input type="text" class="form-control" placeholder="Option Name"
+                                 x-model="opt.name" @input="updateHidden()">
+                        </div>
+                        <div class="col-md-5">
+                          <input type="text" class="form-control" placeholder="Option Value"
+                                 x-model="opt.value" @input="updateHidden()">
+                        </div>
+                        <div class="col-md-2">
+                          <button type="button" class="btn btn-sm btn-danger" @click="removeOption(i,j)">✕</button>
+                        </div>
+                      </div>
+                    </template>
+                    <button type="button" class="btn btn-sm btn-secondary" @click="addOption(i)">+ Add Option</button>
+                  </div>
+                </div>
+              </template>
+
+              <button type="button" class="btn btn-primary" @click="addField()">+ Add Field</button>
             </div>
+
+            {{-- Hidden input untuk simpan JSON --}}
+            <input type="hidden" name="input_format" id="input_format_input"
+                   value="{{ old('input_format', $product->input_format ?? '[]') }}">
+
             @include('alerts.feedback', ['field' => 'input_format'])
           </div>
 
@@ -244,3 +302,44 @@
 @endsection
 
 <x-quill-editor />
+
+@push('js')
+  <script>
+    document.addEventListener("alpine:init", () => {
+      Alpine.data("inputFormatBuilder", () => ({
+        fields: JSON.parse(document.getElementById("input_format_input").value || "[]"),
+
+        addField() {
+          this.fields.push({
+            name: "",
+            type: "text",
+            label: "",
+            placeholder: "",
+            options: []
+          });
+          this.updateHidden();
+        },
+
+        removeField(i) {
+          this.fields.splice(i, 1);
+          this.updateHidden();
+        },
+
+        addOption(i) {
+          this.fields[i].options.push({ name: "", value: "" });
+          this.updateHidden();
+        },
+
+        removeOption(i, j) {
+          this.fields[i].options.splice(j, 1);
+          this.updateHidden();
+        },
+
+        updateHidden() {
+          document.getElementById("input_format_input").value =
+            JSON.stringify(this.fields, null, 2);
+        }
+      }))
+    });
+  </script>
+@endpush

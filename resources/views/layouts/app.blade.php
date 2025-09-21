@@ -54,6 +54,7 @@
     @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
     <script src="{{ asset('js/hoverable-collapse.js') }}"></script>
     <script src="{{ asset('js/misc.js') }}"></script>
+    <script src="{{ asset('js/alphine.min.js') }}" defer></script>
     <script>
     $('select.form-control').select2({
       tags: true
