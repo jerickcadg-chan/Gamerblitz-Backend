@@ -42,7 +42,10 @@ class ProductTransformer extends TransformerAbstract
             'cover' => $product->product_cover,
             'ordering' => $product->ordering,
             'provider_country' => $product->provider_country,
-            'product_category_items'=> $product->productItemCategories
+            'product_category_items'=> $product->productItemCategories,
+            'meta_title' => $product->meta_title,
+            'meta_keyword' => $product->meta_keyword,
+            'meta_description' => $product->meta_description
         ];
     }
 
