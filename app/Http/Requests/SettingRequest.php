@@ -23,10 +23,10 @@ class SettingRequest extends FormRequest
     {
         return [
             'settings' => ['nullable','array'],
-            'files.logo'       => ['nullable','image','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
-            'files.logo_alt'   => ['nullable','image','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
-            'files.favicon'    => ['nullable','image','mimes:jpg,jpeg,png,svg,gif,webp,ico','max:5120'],
-            'files.popup_image'=> ['nullable','image','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
+            'files.logo'       => ['nullable','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
+            'files.logo_alt'   => ['nullable','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
+            'files.favicon'    => ['nullable','mimes:jpg,jpeg,png,svg,gif,webp,ico','max:5120'],
+            'files.popup_image'=> ['nullable','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
         ];
     }
 }
