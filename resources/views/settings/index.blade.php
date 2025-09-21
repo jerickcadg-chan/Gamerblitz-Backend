@@ -101,42 +101,38 @@
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <label for="margin_public_input" class="required">Margin Public User (%)</label>
+                <label for="margin_public_input">Margin Public (%)</label>
                 <input type="number" min="0"
-                  class="form-control {{ $errors->has('margin_public') ? ' is-invalid' : '' }}" name="margin_public"
-                  id="margin_public_input" placeholder="0" value="{{ old('margin_public', $product->margin_public ?? '') }}"
-                  required>
-                @include('alerts.feedback', ['field' => 'margin_public'])
+                  class="form-control {{ $errors->has('settings.margin_public') ? ' is-invalid' : '' }}" name="settings[margin_public]"
+                  id="margin_public_input" placeholder="0" value="{{ old('settings.margin_public', $settings['margin_public'] ?? '') }}">
+                @include('alerts.feedback', ['field' => 'settings.margin_public'])
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="margin_silver_input" class="required">Margin Reseller Silver (%)</label>
+                <label for="margin_silver_input">Margin Silver (%)</label>
                 <input type="number" min="0"
-                  class="form-control {{ $errors->has('margin_silver') ? ' is-invalid' : '' }}"
-                  name="margin_silver" id="margin_silver_input" placeholder="0"
-                  value="{{ old('margin_silver', $product->margin_silver ?? '') }}" required>
-                @include('alerts.feedback', ['field' => 'margin_silver'])
+                  class="form-control {{ $errors->has('settings.margin_silver') ? ' is-invalid' : '' }}" name="settings[margin_silver]"
+                  id="margin_silver_input" placeholder="0" value="{{ old('settings.margin_silver', $settings['margin_silver'] ?? '') }}">
+                @include('alerts.feedback', ['field' => 'settings.margin_silver'])
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="margin_gold_input" class="required">Margin Reseller Gold (%)</label>
+                <label for="margin_gold_input">Margin Gold (%)</label>
                 <input type="number" min="0"
-                  class="form-control {{ $errors->has('margin_gold') ? ' is-invalid' : '' }}"
-                  name="margin_gold" id="margin_gold_input" placeholder="0"
-                  value="{{ old('margin_gold', $product->margin_gold ?? '') }}" required>
-                @include('alerts.feedback', ['field' => 'margin_gold'])
+                  class="form-control {{ $errors->has('settings.margin_gold') ? ' is-invalid' : '' }}" name="settings[margin_gold]"
+                  id="margin_gold_input" placeholder="0" value="{{ old('settings.margin_gold', $settings['margin_gold'] ?? '') }}">
+                @include('alerts.feedback', ['field' => 'settings.margin_gold'])
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="margin_vip_input" class="required">Margin Reseller VIP (%)</label>
+                <label for="margin_vip_input">Margin VIP (%)</label>
                 <input type="number" min="0"
-                  class="form-control {{ $errors->has('margin_vip') ? ' is-invalid' : '' }}"
-                  name="margin_vip" id="margin_vip_input" placeholder="0"
-                  value="{{ old('margin_vip', $product->margin_vip ?? '') }}" required>
-                @include('alerts.feedback', ['field' => 'margin_vip'])
+                  class="form-control {{ $errors->has('settings.margin_vip') ? ' is-invalid' : '' }}" name="settings[margin_vip]"
+                  id="margin_vip_input" placeholder="0" value="{{ old('settings.margin_vip', $settings['margin_vip'] ?? '') }}">
+                @include('alerts.feedback', ['field' => 'settings.margin_vip'])
               </div>
             </div>
           </div>
