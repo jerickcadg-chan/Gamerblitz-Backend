@@ -307,21 +307,21 @@ if (!function_exists('paginateTransformer')) {
 }
 
 if (! function_exists('brand_name')) {
-    function brand_name(): string
+    function brand_name(): string|null
     {
         return Setting::getByKey('brand_name');
     }
 }
 
 if (! function_exists('get_favicon')) {
-    function get_favicon(): string
+    function get_favicon(): string|null
     {
         return Storage::url(Setting::getByKey('favicon'));
     }
 }
 
 if (! function_exists('get_logo')) {
-    function get_logo(): string
+    function get_logo(): string|null
     {
         return Storage::url(Setting::getByKey('logo'));
     }
