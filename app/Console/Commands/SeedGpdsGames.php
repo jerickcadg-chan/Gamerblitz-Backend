@@ -104,8 +104,8 @@ class SeedGpdsGames extends Command
                     $categoryInserted++;
                 }
                 if ($product->wasRecentlyCreated) {
+                    $imageUrl = $imageMap[$name];
                     if ($this->option('download-image')) {
-                        $imageUrl = $imageMap[$name];
                         $response = Http::get($imageUrl);
                         if ($response->successful()) {
                             $path = "image/" . $product->slug . '.' . pathinfo($imageUrl, PATHINFO_EXTENSION);
@@ -115,6 +115,10 @@ class SeedGpdsGames extends Command
                         } else {
                             echo "Failed to fetch image for $name -> $imageUrl";
                         }
+                    } else {
+                        $path = "image/" . $product->slug . '.' . pathinfo($imageUrl, PATHINFO_EXTENSION);
+                        $product->default_picture = $path;
+                        $product->save();
                     }
                     $productInserted++;
                 }
