@@ -81,9 +81,13 @@ class SyncLapakGaming extends Command
 
         foreach ($products as $product) {
             /** @var Category */
-            $lgProduct = collect($lgCategories)->firstWhere('code', $product->provider_code);
+            $lgProduct = collect($lgCategories)
+                ->where('code', $product->provider_code)
+                ->where('country_code', $product->provider_country)
+                ->first();
 
             if (!$lgProduct) {
+                $this->error("Product not found: {$product->name} {$product->provider_country}");
                 continue; // skip products not in provider's response
             }
 
@@ -100,7 +104,9 @@ class SyncLapakGaming extends Command
             ]);
 
             if ($itemsResponse->failed()) {
-                Log::error('LapakGaming: fetching product items failed', [
+                $msg = "LapakGaming: fetching product items failed: {$product->provider_code} {$product->proivder_country}";
+                $this->error($msg);
+                Log::error($msg, [
                     'status' => $itemsResponse->status(),
                     'body' => $itemsResponse->body(),
                 ]);
@@ -154,10 +160,12 @@ class SyncLapakGaming extends Command
 
                 DB::commit();
             } catch (\Exception $e) {
-                Log::error('LapakGaming: failed to update product', [
+                $msg = "LapakGaming: Failed to update product: " . $e->getMessage();
+                Log::error($msg, [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
+                $this->error($msg);
                 DB::rollBack();
             }
         }
