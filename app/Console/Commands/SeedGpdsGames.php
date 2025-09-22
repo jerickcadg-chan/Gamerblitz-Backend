@@ -18,7 +18,7 @@ class SeedGpdsGames extends Command
      *
      * @var string
      */
-    protected $signature = 'app:seed-gpds-games';
+    protected $signature = 'app:seed-gpds-games {--download-image}';
 
     /**
      * The console command description.
@@ -59,6 +59,8 @@ class SeedGpdsGames extends Command
                 if ($i === 0) {
                     continue;
                 }
+
+                // if ($i > 1) break;
 
                 $name = $record[0];
                 $code = $record[1];
@@ -102,18 +104,21 @@ class SeedGpdsGames extends Command
                     $categoryInserted++;
                 }
                 if ($product->wasRecentlyCreated) {
-                    $imageUrl = $imageMap[$name];
-                    $response = Http::get($imageUrl);
-                    if ($response->successful()) {
-                        $path = "image/" . $product->slug . '.' . pathinfo($imageUrl, PATHINFO_EXTENSION);
-                        Storage::put($path, $response->body());
-                        $product->default_picture = $path;
-                        $product->save();
-                    } else {
-                        echo "Failed to fetch image for $name -> $imageUrl";
+                    if ($this->option('download-image')) {
+                        $imageUrl = $imageMap[$name];
+                        $response = Http::get($imageUrl);
+                        if ($response->successful()) {
+                            $path = "image/" . $product->slug . '.' . pathinfo($imageUrl, PATHINFO_EXTENSION);
+                            Storage::put($path, $response->body());
+                            $product->default_picture = $path;
+                            $product->save();
+                        } else {
+                            echo "Failed to fetch image for $name -> $imageUrl";
+                        }
                     }
                     $productInserted++;
                 }
+
                 // print_r($product->toArray());
             }
 
