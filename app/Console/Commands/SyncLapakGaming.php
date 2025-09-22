@@ -41,6 +41,8 @@ class SyncLapakGaming extends Command
         $fallbackMarginGold = Setting::getByKey('margin_gold');
         $fallbackMarginVip = Setting::getByKey('margin_vip');
 
+        $log = Log::channel('lapakgaming');
+
         if (!$token) {
             throw new \Exception('Missing LapakGaming api token in setting');
         }
@@ -52,50 +54,60 @@ class SyncLapakGaming extends Command
         $categoriesUrl = $baseUrl . '/api/category';       // e.g., Mobile Legends, Genshin Impact
         $productItemsUrl = $baseUrl . '/api/product';      // e.g., Diamond 50, Diamond 100
 
-        Log::info('LapakGaming: fetching categories', ['url' => $categoriesUrl]);
-
-        $response = Http::withToken($token)->get($categoriesUrl);
-
-        if ($response->failed()) {
-            Log::error('LapakGaming: fetching categories failed', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-            return;
-        }
-
-        Log::channel('lapakgaming')->info('categories', [
-            'url' => $categoriesUrl,
-            'response' => $response->json(),
-        ]);
-
-        $lgCategories = Category::collect($response->json('data.categories'));
-
         $products = Product::query()
             ->where('status', Product::ACTIVE)
             ->where('provider', ProviderConstant::LAPAKGAMING)
             ->get();
 
+        $countryCodes = $products->pluck("provider_country")->unique();
+
+        $allLgCategories = collect();
+
+        foreach ($countryCodes as $c) {
+            $log->info('LapakGaming: fetching categories', ['url' => $categoriesUrl, 'country_code' => $c]);
+
+            $response = Http::withToken($token)->get($categoriesUrl, [
+                "country_code" => $c
+            ]);
+
+            if ($response->failed()) {
+                $log->error('LapakGaming: fetching categories failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+                continue;
+            }
+
+            $log->info('categories response', [
+                'url' => $categoriesUrl,
+                "counttry_code" => $c,
+                'response' => $response->json(),
+            ]);
+
+            $allLgCategories = $allLgCategories->concat(collect($response->json("data.categories")));
+        }
+
         $lapakGamingCurrency = 'IDR';
         $exchangeRate = get_exchange_rate($lapakGamingCurrency, Setting::getBaseCurrency());
 
         foreach ($products as $product) {
-            /** @var Category */
-            $lgProduct = collect($lgCategories)
+            $lgCategory = ($allLgCategories)
                 ->where('code', $product->provider_code)
                 ->where('country_code', strtolower($product->provider_country))
                 ->first();
 
-            if (!$lgProduct) {
+            if (!$lgCategory) {
                 $msg = "LapakGaming: Product not found: name={$product->name} code={$product->provider_code} country={$product->provider_country}";
                 $this->error($msg);
-                Log::error($msg, [
-                    'lgProduct' => $lgProduct,
+                $log->error($msg, [
+                    'lgProduct' => $lgCategory,
                 ]);
                 continue; // skip products not in provider's response
             }
 
-            Log::info('LapakGaming: fetching product items', [
+            $lgCategory = Category::from($lgCategory);
+
+            $log->info('LapakGaming: fetching product items', [
                 'url' => $productItemsUrl,
                 'category' => $product->provider_code,
                 'country' => $product->provider_country,
@@ -110,7 +122,7 @@ class SyncLapakGaming extends Command
             if ($itemsResponse->failed()) {
                 $msg = "LapakGaming: fetching product items failed: {$product->provider_code} {$product->proivder_country}";
                 $this->error($msg);
-                Log::error($msg, [
+                $log->error($msg, [
                     'status' => $itemsResponse->status(),
                     'body' => $itemsResponse->body(),
                 ]);
@@ -119,7 +131,7 @@ class SyncLapakGaming extends Command
 
             $lgItems = AppProductItem::collect($itemsResponse->json('data.products'));
 
-            Log::channel('lapakgaming')->info('product items', [
+            $log->info('product items', [
                 'url' => $productItemsUrl,
                 'category_code' => $product->provider_code,
                 'country_code' => $product->provider_country ?? 'id',
@@ -129,8 +141,8 @@ class SyncLapakGaming extends Command
             try {
                 DB::beginTransaction();
 
-                $product->input_format = $lgProduct->forms ?? $product->input_format;
-                $product->check_uid = $lgProduct->check_id;
+                $product->input_format = $lgCategory->forms ?? $product->input_format;
+                $product->check_uid = $lgCategory->check_id;
                 $product->updated_at = now();
                 $product->markup_user = $product->markup_user ?: $fallbackMarginPublic;
                 $product->markup_reseller_silver = $product->markup_reseller_silver ?: $fallbackMarginSilver;
@@ -165,7 +177,7 @@ class SyncLapakGaming extends Command
                 DB::commit();
             } catch (\Exception $e) {
                 $msg = "LapakGaming: Failed to update product: " . $e->getMessage();
-                Log::error($msg, [
+                $log->error($msg, [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
