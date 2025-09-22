@@ -36,6 +36,10 @@ class SyncLapakGaming extends Command
     {
         $token = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_TOKEN);
         $baseUrl = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_URL);
+        $fallbackMarginPublic = Setting::getByKey('margin_public');
+        $fallbackMarginSilver = Setting::getByKey('margin_silver');
+        $fallbackMarginGold = Setting::getByKey('margin_gold');
+        $fallbackMarginVip = Setting::getByKey('margin_vip');
 
         if (!$token) {
             throw new \Exception('Missing LapakGaming api token in setting');
@@ -115,11 +119,14 @@ class SyncLapakGaming extends Command
             try {
                 DB::beginTransaction();
 
-                $product->update([
-                    'input_format' => $lgProduct->forms ?? $product->input_format,
-                    'check_uid' => $lgProduct->check_id,
-                    'updated_at' => now(),
-                ]);
+                $product->input_format = $lgProduct->forms ?? $product->input_format;
+                $product->check_uid = $lgProduct->check_id;
+                $product->updated_at = now();
+                $product->margin_public = $product->margin_public ?: $fallbackMarginPublic;
+                $product->margin_silver = $product->margin_silver ?: $fallbackMarginSilver;
+                $product->margin_gold = $product->margin_gold ?: $fallbackMarginGold;
+                $product->margin_vip = $product->margin_vip ?: $fallbackMarginVip;
+                $product->save();
 
                 foreach ($lgItems as $item) {
                     $productItem = ProductItem::where('product_id', $product->id)->where('code', $item->code)->firstOrNew([
