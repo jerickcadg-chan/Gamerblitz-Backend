@@ -16,6 +16,19 @@ class Setting extends Model
     public const KEY_LAPAKGAMING_API_TOKEN = 'lapakgaming_api_token';
     public const KEY_LAPAKGAMING_IP = 'lapakgaming_ip';
 
+    /**
+     * specify which setting keys need to be casted to numeric
+     * if the key does not exists or have no value, it will default to 0 instead of empty string
+     */
+    public const CAST_NUMERIC_KEYS = [
+        "deposit_min_amount",
+        "affiliate_percentage",
+        "margin_public",
+        "margin_silver",
+        "margin_gold",
+        "margin_vip",
+    ];
+
     protected static ?array $loaded = null;
 
     protected $fillable = [
@@ -33,6 +46,12 @@ class Setting extends Model
             static::$loaded = static::pluck('value', 'key')->all();
         }
 
-        return static::$loaded[$key] ?? null;
+        $value = static::$loaded[$key] ?? null;
+
+        if (in_array($key, self::CAST_NUMERIC_KEYS, true)) {
+            return is_numeric($value) ? (float)$value : 0;
+        }
+
+        return $value;
     }
 }
