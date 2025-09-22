@@ -83,11 +83,11 @@ class SyncLapakGaming extends Command
             /** @var Category */
             $lgProduct = collect($lgCategories)
                 ->where('code', $product->provider_code)
-                ->where('country_code', $product->provider_country)
+                ->where('country_code', strtolower($product->provider_country))
                 ->first();
 
             if (!$lgProduct) {
-                $msg = "LapakGaming: Product not found: {$product->name} {$product->provdier_code} {$product->provider_country}";
+                $msg = "LapakGaming: Product not found: name={$product->name} code={$product->provider_code} country={$product->provider_country}";
                 $this->error($msg);
                 Log::error($msg, [
                     'lgProduct' => $lgProduct,
