@@ -87,7 +87,11 @@ class SyncLapakGaming extends Command
                 ->first();
 
             if (!$lgProduct) {
-                $this->error("Product not found: {$product->name} {$product->provider_country}");
+                $msg = "LapakGaming: Product not found: {$product->name} {$product->provdier_code} {$product->provider_country}";
+                $this->error($msg);
+                Log::error($msg, [
+                    'lgProduct' => $lgProduct,
+                ]);
                 continue; // skip products not in provider's response
             }
 
