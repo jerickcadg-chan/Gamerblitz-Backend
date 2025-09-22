@@ -48,7 +48,7 @@
                 <td>{{ $products->firstItem() + $index }}</td>
                 <td>
                   <a href="{{ $product->product_picture }}" target="_blank">
-                    <img src="{{ $product->product_picture }}" class="w-25 object-fit-cover" alt="{{ $product->name }}"/>
+                    <img src="{{ $product->product_picture }}" class="object-fit-cover" alt="{{ $product->name }}"/>
                   </a>
                 </td>
                 <td>
