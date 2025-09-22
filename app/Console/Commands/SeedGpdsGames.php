@@ -74,8 +74,8 @@ class SeedGpdsGames extends Command
                 $product = Product::firstOrCreate([
                     'name' => $name,
                     'code' => $code,
+                    'provider_country' => $country,
                 ], [
-                        'code' => $code,
                         'product_category_id' => $category->id,
                         'description' => '',
                         'company' => '',
@@ -93,7 +93,6 @@ class SeedGpdsGames extends Command
                         'status' => 'active',
                         'provider' => $provider,
                         'provider_code' => $code,
-                        'provider_country' => $country,
                         // 'check_uid' => '',
                         // 'meta_title' => '',
                         // 'meta_keyword' => '',
