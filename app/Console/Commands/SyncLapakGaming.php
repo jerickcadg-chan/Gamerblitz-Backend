@@ -132,10 +132,10 @@ class SyncLapakGaming extends Command
                 $product->input_format = $lgProduct->forms ?? $product->input_format;
                 $product->check_uid = $lgProduct->check_id;
                 $product->updated_at = now();
-                $product->margin_public = $product->margin_public ?: $fallbackMarginPublic;
-                $product->margin_silver = $product->margin_silver ?: $fallbackMarginSilver;
-                $product->margin_gold = $product->margin_gold ?: $fallbackMarginGold;
-                $product->margin_vip = $product->margin_vip ?: $fallbackMarginVip;
+                $product->markup_user = $product->markup_user ?: $fallbackMarginPublic;
+                $product->markup_reseller_silver = $product->markup_reseller_silver ?: $fallbackMarginSilver;
+                $product->markup_reseller_gold = $product->markup_reseller_gold ?: $fallbackMarginGold;
+                $product->markup_reseller_vip = $product->markup_reseller_vip ?: $fallbackMarginVip;
                 $product->save();
 
                 foreach ($lgItems as $item) {
