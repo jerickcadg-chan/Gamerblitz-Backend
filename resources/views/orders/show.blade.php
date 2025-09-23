@@ -112,23 +112,48 @@
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-header">
-            <b>Order Status History</b>
+            <b>Status Histories</b>
           </div>
-          <div class="card-body table-responsive">
+          <div class="p-3 table-responsive">
             <table class="table table-bordered table-hover">
               <thead>
               <tr>
-                <th>#</th>
-                <th>Status</th>
                 <th>Date</th>
+                <th>Status</th>
+                <th>Note</th>
               </tr>
               </thead>
               <tbody>
-              @forelse ($order->histories->where('type', 'order') as $history)
+              @forelse ($order->histories as $history)
                 <tr>
-                  <td>{{ $loop->iteration }}</td>
-                  <td>{{ $history->status }}</td>
                   <td>{{ parse_date_time($history->created_at) }}</td>
+                  <td>{{ $history->status }}</td>
+                  <td>
+                    @if($history->note)
+                      <button type="button" class="btn btn-primary btn-xs"
+                              data-bs-toggle="modal" data-bs-target="#history-{{ $history->id }}">
+                        <i class="mdi mdi-information"></i>
+                      </button>
+                      <div class="modal fade" id="history-{{ $history->id }}" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="infoModalLabel">Notes</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              {{ $history->note }}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    @else
+                      -
+                    @endif
+                  </td>
                 </tr>
               @empty
                 <tr>
@@ -154,5 +179,43 @@
         </div>
       </div>
     </div>
+
+    @if($mutations->count() > 0)
+      <div class="col-lg-5">
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-header">
+              <b>Balance Mutations</b>
+            </div>
+            <div class="p-3 table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Before</th>
+                  <th>After</th>
+                </tr>
+                </thead>
+                <tbody>
+                @forelse ($mutations as $mutation)
+                  <tr>
+                    <td>{{ parse_date_time($mutation->created_at) }}</td>
+                    <td>{{ currency_format($mutation->amount) }}</td>
+                    <td>{{ currency_format($mutation->latest_balance - $mutation->amount) }}</td>
+                    <td>{{ currency_format($mutation->latest_balance) }}</td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="100%">No Data</td>
+                  </tr>
+                @endforelse
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    @endif
   </div>
 @endsection

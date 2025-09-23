@@ -74,15 +74,15 @@ return [
         'product_type' => [
             [
                 'value' => \App\Models\Discount::ALL,
-                'desc' => 'Berlaku untuk semua produk'
+                'desc' => 'Applies to all products'
             ],
             [
                 'value' => \App\Models\Discount::PRODUCT_TYPE,
-                'desc' => 'Berlaku untuk produk tertentu'
+                'desc' => 'Applies for specific products'
             ],
             [
                 'value' => \App\Models\Discount::PRODUCT_ITEM,
-                'desc' => 'Berlaku untuk produk item tertentu'
+                'desc' => 'Applies for specific product items'
             ]
         ],
         'product_type_validation' => [

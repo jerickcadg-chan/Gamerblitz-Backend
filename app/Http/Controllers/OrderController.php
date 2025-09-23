@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\SendOrderNotif;
 use App\Models\Balance;
+use App\Models\BalanceHistory;
 use App\Models\PaymentMethod;
 use App\Services\BalanceService;
 use Illuminate\Database\Eloquent\Builder;
@@ -62,7 +63,13 @@ class OrderController extends Controller
     {
         $title = $this->title;
 
-        return view('orders.show', compact('order', 'title'));
+        $mutations = BalanceHistory::latest()
+            ->where('balanceable_id', $order->id)
+            ->where('balanceable_type', Order::class)
+            ->where('balance_id', $order->user_id)
+            ->get();
+
+        return view('orders.show', compact('order', 'mutations', 'title'));
     }
 
     public function setStatus(Request $request, OrderService $orderService)
