@@ -64,6 +64,7 @@ Route::get('order/{order}', [OrderController::class, 'show']);
 Route::get('setting', [SettingController::class, 'index']);
 Route::get('currencies', [CurrencyController::class, 'index']);
 
+Route::get('review/{product}', [ReviewController::class, 'index']);
 Route::post('review', [ReviewController::class, 'store']);
 
 Route::get('blogs', [BlogController::class, 'index']);
