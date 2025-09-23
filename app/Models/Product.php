@@ -51,7 +51,8 @@ class Product extends Model
         'check_uid',
         'meta_title',
         'meta_keyword',
-        'meta_description'
+        'meta_description',
+        'is_raw_description'
     ];
 
     protected $attributes = [
