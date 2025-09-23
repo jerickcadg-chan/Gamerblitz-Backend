@@ -120,7 +120,7 @@ class ProductItemCategoryController extends Controller
             $meta = ProductItemCategoryMeta::create($request->all());
 
             ProductItem::whereIn('id', $request->product_item_ids)
-                ->update(['product_item_category_meta_id' => $productItemCategory->id]);
+                ->update(['product_item_category_meta_id' => $meta->id]);
 
             insert_picture(request('picture'), $meta);
 
@@ -147,7 +147,7 @@ class ProductItemCategoryController extends Controller
             $meta->update($request->all());
 
             ProductItem::whereIn('id', $request->product_item_ids)
-                ->update(['product_item_category_meta_id' => $productItemCategory->id]);
+                ->update(['product_item_category_meta_id' => $meta->id]);
 
             if ($request->picture) {
                 insert_picture(request('picture'), $meta);
