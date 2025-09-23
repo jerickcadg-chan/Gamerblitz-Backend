@@ -64,6 +64,7 @@ Route::get('setting', [SettingController::class, 'index']);
 Route::get('currencies', [CurrencyController::class, 'index']);
 
 Route::get('blogs', [BlogController::class, 'index']);
+Route::get('blogs/all', [BlogController::class, 'all']);
 Route::get('blog-categories', [BlogController::class, 'latestPerCategory']);
 Route::get('blogs/{slug}', [BlogController::class, 'show']);
 

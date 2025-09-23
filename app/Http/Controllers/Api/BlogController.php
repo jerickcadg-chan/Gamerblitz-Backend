@@ -35,6 +35,28 @@ class BlogController extends Controller
         );
     }
 
+    public function all()
+    {
+        $blogs = Blog::select([
+            'id',
+            'title',
+            'slug',
+            'meta_description',
+            'thumbnail',
+            'blog_category_id',
+            'user_id',
+            'status',
+            'published_at',
+            'created_at',
+            'updated_at',
+            'meta_keyword'
+        ])
+            ->where('status', 'published')
+            ->orderBy('published_at', 'desc');
+
+        return api_status_ok(transformer($blogs->get(), new BlogTransformer()));
+    }
+
     public function latestPerCategory()
     {
         $categories = BlogCategory::with(['blogs' => function ($q) {
