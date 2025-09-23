@@ -1,3 +1,4 @@
+@php use App\Constants\StatusConst; @endphp
 @extends('layouts.app', [
     'activePage' => 'order',
 ])
@@ -42,10 +43,13 @@
                 <th>Buyer</th>
                 <td>
                   @if ($order->user)
-                    <p><a href="{{ route('user.show', $order->user->id) }}" target="_blank">{{ $order->user->name }}</a></p>
+                    <p><a href="{{ route('user.show', $order->user->id) }}" target="_blank">{{ $order->user->name }}</a>
+                    </p>
                   @endif
                   <span class="text-muted">Email = {{ $order->cust_email }}</span><br>
-                  <span class="text-muted">Whatsapp = <a href="https://web.whatsapp.com/send?phone={{ $order->cust_phone_number }}&text=Hai Kak" target="_blank">{{ $order->cust_phone_number }}</a></span>
+                  <span class="text-muted">Whatsapp = <a
+                      href="https://web.whatsapp.com/send?phone={{ $order->cust_phone_number }}&text=Hai Kak"
+                      target="_blank">{{ $order->cust_phone_number }}</a></span>
                 </td>
               </tr>
               <tr>
@@ -80,13 +84,15 @@
                 <th>Payment Method</th>
                 <td>{{ strtoupper($order->payment_method) }}</td>
               </tr>
-              @if ($order->productItem->product->category == 'voucher')
-                @if ($order->voucher)
-                  <tr>
-                    <th>Voucher</th>
-                    <td><a href="{{ route('voucher.show', $order->voucher->id) }}" target="_blank">{{ $order->voucher->serial_number }}</a></td>
-                  </tr>
-                @endif
+              <tr>
+                <th>Serial Number</th>
+                <td>{{ $order->serial_number ?? "-" }}</td>
+              </tr>
+              @if($order->note)
+                <tr>
+                  <th>Note</th>
+                  <td>{{ $order->note }}</td>
+                </tr>
               @endif
               <tr>
                 <th>External Payment ID</th>
@@ -95,10 +101,6 @@
               <tr>
                 <th>Status Order</th>
                 <td>{!! $order->order_status_raw !!}</td>
-              </tr>
-              <tr>
-                <th>Settlement Date</th>
-                <td>{{ parse_date_time_full($order->settlement_date) }}</td>
               </tr>
             </table>
           </div>
@@ -135,12 +137,16 @@
               @endforelse
               </tbody>
             </table>
-            @if ($order->order_status == \App\Models\Order::INPROCESS)
+            @if ($order->order_status == StatusConst::ON_PROCESS)
               <form action="{{ route('order.status') }}" method="post" class="mt-3">
                 @csrf
                 <input type="hidden" name="order_id" value="{{ $order->id }}">
-                <button type="submit" name="status" class="btn btn-sm btn-primary" onclick="$('#status').val('{{ \App\Models\Order::DONE }}')">Done</button>
-                <button type="submit" name="status" class="btn btn-sm btn-danger" onclick="$('#status').val('{{ \App\Models\Order::CANCELED }}');return confirm('Are You Sure?');">Cancel</button>
+                <button type="submit" name="status" class="btn btn-sm btn-primary"
+                        onclick="$('#status').val('{{ StatusConst::SUCCESS }}')">Success
+                </button>
+                <button type="submit" name="status" class="btn btn-sm btn-danger"
+                        onclick="$('#status').val('{{ StatusConst::FAILED }}');return confirm('Are You Sure?');">Failed
+                </button>
                 <input type="hidden" id="status" name="status">
               </form>
             @endif

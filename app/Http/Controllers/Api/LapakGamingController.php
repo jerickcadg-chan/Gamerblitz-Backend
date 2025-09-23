@@ -77,14 +77,14 @@ class LapakGamingController extends Controller
             ]);
         }
 
-        $productItem = $order->productItem;
+        $rawPayload = json_encode($payload, JSON_PRETTY_PRINT);;
 
         switch ($payload->data->status) {
             case "SUCCESS":
-                $orderService->updateStatus($order, StatusConst::SUCCESS);
+                $orderService->updateStatus($order, StatusConst::SUCCESS, $rawPayload);
                 break;
             case "REFUNDED":
-                $orderService->updateStatus($order, StatusConst::FAILED);
+                $orderService->updateStatus($order, StatusConst::FAILED, $rawPayload);
                 if ($order->payment_method === PaymentMethod::BALANCE) {
                     $balance = Balance::where('user_id', $order->user_id)->first();
 
@@ -100,6 +100,18 @@ class LapakGamingController extends Controller
             default:
                 break;
         }
+
+        $transactions = collect($payload->data->transactions ?? []);
+
+        $order->serial_number = $transactions->pluck('voucher_code')
+            ->filter()
+            ->implode(',');
+
+        $order->note = $transactions->pluck('note')
+            ->filter()
+            ->implode(',');
+
+        $order->save();
 
         return response([
             'message' => 'SUCCESS',

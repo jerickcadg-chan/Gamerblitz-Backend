@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Constants\StatusConst;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Mail\SendOrderNotif;
@@ -40,13 +41,13 @@ class SetExpiredOrder extends Command
      */
     public function handle(OrderService $orderService)
     {
-        $orders = Order::where('order_status', Order::WAITING_PAYMENT)
+        $orders = Order::where('order_status', StatusConst::PENDING)
             ->where('expired_at', '<=', now()->format('Y-m-d H:i:s'))
             ->get();
 
         if ($orders->count() > 0) {
             foreach ($orders as $order) {
-                $orderService->updateStatus($order, null, Order::EXPIRED);
+                $orderService->updateStatus($order, StatusConst::EXPIRED);
 
                 if ($order->cust_email) {
                     \Mail::to($order->cust_email)->send(new SendOrderNotif($order));

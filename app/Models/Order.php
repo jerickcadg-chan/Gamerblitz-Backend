@@ -44,8 +44,8 @@ class Order extends Model implements IsFilterable
         'cust_account',
         'provider',
         'payment_method',
-        'payment_status',
-        'order_status',
+        'status',
+        'serial_number',
         'qty',
         'price',
         'capital',
@@ -135,14 +135,6 @@ class Order extends Model implements IsFilterable
         }
 
         return $this->payment_url . $paymentMethod->slug;
-    }
-
-    public function getSettlementDateAttribute()
-    {
-        $date = $this->histories()->where('status', self::SETTLEMENT)
-            ->where('type', 'payment')->first();
-
-        return $date ? $date->created_at : null;
     }
 
     public function getCustAccountFormatAttribute(): ?string
