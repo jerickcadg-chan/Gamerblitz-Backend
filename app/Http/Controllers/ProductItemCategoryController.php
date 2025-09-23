@@ -98,7 +98,7 @@ class ProductItemCategoryController extends Controller
     {
         $title = "Item {$productItemCategory->product->name} $productItemCategory->name";
         $actionLink = route('product_item_categories.metas.store', ['product_item_category' => $productItemCategory]);
-        $productItems = ProductItem::where('product_id', $productItemCategory->product_id)->get();
+        $productItems = ProductItem::where('product_id', $productItemCategory->product_id)->where('status', 'active')->get();
 
         return view('product_item_categories.meta-form', compact('title', 'productItemCategory', 'productItems', 'actionLink'));
     }
@@ -107,7 +107,7 @@ class ProductItemCategoryController extends Controller
     {
         $title = "Item {$productItemCategory->product->name} $productItemCategory->name";
         $actionLink = route('product_item_categories.metas.update', ['product_item_category' => $productItemCategory, 'meta' => $meta]);
-        $productItems = ProductItem::where('product_id', $productItemCategory->product_id)->get();
+        $productItems = ProductItem::where('product_id', $productItemCategory->product_id)->where('status', 'active')->get();
 
         return view('product_item_categories.meta-form', compact('title', 'productItemCategory', 'productItems', 'actionLink', 'meta'));
     }
