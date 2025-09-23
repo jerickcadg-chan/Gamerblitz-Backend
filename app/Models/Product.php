@@ -83,10 +83,10 @@ class Product extends Model
         };
     }
 
-//    public function getFullSlugAttribute()
-//    {
-//        return "https://" . str(client()->host)->replaceFirst("admin.", "") . '/topup/' . $this->slug;
-//    }
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
 
     public function setNameAttribute($value): void
     {

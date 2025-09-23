@@ -121,9 +121,14 @@ class Order extends Model implements IsFilterable
         return $query->where('payment_status', self::SETTLEMENT);
     }
 
-    public function paymentMethod()
+    public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 
     public function getPaymentUrlFullAttribute(): ?string

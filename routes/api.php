@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\LapakGamingController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductItemCategoryController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderController;
 use App\Models\Setting;
@@ -62,6 +63,8 @@ Route::get('order/{order}', [OrderController::class, 'show']);
 
 Route::get('setting', [SettingController::class, 'index']);
 Route::get('currencies', [CurrencyController::class, 'index']);
+
+Route::post('review', [ReviewController::class, 'store']);
 
 Route::get('blogs', [BlogController::class, 'index']);
 Route::get('blogs-all', [BlogController::class, 'all']);
