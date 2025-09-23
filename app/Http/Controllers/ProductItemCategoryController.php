@@ -174,6 +174,8 @@ class ProductItemCategoryController extends Controller
             DB::beginTransaction();
             $productItemCategoryId = $meta->productItemCategory->id;
             $meta->delete();
+            ProductItem::where('product_item_category_meta_id', $meta->id)
+                ->update(['product_item_category_meta_id' => null]);
             DB::commit();
 
             toast(alert_deleted_text($this->title), 'success');
