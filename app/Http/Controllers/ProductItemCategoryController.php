@@ -98,7 +98,7 @@ class ProductItemCategoryController extends Controller
     {
         $title = "Item {$productItemCategory->product->name} $productItemCategory->name";
         $actionLink = route('product_item_categories.metas.store', ['product_item_category' => $productItemCategory]);
-        $productItems = ProductItem::where('product_id', $productItemCategory->product_id)->get();
+        $productItems = ProductItem::where('product_id', $productItemCategory->product_id)->where('status', 'active')->get();
 
         return view('product_item_categories.meta-form', compact('title', 'productItemCategory', 'productItems', 'actionLink'));
     }
@@ -107,7 +107,7 @@ class ProductItemCategoryController extends Controller
     {
         $title = "Item {$productItemCategory->product->name} $productItemCategory->name";
         $actionLink = route('product_item_categories.metas.update', ['product_item_category' => $productItemCategory, 'meta' => $meta]);
-        $productItems = ProductItem::where('product_id', $productItemCategory->product_id)->get();
+        $productItems = ProductItem::where('product_id', $productItemCategory->product_id)->where('status', 'active')->get();
 
         return view('product_item_categories.meta-form', compact('title', 'productItemCategory', 'productItems', 'actionLink', 'meta'));
     }
@@ -120,7 +120,7 @@ class ProductItemCategoryController extends Controller
             $meta = ProductItemCategoryMeta::create($request->all());
 
             ProductItem::whereIn('id', $request->product_item_ids)
-                ->update(['product_item_category_meta_id' => $productItemCategory->id]);
+                ->update(['product_item_category_meta_id' => $meta->id]);
 
             insert_picture(request('picture'), $meta);
 
@@ -147,7 +147,7 @@ class ProductItemCategoryController extends Controller
             $meta->update($request->all());
 
             ProductItem::whereIn('id', $request->product_item_ids)
-                ->update(['product_item_category_meta_id' => $productItemCategory->id]);
+                ->update(['product_item_category_meta_id' => $meta->id]);
 
             if ($request->picture) {
                 insert_picture(request('picture'), $meta);
