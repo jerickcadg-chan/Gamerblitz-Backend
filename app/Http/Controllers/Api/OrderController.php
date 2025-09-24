@@ -142,7 +142,7 @@ class OrderController extends Controller
         }
 
         $payload = PaymentCallbackPayload::from($request->all());
-        $paymentId = $payload->data->payment_id;
+        $paymentId = $payload->data->payment_request_id;
         $type = $payload->data->metadata['type'] ?? 'order';
 
         switch ($type) {
