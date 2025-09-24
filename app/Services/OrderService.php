@@ -120,7 +120,7 @@ class OrderService
             $order->discount_price = $price['discount_price'];
             $order->total_price = $price['total_price'];
             $order->total_income = $price['total_income'];
-            $order->expired_at = Carbon::parse(now())->addHours(1);
+            $order->expired_at = now()->addHours(1);
             $order->note = $request->note;
             $order->currency_code = $baseCurrency;
             $order->converted_currency_code = $userCurrency;

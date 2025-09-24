@@ -35,6 +35,10 @@ class Order extends Model implements IsFilterable
     public const INPROCESS = 'on-process';
     public const DONE = 'done';
 
+    protected $casts = [
+        'expired_at' => 'datetime',
+    ];
+
     protected $fillable = [
         'code',
         'user_id',
