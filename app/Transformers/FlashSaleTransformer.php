@@ -7,6 +7,10 @@ use League\Fractal\TransformerAbstract;
 
 class FlashSaleTransformer extends TransformerAbstract
 {
+    public function __construct(protected float $exchangeRate = 1.0)
+    {
+    }
+
     /**
      * List of resources to automatically include
      */
@@ -33,7 +37,7 @@ class FlashSaleTransformer extends TransformerAbstract
             'id' => $flashSale->id,
             'name' => $flashSale->name,
             'stock' => $flashSale->stock,
-            'price' => $flashSale->price,
+            'price' => sprintf("%.2f", $flashSale->price * $this->exchangeRate),
         ];
     }
 
