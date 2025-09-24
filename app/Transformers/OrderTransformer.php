@@ -21,7 +21,7 @@ class OrderTransformer extends TransformerAbstract
      * List of resources possible to include
      */
     protected array $availableIncludes = [
-        'vouchers',
+        'vouchers', 'reviews'
     ];
 
     /**
@@ -90,7 +90,7 @@ class OrderTransformer extends TransformerAbstract
         return $this->null();
     }
 
-    public function includePaymentMethod(Order $order)
+    public function includePaymentMethod(Order $order): Item
     {
         return $this->item($order->paymentMethod, new PaymentMethodTransformer());
     }
@@ -99,6 +99,15 @@ class OrderTransformer extends TransformerAbstract
     {
         if ($order->user) {
             return $this->item($order->user, new UserTransformer);
+        }
+
+        return $this->null();
+    }
+
+    public function includeReviews(Order $order): Collection|NullResource
+    {
+        if ($order->reviews) {
+            return $this->collection($order->reviews, new ReviewTransformer());
         }
 
         return $this->null();

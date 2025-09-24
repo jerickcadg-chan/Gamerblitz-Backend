@@ -96,11 +96,9 @@ class OrderController extends Controller
             if ($order->user_id != $this->userId) {
                 return api_status_warning('User id not match!');
             }
-
-            return api_status_ok(transformer($order, new OrderTransformer(), ['vouchers']));
         }
 
-        return api_status_ok(transformer($order, new OrderTransformer()));
+        return api_status_ok(transformer($order, new OrderTransformer(), ['reviews']));
     }
 
     public function store(OrderRequest $request, OrderService $orderService)
