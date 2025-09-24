@@ -137,6 +137,7 @@ class OrderController extends Controller
         $hCallbackToken = $request->header('x-callback-token');
         $validCallbackKey = $xenditCallbackKey == $hCallbackToken;
         if (!$validCallbackKey) {
+            \Log::info(json_encode($request->header(), JSON_PRETTY_PRINT));
             return api_status_warning("callback token didn't register yet, or invalid token!!!!");
         }
 
