@@ -1,3 +1,4 @@
+@php use App\Constants\StatusConst;use App\Models\PaymentMethod; @endphp
 @extends('layouts.app', [
     'activePage' => 'order',
 ])
@@ -24,16 +25,19 @@
                 'timePicker' => true,
              ])
               <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
-                <input class="form-control" type="text" name="order_code" value="{{ request('order_code') }}" placeholder="Invoice Code">
+                <input class="form-control" type="text" name="order_code" value="{{ request('order_code') }}"
+                       placeholder="Invoice Code">
               </div>
               <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
-                <input class="form-control" type="text" name="cust_account" value="{{ request('cust_account') }}" placeholder="Customer Account">
+                <input class="form-control" type="text" name="cust_account" value="{{ request('cust_account') }}"
+                       placeholder="Customer Account">
               </div>
               <div class="col-md-6 col-lg-4 col-xl-2 mb-2">
                 <select class="form-control select2" name="status">
                   <option value="">-- All Status --</option>
                   @foreach(config('array.order.status') as $status)
-                    <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : null }}>{{ ucwords($status) }}</option>
+                    <option
+                      value="{{ $status }}" {{ request('status') == $status ? 'selected' : null }}>{{ ucwords($status) }}</option>
                   @endforeach
                 </select>
               </div>
@@ -41,7 +45,8 @@
                 <select class="form-control select2" name="product_id">
                   <option value="">-- All Products --</option>
                   @foreach (\App\Models\Product::all() as $product)
-                    <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : null }}>{{ $product->name }}</option>
+                    <option
+                      value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : null }}>{{ $product->name }}</option>
                   @endforeach
                 </select>
               </div>
@@ -82,7 +87,8 @@
                   </td>
                   <td>
                     <p class="mt-3">
-                      <a href="{{ route('product_item.show', $order->product_item_id) }}" target="_blank">{{ @$order->productItem->name }}</a>
+                      <a href="{{ route('product_item.show', $order->product_item_id) }}"
+                         target="_blank">{{ @$order->productItem->name }}</a>
                     </p>
                     <span class="text-muted">{{ @$order->productItem->product->name }}</span>
                   </td>
@@ -92,18 +98,11 @@
                   <td>{{ currency_format($order->converted_total_income) }}</td>
                   <td>
                     <span class="d-block">{!! $order->order_status_raw !!}</span>
-                    @if ($order->status == \App\Constants\StatusConst::ON_PROCESS)
-                      <form action="{{ route('order.status') }}" method="post" class="mt-3">
-                        @csrf
-                        <input type="hidden" name="order_id" value="{{ $order->id }}">
-                        <button type="submit" name="status" class="btn btn-sm btn-primary" onclick="$('#status-{{ $order->id }}').val('{{ \App\Constants\StatusConst::SUCCESS }}')">Done</button>
-                        <button type="submit" name="status" class="btn btn-sm btn-danger" onclick="$('#status-{{ $order->id }}').val('{{ \App\Constants\StatusConst::FAILED }}');return confirm('Are You Sure?');">Cancel</button>
-                        <input type="hidden" id="status-{{ $order->id }}" name="status">
-                      </form>
-                    @endif
+                    <x-input-update-status :order="$order" />
                   </td>
                   <td>{{ @$order->cust_email }}</td>
-                  <td><a href="https://wa.me/{{ $order->cust_phone_number }}&text=Hi" target="_blank">{{ $order->cust_phone_number }}</a></td>
+                  <td><a href="https://wa.me/{{ $order->cust_phone_number }}&text=Hi"
+                         target="_blank">{{ $order->cust_phone_number }}</a></td>
                 </tr>
               @empty
                 <tr>

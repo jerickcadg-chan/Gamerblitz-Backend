@@ -53,6 +53,10 @@
                 </td>
               </tr>
               <tr>
+                <th>Status Order</th>
+                <td>{!! $order->order_status_raw !!}</td>
+              </tr>
+              <tr>
                 <th>Price</th>
                 <td>{{ currency_format($order->converted_price) }}</td>
               </tr>
@@ -82,7 +86,7 @@
               </tr>
               <tr>
                 <th>Payment Method</th>
-                <td>{{ strtoupper($order->payment_method) }}</td>
+                <td>{{ strtoupper($order->paymentMethod?->name) }}</td>
               </tr>
               <tr>
                 <th>Serial Number</th>
@@ -97,10 +101,6 @@
               <tr>
                 <th>External Payment ID</th>
                 <td>{{ $order->payment_id }}</td>
-              </tr>
-              <tr>
-                <th>Status Order</th>
-                <td>{!! $order->order_status_raw !!}</td>
               </tr>
             </table>
           </div>
@@ -134,7 +134,7 @@
                               data-bs-toggle="modal" data-bs-target="#history-{{ $history->id }}">
                         <i class="mdi mdi-information"></i>
                       </button>
-                      <div class="modal fade" id="history-{{ $history->id }}" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                      <div class="modal fade" id="history-{{ $history->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                           <div class="modal-content">
                             <div class="modal-header">
@@ -162,19 +162,17 @@
               @endforelse
               </tbody>
             </table>
-            @if ($order->order_status == StatusConst::ON_PROCESS)
-              <form action="{{ route('order.status') }}" method="post" class="mt-3">
+            @if ($order->status == StatusConst::SUCCESS)
+              <form action="{{ route('order.status') }}" onsubmit="return confirm('Are you sure?')" method="post" class="mt-3">
                 @csrf
                 <input type="hidden" name="order_id" value="{{ $order->id }}">
                 <button type="submit" name="status" class="btn btn-sm btn-primary"
-                        onclick="$('#status').val('{{ StatusConst::SUCCESS }}')">Success
-                </button>
-                <button type="submit" name="status" class="btn btn-sm btn-danger"
-                        onclick="$('#status').val('{{ StatusConst::FAILED }}');return confirm('Are You Sure?');">Failed
+                        onclick="$('#status').val('{{ StatusConst::REFUNDED }}')">Refund
                 </button>
                 <input type="hidden" id="status" name="status">
               </form>
             @endif
+            <x-input-update-status :order="$order" />
           </div>
         </div>
       </div>

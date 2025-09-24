@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\StatusConst;
 use App\Mail\SendOrderNotif;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
@@ -76,9 +77,14 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($request->order_id);
 
+        $order->update(array_filter(
+            $request->only(['serial_number', 'note']),
+            fn ($value) => $value !== null && $value !== ''
+        ));
+
         $orderService->updateStatus($order, $request->status);
 
-        if ($order->payment_method == PaymentMethod::BALANCE) {
+        if ($order->paymentMethod->slug == PaymentMethod::BALANCE && in_array($order->status, [StatusConst::FAILED, StatusConst::REFUNDED])) {
             $balance = Balance::where('user_id', $order->user_id)->first();
 
             BalanceService::update($balance, [
