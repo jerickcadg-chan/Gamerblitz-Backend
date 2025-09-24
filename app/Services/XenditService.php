@@ -19,7 +19,7 @@ class XenditService
      */
     public function createOrderXenditInvoice(Order $order): array
     {
-        $amount = ceil($order->total_price);
+        $amount = $order->total_price;
         $externalId = $order->code;
         $expiresAt = now()->addHour(1)->toIso8601String();
 
