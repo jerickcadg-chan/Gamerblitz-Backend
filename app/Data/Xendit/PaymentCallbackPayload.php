@@ -30,7 +30,7 @@ class PaymentCallbackData extends Data
         public string $capture_method,
         public string $channel_code,
         /** @var array<string, mixed> */
-        public array $channel_properties,
+        public ?array $channel_properties,
         /** @var \App\Data\Xendit\PaymentCallbackCaptureData[] */
         public DataCollection $captures,
         public string $status,
