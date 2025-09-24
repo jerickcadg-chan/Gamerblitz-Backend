@@ -56,6 +56,8 @@ return [
 
     'fe_url' => env('APP_FE_URL', '#'),
 
+    'fe_invoice_url' => env('APP_FE_INVOICE_URL', 'invoices'),
+
     'asset_url' => env('ASSET_URL', null),
 
     /*

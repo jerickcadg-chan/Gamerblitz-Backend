@@ -133,13 +133,7 @@ class Order extends Model implements IsFilterable
 
     public function getPaymentUrlFullAttribute(): ?string
     {
-        $paymentMethod = PaymentMethod::where('name', $this->payment_method)->first();
-
-        if (empty($paymentMethod)) {
-            return null;
-        }
-
-        return $this->payment_url . $paymentMethod->slug;
+        return config('app.fe_url').'/'.config('app.fe_invoice_url').'/'.$this->code;
     }
 
     public function getCustAccountFormatAttribute(): ?string
