@@ -48,9 +48,9 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'order_id' => 'required,exists:orders,id',
-            'star' => 'required,numeric|min:1|max:5',
-            'review' => 'required'
+            'order_id' => 'required|exists:orders,id',
+            'star' => 'required|min:1|max:5',
+            'body' => 'required'
         ]);
 
         $order = Order::with('productItem')->find($request->order_id);
