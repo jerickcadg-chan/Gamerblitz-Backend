@@ -12,6 +12,7 @@ use App\Models\PaymentMethod;
 use App\Models\ProductItem;
 use App\Services\BalanceService;
 use App\Services\OrderService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -63,11 +64,13 @@ class LapakGamingController extends Controller
         ], 200);
     }
 
-    public function orderCallback(OrderCallbackPayload $payload, OrderService $orderService): Response
+    public function orderCallback(Request $request, OrderService $orderService): Response
     {
         $log = Log::channel('lapakgaming');
 
         try {
+            $payload = OrderCallbackPayload::from($request->all());
+
             $order = Order::query()
                 ->where('code', $payload->data->reference_id)
                 ->where('provider_ref', $payload->data->tid)
@@ -141,7 +144,7 @@ class LapakGamingController extends Controller
         } catch (\Exception $e) {
             $log->error("Order callback processing failed", [
                 'error' => $e->getMessage(),
-                'payload' => $payload->toArray(),
+                'payload' => $request->all(),
             ]);
 
             return response([
