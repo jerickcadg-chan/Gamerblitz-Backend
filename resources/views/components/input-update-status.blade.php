@@ -3,7 +3,7 @@
   'order' => $order
 ])
 
-@if ($order->status == StatusConst::PENDING && $order->paymentMethod?->vendor !== PaymentMethod::MANUAL)
+@if (app('env') !== 'production' && $order->status == StatusConst::PENDING && $order->paymentMethod?->vendor !== PaymentMethod::MANUAL)
 <form action="{{ route('order.process') }}" method="post" class="mt-3">
   @csrf
   <input type="hidden" name="order_id" value="{{ $order->id }}">
