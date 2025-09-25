@@ -28,6 +28,7 @@
                         <tr>
                             <th>No</th>
                             <th> Product Item </th>
+                            <th> Normal Price </th>
                             <th> Price </th>
                             <th> Stock </th>
                             <th> Action </th>
@@ -38,6 +39,7 @@
                         <tr>
                             <td>{{ $flash_sales->firstItem() + $index }}</td>
                             <td>{{ $flash_sale->productItem->full_name }}</td>
+                            <td>{{ currency_format($flash_sale->productItem->margin_price_public, $flash_sale->productItem->currencyCode) }}</td>
                             <td>{{ currency_format($flash_sale->price) }}</td>
                             <td>{{ $flash_sale->stock }}</td>
                             <td>

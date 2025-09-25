@@ -54,13 +54,11 @@ class ProductItem extends Model implements IsFilterable
 
     public function getDiscountPriceAttribute()
     {
-        if ($this->flashSaleProductItem) {
-            return $this->real_price - $this->flashSaleProductItem->price;
+        if ($this->flashSales && $this->capital < $this->flash_sale_price) {
+            return $this->real_price - $this->flash_sale_price;
         }
 
-        $disc = get_active_discount($this->price, $this->product_id, $this->id);
-
-        return $disc['nominal'];
+        return 0;
     }
 
     public function getTotalPriceAttribute()
@@ -71,6 +69,11 @@ class ProductItem extends Model implements IsFilterable
     public function getRealPriceAttribute()
     {
         return $this->margin_price;
+    }
+
+    public function getFlashSalePriceAttribute()
+    {
+        return $this->flashSales()->active()->first()->price;
     }
 
     /**
