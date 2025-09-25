@@ -63,11 +63,6 @@ class ProductController extends Controller
             ->filter($this->filter())
             ->active()
             ->where('product_id', $productId)
-            ->orderByRaw("CASE
-                WHEN name RLIKE '^[A-Za-z]' THEN 1
-                WHEN name RLIKE '^[0-9]' THEN 2
-                ELSE 3
-            END")
             ->where(function ($query) {
                 $query
                     ->where('stock', '>', 0)
@@ -75,9 +70,33 @@ class ProductController extends Controller
             })
             ->get();
 
+        $sorted = $productItems->sortBy([
+            // letters/numbers/other group
+            fn ($a, $b) => (
+                (preg_match('/^[A-Za-z]/', $a->name) ? 1 :
+                    (preg_match('/^[0-9]/', $a->name) ? 2 : 3))
+                    <=>
+                    (preg_match('/^[A-Za-z]/', $b->name) ? 1 :
+                        (preg_match('/^[0-9]/', $b->name) ? 2 : 3))
+            ),
+
+            // if it starts with a number, compare numeric part, else fall back to string
+            fn ($a, $b) => (
+                (preg_match('/^\D*(\d+)/', $a->name, $ma) ? (int)$ma[1] : PHP_INT_MAX)
+                    <=>
+                    (preg_match('/^\D*(\d+)/', $b->name, $mb) ? (int)$mb[1] : PHP_INT_MAX)
+            ),
+
+            // fallback to full name
+            fn ($a, $b) => $a->name <=> $b->name,
+
+            // by price
+            fn ($a, $b) => $a->total_price <=> $b->total_price,
+        ]);
+
         $exchangeRate = get_exchange_rate($baseCurrency, $currencyCode);
 
-        return api_status_ok(transformer($productItems, new ProductItemTransformer($exchangeRate)));
+        return api_status_ok(transformer($sorted, new ProductItemTransformer($exchangeRate)));
     }
 
     public function showProductItem($id)
