@@ -67,66 +67,87 @@ class LapakGamingController extends Controller
     {
         $log = Log::channel('lapakgaming');
 
-        $order = Order::query()
-            ->where('code', $payload->data->reference_id)
-            ->where('provider_ref', $payload->data->tid)
-            ->first();
+        try {
+            $order = Order::query()
+                ->where('code', $payload->data->reference_id)
+                ->where('provider_ref', $payload->data->tid)
+                ->first();
 
-        if (!$order) {
-            $log->error("Order callback received but order not found", [
+            if (!$order) {
+                $log->error("Order callback received but order not found", [
+                    'reference_id' => $payload->data->reference_id,
+                    'tid' => $payload->data->tid,
+                    'payload' => $payload->toArray(),
+                ]);
+
+                return response([
+                    'message' => 'FAILED',
+                    'reason' => 'Invalid ref id',
+                ]);
+            }
+
+            $log->notice("Order callback received", [
                 'reference_id' => $payload->data->reference_id,
                 'tid' => $payload->data->tid,
+                'status' => $payload->data->status,
+                'order_id' => $order->id,
+                'payload' => $payload->toArray(),
+            ]);
+
+            $rawPayload = json_encode($payload, JSON_PRETTY_PRINT);
+
+            switch ($payload->data->status) {
+                case "SUCCESS":
+                    $orderService->updateStatus($order, StatusConst::SUCCESS, $rawPayload);
+                    break;
+                case "REFUNDED":
+                    $orderService->updateStatus($order, StatusConst::FAILED, $rawPayload);
+                    if ($order->payment_method === PaymentMethod::BALANCE) {
+                        $balance = Balance::where('user_id', $order->user_id)->first();
+
+                        BalanceService::update($balance, [
+                            'balanceable_type' => Order::class,
+                            'balanceable_id' => $order->id,
+                            'amount' => $order->total_price,
+                            'description' => "Refund $order->code"
+                        ]);
+                    }
+                    break;
+                case "PENDING":
+                    $orderService->updateStatus($order, StatusConst::DELAY, $rawPayload);
+                    $log->error("Order still pending on callback", [
+                        'order_id' => $order->id,
+                        'payload' => $payload->toArray(),
+                    ]);
+                default:
+                    break;
+            }
+
+            $transactions = collect($payload->data->transactions ?? []);
+
+            $order->serial_number = $transactions->pluck('voucher_code')
+                ->filter()
+                ->implode(',');
+
+            $order->note = $transactions->pluck('note')
+                ->filter()
+                ->implode(',');
+
+            $order->save();
+
+            return response([
+                'message' => 'SUCCESS',
+            ], 200);
+        } catch (\Exception $e) {
+            $log->error("Order callback processing failed", [
+                'error' => $e->getMessage(),
                 'payload' => $payload->toArray(),
             ]);
 
             return response([
                 'message' => 'FAILED',
-                'reason' => 'Invalid ref id',
-            ]);
+                'reason' => 'Internal server error',
+            ], 500);
         }
-
-        $rawPayload = json_encode($payload, JSON_PRETTY_PRINT);
-
-        switch ($payload->data->status) {
-            case "SUCCESS":
-                $orderService->updateStatus($order, StatusConst::SUCCESS, $rawPayload);
-                break;
-            case "REFUNDED":
-                $orderService->updateStatus($order, StatusConst::FAILED, $rawPayload);
-                if ($order->payment_method === PaymentMethod::BALANCE) {
-                    $balance = Balance::where('user_id', $order->user_id)->first();
-
-                    BalanceService::update($balance, [
-                        'balanceable_type' => Order::class,
-                        'balanceable_id' => $order->id,
-                        'amount' => $order->total_price,
-                        'description' => "Refund $order->code"
-                    ]);
-                }
-                break;
-            case "PENDING":
-                $log->error("Order still pending on callback", [
-                    'order_id' => $order->id,
-                    'payload' => $payload->toArray(),
-                ]);
-            default:
-                break;
-        }
-
-        $transactions = collect($payload->data->transactions ?? []);
-
-        $order->serial_number = $transactions->pluck('voucher_code')
-            ->filter()
-            ->implode(',');
-
-        $order->note = $transactions->pluck('note')
-            ->filter()
-            ->implode(',');
-
-        $order->save();
-
-        return response([
-            'message' => 'SUCCESS',
-        ], 200);
     }
 }
