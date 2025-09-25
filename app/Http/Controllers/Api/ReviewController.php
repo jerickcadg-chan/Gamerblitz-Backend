@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    public function index(Product $productId)
+    public function index($product)
     {
-        $query = Review::where('product_id', $productId);
+        $query = Review::where('product_id', $product);
 
         $total = $query->count();
         $average = round($query->avg('star'), 1);
@@ -22,7 +22,7 @@ class ReviewController extends Controller
             $distribution[$i] = $query->where('star', $i)->count();
         }
 
-        $reviews = Review::where('product_id', $productId)
+        $reviews = Review::where('product_id', $product)
             ->latest()
             ->take(6)
             ->get()
@@ -31,7 +31,7 @@ class ReviewController extends Controller
                     'user' => '*********',
                     'star' => $review->star,
                     'body' => $review->body,
-                    'created_at' => $review->created_at,
+                    'created_at' => parse_date($review->created_at),
                 ];
             });
 
