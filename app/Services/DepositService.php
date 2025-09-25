@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Constants\DefaultRole;
 use App\Models\Deposit;
 use App\Models\Balance;
 use App\Constants\StatusConst;
+use App\Models\BalanceHistory;
 use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 
@@ -43,6 +45,8 @@ class DepositService
                 'amount' => $deposit->total_amount,
                 'description' => "Topup Balance $deposit->code"
             ]);
+
+            self::updateUserLevel($balance, $deposit->user);
         }
 
         return [
@@ -77,6 +81,8 @@ class DepositService
                 'description' => "Topup Balance $deposit->code"
             ]);
 
+            self::updateUserLevel($balance, $deposit->user);
+
             DB::commit();
 
             return null;
@@ -100,5 +106,37 @@ class DepositService
         $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
         $depositMinAmount = Setting::getByKey('deposit_min_amount');
         return $depositMinAmount * $exchangeRate;
+    }
+
+    public static function updateUserLevel($balance, $user)
+    {
+        $totalDeposit = BalanceHistory::where('balance_id', $balance->id)
+            ->where('balanceable_type', Deposit::class)->sum('amount');
+        $level = self::getTierByBalance($totalDeposit);
+
+        $user->assignRole($level);
+    }
+
+    public static function getTierByBalance($balance)
+    {
+        $balance = (int) $balance;
+
+        $thresholds = [
+            DefaultRole::RESELLER_VIP  => (int) Setting::getByKey('balance_vip'),
+            DefaultRole::RESELLER_GOLD => (int) Setting::getByKey('balance_gold'),
+            DefaultRole::RESELLER_SILVER => (int) Setting::getByKey('balance_silver'),
+            DefaultRole::CUSTOMER => (int) Setting::getByKey('balance_public'),
+        ];
+
+        // sort descending by threshold value (just in case settings tidak terurut)
+        uasort($thresholds, fn($a, $b) => $b <=> $a);
+
+        foreach ($thresholds as $role => $min) {
+            if ($balance >= $min) {
+                return $role;
+            }
+        }
+
+        return DefaultRole::CUSTOMER;
     }
 }
