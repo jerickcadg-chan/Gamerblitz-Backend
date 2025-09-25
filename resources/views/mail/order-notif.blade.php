@@ -12,6 +12,8 @@
     <h3>Oops, your payment has expired :(</h3>
   @elseif ($order->status == StatusConst::FAILED)
     <h3>Oops, your payment has failed :(</h3>
+  @elseif ($order->status == StatusConst::DELAY)
+    <h3>Your order is delayed due to some technical problem, please contact admin</h3>
   @endif
 
   @include('mail.layout-order')

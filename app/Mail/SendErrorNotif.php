@@ -32,6 +32,6 @@ class SendErrorNotif extends Mailable
      */
     public function build()
     {
-        return $this->subject('Ada Orderan Error #'.$this->order->code)->view('mail.error-notif');
+        return $this->subject('There is an error for Order #'.$this->order->code)->view('mail.error-notif');
     }
 }

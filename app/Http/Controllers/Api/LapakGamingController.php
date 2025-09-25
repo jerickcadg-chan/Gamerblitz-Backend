@@ -65,19 +65,27 @@ class LapakGamingController extends Controller
 
     public function orderCallback(OrderCallbackPayload $payload, OrderService $orderService): Response
     {
+        $log = Log::channel('lapakgaming');
+
         $order = Order::query()
             ->where('code', $payload->data->reference_id)
             ->where('provider_ref', $payload->data->tid)
             ->first();
 
         if (!$order) {
+            $log->error("Order callback received but order not found", [
+                'reference_id' => $payload->data->reference_id,
+                'tid' => $payload->data->tid,
+                'payload' => $payload->toArray(),
+            ]);
+
             return response([
                 'message' => 'FAILED',
                 'reason' => 'Invalid ref id',
             ]);
         }
 
-        $rawPayload = json_encode($payload, JSON_PRETTY_PRINT);;
+        $rawPayload = json_encode($payload, JSON_PRETTY_PRINT);
 
         switch ($payload->data->status) {
             case "SUCCESS":
@@ -97,6 +105,10 @@ class LapakGamingController extends Controller
                 }
                 break;
             case "PENDING":
+                $log->error("Order still pending on callback", [
+                    'order_id' => $order->id,
+                    'payload' => $payload->toArray(),
+                ]);
             default:
                 break;
         }

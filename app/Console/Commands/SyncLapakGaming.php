@@ -168,6 +168,8 @@ class SyncLapakGaming extends Command
                 } catch (\Exception $e) {
                     $msg = "LapakGaming: Failed to update product: " . $e->getMessage();
                     $log->error($msg, [
+                        'product' => $product->name,
+                        'item' => $lgItem->code,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString(),
                     ]);

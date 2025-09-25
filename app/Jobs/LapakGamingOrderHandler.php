@@ -2,10 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Constants\StatusConst;
 use App\Data\LapakGaming\OrderRequestPayload;
 use App\Data\LapakGaming\OrderResponse;
 use App\Models\Order;
 use App\Models\Setting;
+use App\Services\OrderService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -52,7 +54,7 @@ class LapakGamingOrderHandler implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(OrderService $orderService): void
     {
         $token = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_TOKEN);
         $baseUrl = Setting::getByKey(Setting::KEY_LAPAKGAMING_API_URL);
@@ -73,8 +75,6 @@ class LapakGamingOrderHandler implements ShouldQueue
 
         $payloadArray = collect($payload)->filter()->toArray();
 
-        Log::channel('lapakgaming')->info("LapakGamingOrderHandler attempt forwarding order", $payloadArray);
-
         $response = Http::withToken($token)
             ->timeout(15)
             ->post($orderUrl, $payloadArray);
@@ -85,14 +85,24 @@ class LapakGamingOrderHandler implements ShouldQueue
 
         $orderResponse = OrderResponse::from($response->json());
 
-        if ($orderResponse->code === 'SUCCESS') {
-            Log::channel('lapakgaming')->info("Order {$this->order->id} successfully forwarded to LapakGaming.");
+        switch ($orderResponse->code) {
+            case 'SUCCESS':
+                Log::channel('lapakgaming')->notice("Order {$this->order->id} successfully forwarded to LapakGaming.");
 
-            $order->provider_ref = $orderResponse->data->tid;
-            $order->save();
-        } else {
-            Log::channel('lapakgaming')->error("Order {$this->order->id} error: " . $orderResponse->code);
-        }
+                $order->provider_ref = $orderResponse->data->tid;
+                $order->save();
+                break;
+            case 'PRODUCT_NOT_FOUND':
+            case 'PRICE_NOT_MATCH':
+            case 'PRODUCT_EMPTY':
+            case 'PROVIDER_NOT_FOUND':
+            case 'PROVIDER_INACTIVE':
+            case 'INSUFFICIENT_BALANCE':
+            default:
+                $orderService->updateStatus($order, StatusConst::DELAY, $orderResponse->code);
+                Log::channel('lapakgaming')->error("Order {$this->order->id} error: " . $orderResponse->code, $payloadArray);
+                break;
+        };
     }
 
     /**
