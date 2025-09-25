@@ -105,14 +105,14 @@ class LapakGamingController extends Controller
                 ]);
             }
 
-            $rawPayload = $payload->toJson();
+            $note = $payload->toJson();
 
             switch ($payload->data->status) {
                 case "SUCCESS":
-                    $orderService->updateStatus($order, StatusConst::SUCCESS, $rawPayload);
+                    $orderService->updateStatus($order, StatusConst::SUCCESS, $note);
                     break;
                 case "REFUNDED":
-                    $orderService->updateStatus($order, StatusConst::FAILED, $rawPayload);
+                    $orderService->updateStatus($order, StatusConst::FAILED, $note);
                     if ($order->payment_method === PaymentMethod::BALANCE) {
                         $balance = Balance::where('user_id', $order->user_id)->first();
 
@@ -125,7 +125,7 @@ class LapakGamingController extends Controller
                     }
                     break;
                 case "PENDING":
-                    $orderService->updateStatus($order, StatusConst::DELAY, $rawPayload);
+                    $orderService->updateStatus($order, StatusConst::DELAY, $note);
                     $log->error("Order still pending on callback", [
                         'order_id' => $order->id,
                         'payload' => $payload->toArray(),
