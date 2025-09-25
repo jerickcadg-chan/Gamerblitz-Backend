@@ -105,7 +105,7 @@ class LapakGamingController extends Controller
                 ]);
             }
 
-            $rawPayload = json_encode($payload, JSON_PRETTY_PRINT);
+            $rawPayload = $payload->toJson();
 
             switch ($payload->data->status) {
                 case "SUCCESS":
