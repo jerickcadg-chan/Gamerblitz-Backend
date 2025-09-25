@@ -24,7 +24,7 @@ class ReviewController extends Controller
 
         $reviews = Review::where('product_id', $productId)
             ->latest()
-            ->take(5)
+            ->take(6)
             ->get()
             ->map(function ($review) {
                 return [
