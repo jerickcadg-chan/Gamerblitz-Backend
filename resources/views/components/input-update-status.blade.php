@@ -3,6 +3,33 @@
   'order' => $order
 ])
 
+@if ($order->status == StatusConst::PENDING && $order->paymentMethod?->vendor !== PaymentMethod::MANUAL)
+<form action="{{ route('order.process') }}" method="post" class="mt-3">
+  @csrf
+  <input type="hidden" name="order_id" value="{{ $order->id }}">
+  <button type="button" name="status" class="btn btn-sm btn-primary"
+          data-bs-toggle="modal" data-bs-target="#form-process-{{ $order->id }}">Process Order
+  </button>
+  <div class="modal fade" id="form-process-{{ $order->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="process-infoModalLabel">Process Order</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure want to process this order?
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+@endif
 @if ($order->status == StatusConst::ON_PROCESS || $order->status === StatusConst::DELAY || ($order->paymentMethod?->vendor === PaymentMethod::MANUAL && $order->status == StatusConst::PENDING))
   <form action="{{ route('order.status') }}" method="post" class="mt-3">
     @csrf

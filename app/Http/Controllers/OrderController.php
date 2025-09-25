@@ -98,4 +98,20 @@ class OrderController extends Controller
         toast('Changed order status to '. $order->status, 'success');
         return redirect()->back();
     }
+
+    public function triggerProcessOrder(Request $request, OrderService $orderService)
+    {
+        $order = Order::findOrFail($request->order_id);
+
+        if ($order->status != StatusConst::PENDING) {
+            toast('Only pending order can be processed', 'warning');
+            return redirect()->back();
+        }
+
+        $orderService->processOrder($order, sync: true);
+        $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+
+        toast('Order is being processed', 'success');
+        return redirect()->back();
+    }
 }

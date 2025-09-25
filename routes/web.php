@@ -58,6 +58,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('order', [OrderController::class, 'index'])->name('order.index');
     Route::get('order/{order}', [OrderController::class, 'show'])->name('order.show');
     Route::post('order/status', [OrderController::class, 'setStatus'])->name('order.status');
+    Route::post('order/process', [OrderController::class, 'triggerProcessOrder'])->name('order.process');
 
     // Deposit router
     Route::get('deposit', [DepositController::class, 'index'])->name('deposit.index');

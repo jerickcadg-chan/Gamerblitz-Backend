@@ -233,13 +233,17 @@ class OrderService
         return $amount * $exchangeRate;
     }
 
-    public function processOrder(Order $order): void
+    public function processOrder(Order $order, bool $sync = false)
     {
         $productItem = $order->productItem;
         $provider = $productItem->product->provider;
 
         if ($provider === ProviderConstant::LAPAKGAMING) {
-            LapakGamingOrderHandler::dispatch($order);
+            if ($sync) {
+                return LapakGamingOrderHandler::dispatchSync($order);
+            } else {
+                LapakGamingOrderHandler::dispatch($order);
+            }
         }
 
         // ... handle other provider
