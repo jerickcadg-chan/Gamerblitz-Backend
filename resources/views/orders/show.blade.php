@@ -32,7 +32,7 @@
                 <th>Order</th>
                 <td>
                   <p>{{ $order->productItem->name }} ({{ $order->qty }} Item)</p>
-                  <span class="text-muted">{{ $order->productItem->product->name }} ({{ ucfirst($order->productItem->product->productCategory->name) }})</span>
+                  <span class="text-muted">{{ $order->productItem->code }} - {{ $order->productItem->product->name }} ({{ ucfirst($order->productItem->product->productCategory->name) }})</span>
                 </td>
               </tr>
               <tr>
@@ -101,6 +101,10 @@
               <tr>
                 <th>External Payment ID</th>
                 <td>{{ $order->payment_id }}</td>
+              </tr>
+              <tr>
+                <th>Provider Trx Ref</th>
+                <td>{{ $order->provider_ref }}</td>
               </tr>
             </table>
           </div>
