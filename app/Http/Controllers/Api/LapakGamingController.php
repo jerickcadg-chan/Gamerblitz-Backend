@@ -20,48 +20,62 @@ class LapakGamingController extends Controller
 {
     public function productUpdateCallback(ProductUpdateCallbackPayload $payload): Response
     {
-        $data = $payload->data;
-        $meta = $payload->meta;
+        $log = Log::channel('lapakgaming');
 
-        $productItem = ProductItem::where('code', $data->code)->first();
+        try {
+            $data = $payload->data;
+            $meta = $payload->meta;
 
-        if (!$productItem) {
-            Log::info('LapakGaming: product Item not stored', [
-                'data' => $payload->toArray()
+            $productItem = ProductItem::where('code', $data->code)->first();
+
+            if (!$productItem) {
+                $log->info('LapakGaming: product Item not stored', [
+                    'data' => $payload->all()
+                ]);
+                // acknowledge callback, otherwise they will retry 3 times
+                return response([
+                    'message' => 'SKIPPED',
+                    'reason' => 'Product item not stored',
+                ], 200);
+            }
+
+            if ($productItem->sync_at->timestamp > $meta->unix_timestamp) {
+                // out of date, skip
+                return response([
+                    'message' => 'SKIPPED',
+                    'reason' => 'Data out of date',
+                ], 200);
+            }
+
+            $product = $productItem->product;
+
+            $marginPublicUser = $productItem->margin ?: $product->markup_user;
+            $marginSilver = $productItem->margin_silver ?: $product->markup_reseller_silver;
+            $marginGold = $productItem->margin_gold ?: $product->markup_reseller_gold;
+            $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
+
+            $productItem->capital = $data->price;
+            $productItem->margin = $marginPublicUser;
+            $productItem->margin_silver = $marginSilver;
+            $productItem->margin_gold = $marginGold;
+            $productItem->margin_vip = $marginVip;
+            $productItem->status = $data->status === 'available' ? 'active' : 'empty';
+            $productItem->sync_at = now();
+            $productItem->save();
+            return response([
+                'message' => 'SUCCESS',
+            ], 200);
+        } catch (\Throwable $e) {
+            $log->error("Product update callback processing failed", [
+                'error' => $e->getMessage(),
+                'payload' => $payload->all(),
             ]);
-            // acknowledge callback, otherwise they will retry 3 times
+
             return response([
-                'message' => 'SKIPPED',
-                'reason' => 'Product item not stored',
-            ], 200);
+                'message' => 'FAILED',
+                'reason' => 'Internal server error',
+            ], 500);
         }
-
-        if ($productItem->sync_at->timestamp > $meta->unix_timestamp) {
-            // out of date, skip
-            return response([
-                'message' => 'SKIPPED',
-                'reason' => 'Data out of date',
-            ], 200);
-        }
-
-        $product = $productItem->product;
-
-        $marginPublicUser = $productItem->margin ?: $product->markup_user;
-        $marginSilver = $productItem->margin_silver ?: $product->markup_reseller_silver;
-        $marginGold = $productItem->margin_gold ?: $product->markup_reseller_gold;
-        $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
-
-        $productItem->capital = $data->price;
-        $productItem->margin = $marginPublicUser;
-        $productItem->margin_silver = $marginSilver;
-        $productItem->margin_gold = $marginGold;
-        $productItem->margin_vip = $marginVip;
-        $productItem->status = $data->status === 'available' ? 'active' : 'empty';
-        $productItem->sync_at = now();
-        $productItem->save();
-        return response([
-            'message' => 'SUCCESS',
-        ], 200);
     }
 
     public function orderCallback(Request $request, OrderService $orderService): Response
@@ -69,6 +83,8 @@ class LapakGamingController extends Controller
         $log = Log::channel('lapakgaming');
 
         try {
+            $log->notice("Order callback received", $request->toArray());
+
             $payload = OrderCallbackPayload::from($request->all());
 
             $order = Order::query()
@@ -88,14 +104,6 @@ class LapakGamingController extends Controller
                     'reason' => 'Invalid ref id',
                 ]);
             }
-
-            $log->notice("Order callback received", [
-                'reference_id' => $payload->data->reference_id,
-                'tid' => $payload->data->tid,
-                'status' => $payload->data->status,
-                'order_id' => $order->id,
-                'payload' => $payload->toArray(),
-            ]);
 
             $rawPayload = json_encode($payload, JSON_PRETTY_PRINT);
 
@@ -141,7 +149,7 @@ class LapakGamingController extends Controller
             return response([
                 'message' => 'SUCCESS',
             ], 200);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $log->error("Order callback processing failed", [
                 'error' => $e->getMessage(),
                 'payload' => $request->all(),

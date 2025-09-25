@@ -30,7 +30,7 @@ class Transaction extends Data
         public string $product_name,
         public string $note,
         public string $status,
-        public string $voucher_code = "",
+        public ?string $voucher_code = "",
     ) {}
 }
 
