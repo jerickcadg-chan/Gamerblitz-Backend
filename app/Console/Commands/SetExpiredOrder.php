@@ -15,7 +15,7 @@ class SetExpiredOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'set:expired';
+    protected $signature = 'expired:order';
 
     /**
      * The console command description.
@@ -41,7 +41,7 @@ class SetExpiredOrder extends Command
      */
     public function handle(OrderService $orderService)
     {
-        $orders = Order::where('order_status', StatusConst::PENDING)
+        $orders = Order::where('order', StatusConst::PENDING)
             ->where('expired_at', '<=', now()->format('Y-m-d H:i:s'))
             ->get();
 
