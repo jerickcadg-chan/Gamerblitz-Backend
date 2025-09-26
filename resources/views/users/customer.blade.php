@@ -55,6 +55,9 @@
                       'edit_url' => route('user.edit', $user),
                   ])
                 @else
+                  <a class="btn btn-gradient-info btn-sm" href="{{ route('user.top-up-manual', $user) }}"> 
+                      <i class="mdi mdi-cash menu-icon"></i>
+                  </a>
                   @include('master.action', [
                       'view_url' => route('user.show', $user),
                       'edit_url' => route('user.edit', $user),

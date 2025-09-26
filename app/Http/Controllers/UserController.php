@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\StatusConst;
 use App\Http\Requests\UserRequest;
 use App\Models\Affiliate;
 use App\Models\Deposit;
+use App\Models\Setting;
 use App\Models\User;
+use App\Services\DepositService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -172,6 +176,64 @@ class UserController extends Controller
 
         toast(alert_deleted_text($this->title),'success');
         return redirect()->route('user.index');
+    }
+
+    public function topUpManual(User $user)
+    {
+        $actionLink = route('user.top-up-manual.store', $user);
+        $indexLink = route('user.index');
+
+        $title = 'Top up Manual ' . $this->title;
+
+        return view('users.topup-manual', compact('actionLink', 'indexLink', 'title', 'user'));
+    }
+
+    public function topUpManualStore(Request $request, User $user)
+    {
+        $request->validate([
+            'amount' => 'required'
+        ]);
+
+        $baseCurrency = Setting::getBaseCurrency();
+        $exchangeRateToBase = get_exchange_rate($baseCurrency, $baseCurrency);
+
+        $amount = (int) $request->amount;
+        $adminFee = 0;
+
+        $totalAmount = $amount + $adminFee;
+
+        $baseAmount = $amount * $exchangeRateToBase;
+        $baseAdminFee = $adminFee * $exchangeRateToBase;
+        $baseTotalAmount = $totalAmount * $exchangeRateToBase;
+
+        try {
+            $deposit = Deposit::create([
+                'code' => "DP".date('ymd').rand(1000, 999999),
+                'user_id' => $user->id,
+                'payment_method_id' => 1,
+                'currency_code' => $baseCurrency,
+                'converted_currency_code' => $baseCurrency,
+                'exchange_rate' => $exchangeRateToBase,
+                'amount' => $baseAmount,
+                'admin_fee' => $baseAdminFee,
+                'total_amount' => $baseTotalAmount,
+                'converted_amount' => $amount,
+                'converted_admin_fee' => $adminFee,
+                'converted_total_amount' => $totalAmount,
+                'expired_at' => now()->addHours(3),
+                'status' => StatusConst::PENDING,
+            ]);
+    
+            DepositService::updateStatus($deposit, StatusConst::PAID, $baseTotalAmount);
+
+            toast("Deposit status updated", 'success');
+
+            return redirect()->route('user.show', $user);
+        } catch (\Exception $e) {
+            toast("Top Up Manual Failed " . $e->getMessage(), 'error');
+
+            return redirect()->back();
+        }
     }
 
     private function generateUniqueAffiliateCode(): string
