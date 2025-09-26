@@ -41,7 +41,7 @@ class SetExpiredOrder extends Command
      */
     public function handle(OrderService $orderService)
     {
-        $orders = Order::where('order', StatusConst::PENDING)
+        $orders = Order::where('status', StatusConst::PENDING)
             ->where('expired_at', '<=', now()->format('Y-m-d H:i:s'))
             ->get();
 
