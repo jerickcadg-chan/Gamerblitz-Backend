@@ -169,7 +169,7 @@ class SyncLapakGaming extends Command
                     $msg = "LapakGaming: Failed to update product: " . $e->getMessage();
                     $log->error($msg, [
                         'product' => $product->name,
-                        'item' => $lgItem->code,
+                        'item' => $item->code ?? null,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString(),
                     ]);
