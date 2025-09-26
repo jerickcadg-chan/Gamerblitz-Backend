@@ -43,6 +43,7 @@
               <th>Reseller Gold Price</th>
               <th>Reseller VIP Price</th>
               <th>Stock</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
             </thead>
@@ -64,6 +65,7 @@
                 <td>{{ currency_format($productItem->margin_price_gold, $productItem->currency_code) }}</td>
                 <td>{{ currency_format($productItem->margin_price_vip, $productItem->currency_code) }}</td>
                 <td>{{ $productItem->stock === null ? '∞' : $productItem->stock }}</td>
+                <td>{{ $productItem->status }}</td>
                 <td>
                   @include('master.action', [
                       'view_url' => route('product_item.show', $productItem),
