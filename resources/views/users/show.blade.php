@@ -61,41 +61,31 @@
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body table-responsive">
-        <form method="get" class="mb-3">
-          <div class="row">
-            <div class="col-md-4">
-              <input type="text" class="form-control" name="code" placeholder="Search deposit code" value="{{ request('code') }}">
-            </div>
-            <div class="col-md-4 mb-2 pt-2">
-              <button type="submit" class="btn btn-sm btn-primary">Search</button>
-              <a href="{{ url()->current() }}" class="btn btn-sm btn-danger">Reset</a>
-            </div>
-          </div>
-        </form>
+        <h3 class="page-title mb-3"> Balance History </h3>
         <table class="table table-bordered table-hover">
           <thead>
           <tr>
             <th>#</th>
             <th>Date</th>
-            <th>Kode</th>
+            <th>Balance From</th>
             <th>Nominal</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>Description</th>
           </tr>
           </thead>
           <tbody>
-          @forelse ($deposits as $index => $deposit)
+          @forelse ($histories as $index => $history)
             <tr>
-              <td>{{ $deposits->firstItem() + $index }}</td>
-              <td>{{ parse_date_time($deposit->created_at) }}</td>
-              <td>{{ $deposit->code }}</td>
-              <td>{{ currency_format($deposit->total_amount) }}</td>
-              <td>{!! $deposit->status_raw !!}</td>
+              <td>{{ $histories->firstItem() + $index }}</td>
+              <td>{{ parse_date_time($history->created_at) }}</td>
               <td>
-                @include('master.action', [
-                    'view_url' => route('deposit.show', $deposit),
-                ])
+                @if(strpos($history->balanceable_type, 'Deposit'))
+                  By Deposit {{ $history->balanceable->code }}
+                @else
+                  By Admin
+                @endif
               </td>
+              <td>{{ currency_format($history->amount) }}</td>
+              <td>{{ $history->description }}</td>
             </tr>
           @empty
             <tr>
@@ -105,7 +95,7 @@
           </tbody>
         </table>
         <div class="mt-2">
-          {!! $deposits->appends(request()->query())->links() !!}
+          {!! $histories->appends(request()->query())->links() !!}
         </div>
       </div>
     </div>

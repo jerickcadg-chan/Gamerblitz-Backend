@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use App\Constants\StatusConst;
 use App\Http\Requests\UserRequest;
 use App\Models\Affiliate;
+use App\Models\Balance;
+use App\Models\BalanceHistory;
 use App\Models\Deposit;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\BalanceService;
 use App\Services\DepositService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
@@ -75,17 +79,22 @@ class UserController extends Controller
         $deleteLink = route('user.destroy', $user);
         $indexLink = route('user.index');
 
-        $deposits = Deposit::with('user')
-            ->where('user_id', $user->id)
+        $balance = Balance::query()->firstOrCreate(
+            [
+                'user_id' => $user->id
+            ],
+            [
+                'amount' => 0
+            ]
+        );
+
+        $histories = BalanceHistory::where('balance_id', $balance->id)
             ->latest()
-            ->when(\request('code'), function (Builder $query) {
-                $query->where('code', 'like', '%' . \request('code') . '%');
-            })
             ->paginate();
 
         $title = $this->title;
 
-        return view('users.show', compact('user', 'deposits','editLink', 'indexLink', 'deleteLink', 'title'));
+        return view('users.show', compact('user', 'histories','editLink', 'indexLink', 'deleteLink', 'title'));
     }
 
     public function store(UserRequest $request)
@@ -194,39 +203,24 @@ class UserController extends Controller
             'amount' => 'required'
         ]);
 
-        $baseCurrency = Setting::getBaseCurrency();
-        $exchangeRateToBase = get_exchange_rate($baseCurrency, $baseCurrency);
-
-        $amount = (int) $request->amount;
-        $adminFee = 0;
-
-        $totalAmount = $amount + $adminFee;
-
-        $baseAmount = $amount * $exchangeRateToBase;
-        $baseAdminFee = $adminFee * $exchangeRateToBase;
-        $baseTotalAmount = $totalAmount * $exchangeRateToBase;
-
         try {
-            $deposit = Deposit::create([
-                'code' => "DP".date('ymd').rand(1000, 999999),
-                'user_id' => $user->id,
-                'payment_method_id' => 1,
-                'currency_code' => $baseCurrency,
-                'converted_currency_code' => $baseCurrency,
-                'exchange_rate' => $exchangeRateToBase,
-                'amount' => $baseAmount,
-                'admin_fee' => $baseAdminFee,
-                'total_amount' => $baseTotalAmount,
-                'converted_amount' => $amount,
-                'converted_admin_fee' => $adminFee,
-                'converted_total_amount' => $totalAmount,
-                'expired_at' => now()->addHours(3),
-                'status' => StatusConst::PENDING,
-            ]);
-    
-            DepositService::updateStatus($deposit, StatusConst::PAID, $baseTotalAmount);
+            $balance = Balance::query()->lockForUpdate()->firstOrCreate(
+                [
+                    'user_id' => $user->id
+                ],
+                [
+                    'amount' => 0
+                ]
+            );
 
-            toast("Deposit status updated", 'success');
+            BalanceService::update($balance, [
+                'balanceable_type' => User::class,
+                'balanceable_id' => Auth::id(),
+                'amount' => $request->amount,
+                'description' => "Topup Balance by Admin"
+            ]);
+
+            toast("Top up manual success", 'success');
 
             return redirect()->route('user.show', $user);
         } catch (\Exception $e) {
