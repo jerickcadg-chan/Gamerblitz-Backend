@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ProductItem;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProductItemRequest extends FormRequest
 {
@@ -34,6 +36,17 @@ class ProductItemRequest extends FormRequest
             'margin_silver' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'margin_gold'   => ['nullable', 'numeric', 'min:0', 'max:100'],
             'margin_vip'    => ['nullable', 'numeric', 'min:0', 'max:100'],
+
+            'status' => [
+                'nullable',
+                'string',
+                Rule::in([
+                    ProductItem::STATUS_ACTIVE,
+                    ProductItem::STATUS_EMPTY,
+                    ProductItem::STATUS_NON_ACTIVE,
+                    ProductItem::STATUS_TROUBLE,
+                ]),
+            ],
         ];
     }
 }

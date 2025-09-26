@@ -18,6 +18,11 @@ class ProductItem extends Model implements IsFilterable
 {
     use HasFactory, Filterable;
 
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_EMPTY = 'empty';
+    public const STATUS_NON_ACTIVE = 'non-active';
+    public const STATUS_TROUBLE = 'trouble';
+
     protected $fillable = [
         'product_id',
         'code',
@@ -30,6 +35,7 @@ class ProductItem extends Model implements IsFilterable
         'margin_vip',
         'product_item_category_id',
         'country_code',
+        'status',
     ];
 
     protected $appends = [

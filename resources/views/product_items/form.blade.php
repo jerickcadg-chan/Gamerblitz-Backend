@@ -1,3 +1,4 @@
+@php use App\Models\ProductItem; @endphp
 @extends('layouts.app', [
     'activePage' => 'product_item',
 ])
@@ -95,6 +96,17 @@
                      value="{{ old('margin_vip', $productItem->margin_vip ?? '') }}">
               @include('alerts.feedback', ['field' => 'margin_vip'])
             </div>
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" name="status">
+              @php $v = old('status', $productItem->status ?? ProductItem::STATUS_ACTIVE); @endphp
+              <option value="{{ ProductItem::STATUS_ACTIVE }}" {{ $v === ProductItem::STATUS_ACTIVE ? 'selected' : '' }}>{{ ProductItem::STATUS_ACTIVE }}</option>
+              <option value="{{ ProductItem::STATUS_EMPTY }}" {{ $v === ProductItem::STATUS_EMPTY ? 'selected' : '' }}>{{ ProductItem::STATUS_EMPTY }}</option>
+              <option value="{{ ProductItem::STATUS_NON_ACTIVE }}" {{ $v === ProductItem::STATUS_NON_ACTIVE ? 'selected' : '' }}>{{ ProductItem::STATUS_NON_ACTIVE }}</option>
+              <option value="{{ ProductItem::STATUS_TROUBLE }}" {{ $v === ProductItem::STATUS_TROUBLE ? 'selected' : '' }}>{{ ProductItem::STATUS_TROUBLE }}</option>
+            </select>
           </div>
 
           <button type="submit" class="btn btn-primary">Submit</button>
