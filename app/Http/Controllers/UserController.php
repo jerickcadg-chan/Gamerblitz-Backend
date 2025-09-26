@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Models\Affiliate;
+use App\Models\Deposit;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -69,9 +71,17 @@ class UserController extends Controller
         $deleteLink = route('user.destroy', $user);
         $indexLink = route('user.index');
 
+        $deposits = Deposit::with('user')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->when(\request('code'), function (Builder $query) {
+                $query->where('code', 'like', '%' . \request('code') . '%');
+            })
+            ->paginate();
+
         $title = $this->title;
 
-        return view('users.show', compact('user', 'editLink', 'indexLink', 'deleteLink', 'title'));
+        return view('users.show', compact('user', 'deposits','editLink', 'indexLink', 'deleteLink', 'title'));
     }
 
     public function store(UserRequest $request)

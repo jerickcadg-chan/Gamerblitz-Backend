@@ -30,6 +30,7 @@
             <th>Name</th>
             <th>Email</th>
             <th>Phone Number</th>
+            <th>Balance</th>
             <th>Role</th>
             <th>Verified At</th>
             <th>Is Affiliate</th>
@@ -43,6 +44,7 @@
               <td>{{ $user->name }}</td>
               <td>{{ $user->email }}</td>
               <td>{{ $user->phone_number }}</td>
+              <td>{{ $user->balance->amount ?? 0 }}</td>
               <td>{{ $user->role }}</td>
               <td>{{ $user->email_verified_at ? parse_date_time($user->email_verified_at) : "-" }}</td>
               <td>{{ $user->affiliate ? "✅" : "❌ " }}</td>
