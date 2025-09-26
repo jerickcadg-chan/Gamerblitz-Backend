@@ -28,7 +28,8 @@ class ProductItem extends Model implements IsFilterable
         'margin_silver',
         'margin_gold',
         'margin_vip',
-        'product_item_category_id'
+        'product_item_category_id',
+        'country_code',
     ];
 
     protected $appends = [

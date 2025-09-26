@@ -114,7 +114,7 @@ class SyncLapakGaming extends Command
                 ]);
 
                 if ($itemsResponse->failed()) {
-                    $msg = "LapakGaming: fetching product items failed: {$product->provider_code} {$product->proivder_country}";
+                    $msg = "LapakGaming: fetching product items failed: {$product->provider_code} {$product->provider_country}";
                     $log->error($msg, ['status' => $itemsResponse->status()]);
                     continue;
                 }
@@ -146,11 +146,23 @@ class SyncLapakGaming extends Command
                             'code' => $item->code,
                         ]);
 
+                        // make sure item country matches product country
+                        if (strtoupper($item->country_code) !== strtoupper($product->provider_country)) {
+                            if ($productItem->exists) {
+                                $productItem->status = 'trouble';
+                                $productItem->sync_at = now();
+                                $productItem->save();
+                            }
+
+                            continue;
+                        }
+
                         $marginPublicUser = $productItem->margin ?: $product->markup_user;
                         $marginSilver = $productItem->margin_silver ?: $product->markup_reseller_silver;
                         $marginGold = $productItem->margin_gold ?: $product->markup_reseller_gold;
                         $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
 
+                        $productItem->country_code = strtoupper($item->country_code);
                         $productItem->name = $item->name;
                         $productItem->capital = $item->price * $exchangeRate;
                         $productItem->stock = null;
@@ -159,7 +171,12 @@ class SyncLapakGaming extends Command
                         $productItem->margin_silver = $marginSilver;
                         $productItem->margin_gold = $marginGold;
                         $productItem->margin_vip = $marginVip;
-                        $productItem->status = $item->status === 'available' ? 'active' : 'empty';
+
+                        // ignore other status
+                        if ($productItem->status === 'active' || $productItem->status === 'empty') {
+                            $productItem->status = $item->status === 'available' ? 'active' : 'empty';
+                        }
+
                         $productItem->sync_at = now();
                         $productItem->save();
                     }
@@ -169,7 +186,7 @@ class SyncLapakGaming extends Command
                     $msg = "LapakGaming: Failed to update product: " . $e->getMessage();
                     $log->error($msg, [
                         'product' => $product->name,
-                        'item' => $item->code ?? null,
+                        'item' => isset($item) ? $item->code : null,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString(),
                     ]);
