@@ -73,7 +73,13 @@ class ProductItem extends Model implements IsFilterable
 
     public function getFlashSalePriceAttribute()
     {
-        return $this->flashSales()->active()->first()->price;
+        $activeFlashSale = $this->flashSales()->active()->first();
+
+        if ($activeFlashSale) {
+            return $activeFlashSale->price;
+        } 
+
+        return 0;
     }
 
     /**
