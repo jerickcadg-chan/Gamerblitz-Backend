@@ -20,8 +20,18 @@
       <div class="card-body">
         <div class="row mb-2">
           <div class="col-md-12 text-lg-end">
+            @if(is_null($jobVariant) || $jobVariant->status == 'DONE')
+            <form method="POST" action="{{ route('product-item.sync') }}"  onsubmit="return confirm('Are you sure to sync item price & status');" style="display: inline">
+              @csrf
+              <button type="submit" class="btn btn-danger">
+                Sync item Price & Status
+              </button>
+            </form>
+            @else
+              <a href="#" class="btn btn-danger">Item has not finished syncing</a>
+            @endif
             <a href="{{ route('product-item.price-form') }}" class="btn btn-info">Adjust Price Margin</a>
-             <a href="{{ $createLink }}" class="btn btn-primary">Create data</a>
+            <a href="{{ $createLink }}" class="btn btn-primary">Create data</a>
           </div>
         </div>
         <div class="table-responsive">

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductItemRequest;
+use App\Jobs\FetchVarianHandle;
+use App\Models\FetchVarianJob;
 use App\Models\ProductItem;
 use App\Models\Product;
 use Illuminate\Routing\Controller;
@@ -27,10 +29,10 @@ class ProductItemController extends Controller
             ->active()
             ->latest()->with('product')
             ->when(request('name'), function ($query) {
-                return $query->where('name', 'like', '%'.request("name").'%');
+                return $query->where('name', 'like', '%' . request("name") . '%');
             })
             ->when(request('code'), function ($query) {
-                return $query->where('code', 'like', '%'.request("code").'%');
+                return $query->where('code', 'like', '%' . request("code") . '%');
             })
             ->when(request('product_id'), function ($query) {
                 return $query->where('product_id', request('product_id'));
@@ -42,8 +44,12 @@ class ProductItemController extends Controller
         $title = $this->title;
 
         $products = Product::all();
+        $jobVariant = FetchVarianJob::where('command_name', 'fetch:variant')
+            ->where('status', 'PENDING')
+            ->latest('created_at')
+            ->first();
 
-        return view('product_items.index', compact('products', 'productItems', 'createLink', 'title'));
+        return view('product_items.index', compact('products', 'productItems', 'createLink', 'title', 'jobVariant'));
     }
 
     public function create()
@@ -73,7 +79,7 @@ class ProductItemController extends Controller
     {
         ProductItem::create($request->all());
 
-        toast(alert_created_text($this->title),'success');
+        toast(alert_created_text($this->title), 'success');
         return redirect()->route('product_item.index');
     }
 
@@ -93,7 +99,7 @@ class ProductItemController extends Controller
     {
         $productItem->update($request->all());
 
-        toast(alert_updated_text($this->title),'success');
+        toast(alert_updated_text($this->title), 'success');
         return redirect()->route('product_item.index');
     }
 
@@ -101,7 +107,21 @@ class ProductItemController extends Controller
     {
         $productItem->delete();
 
-        toast(alert_deleted_text($this->title),'success');
+        toast(alert_deleted_text($this->title), 'success');
         return redirect()->route('product_item.index');
+    }
+
+    public function syncItem()
+    {
+        $status = FetchVarianJob::create([
+            'command_name' => 'fetch:variant',
+            'status' => 'PENDING',
+        ]);
+
+        FetchVarianHandle::dispatch($status->id);
+
+        toast('Item is still syncing', 'success');
+
+        return redirect()->back();
     }
 }
