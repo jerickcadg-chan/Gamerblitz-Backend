@@ -188,6 +188,11 @@ class ImportUserCsv extends Command
      */
     private function generateEmail(?string $name): string
     {
+        // if already a valid email, return as is
+        if ($name && filter_var($name, FILTER_VALIDATE_EMAIL)) {
+            return Str::lower($name); // bisa lowercase biar konsisten
+        }
+
         $base  = Str::lower(preg_replace('/\s+/', '', (string) $name));
         $email = $base . '@example.com';
 
