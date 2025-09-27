@@ -58,7 +58,6 @@ Route::post('check-discount', [DiscountController::class, 'checkDiscountCode']);
 
 Route::post('order', [OrderController::class, 'store']);
 Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('callback.xendit');
-Route::post('order/agen-callback', [OrderController::class, 'agenCallback'])->name('callback.bangjeff');
 Route::get('order/{order}', [OrderController::class, 'show']);
 
 Route::get('setting', [SettingController::class, 'index']);
