@@ -147,18 +147,15 @@
                             </div>
                             <div class="modal-body">
                               @php
-                                $decoded = json_decode($history->note, true);
-
-                                if (json_last_error() !== JSON_ERROR_NONE) {
-                                    $prettyNote = $history->note;
-                                } else {
-                                    $prettyNote = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-                                    $prettyNote = preg_replace('/^ +/m', '', $prettyNote);
-                                }
+                                $note = $history->note ?? '';
+                                $decoded = json_decode($note, true);
                               @endphp
-                              <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-size: 13px; overflow-x: auto;">
-                                {{ $prettyNote }}
-                              </pre>
+
+                              @if (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
+                                <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-size: 13px; overflow-x: auto;">{{ json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+                              @else
+                                <p>{{ $note }}</p>
+                              @endif
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
