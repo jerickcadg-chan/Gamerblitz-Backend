@@ -156,8 +156,9 @@
                                     $prettyNote = preg_replace('/^ +/m', '', $prettyNote);
                                 }
                               @endphp
-
-                              {{ $prettyNote }}
+                              <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-size: 13px; overflow-x: auto;">
+                                {{ $prettyNote }}
+                              </pre>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
