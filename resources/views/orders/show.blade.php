@@ -151,7 +151,7 @@
                                 $decoded = json_decode($note, true);
                               @endphp
 
-                              @if ($decoded)
+                              @if (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
                                 <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-size: 13px; overflow-x: auto;">
                                   {{ json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}
                                 </pre>
