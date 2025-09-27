@@ -131,10 +131,10 @@ class SyncLapakGaming extends Command
                     $product->input_format = $lgCategory->forms ?? $product->input_format;
                     $product->check_uid = $lgCategory->check_id;
                     $product->updated_at = now();
-                    $product->markup_user = $product->markup_user ?: $fallbackMarginPublic;
-                    $product->markup_reseller_silver = $product->markup_reseller_silver ?: $fallbackMarginSilver;
-                    $product->markup_reseller_gold = $product->markup_reseller_gold ?: $fallbackMarginGold;
-                    $product->markup_reseller_vip = $product->markup_reseller_vip ?: $fallbackMarginVip;
+                    $product->markup_user = $this->useFallbackIfNonPositive($product->markup_user, $fallbackMarginPublic);
+                    $product->markup_reseller_silver = $this->useFallbackIfNonPositive($product->markup_reseller_silver, $fallbackMarginSilver);
+                    $product->markup_reseller_gold = $this->useFallbackIfNonPositive($product->markup_reseller_gold, $fallbackMarginGold);
+                    $product->markup_reseller_vip = $this->useFallbackIfNonPositive($product->markup_reseller_vip, $fallbackMarginVip);
                     $product->save();
 
                     foreach ($itemsResponse->json('data.products') as $lgItem) {
@@ -157,10 +157,10 @@ class SyncLapakGaming extends Command
                             continue;
                         }
 
-                        $marginPublicUser = $productItem->margin ?: $product->markup_user;
-                        $marginSilver = $productItem->margin_silver ?: $product->markup_reseller_silver;
-                        $marginGold = $productItem->margin_gold ?: $product->markup_reseller_gold;
-                        $marginVip = $productItem->margin_vip ?: $product->markup_reseller_vip;
+                        $marginPublicUser = $this->useFallbackIfNonPositive($productItem->margin, $product->markup_user);
+                        $marginSilver = $this->useFallbackIfNonPositive($productItem->margin_silver, $product->markup_reseller_silver);
+                        $marginGold = $this->useFallbackIfNonPositive($productItem->margin_gold, $product->markup_reseller_gold);
+                        $marginVip = $this->useFallbackIfNonPositive($productItem->margin_vip, $product->markup_reseller_vip);
 
                         $productItem->country_code = strtoupper($item->country_code);
                         $productItem->name = $item->name;
@@ -200,4 +200,10 @@ class SyncLapakGaming extends Command
         $this->line("End: " . memory_get_usage());
         $this->line("Peak: " . memory_get_peak_usage());
     }
+
+    private function useFallbackIfNonPositive(mixed $value, mixed $fallback): float {
+        $fallback = is_numeric($fallback) ? (float)$fallback : 0.0;
+        return (is_null($value) || (float)$value <= 0) ? $fallback : (float)$value;
+    }
+
 }
