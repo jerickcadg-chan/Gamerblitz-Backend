@@ -109,6 +109,17 @@ class LapakGamingController extends Controller
 
             switch ($payload->data->status) {
                 case "SUCCESS":
+                    $transactions = collect($payload->data->transactions ?? []);
+
+                    $order->serial_number = $transactions->pluck('voucher_code')
+                        ->filter()
+                        ->implode(',');
+
+                    $order->note = $transactions->pluck('note')
+                        ->filter()
+                        ->implode(',');
+
+                    $order->save();
                     $orderService->updateStatus($order, StatusConst::SUCCESS, $note);
                     break;
                 case "REFUNDED":
@@ -133,18 +144,6 @@ class LapakGamingController extends Controller
                 default:
                     break;
             }
-
-            $transactions = collect($payload->data->transactions ?? []);
-
-            $order->serial_number = $transactions->pluck('voucher_code')
-                ->filter()
-                ->implode(',');
-
-            $order->note = $transactions->pluck('note')
-                ->filter()
-                ->implode(',');
-
-            $order->save();
 
             return response([
                 'message' => 'SUCCESS',
