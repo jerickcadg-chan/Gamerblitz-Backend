@@ -15,7 +15,7 @@ class FlashSaleController extends Controller
         $currencyCode = request('currency_code') ? request('currency_code') : $baseCurrency;
         $exchangeRate = get_exchange_rate($baseCurrency, $currencyCode);
 
-        $query = FlashSale::active()->get();
+        $query = FlashSale::active()->with('productItem')->get();
 
         return api_status_ok(transformer(
             query: $query,

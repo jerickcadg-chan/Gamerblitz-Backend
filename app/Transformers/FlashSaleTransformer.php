@@ -43,7 +43,7 @@ class FlashSaleTransformer extends TransformerAbstract
 
     public function includeProductItem(FlashSale $flashSale)
     {
-        return $this->item($flashSale->productItem, new ProductItemTransformer());
+        return $this->item($flashSale->productItem, new ProductItemTransformer($this->exchangeRate));
     }
 
     public function includeProduct(FlashSale $flashSale)
