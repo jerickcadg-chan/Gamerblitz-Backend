@@ -54,6 +54,12 @@ class UserController extends Controller
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'. request('name') .'%');
             })
+            ->when(request('email'), function ($query) {
+                return $query->where('email', 'like', '%'. request('email') .'%');
+            })
+            ->when(request('phone'), function ($query) {
+                return $query->where('phone_number', 'like', '%'. request('phone') .'%');
+            })
             ->paginate();
 
         $title = $this->title;

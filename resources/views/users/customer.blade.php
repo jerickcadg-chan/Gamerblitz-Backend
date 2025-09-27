@@ -16,13 +16,23 @@
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body table-responsive">
-        <div class="row mb-2">
-          <div class="col-md-4 mb-2">
-            <form method="get">
+        <form method="get">
+          <div class="row mb-2">
+            <div class="col-md-4 mb-2">
               <input type="text" class="form-control" name="name" placeholder="Search user name" value="{{ request('name') }}">
-            </form>
+            </div>
+            <div class="col-md-4 mb-2">
+              <input type="text" class="form-control" name="email" placeholder="Search user email" value="{{ request('email') }}">
+            </div>
+            <div class="col-md-4 mb-2">
+              <input type="text" class="form-control" name="phone" placeholder="Search user phone number" value="{{ request('phone') }}">
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl-2 mb-2 pt-2">
+              <button type="submit" class="btn btn-sm btn-primary">Search</button>
+              <a href="{{ url()->current() }}" class="btn btn-sm btn-danger">Reset</a>
+            </div>
           </div>
-        </div>
+        </form>
         <table class="table table-bordered table-hover">
           <thead>
           <tr>
