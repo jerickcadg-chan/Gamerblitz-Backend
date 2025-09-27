@@ -10,7 +10,8 @@ class ProductItemTransformer extends TransformerAbstract
 {
     public float $exchangeRate;
 
-    public function __construct(float $exchangeRate = 1) {
+    public function __construct(float $exchangeRate = 1)
+    {
         $this->exchangeRate = $exchangeRate;
     }
     /**
@@ -35,6 +36,9 @@ class ProductItemTransformer extends TransformerAbstract
     public function transform(ProductItem $productItem): array
     {
         $meta = $productItem->productItemCategoryMeta;
+        $percentOff = ($productItem->discount_price > 0 && $productItem->real_price > 0)
+            ? round(($productItem->discount_price / $productItem->real_price) * 100)
+            : 0;
 
         return [
             'id' => $productItem->id,
@@ -44,6 +48,7 @@ class ProductItemTransformer extends TransformerAbstract
             'original_price' => $productItem->real_price * $this->exchangeRate,
             'discount_price' => $productItem->discount_price * $this->exchangeRate,
             'total_price' => $productItem->total_price * $this->exchangeRate,
+            'percent_off' => $percentOff,
             'source_original_price' => $productItem->real_price,
             'source_discount_price' => $productItem->discount_price,
             'source_total_price' => $productItem->total_price,
@@ -55,6 +60,6 @@ class ProductItemTransformer extends TransformerAbstract
 
     public function includeProduct(ProductItem $productItem)
     {
-        return $this->item($productItem->product, new ProductTransformer);
+        return $this->item($productItem->product, new ProductTransformer());
     }
 }

@@ -33,11 +33,17 @@ class FlashSaleTransformer extends TransformerAbstract
      */
     public function transform(FlashSale $flashSale)
     {
+        $percentOff = 0;
+        if ($flashSale->productItem->real_price > 0) {
+            $percentOff = (($flashSale->productItem->real_price - $flashSale->price)
+                           / $flashSale->productItem->real_price) * 100;
+        }
         return [
             'id' => $flashSale->id,
             'name' => $flashSale->name,
             'stock' => $flashSale->stock,
             'price' => sprintf("%.2f", $flashSale->price * $this->exchangeRate),
+            'percent_off' => round($percentOff),
         ];
     }
 

@@ -20,6 +20,10 @@
                     @csrf
                     @method('PUT')
                     <div class="form-group">
+                      <label for="price_input">Capital</label>
+                      <input type="text" class="form-control" name="current_pricce" id="price_input" placeholder="Enter Price" value="{{ $flash_sale->productItem->capital }}" readonly>
+                    </div>
+                    <div class="form-group">
                       <label for="price_input">Normal Price</label>
                       <input type="text" class="form-control" name="current_pricce" id="price_input" placeholder="Enter Price" value="{{ $flash_sale->productItem->margin_price_public }}" readonly>
                     </div>

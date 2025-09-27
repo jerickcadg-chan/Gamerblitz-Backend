@@ -44,6 +44,7 @@
                 <tr>
                   <th style="width:36px;"></th>
                   <th>Item</th>
+                  <th class="text-end">Capital</th>
                   <th class="text-end">Normal Price</th>
                   <th style="width:160px;">Flash Price</th>
                   <th style="width:140px;">Stock</th>
@@ -59,6 +60,7 @@
                              onchange="toggleRow(this)">
                     </td>
                     <td>{{ $productItem->name }}</td>
+                    <td class="text-end">{{ currency_format($productItem->capital, $productItem->currency_code) }}</td>
                     <td class="text-end">{{ currency_format($productItem->margin_price_public, $productItem->currency_code) }}</td>
                     <td>
                       <input type="number" min="0" step="0.01"
