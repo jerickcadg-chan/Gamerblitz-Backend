@@ -30,7 +30,7 @@ class FetchVarianHandle implements ShouldQueue
      */
     public function handle(): void
     {
-        Artisan::call('fetch:variant');
+        Artisan::call('app:sync-lapak-gaming');
 
         FetchVarianJob::find($this->statusId)->update([
             'status' => 'DONE'

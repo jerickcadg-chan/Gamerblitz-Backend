@@ -44,7 +44,7 @@ class ProductItemController extends Controller
         $title = $this->title;
 
         $products = Product::all();
-        $jobVariant = FetchVarianJob::where('command_name', 'fetch:variant')
+        $jobVariant = FetchVarianJob::where('command_name', 'app:sync-lapak-gaming')
             ->where('status', 'PENDING')
             ->latest('created_at')
             ->first();
@@ -114,7 +114,7 @@ class ProductItemController extends Controller
     public function syncItem()
     {
         $status = FetchVarianJob::create([
-            'command_name' => 'fetch:variant',
+            'command_name' => 'app:sync-lapak-gaming',
             'status' => 'PENDING',
         ]);
 
