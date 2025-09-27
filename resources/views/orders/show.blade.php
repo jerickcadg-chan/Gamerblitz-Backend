@@ -147,7 +147,7 @@
                             </div>
                             <div class="modal-body">
                               @php
-                                $note = $order->note ?? '';
+                                $note = $history->note ?? '';
                                 $decoded = json_decode($note, true);
                               @endphp
 
