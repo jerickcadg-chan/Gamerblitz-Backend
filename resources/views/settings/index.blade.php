@@ -176,12 +176,27 @@
           </div>
 
           <div class="form-group">
-            <label>Pop Up Description</label>
-            <div class="quill-editor">{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</div>
-            <textarea
-              name="settings[popup_description]"
-              class="quill-editor-hidden d-none {{ $errors->has('settings.popup_description') ? 'is-invalid' : '' }}"
-            >{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</textarea>
+            <label>
+              Pop Up Description
+              (
+              <label class="form-check-label" for="is_raw_description_input">Raw</label>
+              <input type="checkbox" class="form-check-input mt-0" id="is_raw_description_input"
+                     name="settings[is_raw_popup_description]" value="1"
+                {{ old('settings.is_raw_popup_description', $settings['is_raw_popup_description'] ?? false) ? 'checked' : '' }}>
+              )
+            </label>
+            {{-- Raw textarea --}}
+            <textarea class="form-control {{ $errors->has('settings.popup_description') ? 'is-invalid' : '' }}"
+              id="description_textarea"
+              rows="10">{{ old('settings.popup_description', $settings['popup_description'] ?? '') }}</textarea>
+
+            {{-- Quill editor --}}
+            <div id="quill-wrapper">
+              <div class="quill-editor">{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</div>
+              <textarea
+                class="quill-editor-hidden d-none {{ $errors->has('settings.popup_description') ? 'is-invalid' : '' }}"
+              >{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</textarea>
+            </div>
             @include('alerts.feedback', ['field' => 'settings.popup_description'])
           </div>
 
@@ -378,3 +393,37 @@
 @endsection
 
   <x-quill-editor />
+
+@push('js')
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const checkbox = document.getElementById("is_raw_description_input");
+      const rawTextarea = document.getElementById("description_textarea");
+      const quillHidden = document.getElementById("description_input");
+      const quillWrapper = document.getElementById("quill-wrapper");
+
+      function toggleDescription() {
+        if (checkbox.checked) {
+          rawTextarea.name = "settings[popup_description]";
+          rawTextarea.style.display = '';
+          rawTextarea.disabled = false;
+
+          quillWrapper.style.display = 'none';
+          quillHidden.disabled = true;
+          quillHidden.removeAttribute("name");
+        } else {
+          rawTextarea.removeAttribute("name");
+          rawTextarea.style.display = 'none';
+          rawTextarea.disabled = true;
+
+          quillWrapper.style.display = '';
+          quillHidden.disabled = false;
+          quillHidden.name = "settings[popup_description]";
+        }
+      }
+
+      checkbox.addEventListener("change", toggleDescription);
+      toggleDescription(); // initial load
+    });
+  </script>
+@endpush
