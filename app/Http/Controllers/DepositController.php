@@ -9,7 +9,15 @@ use App\Models\Deposit;
 
 class DepositController extends Controller
 {
-    protected string $title = 'Deposit';
+    private string $title;
+
+    public function __construct()
+    {
+        $this->title = 'Product Item';
+
+        $this->middleware(['permission:View Deposit'])->only('index', 'show');
+        $this->middleware(['permission:Edit Deposit'])->only('updateStatus');
+    }
 
     public function index()
     {

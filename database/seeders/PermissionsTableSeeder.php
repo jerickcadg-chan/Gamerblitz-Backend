@@ -25,7 +25,7 @@ class PermissionsTableSeeder extends Seeder
     {
         $permissions = [
             'View Dashboard',
-            
+
             'View Transaction Statistic',
             'View User Statistic',
 
@@ -61,6 +61,9 @@ class PermissionsTableSeeder extends Seeder
             'View Product Report',
 
             'View Statistic',
+
+            'View Deposit',
+            'Edit Deposit',
 
             'View User',
             'Create User',
