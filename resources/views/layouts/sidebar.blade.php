@@ -90,12 +90,14 @@
         </div>
       </li>
     @endcan
+    @can('View Deposit')
     <li class="nav-item {{ $activePage == 'deposit' ? 'active' : null }}">
       <a class="nav-link" href="{{ route('deposit.index') }}">
         <span class="menu-title">Deposit</span>
         <i class="mdi mdi-cash menu-icon"></i>
       </a>
     </li>
+    @endcan
     @can ('View Report')
       <li class="nav-item {{ $activePage == 'report' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('report.index') }}">
