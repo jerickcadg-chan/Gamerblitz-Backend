@@ -39,11 +39,11 @@
             @include('alerts.feedback', ['field' => 'phone_number'])
           </div>
           <div class="form-group">
-            <label for="input_role_id" class="required">Role {{ $user->role }}</label>
+            <label for="input_role_id" class="required">Role {{ $user?->role ?? null }}</label>
             <select class="form-control select2 {{ $errors->has('role_id') ? ' is-invalid' : '' }}" name="role_id" id="input_role_id" required>
               <option value="">Select role</option>
               @foreach($roles as $role)
-                <option value="{{ $role->name }}" @if(old('role_name', $role->name) == $user->role) selected @endif>{{ $role->name }}</option>
+                <option value="{{ $role->name }}" @if(old('role_name', $role->name) == ($user?->role ?? null)) selected @endif>{{ $role->name }}</option>
               @endforeach
             </select>
             @include('alerts.feedback', ['field' => 'role_id'])

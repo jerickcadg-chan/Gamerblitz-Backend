@@ -14,10 +14,12 @@
       </a>
     </li>
     <li class="nav-item {{ $activePage == 'dashboard' ? 'active' : null }}">
-      <a class="nav-link" href="{{ route('home') }}">
-        <span class="menu-title">Dashboard</span>
-        <i class="mdi mdi-home menu-icon"></i>
-      </a>
+      @can('View Dashboard')
+        <a class="nav-link" href="{{ route('home') }}">
+          <span class="menu-title">Dashboard</span>
+          <i class="mdi mdi-home menu-icon"></i>
+        </a>
+      @endcan
     </li>
     @canany(['View Product Category', 'View Product Item', 'View Product Item Category'])
       <li class="nav-item {{ in_array($activePage, config('array.menu.product')) ? 'active' : null }}">

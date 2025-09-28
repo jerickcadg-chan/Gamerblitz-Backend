@@ -24,6 +24,8 @@ class PermissionsTableSeeder extends Seeder
     public function createPermissions()
     {
         $permissions = [
+            'View Dashboard',
+            
             'View Transaction Statistic',
             'View User Statistic',
 

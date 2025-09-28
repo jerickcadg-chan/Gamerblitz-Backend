@@ -105,6 +105,10 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
+        $request->merge([
+            'password' => bcrypt($request->password),
+        ]);
+        
         $user = User::create($request->all());
 
         $user->assignRole($request->role_id);

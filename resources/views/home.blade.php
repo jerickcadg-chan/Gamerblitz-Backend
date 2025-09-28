@@ -4,6 +4,7 @@
 ])
 
 @section('content')
+@can('View Dashboard')
 <form>
   <div class="row">
     <div class="col">
@@ -85,6 +86,7 @@
     </div>
   </div>
 </div>
+@endcan
 @endsection
 
 @php
