@@ -97,7 +97,7 @@ class Product extends Model
 
     public function getProductCoverAttribute(): string
     {
-        return $this->default_cover ? Storage::url($this->default_cover) : asset('images/no-image.png');
+        return $this->default_cover ? Storage::url($this->default_cover) : null;
     }
 
     public function getProductPictureAttribute(): string
