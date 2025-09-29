@@ -152,13 +152,15 @@ class ImportUserCsv extends Command
                 ['amount'  => 0]
             );
 
-        // Update balance via BalanceService
-        BalanceService::update($balanceModel, [
-            'balanceable_type' => $user->getMorphClass(),
-            'balanceable_id'   => $user->getKey(),
-            'amount'           => $amount,
-            'description'      => "Topup Balance by Import Seeder",
-        ]);
+        // If balance 0 then Update balance via BalanceService
+        if ($balanceModel->amount === 0) {
+            BalanceService::update($balanceModel, [
+                'balanceable_type' => $user->getMorphClass(),
+                'balanceable_id'   => $user->getKey(),
+                'amount'           => $amount,
+                'description'      => "Topup Balance by Import Seeder",
+            ]);
+        }
     }
 
     /**
@@ -170,14 +172,22 @@ class ImportUserCsv extends Command
      */
     private function syncAffiliate(User $user, float $commission): void
     {
-        Affiliate::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'code'    => $this->generateAffiliateCode($user->name),
+        // If have afiliate update data
+        if ($user->affiliate) {
+            $user->affiliate->update([
                 'status'  => 'active',
                 'balance' => $commission,
-            ]
-        );
+            ]);
+        } else {
+            Affiliate::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'code'    => $this->generateAffiliateCode($user->name),
+                    'status'  => 'active',
+                    'balance' => $commission,
+                ]
+            );
+        }
     }
 
     /**
