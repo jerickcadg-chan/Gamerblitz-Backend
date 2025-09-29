@@ -95,7 +95,7 @@ class Product extends Model
         $this->attributes['slug'] = \slugify($value);
     }
 
-    public function getProductCoverAttribute(): string
+    public function getProductCoverAttribute(): ?string
     {
         return $this->default_cover ? Storage::url($this->default_cover) : null;
     }
