@@ -29,7 +29,7 @@
         @endisset
         @csrf
         <div class="form-group">
-          <label for="input_picture" @if(!isset($meta)) class="required" @endif>Icon</label>
+          <label for="input_picture">Icon</label>
           <input
             type="file"
             name="picture"
@@ -37,7 +37,6 @@
             id="input_picture"
             value="{{ old('picture') }}"
             accept="image/*"
-            @if(!isset($meta)) required @endif
           />
           @include('alerts.feedback', ['field' => 'picture'])
         </div>

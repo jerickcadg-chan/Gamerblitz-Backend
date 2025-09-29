@@ -51,9 +51,13 @@
           @forelse ($productItemCategory->metas as $meta)
             <tr>
               <td>
-                <a href="{{ $meta->picture->url }}" target="_blank">
-                  <img src="{{ $meta->picture->url }}" alt="{{ $productItemCategory->name }}" height="100" width="100">
-                </a>
+                @if($meta->picture->url)
+                  <a href="{{ $meta->picture->url }}" target="_blank">
+                    <img src="{{ $meta->picture->url }}" alt="{{ $productItemCategory->name }}" height="100" width="100">
+                  </a>
+                @else
+                  -
+                @endif
               </td>
               <td>
                 @canany(['Edit Product Item', 'Delete Product Item'])

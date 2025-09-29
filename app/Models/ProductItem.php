@@ -33,7 +33,7 @@ class ProductItem extends Model implements IsFilterable
         'margin_silver',
         'margin_gold',
         'margin_vip',
-        'product_item_category_id',
+        'product_item_category_meta_id',
         'country_code',
         'status',
     ];
@@ -84,7 +84,7 @@ class ProductItem extends Model implements IsFilterable
 
         if ($activeFlashSale) {
             return $activeFlashSale->price;
-        } 
+        }
 
         return 0;
     }

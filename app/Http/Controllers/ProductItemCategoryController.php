@@ -122,7 +122,9 @@ class ProductItemCategoryController extends Controller
             ProductItem::whereIn('id', $request->product_item_ids)
                 ->update(['product_item_category_meta_id' => $meta->id]);
 
-            insert_picture(request('picture'), $meta);
+            if ($request->picture) {
+                insert_picture(request('picture'), $meta);
+            }
 
             DB::commit();
 

@@ -21,12 +21,9 @@ class ProductItemCategoryMetaRequest extends FormRequest
      */
     public function rules(): array
     {
-        $picture =  'required|image';
-        if ($this->isMethod('PUT')) {
-            $picture = 'image';
-        }
         return [
-            'picture' => $picture,
+            'picture' => 'nullable|image',
+            'product_item_ids' => 'required|array'
         ];
     }
 }
