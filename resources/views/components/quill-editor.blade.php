@@ -35,7 +35,14 @@
                     }
 
                     quill.on('text-change', function () {
-                        hidden.value = quill.root.innerHTML;
+                        // clone editor contents and strip color styles
+                        const div = document.createElement('div');
+                        div.innerHTML = quill.root.innerHTML;
+                        div.querySelectorAll('[style]').forEach(el => {
+                          el.style.color = ''; // remove only color
+                          if (!el.getAttribute('style')) el.removeAttribute('style');
+                        });
+                        hidden.value = div.innerHTML;
                     });
                 });
             });
