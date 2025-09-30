@@ -54,7 +54,7 @@
               <td>{{ $user->name }}</td>
               <td>{{ $user->email }}</td>
               <td>{{ $user->phone_number }}</td>
-              <td>{{ $user->balance->amount ?? 0 }}</td>
+              <td>{{ currency_format($user->balance->amount ?? 0) }}</td>
               <td>{{ $user->role }}</td>
               <td>{{ $user->email_verified_at ? parse_date_time($user->email_verified_at) : "-" }}</td>
               <td>{{ $user->affiliate ? "✅" : "❌ " }}</td>
@@ -65,13 +65,13 @@
                       'edit_url' => route('user.edit', $user),
                   ])
                 @else
-                  <a class="btn btn-gradient-info btn-sm" data-hover="tooltip" title="Manual add Balance" data-placement="top" href="{{ route('user.top-up-manual', $user) }}"> 
+                  <a class="btn btn-gradient-info btn-sm" data-bs-toggle="tooltip" title="Manual Balance" data-bs-placement="top" href="{{ route('user.top-up-manual', $user) }}"> 
                       <i class="mdi mdi-cash menu-icon"></i>
                   </a>
                   @include('master.action', [
                       'view_url' => route('user.show', $user),
                       'edit_url' => route('user.edit', $user),
-                      'delete_url' => route('user.destroy', $user)
+                      // 'delete_url' => route('user.destroy', $user)
                   ])
                 @endif
               </td>
