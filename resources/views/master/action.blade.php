@@ -4,8 +4,8 @@
    </a>
 @endif
 @if(isset($edit_url))
-    <button class="btn btn-gradient-warning btn-sm" data-bs-toggle="tooltip" title="Edit" data-bs-placement="top"
-       onclick="window.location.href='{{ $edit_url }}'"> <i class="mdi mdi-tooltip-edit menu-icon"></i>
+    <button class="btn btn-gradient-warning btn-sm" target="_blank" data-bs-toggle="tooltip" title="Edit" data-bs-placement="top"
+    onclick="window.open('{{ $edit_url }}', '_blank')"> <i class="mdi mdi-tooltip-edit menu-icon"></i>
    </button>
 @endif
 @if(isset($delete_url))
