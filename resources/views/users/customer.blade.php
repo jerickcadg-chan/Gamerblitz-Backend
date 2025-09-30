@@ -27,7 +27,7 @@
             <div class="col-md-4 mb-2">
               <input type="text" class="form-control" name="phone" placeholder="Search user phone number" value="{{ request('phone') }}">
             </div>
-            <div class="col-md-6 col-lg-4 col-xl-2 mb-2 pt-2">
+            <div class="col-md-6 pt-2">
               <button type="submit" class="btn btn-sm btn-primary">Search</button>
               <a href="{{ url()->current() }}" class="btn btn-sm btn-danger">Reset</a>
             </div>
@@ -65,7 +65,7 @@
                       'edit_url' => route('user.edit', $user),
                   ])
                 @else
-                  <a class="btn btn-gradient-info btn-sm" href="{{ route('user.top-up-manual', $user) }}"> 
+                  <a class="btn btn-gradient-info btn-sm" data-hover="tooltip" title="Manual add Balance" data-placement="top" href="{{ route('user.top-up-manual', $user) }}"> 
                       <i class="mdi mdi-cash menu-icon"></i>
                   </a>
                   @include('master.action', [
