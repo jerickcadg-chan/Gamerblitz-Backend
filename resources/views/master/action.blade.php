@@ -1,5 +1,5 @@
 @if(isset($view_url))
-    <a class="btn btn-gradient-info btn-sm" data-bs-toggle="tooltip" title="Detail" data-bs-placement="top"
+    <a class="btn btn-gradient-info btn-sm" target="_blank" data-bs-toggle="tooltip" title="Detail" data-bs-placement="top"
        href="{{ $view_url }}"> <i class="mdi mdi-magnify menu-icon"></i>
    </a>
 @endif
