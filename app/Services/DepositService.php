@@ -71,7 +71,7 @@ class DepositService
                     ['amount' => 0]
                 );
 
-            $deposit->status === StatusConst::PAID;
+            $deposit->status = StatusConst::PAID;
             $deposit->save();
 
             BalanceService::update($balance, [
