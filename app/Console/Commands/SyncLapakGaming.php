@@ -137,6 +137,9 @@ class SyncLapakGaming extends Command
                     $product->markup_reseller_vip = $this->useFallbackIfNonPositive($product->markup_reseller_vip, $fallbackMarginVip);
                     $product->save();
 
+                    // reset product item status to empty, if item is available it will be mark as active below
+                    ProductItem::where('product_id', $product->id)->where('status', 'active')->update(['status' => 'empty']);
+
                     foreach ($itemsResponse->json('data.products') as $lgItem) {
                         $item = AppProductItem::from($lgItem);
                         $this->line("Processing item {$item->code}");
