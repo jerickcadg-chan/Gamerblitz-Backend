@@ -144,6 +144,33 @@
             @include('alerts.feedback', ['field' => 'picture'])
           </div>
 
+          <div class="form-group" id="description-group">
+            <label for="description_input" class="required">
+              Description
+              (
+              <label class="form-check-label" for="is_raw_description_input">Raw</label>
+              <input type="checkbox" class="form-check-input mt-0" id="is_raw_description_input"
+                     name="is_raw_description" value="1"
+                {{ old('is_raw_description', $paymentMethod->is_raw_description ?? false) ? 'checked' : '' }}>
+              )
+            </label>
+
+            {{-- Raw textarea --}}
+            <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }}"
+                      id="description_textarea"
+                      rows="10">{{ old('description', $paymentMethod->description ?? '') }}</textarea>
+
+            {{-- Quill editor --}}
+            <div id="quill-wrapper">
+              <div class="quill-editor">
+                {!! old('description', $paymentMethod->description ?? '') !!}
+              </div>
+              <textarea class="d-none quill-editor-hidden" id="description_input"></textarea>
+            </div>
+
+            @include('alerts.feedback', ['field' => 'description'])
+          </div>
+
           <button type="submit" class="btn btn-primary">Submit</button>
           <a href="{{ route('payment_method.index') }}" class="btn btn-light">Cancel</a>
         </form>
@@ -151,3 +178,39 @@
     </div>
   </div>
 @endsection
+
+<x-quill-editor />
+
+@push('js')
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const checkbox = document.getElementById("is_raw_description_input");
+      const rawTextarea = document.getElementById("description_textarea");
+      const quillHidden = document.getElementById("description_input");
+      const quillWrapper = document.getElementById("quill-wrapper");
+
+      function toggleDescription() {
+        if (checkbox.checked) {
+          rawTextarea.name = "description";
+          rawTextarea.style.display = '';
+          rawTextarea.disabled = false;
+
+          quillWrapper.style.display = 'none';
+          quillHidden.disabled = true;
+          quillHidden.removeAttribute("name");
+        } else {
+          rawTextarea.removeAttribute("name");
+          rawTextarea.style.display = 'none';
+          rawTextarea.disabled = true;
+
+          quillWrapper.style.display = '';
+          quillHidden.disabled = false;
+          quillHidden.name = "description";
+        }
+      }
+
+      checkbox.addEventListener("change", toggleDescription);
+      toggleDescription(); // initial load
+    });
+  </script>
+@endpush
