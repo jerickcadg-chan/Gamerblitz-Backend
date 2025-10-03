@@ -29,7 +29,7 @@ class SettingController extends Controller
             'popup_button_link',
             'popup_button_status',
             'popup_status',
-            'term',
+            'terms',
             // 'flash_sale_expiry',
             'social_whatsapp',
             'social_youtube',
