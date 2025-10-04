@@ -128,7 +128,7 @@ class SyncLapakGaming extends Command
                 try {
                     DB::beginTransaction();
 
-                    $product->input_format = $lgCategory->forms ?? $product->input_format;
+                    $product->input_format = $product->input_format ?? $lgCategory->forms;
                     $product->check_uid = $lgCategory->check_id;
                     $product->updated_at = now();
                     $product->markup_user = $this->useFallbackIfNonPositive($product->markup_user, $fallbackMarginPublic);

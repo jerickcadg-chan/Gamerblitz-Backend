@@ -46,7 +46,7 @@ class ProductRequest extends FormRequest
                     'product_category_id' => 'required',
                     'description' => 'required',
                     'how_to_order' => 'required',
-                    'input_format' => 'required',
+                    'input_format' => 'nullable',
                     'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
                     'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
                     'status' => 'required',
