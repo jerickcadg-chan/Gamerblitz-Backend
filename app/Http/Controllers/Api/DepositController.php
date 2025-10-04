@@ -109,8 +109,11 @@ class DepositController extends Controller
         return api_status_ok(transformer($deposit, new DepositTransformer()));
     }
 
-    public function mutation()
+    public function mutation(Request $request)
     {
+        $userCurrency = $request->currency_code ?? Setting::getBaseCurrency();
+        $exchangeRate = get_exchange_rate(Setting::getBaseCurrency(), $userCurrency);
+
         $mutations = BalanceHistory::with(['balance'])->latest()->whereHas('balance', function (Builder $query) {
             return $query->where('user_id', $this->userId);
         });
@@ -119,7 +122,7 @@ class DepositController extends Controller
 
         return api_status_ok([
             'balance' => currency_format($balance),
-            'pagination' => paginateTransformer($mutations, new MutationTransformer())
+            'pagination' => paginateTransformer($mutations, new MutationTransformer($userCurrency, $exchangeRate))
         ]);
     }
 
