@@ -40,6 +40,7 @@ class PaymentMethod extends Model implements IsFilterable
         'description',
         'is_raw_description',
         'is_active',
+        'ordering'
     ];
 
     public function getDisplayNameAttribute(): string
@@ -60,7 +61,12 @@ class PaymentMethod extends Model implements IsFilterable
         );
     }
 
-    public function getPictureUrlAttribute()
+    public function scopeIsActive($query)
+    {
+        return $query->where('is_active', 1);
+    }
+
+    public function getPictureUrlAttribute(): ?string
     {
         return $this->picture ? Storage::url($this->picture) : null;
     }
