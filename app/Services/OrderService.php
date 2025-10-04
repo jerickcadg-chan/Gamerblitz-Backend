@@ -140,7 +140,8 @@ class OrderService
 
             if ($paymentMethod->slug == PaymentMethod::BALANCE) {
                 $this->updateStatus($order, StatusConst::ON_PROCESS);
-                $this->processOrder($order);
+                // run synchronously because this is part of controller action
+                $this->processOrder($order, true);
 
                 BalanceService::update($balance, [
                     'balanceable_type' => Order::class,
