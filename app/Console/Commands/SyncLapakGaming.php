@@ -186,7 +186,7 @@ class SyncLapakGaming extends Command
 
                     DB::commit();
                 } catch (\Exception $e) {
-                    $msg = "LapakGaming: Failed to update product: " . $e->getMessage();
+                    $msg = "LapakGaming: Failed to update product: " . substr($e->getMessage(), 0, 255);
                     $log->error($msg, [
                         'product' => $product->name,
                         'item' => isset($item) ? $item->code : null,
