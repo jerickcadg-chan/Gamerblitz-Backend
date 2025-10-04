@@ -126,7 +126,7 @@ class OrderController extends Controller
     public function getPaymentMethods()
     {
         $paymentMethod = PaymentMethod::filter($this->filter())
-            ->orderBy('ordering')
+            ->orderByRaw('COALESCE(ordering, 999999) ASC')
             ->isActive()
             ->get();
 
