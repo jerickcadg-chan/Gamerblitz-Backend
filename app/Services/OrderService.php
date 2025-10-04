@@ -169,6 +169,11 @@ class OrderService
         $price = $productItem->real_price * $qty;
         $capital = $productItem->capital * $qty;
 
+        $disc = [
+            'disc_id' => null,
+            'nominal' => 0
+        ];
+
         if (!auth()->user() || auth()?->user()?->role === DefaultRole::CUSTOMER) {
             if ($discount !== null) {
                 $disc = [
