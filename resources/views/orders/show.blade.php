@@ -189,11 +189,8 @@
           </div>
         </div>
       </div>
-    </div>
-
-    @if($mutations->count() > 0)
-      <div class="col-lg-5">
-        <div class="col-lg-12 grid-margin stretch-card">
+      @if($mutations->count() > 0)
+        <div class="col-lg-12 grid-margin stretch-card mt-3">
           <div class="card">
             <div class="card-header">
               <b>Balance Mutations</b>
@@ -226,7 +223,7 @@
             </div>
           </div>
         </div>
-      </div>
-    @endif
+      @endif
+    </div>
   </div>
 @endsection

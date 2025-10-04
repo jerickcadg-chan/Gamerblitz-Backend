@@ -66,8 +66,7 @@ class OrderController extends Controller
 
         $mutations = BalanceHistory::latest()
             ->where('balanceable_id', $order->id)
-            ->where('balanceable_type', Order::class)
-            ->where('balance_id', $order->user_id)
+            ->where('balanceable_type', 'App\Models\Order')
             ->get();
 
         return view('orders.show', compact('order', 'mutations', 'title'));
