@@ -39,6 +39,7 @@ class PaymentMethod extends Model implements IsFilterable
         'account_number',
         'description',
         'is_raw_description',
+        'is_active',
     ];
 
     public function getDisplayNameAttribute(): string
