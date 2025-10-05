@@ -70,7 +70,7 @@
 
             <div class="form-group col-md-5">
               <label for="input_nominal" class="required">Discount Nominal</label>
-              <input type="number" name="nominal" class="form-control {{ $errors->has('nominal') ? ' is-invalid' : '' }}"
+              <input type="number" step="0.01" name="nominal" class="form-control {{ $errors->has('nominal') ? ' is-invalid' : '' }}"
                      id="input_nominal" placeholder="Enter nominal"
                      value="{{ old('nominal', $discount->nominal ?? '') }}" required>
               @include('alerts.feedback', ['field' => 'nominal'])

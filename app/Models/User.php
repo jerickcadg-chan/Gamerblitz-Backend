@@ -70,7 +70,7 @@ class User extends Authenticatable
     public function scopeCustomer($query)
     {
         return $query->whereHas('roles', function ($query) {
-            $query->where('name', [DefaultRole::CUSTOMER, DefaultRole::RESELLER_SILVER, DefaultRole::RESELLER_VIP, DefaultRole::RESELLER_GOLD]);
+            $query->whereIn('name', [DefaultRole::CUSTOMER, DefaultRole::RESELLER_SILVER, DefaultRole::RESELLER_VIP, DefaultRole::RESELLER_GOLD]);
         });
     }
 
