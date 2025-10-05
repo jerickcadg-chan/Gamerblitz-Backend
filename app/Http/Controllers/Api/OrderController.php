@@ -193,10 +193,67 @@ class OrderController extends Controller
                     'deposit' => transformer($deposit, new DepositTransformer())
                 ]);
             default:
-            break;
+                break;
         }
 
         return api_status_warning('Transaction not found');
+    }
+
+    public function hitpayCallback(Request $request, OrderService $orderService, DepositService $depositService)
+    {
+        $data = $request->all();
+        $salt = Setting::getByKey('hitpay_salt_key');
+        $hmac = $data['hmac'] ?? null;
+
+        Log::info('HitPay Webhook received', $data);
+
+        if (!$hmac) {
+            return response()->json(['message' => 'Missing HMAC'], 400);
+        }
+
+        $payload = $request->except('hmac');
+        ksort($payload);
+
+        $query = urldecode(http_build_query($payload));
+        $calculatedHmac = hash_hmac('sha256', $query, $salt);
+
+        if (!hash_equals($hmac, $calculatedHmac)) {
+            Log::warning('HitPay Webhook HMAC mismatch', [
+                'expected' => $calculatedHmac,
+                'received' => $hmac,
+            ]);
+
+            return api_status_warning('Invalid HMAC');
+        }
+
+        $reference = $data['reference_number'] ?? null;
+        $order = Order::where('code', $reference)->first();
+        $deposit = Deposit::where('code', $reference)->first();
+
+        if (!$order && !$deposit) {
+            return api_status_warning('Transaction not found');
+        }
+
+        if ($order && $data['status'] === 'completed') {
+            $orderService->processOrder($order);
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+
+            return api_status_ok([
+                'order' => transformer($order, new OrderTransformer())
+            ]);
+        }
+
+        if ($deposit && $data['status'] === 'completed') {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return api_status_ok([
+                'deposit' => transformer($deposit, new DepositTransformer())
+            ]);
+        }
+
+        return api_status_ok([
+            'message' => 'Payment not completed'
+        ]);
     }
 
     public function checkUid()

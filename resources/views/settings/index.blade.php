@@ -299,6 +299,26 @@
               value="{{ old('settings.xendit_callback_key', $settings['xendit_callback_key'] ?? '') }}">
           </div>
 
+          {{-- Hitpay --}}
+          <h4 class="mb-2 mt-5">Hitpay</h4>
+          <hr class="mb-4">
+
+          <div class="form-group">
+            <label>API Url</label>
+            <input type="text" class="form-control" name="settings[hitpay_api_url]"
+              value="{{ old('settings.hitpay_api_url', $settings['hitpay_api_url'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Api Key</label>
+            <input type="text" class="form-control" name="settings[hitpay_api_key]"
+              value="{{ old('settings.hitpay_api_key', $settings['hitpay_api_key'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Salt Key</label>
+            <input type="text" class="form-control" name="settings[hitpay_salt_key]"
+              value="{{ old('settings.hitpay_salt_key', $settings['hitpay_salt_key'] ?? '') }}">
+          </div>
+
           <h4 class="mb-2 mt-5">Deposit Setting</h4>
           <div class="form-group">
             <label>Minimum Deposit Amount</label>

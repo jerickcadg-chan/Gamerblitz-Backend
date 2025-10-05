@@ -136,6 +136,10 @@ class OrderService
                 app(XenditService::class)->createOrderXenditInvoice($order);
             }
 
+            if ($paymentMethod->vendor === PaymentMethod::HITPAY) {
+                app(HitpayService::class)->createOrderHitpayInvoice($order);
+            }
+
             $this->updateStatus($order, StatusConst::PENDING);
 
             if ($paymentMethod->slug == PaymentMethod::BALANCE) {
