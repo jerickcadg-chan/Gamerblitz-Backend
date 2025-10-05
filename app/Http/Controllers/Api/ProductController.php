@@ -24,7 +24,7 @@ class ProductController extends Controller
             ->when(\request('name'), function ($query) {
                 return $query->where('name', 'like', '%'.\request('name').'%');
             })
-            ->orderBy('ordering')
+            ->orderByRaw('COALESCE(ordering, 999999) ASC')
             ->get();
 
         return api_status_ok(transformer($products, new ProductTransformer));
