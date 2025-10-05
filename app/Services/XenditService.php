@@ -47,6 +47,15 @@ class XenditService
                 'type' => 'order',
                 'order_code' => $externalId,
             ],
+            'customer' => [
+                'type'          => 'INDIVIDUAL',
+                'reference_id'  => $externalId,
+                'individual_detail' => [
+                    'given_names'   => $user->user->name ?? "guest user",
+                    'email'         => $order->cust_email ?? "",
+                    'mobile_number' => $order->cust_phone_number ?? "",
+                ]
+            ]
         ];
 
         $r = Http::withBasicAuth(Setting::getByKey('xendit_secret_key'), '')
