@@ -110,7 +110,7 @@ let options = {
   }],
   yaxis: {
     labels: {
-      formatter: value => formatRupiah(value)
+      formatter: value => formatter(value)
     }
   },
   xaxis: {
@@ -122,14 +122,11 @@ let chart = new ApexCharts(document.querySelector("#last-week-chart"), options);
 
 chart.render();
 
-function formatRupiah(value, options) {
-  const round = options?.round || true;
-  const roundedVal = round ? Math.round(value) : value;
-  return new Intl.NumberFormat("{{ $meta['locale'] }}", {
+function formatter(value, options) {
+  return new Intl.NumberFormat("{{ \App\Constants\CurrencyConstant::localeByCode(\App\Models\Setting::getBaseCurrency()) }}", {
     style: "currency",
-    currency: "{{ $currencyCode }}",
-    minimumFractionDigits: 0,
-  }).format(roundedVal);
+    currency: "{{ \App\Models\Setting::getBaseCurrency() }}",
+  });
 }
 </script>
 @endpush

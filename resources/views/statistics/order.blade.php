@@ -122,7 +122,7 @@ function initChart() {
     }],
     yaxis: {
       labels: {
-        formatter: value => formatRupiah(value)
+        formatter: value => formatter(value)
       }
     },
     xaxis: {
@@ -135,14 +135,11 @@ function initChart() {
   chart.render();
 }
 
-function formatRupiah(value, options) {
-  const round = options?.round || true;
-  const roundedVal = round ? Math.round(value) : value;
-  return new Intl.NumberFormat("id-ID", {
+function formatter(value, options) {
+  return new Intl.NumberFormat("{{ \App\Constants\CurrencyConstant::localeByCode(\App\Models\Setting::getBaseCurrency()) }}", {
     style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(roundedVal);
+    currency: "{{ \App\Models\Setting::getBaseCurrency() }}",
+  });
 }
 </script>
 @endpush
