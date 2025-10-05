@@ -48,12 +48,12 @@ class XenditService
                 'order_code' => $externalId,
             ],
             'customer' => [
+                'reference_id'  => $order->user?->id ?? $externalId,
                 'type'          => 'INDIVIDUAL',
-                'reference_id'  => $order->user?->id ?? externalId,
-                'email'         => $order->cust_email ?? "",
-                'mobile_number' => $order->cust_phone_number ?? "",
                 'individual_detail' => [
                     'given_names'   => $order->user?->name ?? "guest user",
+                    'email'         => $order->cust_email ?? "",
+                    'mobile_number' => $order->cust_phone_number ?? "",
                 ]
             ]
         ];
