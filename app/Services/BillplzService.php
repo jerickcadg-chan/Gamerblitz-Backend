@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Deposit;
+use App\Models\Order;
+use App\Models\Setting;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class BillplzService
+{
+    /**
+     * @param Order $order
+     *
+     * @return array
+     */
+    public function createOrderBillplzInvoice(Order $order): array
+    {
+        $referenceNumber = $order->code;
+        $method          = $order->paymentMethod;
+
+        $payload = [
+            'collection_id'     => Setting::getByKey('billplz_collection_id'),
+            'email'             => $order->cust_email,
+            'name'              => $order->cust_email,
+            'amount'            => (int) $order->total_price,
+            'callback_url'      => route('callback.billplz'),
+            'redirect_url'      => config('app.fe_url') . '/payment/' . $referenceNumber,
+            'reference_1_label' => 'Bank Code',
+            'reference_1'       => $method->slug,
+        ];
+
+        $response = $this->sendBillplzRequest($payload);
+
+        Log::info('Billplz payment requests response', $response);
+
+        $order->update([
+            'payment_url'  => $response['url'] ?? null,
+            'payment_code' => $response['id'] ?? null,
+            'payment_id'   => $response['id'] ?? null,
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * @param Deposit $deposit
+     *
+     * @return array
+     */
+    public function createDepositBillplzInvoice(Deposit $deposit): array
+    {
+        $referenceNumber = $deposit->code;
+        $method          = $deposit->paymentMethod;
+
+        $payload = [
+            'collection_id'     => Setting::getByKey('billplz_collection_id'),
+            'email'             => $deposit->user->email,
+            'name'              => $deposit->user->name,
+            'amount'            => (int) ceil($deposit->total_amount),
+            'callback_url'      => route('callback.billplz'),
+            'redirect_url'      => config('app.fe_url') . '/payment/' . $referenceNumber,
+            'reference_1_label' => 'Bank Code',
+            'reference_1'       => $method->slug,
+        ];
+
+        $response = $this->sendBillplzRequest($payload);
+
+        Log::info('Billplz payment requests response', $response);
+
+        $deposit->update([
+            'payment_url'  => $response['url'] ?? null,
+            'payment_code' => $response['id'] ?? null,
+            'payment_id'   => $response['id'] ?? null,
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * @param array $payload
+     *
+     * @return array
+     */
+    private function sendBillplzRequest(array $payload): array
+    {
+        return Http::withBasicAuth(Setting::getByKey('billplz_api_key'), '')
+            ->asForm()
+            ->post(Setting::getByKey('billplz_api_url') . "/v3/bills", $payload)
+            ->json() ?? [];
+    }
+}

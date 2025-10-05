@@ -10,6 +10,7 @@ use App\Models\BalanceHistory;
 use App\Models\Deposit;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
+use App\Services\BillplzService;
 use App\Services\DepositService;
 use App\Services\HitpayService;
 use App\Services\XenditService;
@@ -109,6 +110,10 @@ class DepositController extends Controller
 
         if ($paymentMethod->vendor === PaymentMethod::HITPAY) {
             app(HitpayService::class)->createDepositHitpayInvoice($deposit);
+        }
+
+        if ($paymentMethod->vendor === PaymentMethod::BILLPLZ) {
+            app(BillplzService::class)->createDepositBillplzInvoice($deposit);
         }
 
         return api_status_ok(transformer($deposit, new DepositTransformer()));

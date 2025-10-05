@@ -24,6 +24,7 @@ class PaymentMethod extends Model implements IsFilterable
 
     const XENDIT = 'xendit';
     const HITPAY = 'hitpay';
+    const BILLPLZ = 'billplz';
     const MANUAL = 'manual';
     const BALANCE = 'balance';
     const ALL = 'ALL';

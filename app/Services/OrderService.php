@@ -140,6 +140,10 @@ class OrderService
                 app(HitpayService::class)->createOrderHitpayInvoice($order);
             }
 
+            if ($paymentMethod->vendor === PaymentMethod::BILLPLZ) {
+                app(BillplzService::class)->createOrderBillplzInvoice($order);
+            }
+
             $this->updateStatus($order, StatusConst::PENDING);
 
             if ($paymentMethod->slug == PaymentMethod::BALANCE) {

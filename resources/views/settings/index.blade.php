@@ -319,6 +319,26 @@
               value="{{ old('settings.hitpay_salt_key', $settings['hitpay_salt_key'] ?? '') }}">
           </div>
 
+          {{-- BillPlz --}}
+          <h4 class="mb-2 mt-5">BillPlz</h4>
+          <hr class="mb-4">
+
+          <div class="form-group">
+            <label>API Url</label>
+            <input type="text" class="form-control" name="settings[billplz_api_url]"
+              value="{{ old('settings.billplz_api_url', $settings['billplz_api_url'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Api Key</label>
+            <input type="text" class="form-control" name="settings[billplz_api_key]"
+              value="{{ old('settings.billplz_api_key', $settings['billplz_api_key'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Collection ID</label>
+            <input type="text" class="form-control" name="settings[billplz_collection_id]"
+              value="{{ old('settings.billplz_collection_id', $settings['billplz_collection_id'] ?? '') }}">
+          </div>
+
           <h4 class="mb-2 mt-5">Deposit Setting</h4>
           <div class="form-group">
             <label>Minimum Deposit Amount</label>

@@ -256,6 +256,50 @@ class OrderController extends Controller
         ]);
     }
 
+    public function billplzCallback(Request $request, OrderService $orderService, DepositService $depositService)
+    {
+        $data = $request->all();
+
+        Log::info('Billplz Webhook Received', $data);
+
+        $billId = $data['id'] ?? null;
+        $state  = $data['state'] ?? null;
+        $isPaid = filter_var($data['paid'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        if (!$billId) {
+            return api_status_warning('Missing bill ID');
+        }
+
+        $order   = Order::where('payment_id', $billId)->first();
+        $deposit = Deposit::where('payment_id', $billId)->first();
+
+        if (!$order && !$deposit) {
+            Log::warning('Billplz Webhook: Transaction not found', $data);
+            return api_status_warning('Transaction not found');
+        }
+
+        if ($order && $isPaid && $state === 'paid') {
+            $orderService->processOrder($order);
+            $orderService->updateStatus($order, 'on_process');
+
+            return api_status_ok([
+                'order' => transformer($order, new OrderTransformer())
+            ]);
+        }
+
+        if ($deposit && $isPaid && $state === 'paid') {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return api_status_ok([
+                'deposit' => transformer($deposit, new DepositTransformer())
+            ]);
+        }
+
+        return api_status_ok([
+            'message' => 'Payment not completed'
+        ]);
+    }
+
     public function checkUid()
     {
         $product = Product::where('id', request('product_id'))->firstOrFail();
