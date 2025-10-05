@@ -100,4 +100,6 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::post('order/auth', [OrderController::class, 'store']);
     Route::get('order', [OrderController::class, 'index']);
     Route::get('order/{order}/auth', [OrderController::class, 'show']);
+
+    Route::get('product-items/{productId}/auth', [ProductController::class, 'getProductItems']);
 });
