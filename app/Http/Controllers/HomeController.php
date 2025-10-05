@@ -46,12 +46,12 @@ class HomeController extends Controller
             ->orderBy('date');
         $turnover = $query->pluck('converted_turnover')->map(
             function ($total) {
-                return round($total);
+                return $total;
             }
         );
         $profit = $query->pluck('converted_total_income')->map(
             function($total) {
-                return round($total);
+                return $total;
             }
         );
         $days = $query->pluck('date');
