@@ -44,10 +44,9 @@ class LapakGamingApi extends Command
         if ($path) {
             $response = Http::withToken($token)->get($baseUrl . $path);
             if ($response->failed()) {
-                $this->error('LapakGaming: fetch failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                ]);
+                $this->error('LapakGaming: fetch failed');
+                $this->line('Status: '.$response->status());
+                $this->line('Body: '.$response->body());
                 return;
             }
 
