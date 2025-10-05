@@ -25,9 +25,18 @@ class ProductItemRequest extends FormRequest
      */
     public function rules(): array
     {
+        $productItemId = $this->route('product_item');
+
         return [
             'product_id' => ['required', 'exists:products,id'],
-            'code'       => ['required', 'string', 'max:100'],
+            'code'       => [
+                'required',
+                'string',
+                'max:100',
+                $this->isMethod('post')
+                    ? Rule::unique('product_items', 'code')
+                    : Rule::unique('product_items', 'code')->ignore($productItemId),
+            ],
             'name'       => ['required', 'string', 'max:255'],
             'capital'    => ['required', 'numeric', 'min:0'],
             'stock'      => ['nullable', 'integer', 'min:0'],
