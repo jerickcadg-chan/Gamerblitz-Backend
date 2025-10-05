@@ -119,12 +119,12 @@ class XenditService
                 'deposit_code' => $externalId,
             ],
             'customer' => [
+                'reference_id'  => $externalId,
                 'type'          => 'INDIVIDUAL',
-                'reference_id'  => $deposit->user?->id ?? $externalId,
-                'email'         => $deposit->user?->email ?? "",
-                'mobile_number' => $deposit->user?->phone_number ?? "",
                 'individual_detail' => [
                     'given_names'   => $deposit->user?->name ?? "guest user",
+                    'email'         => $deposit->user?->email ?? "",
+                    'mobile_number' => $deposit->user?->phone_number ?? "",
                 ]
             ]
         ]);
