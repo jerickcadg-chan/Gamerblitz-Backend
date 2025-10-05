@@ -3,7 +3,7 @@
 
 @section('content')
   @if ($order->status == StatusConst::PENDING)
-    <h3>Hi, please complete your payment before {{ parse_date_full($order->expired_at) }}</h3>
+    <h3>Hi, please complete your payment before {{ parse_date_time($order->expired_at) }}</h3>
   @elseif ($order->status == StatusConst::ON_PROCESS)
     <h3>Thank you for your purchase 😊</h3>
   @elseif ($order->status == StatusConst::SUCCESS)
