@@ -49,11 +49,11 @@ class XenditService
             ],
             'customer' => [
                 'type'          => 'INDIVIDUAL',
-                'reference_id'  => $externalId,
+                'reference_id'  => $order->user?->id ?? externalId,
+                'email'         => $order->cust_email ?? "",
+                'mobile_number' => $order->cust_phone_number ?? "",
                 'individual_detail' => [
-                    'given_names'   => $user->user->name ?? "guest user",
-                    'email'         => $order->cust_email ?? "",
-                    'mobile_number' => $order->cust_phone_number ?? "",
+                    'given_names'   => $order->user?->name ?? "guest user",
                 ]
             ]
         ];
@@ -118,6 +118,15 @@ class XenditService
                 'type' => 'deposit',
                 'deposit_code' => $externalId,
             ],
+            'customer' => [
+                'type'          => 'INDIVIDUAL',
+                'reference_id'  => $deposit->user?->id ?? $externalId,
+                'email'         => $deposit->user?->email ?? "",
+                'mobile_number' => $deposit->user?->phone_number ?? "",
+                'individual_detail' => [
+                    'given_names'   => $deposit->user?->name ?? "guest user",
+                ]
+            ]
         ]);
 
         $r = Http::withBasicAuth(Setting::getByKey('xendit_secret_key'), '')
