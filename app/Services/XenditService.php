@@ -48,7 +48,7 @@ class XenditService
                 'order_code' => $externalId,
             ],
             'customer' => [
-                'reference_id'  => $order->user?->id ?? $externalId,
+                'reference_id'  => $externalId,
                 'type'          => 'INDIVIDUAL',
                 'individual_detail' => [
                     'given_names'   => $order->user?->name ?? "guest user",
