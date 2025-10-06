@@ -266,6 +266,11 @@ class OrderService
 
         if ($order->cust_email) {
             Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
+
+            if ($status === StatusConst::DELAY) {
+                Mail::to($order->cust_email)->queue(new SendErrorNotif($order, "There is a problem when processing your order, please contact admin"));
+            }
+
         }
 
         $this->createHistory($order->id, $status, 'order', $note);
