@@ -10,7 +10,9 @@ use App\Models\BalanceHistory;
 use App\Models\Deposit;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
+use App\Services\BillplzService;
 use App\Services\DepositService;
+use App\Services\HitpayService;
 use App\Services\XenditService;
 use App\Transformers\DepositTransformer;
 use App\Transformers\MutationTransformer;
@@ -49,7 +51,7 @@ class DepositController extends Controller
         }
     }
 
-    public function store(DepositRequest $request, XenditService $xendit)
+    public function store(DepositRequest $request)
     {
         $baseCurrency = Setting::getBaseCurrency();
         $userCurrency = $request->currency_code;
@@ -103,7 +105,15 @@ class DepositController extends Controller
         ]);
 
         if ($paymentMethod->vendor === PaymentMethod::XENDIT) {
-            $xendit->createDepositXenditInvoice($deposit);
+            app(XenditService::class)->createDepositXenditInvoice($deposit);
+        }
+
+        if ($paymentMethod->vendor === PaymentMethod::HITPAY) {
+            app(HitpayService::class)->createDepositHitpayInvoice($deposit);
+        }
+
+        if ($paymentMethod->vendor === PaymentMethod::BILLPLZ) {
+            app(BillplzService::class)->createDepositBillplzInvoice($deposit);
         }
 
         return api_status_ok(transformer($deposit, new DepositTransformer()));

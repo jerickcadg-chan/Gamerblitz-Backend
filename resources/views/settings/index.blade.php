@@ -299,6 +299,51 @@
               value="{{ old('settings.xendit_callback_key', $settings['xendit_callback_key'] ?? '') }}">
           </div>
 
+          {{-- Hitpay --}}
+          <h4 class="mb-2 mt-5">Hitpay</h4>
+          <hr class="mb-4">
+
+          <div class="form-group">
+            <label>API Url</label>
+            <input type="text" class="form-control" name="settings[hitpay_api_url]"
+              value="{{ old('settings.hitpay_api_url', $settings['hitpay_api_url'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Api Key</label>
+            <input type="text" class="form-control" name="settings[hitpay_api_key]"
+              value="{{ old('settings.hitpay_api_key', $settings['hitpay_api_key'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Salt Key</label>
+            <input type="text" class="form-control" name="settings[hitpay_salt_key]"
+              value="{{ old('settings.hitpay_salt_key', $settings['hitpay_salt_key'] ?? '') }}">
+          </div>
+
+          {{-- BillPlz --}}
+          <h4 class="mb-2 mt-5">BillPlz</h4>
+          <hr class="mb-4">
+
+          <div class="form-group">
+            <label>API Url</label>
+            <input type="text" class="form-control" name="settings[billplz_api_url]"
+              value="{{ old('settings.billplz_api_url', $settings['billplz_api_url'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Api Key</label>
+            <input type="text" class="form-control" name="settings[billplz_api_key]"
+              value="{{ old('settings.billplz_api_key', $settings['billplz_api_key'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Collection ID</label>
+            <input type="text" class="form-control" name="settings[billplz_collection_id]"
+              value="{{ old('settings.billplz_collection_id', $settings['billplz_collection_id'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Signature Payment</label>
+            <input type="text" class="form-control" name="settings[billplz_signature_payment]"
+              value="{{ old('settings.billplz_signature_payment', $settings['billplz_signature_payment'] ?? '') }}">
+          </div>
+
           <h4 class="mb-2 mt-5">Deposit Setting</h4>
           <div class="form-group">
             <label>Minimum Deposit Amount</label>

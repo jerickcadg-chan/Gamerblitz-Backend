@@ -193,10 +193,134 @@ class OrderController extends Controller
                     'deposit' => transformer($deposit, new DepositTransformer())
                 ]);
             default:
-            break;
+                break;
         }
 
         return api_status_warning('Transaction not found');
+    }
+
+    public function hitpayCallback(Request $request, OrderService $orderService, DepositService $depositService)
+    {
+        $data = $request->all();
+        $salt = Setting::getByKey('hitpay_salt_key');
+        $hmac = $request->header('hitpay-signature');
+
+        Log::info('HitPay Webhook received', $data);
+
+        if (!$hmac) {
+            return response()->json(['message' => 'Missing HMAC'], 400);
+        }
+
+        $calculatedHmac = hash_hmac('sha256', json_encode($data), $salt);
+
+        if (!hash_equals($hmac, $calculatedHmac)) {
+            Log::warning('HitPay Webhook HMAC mismatch', [
+                'expected' => $calculatedHmac,
+                'received' => $hmac,
+            ]);
+
+            return api_status_warning('Invalid HMAC');
+        }
+
+        $reference = $data['payment_request']['reference_number'] ?? null;
+        $order = Order::where('code', $reference)->first();
+        $deposit = Deposit::where('code', $reference)->first();
+
+        if (!$order && !$deposit) {
+            return api_status_warning('Transaction not found');
+        }
+
+        if ($order && $data['payment_request']['status'] === 'completed') {
+            $orderService->processOrder($order);
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+
+            return api_status_ok([
+                'order' => transformer($order, new OrderTransformer())
+            ]);
+        }
+
+        if ($deposit && $data['payment_request']['status'] === 'completed') {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return api_status_ok([
+                'deposit' => transformer($deposit, new DepositTransformer())
+            ]);
+        }
+
+        return api_status_ok([
+            'message' => 'Payment not completed'
+        ]);
+    }
+
+    public function billplzCallback(Request $request, OrderService $orderService, DepositService $depositService)
+    {
+        $data = $request->all();
+        $signatureKey = Setting::getByKey('billplz_signature_payment');
+        $hmac = $data['x_signature'];
+
+        // Unset signature & ksort data
+        unset($data['x_signature']);
+        uksort($data, 'strcasecmp');
+
+        Log::info('Billplz Webhook Received', $data);
+
+        if (!$hmac) {
+            return response()->json(['message' => 'Missing HMAC'], 400);
+        }
+
+        $chunks = [];
+        foreach ($data as $k => $v) {
+            $chunks[] = $k . $v;
+        }
+
+        $sourceString = implode('|', $chunks);
+        $calculatedHmac = hash_hmac('sha256', $sourceString, $signatureKey);
+
+        if (!hash_equals($hmac, $calculatedHmac)) {
+            Log::warning('Billplz Webhook HMAC mismatch', [
+                'expected' => $calculatedHmac,
+                'received' => $hmac,
+            ]);
+
+            return api_status_warning('Invalid HMAC');
+        }
+
+        $billId = $data['id'] ?? null;
+        $state  = $data['state'] ?? null;
+        $isPaid = filter_var($data['paid'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        if (!$billId) {
+            return api_status_warning('Missing bill ID');
+        }
+
+        $order   = Order::where('payment_id', $billId)->first();
+        $deposit = Deposit::where('payment_id', $billId)->first();
+
+        if (!$order && !$deposit) {
+            Log::warning('Billplz Webhook: Transaction not found', $data);
+            return api_status_warning('Transaction not found');
+        }
+
+        if ($order && $isPaid && $state === 'paid') {
+            $orderService->processOrder($order);
+            $orderService->updateStatus($order, 'on_process');
+
+            return api_status_ok([
+                'order' => transformer($order, new OrderTransformer())
+            ]);
+        }
+
+        if ($deposit && $isPaid && $state === 'paid') {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return api_status_ok([
+                'deposit' => transformer($deposit, new DepositTransformer())
+            ]);
+        }
+
+        return api_status_ok([
+            'message' => 'Payment not completed'
+        ]);
     }
 
     public function checkUid()
