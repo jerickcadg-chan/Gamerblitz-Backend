@@ -7,18 +7,18 @@ if (!function_exists('get_months')) {
     function get_months()
     {
         return array(
-            'Januari',
-            'Februari',
+            'January',
+            'February',
             'Maret',
             'April',
             'Mei',
-            'Juni',
+            'Jun',
             'Juli',
-            'Agustus',
+            'Augusts',
             'September',
-            'Oktober',
+            'October',
             'November',
-            'Desember',
+            'December',
         );
     }
 }
@@ -35,11 +35,11 @@ if (!function_exists('get_month_simple')) {
             'MEI',
             'JUN',
             'JUL',
-            'AGU',
+            'AUG',
             'SEP',
-            'OKT',
+            'OCT',
             'NOV',
-            'DES',
+            'DEC',
         );
 
         return $array[$month];
