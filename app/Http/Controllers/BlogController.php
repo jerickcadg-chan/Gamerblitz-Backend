@@ -29,6 +29,7 @@ class BlogController extends Controller
         $title = $this->title;
 
         $blogs = Blog::query()
+            ->select(['id', 'title', 'status', 'slug', 'published_at'])
             ->with(['category:id,name', 'author:id,name'])
             ->when(request()->filled('search'), function ($qb) {
                 $s = request()->string('search');
