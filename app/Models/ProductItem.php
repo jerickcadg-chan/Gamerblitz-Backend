@@ -36,6 +36,7 @@ class ProductItem extends Model implements IsFilterable
         'product_item_category_meta_id',
         'country_code',
         'status',
+        'provider',
     ];
 
     protected $appends = [

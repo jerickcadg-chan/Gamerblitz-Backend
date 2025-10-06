@@ -60,8 +60,8 @@
                              onchange="toggleRow(this)">
                     </td>
                     <td>{{ $productItem->name }}</td>
-                    <td class="text-end">{{ currency_format($productItem->capital, $productItem->currency_code) }}</td>
-                    <td class="text-end">{{ currency_format($productItem->margin_price_public, $productItem->currency_code) }}</td>
+                    <td class="text-end">{{ currency_format($productItem->capital) }}</td>
+                    <td class="text-end">{{ currency_format($productItem->margin_price_public) }}</td>
                     <td>
                       <input type="number" min="0" step="0.01"
                              class="form-control form-control-sm fs-price {{ $errors->has("items.$productItem->id.price") ? 'is-invalid' : '' }}"

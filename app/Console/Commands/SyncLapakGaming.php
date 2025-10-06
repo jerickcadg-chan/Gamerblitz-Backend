@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Constants\ProviderConstant;
 use App\Data\LapakGaming\Category;
-use App\Data\LapakGaming\ProductItem as AppProductItem;
+use App\Data\LapakGaming\BestProductItem;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\Setting;
@@ -55,6 +55,7 @@ class SyncLapakGaming extends Command
 
         $categoriesUrl = $baseUrl . '/api/category';       // e.g., Mobile Legends, Genshin Impact
         $productItemsUrl = $baseUrl . '/api/product';      // e.g., Diamond 50, Diamond 100
+        $bestProductsUrl = $baseUrl . '/api/group-products';      // e.g., Diamond 50, Diamond 100
 
         $countryCodes = Product::query()
             ->distinct()->pluck('provider_country')->values();
@@ -101,26 +102,25 @@ class SyncLapakGaming extends Command
 
                 if (!$matchProduct) {
                     $msg = "LapakGaming: Product not found: name={$product->name} code={$product->provider_code} country={$product->provider_country}";
-                    $log->error($msg);
+                    $log->warning($msg);
                     continue; // skip products not in provider's response
                 }
 
                 $lgCategory = Category::from($matchProduct);
 
-                // PERF: fetch items concurrently
-                $itemsResponse = Http::withToken($token)->get($productItemsUrl, [
+                $itemsResponse = Http::withToken($token)->get($bestProductsUrl, [
                     'category_code' => $product->provider_code,
                     'country_code' => $product->provider_country ?? 'id',
                 ]);
 
                 if ($itemsResponse->failed()) {
-                    $msg = "LapakGaming: fetching product items failed: {$product->provider_code} {$product->provider_country}";
+                    $msg = "LapakGaming: fetching best product failed: {$product->provider_code} {$product->provider_country}";
                     $log->error($msg, ['status' => $itemsResponse->status()]);
                     continue;
                 }
 
-                $log->info('product items', [
-                    'url' => $productItemsUrl,
+                $log->info('best products', [
+                    'url' => $bestProductsUrl,
                     'category_code' => $product->provider_code,
                     'country_code' => $product->provider_country ?? 'id',
                 ]);
@@ -138,10 +138,12 @@ class SyncLapakGaming extends Command
                     $product->save();
 
                     // reset product item status to empty, if item is available it will be mark as active below
-                    ProductItem::where('product_id', $product->id)->where('status', 'active')->update(['status' => 'empty']);
+                    // IMPORTANT: do not touch product item with status other than active or empty
+                    // those items are meant to be managed manually
+                    ProductItem::where('product_id', $product->id)->where('provider', ProviderConstant::LAPAKGAMING)->where('status', 'active')->update(['status' => 'empty']);
 
-                    foreach ($itemsResponse->json('data.products') as $lgItem) {
-                        $item = AppProductItem::from($lgItem);
+                    foreach ($itemsResponse->json('data') as $lgItem) {
+                        $item = BestProductItem::from($lgItem);
                         $this->line("Processing item {$item->code}");
 
                         $productItem = ProductItem::where('product_id', $product->id)->where('code', $item->code)->firstOrNew([
@@ -152,7 +154,7 @@ class SyncLapakGaming extends Command
                         // make sure item country matches product country
                         if (strtoupper($item->country_code) !== strtoupper($product->provider_country)) {
                             if ($productItem->exists) {
-                                $productItem->status = 'trouble';
+                                $productItem->status = 'trouble'; // item country code mismatch with product
                                 $productItem->sync_at = now();
                                 $productItem->save();
                             }
@@ -177,7 +179,7 @@ class SyncLapakGaming extends Command
 
                         // ignore other status
                         if ($productItem->status === 'active' || $productItem->status === 'empty') {
-                            $productItem->status = $item->status === 'available' ? 'active' : 'empty';
+                            $productItem->status = 'active';
                         }
 
                         $productItem->sync_at = now();
@@ -204,7 +206,8 @@ class SyncLapakGaming extends Command
         $this->line("Peak: " . memory_get_peak_usage());
     }
 
-    private function useFallbackIfNonPositive(mixed $value, mixed $fallback): float {
+    private function useFallbackIfNonPositive(mixed $value, mixed $fallback): float
+    {
         $fallback = is_numeric($fallback) ? (float)$fallback : 0.0;
         return (is_null($value) || (float)$value <= 0) ? $fallback : (float)$value;
     }

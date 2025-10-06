@@ -41,7 +41,6 @@
               <th>No</th>
               <th>Product</th>
               <th>Code</th>
-              <th>Currency</th>
               <th>Provider</th>
               <th>Capital</th>
               <th>Margin</th>
@@ -63,17 +62,16 @@
                 <td>{{ $productItems->firstItem() + $index }}</td>
                 <td>{{ $productItem->product->name }} {{ $productItem->name }}</td>
                 <td>{{ $productItem->code }}</td>
-                <td>{{ $productItem->currency_code }}</td>
                 <td>{{ $productItem->product->provider }}</td>
-                <td>{{ currency_format($productItem->capital, $productItem->currency_code) }}</td>
+                <td>{{ currency_format($productItem->capital) }}</td>
                 <td>{{ $productItem->margin_percentage ?? 0 }} %</td>
                 <td>{{ $productItem->margin_silver ?? 0 }} %</td>
                 <td>{{ $productItem->margin_gold ?? 0 }} %</td>
                 <td>{{ $productItem->margin_vip ?? 0 }} %</td>
-                <td>{{ currency_format($productItem->margin_price_public, $productItem->currency_code) }}</td>
-                <td>{{ currency_format($productItem->margin_price_silver, $productItem->currency_code) }}</td>
-                <td>{{ currency_format($productItem->margin_price_gold, $productItem->currency_code) }}</td>
-                <td>{{ currency_format($productItem->margin_price_vip, $productItem->currency_code) }}</td>
+                <td>{{ currency_format($productItem->margin_price_public) }}</td>
+                <td>{{ currency_format($productItem->margin_price_silver) }}</td>
+                <td>{{ currency_format($productItem->margin_price_gold) }}</td>
+                <td>{{ currency_format($productItem->margin_price_vip) }}</td>
                 <td>{{ $productItem->stock === null ? '∞' : $productItem->stock }}</td>
                 <td>{{ $productItem->status }}</td>
                 <td>
