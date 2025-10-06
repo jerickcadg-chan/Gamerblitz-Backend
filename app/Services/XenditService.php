@@ -38,6 +38,7 @@ class XenditService
             'channel_code'   => $method->slug,
             'channel_properties' => [
                 'expires_at' => $expiresAt,
+                'payer_name' => $order->user?->name ?? "guest user",
                 'success_return_url' => config('app.fe_url').'/payment/'.$externalId,
                 'failure_return_url' => config('app.fe_url').'/payment/'.$externalId,
                 'cancel_return_url' => config('app.fe_url').'/payment/'.$externalId,
