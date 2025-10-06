@@ -10,6 +10,7 @@ use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PictureController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductItemCategoryController;
@@ -98,6 +99,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::put('/setting', [SettingController::class, 'update'])->name('setting.update');
 
     Route::post('blog/upload-image', [BlogController::class, 'uploadImage'])->name('blog.upload_image');
+    Route::post('picture/upload', [PictureController::class, 'store'])->name('picture.upload');
 
     Route::post('blog-categories/quick-store', function (\Illuminate\Http\Request $r) {
         $r->validate(['name'=>'required|string|max:150']);
