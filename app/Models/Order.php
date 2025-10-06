@@ -181,7 +181,7 @@ class Order extends Model implements IsFilterable
             StatusConst::ON_PROCESS => '<span class="badge badge-info">'.ucwords($this->status).'</span>',
             StatusConst::SUCCESS => '<span class="badge badge-success">'.ucwords($this->status).'</span>',
             StatusConst::EXPIRED, StatusConst::FAILED, StatusConst::REFUNDED => '<span class="badge badge-danger">'.ucwords($this->status).'</span>',
-            default => $this->order,
+            default => $this->status,
         };
     }
 
