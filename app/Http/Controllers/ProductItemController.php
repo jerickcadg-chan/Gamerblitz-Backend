@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductItemRequest;
+use App\Jobs\FetchVarianHandle;
+use App\Models\FetchVarianJob;
 use App\Models\ProductItem;
 use App\Models\Product;
-use App\Services\LockManager;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Bus;
 
 class ProductItemController extends Controller
 {
@@ -45,10 +44,12 @@ class ProductItemController extends Controller
         $title = $this->title;
 
         $products = Product::all();
+        $jobVariant = FetchVarianJob::where('command_name', 'app:sync-lapak-gaming')
+            ->where('status', 'PENDING')
+            ->latest('created_at')
+            ->first();
 
-        $isLapakGamingSyncRunning = LockManager::isRunning('app:sync-lapak-gaming');
-
-        return view('product_items.index', compact('products', 'productItems', 'createLink', 'title', 'isLapakGamingSyncRunning'));
+        return view('product_items.index', compact('products', 'productItems', 'createLink', 'title', 'jobVariant'));
     }
 
     public function create()
@@ -112,16 +113,14 @@ class ProductItemController extends Controller
 
     public function syncItem()
     {
-        if (LockManager::isRunning('app:sync-lapak-gaming')) {
-            toast('LapakGaming sync is already running', 'error');
-            return redirect()->back();
-        }
+        $status = FetchVarianJob::create([
+            'command_name' => 'app:sync-lapak-gaming',
+            'status' => 'PENDING',
+        ]);
 
-        Bus::dispatch(function() {
-            Artisan::call('app:sync-lapak-gaming');
-        });
+        FetchVarianHandle::dispatch($status->id);
 
-        toast('Item is syncing', 'success');
+        toast('Item is still syncing', 'success');
 
         return redirect()->back();
     }
