@@ -23,7 +23,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Administrator',
             'email' => 'admin@admin.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('12345678'),
+            'password' => '12345678',
         ]);
 
         $superAdmin->assignRole(\Spatie\Permission\Models\Role::first());

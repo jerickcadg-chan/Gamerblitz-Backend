@@ -87,9 +87,6 @@ class AuthController extends Controller
 
         try {
             DB::beginTransaction();
-            $request->merge([
-                'password' => bcrypt($request->password),
-            ]);
 
             /** @var User $user */
             $user = User::create($request->all());
@@ -145,7 +142,7 @@ class AuthController extends Controller
                     return api_status_warning('Current password is incorrect', 422);
                 }
 
-                $update['password'] = bcrypt($request->get('password'));
+                $update['password'] = $request->get('password');
             }
             $user->update($update);
 

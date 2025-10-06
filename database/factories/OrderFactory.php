@@ -82,7 +82,7 @@ class OrderFactory extends Factory
         Artisan::call('db:seed', ['--class' => 'RolesTableSeeder']);
         $user = User::factory()->create([
             'email' => $this->faker->unique()->safeEmail,
-            'password' => bcrypt('password')
+            'password' => 'password'
         ]);
 
         $user->assignRole('Customer');
