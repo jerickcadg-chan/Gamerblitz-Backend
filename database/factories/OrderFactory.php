@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\StatusConst;
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Order;
@@ -42,7 +43,7 @@ class OrderFactory extends Factory
             ])->toJson(),
             'payment_method' => 'bca',
             'payment_status' => 'settlement',
-            'order_status' => 'done',
+            'order_status' => StatusConst::SUCCESS,
             'qty' => 1,
             'price' => $productItem->price,
             'capital' => $productItem->capital,
@@ -82,7 +83,7 @@ class OrderFactory extends Factory
         Artisan::call('db:seed', ['--class' => 'RolesTableSeeder']);
         $user = User::factory()->create([
             'email' => $this->faker->unique()->safeEmail,
-            'password' => bcrypt('password')
+            'password' => 'password'
         ]);
 
         $user->assignRole('Customer');

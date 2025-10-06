@@ -38,6 +38,7 @@ class XenditService
             'channel_code'   => $method->slug,
             'channel_properties' => [
                 'expires_at' => $expiresAt,
+                'payer_name' => $order->user?->name ?? "guest user",
                 'success_return_url' => config('app.fe_url').'/payment/'.$externalId,
                 'failure_return_url' => config('app.fe_url').'/payment/'.$externalId,
                 'cancel_return_url' => config('app.fe_url').'/payment/'.$externalId,
@@ -47,6 +48,15 @@ class XenditService
                 'type' => 'order',
                 'order_code' => $externalId,
             ],
+            'customer' => [
+                'reference_id'  => $externalId,
+                'type'          => 'INDIVIDUAL',
+                'individual_detail' => [
+                    'given_names'   => $order->user?->name ?? "guest user",
+                    'email'         => $order->cust_email ?? "",
+                    'mobile_number' => $order->cust_phone_number ?? "",
+                ]
+            ]
         ];
 
         $r = Http::withBasicAuth(Setting::getByKey('xendit_secret_key'), '')
@@ -109,6 +119,15 @@ class XenditService
                 'type' => 'deposit',
                 'deposit_code' => $externalId,
             ],
+            'customer' => [
+                'reference_id'  => $externalId,
+                'type'          => 'INDIVIDUAL',
+                'individual_detail' => [
+                    'given_names'   => $deposit->user?->name ?? "guest user",
+                    'email'         => $deposit->user?->email ?? "",
+                    'mobile_number' => $deposit->user?->phone_number ?? "",
+                ]
+            ]
         ]);
 
         $r = Http::withBasicAuth(Setting::getByKey('xendit_secret_key'), '')

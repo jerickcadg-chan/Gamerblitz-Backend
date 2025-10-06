@@ -31,8 +31,8 @@ class StatisticController extends Controller
                 '
                 DATE(created_at) as date,
                 COUNT(*) as count,
-                ROUND(SUM(converted_turnover)) as turnover,
-                ROUND(SUM(converted_total_income)) as profit,
+                SUM(converted_turnover) as turnover,
+                SUM(converted_total_income) as profit,
                 ROUND((SUM(converted_total_income) / NULLIF(SUM(converted_turnover), 0)) * 100) as profit_margin
                 '
             )
