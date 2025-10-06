@@ -23,7 +23,7 @@ class HitpayService
 
         $payload = [
             'email'            => $order->cust_email,
-            'redirect_url'     => config('app.fe_url') . '/payment/' . $externalId,
+            'redirect_url'     => config('app.fe_invoice_url'). '/' . $externalId,
             'reference_number' => $externalId,
             'webhook'          => route('callback.hitpay'),
             'currency'         => $method->currency_code,

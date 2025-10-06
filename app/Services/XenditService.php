@@ -39,9 +39,9 @@ class XenditService
             'channel_properties' => [
                 'expires_at' => $expiresAt,
                 'payer_name' => $order->user?->name ?? "guest user",
-                'success_return_url' => config('app.fe_url').'/payment/'.$externalId,
-                'failure_return_url' => config('app.fe_url').'/payment/'.$externalId,
-                'cancel_return_url' => config('app.fe_url').'/payment/'.$externalId,
+                'success_return_url' => config('app.fe_invoice_url').'/'.$externalId,
+                'failure_return_url' => config('app.fe_invoice_url').'/'.$externalId,
+                'cancel_return_url' => config('app.fe_invoice_url').'/'.$externalId,
             ],
             'description' => "{$order->productItem->product->name} {$order->productItem->name}",
             'metadata'    => [
