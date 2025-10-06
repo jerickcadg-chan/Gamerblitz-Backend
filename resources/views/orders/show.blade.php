@@ -89,6 +89,10 @@
                 <td>{{ strtoupper($order->paymentMethod?->name) }}</td>
               </tr>
               <tr>
+                <th>Provider</th>
+                <td>{{ $order->provider }}</td>
+              </tr>
+              <tr>
                 <th>Serial Number</th>
                 <td>{{ $order->serial_number ?? "-" }}</td>
               </tr>
