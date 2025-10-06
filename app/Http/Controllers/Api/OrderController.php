@@ -203,7 +203,7 @@ class OrderController extends Controller
     {
         $data = $request->all();
         $salt = Setting::getByKey('hitpay_salt_key');
-        $hmac = $data['hmac'] ?? null;
+        $hmac = $request->header('hitpay-signature');
 
         Log::info('HitPay Webhook received', $data);
 
@@ -211,11 +211,7 @@ class OrderController extends Controller
             return response()->json(['message' => 'Missing HMAC'], 400);
         }
 
-        $payload = $request->except('hmac');
-        ksort($payload);
-
-        $query = urldecode(http_build_query($payload));
-        $calculatedHmac = hash_hmac('sha256', $query, $salt);
+        $calculatedHmac = hash_hmac('sha256', json_encode($data), $salt);
 
         if (!hash_equals($hmac, $calculatedHmac)) {
             Log::warning('HitPay Webhook HMAC mismatch', [
@@ -226,7 +222,7 @@ class OrderController extends Controller
             return api_status_warning('Invalid HMAC');
         }
 
-        $reference = $data['reference_number'] ?? null;
+        $reference = $data['payment_request']['reference_number'] ?? null;
         $order = Order::where('code', $reference)->first();
         $deposit = Deposit::where('code', $reference)->first();
 
@@ -234,7 +230,7 @@ class OrderController extends Controller
             return api_status_warning('Transaction not found');
         }
 
-        if ($order && $data['status'] === 'completed') {
+        if ($order && $data['payment_request']['status'] === 'completed') {
             $orderService->processOrder($order);
             $orderService->updateStatus($order, StatusConst::ON_PROCESS);
 
@@ -243,7 +239,7 @@ class OrderController extends Controller
             ]);
         }
 
-        if ($deposit && $data['status'] === 'completed') {
+        if ($deposit && $data['payment_request']['status'] === 'completed') {
             $depositService->handlePaymentSettlement($deposit);
 
             return api_status_ok([

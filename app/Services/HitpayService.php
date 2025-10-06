@@ -36,17 +36,21 @@ class HitpayService
             'Content-Type'       => 'application/x-www-form-urlencoded',
             'X-Requested-With'   => 'XMLHttpRequest',
         ])->asForm()
-            ->post(Setting::getByKey('hitpay_api_url') . "/payment-requests", $payload)
-            ->json();
+            ->post(Setting::getByKey('hitpay_api_url') . "/payment-requests", $payload);
 
-        Log::info('Hitpay payment requests response', $response);
+        $json = $response->json();
+        Log::info('Hitpay payment requests response', $json);
 
-        $order->payment_url = $response['url'] ?? null;
-        $order->payment_code = $response['reference_number'] ?? null;
-        $order->payment_id = $response['id'] ?? null;
+        if ($response->failed()) {
+            throw new \Exception("Failed to create payment: " . $json['message']);
+        }
+
+        $order->payment_url = $json['url'] ?? null;
+        $order->payment_code = $json['reference_number'] ?? null;
+        $order->payment_id = $json['id'] ?? null;
         $order->save();
 
-        return $response;
+        return $json;
     }
 
     /**
@@ -62,7 +66,7 @@ class HitpayService
 
         $payload = [
             'email'            => $deposit->user->email,
-            'redirect_url'     => config('app.fe_url').'/dashboard/deposit/' . $externalId,
+            'redirect_url'     => config('app.fe_url') . '/dashboard/deposit/' . $externalId,
             'reference_number' => $externalId,
             'webhook'          => route('callback.hitpay'),
             'currency'         => $method->currency_code,
@@ -75,14 +79,20 @@ class HitpayService
             'Content-Type'       => 'application/x-www-form-urlencoded',
             'X-Requested-With'   => 'XMLHttpRequest',
         ])->asForm()
-            ->post(Setting::getByKey('hitpay_api_url') . "/payment-requests", $payload)
-            ->json();
+            ->post(Setting::getByKey('hitpay_api_url') . "/payment-requests", $payload);
 
-        $deposit->payment_url = $response['url'] ?? null;
-        $deposit->payment_code = $response['reference_number'] ?? null;
-        $deposit->payment_id = $response['id'] ?? null;
+        $json = $response->json();
+        Log::info('Hitpay payment requests response', $json);
+
+        if ($response->failed()) {
+            throw new \Exception("Failed to create payment: " . $json['message']);
+        }
+
+        $deposit->payment_url = $json['url'] ?? null;
+        $deposit->payment_code = $json['reference_number'] ?? null;
+        $deposit->payment_id = $json['id'] ?? null;
         $deposit->save();
 
-        return $response;
+        return $json;
     }
 }
