@@ -16,6 +16,7 @@
     <div class="col-md-3">
       <input
         type="number" min="0"
+        step="0.01"
         @class([
           'form-control',
           'is-invalid' => $errors->has("product_item_ids.{$index}.stock"),
@@ -29,6 +30,7 @@
     <div class="col-md-3">
       <input
         type="number" min="0"
+        step="0.01"
         @class([
           'form-control',
           'is-invalid' => $errors->has("product_item_ids.{$index}.stock"),

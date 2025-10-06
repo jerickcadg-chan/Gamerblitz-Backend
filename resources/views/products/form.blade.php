@@ -102,7 +102,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="markup_user_input" class="required">Markup User (%)</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('markup_user') ? ' is-invalid' : '' }}" name="markup_user"
                   id="markup_user_input" placeholder="0" value="{{ old('markup_user', $product->markup_user ?? '') }}"
                   required>
@@ -112,7 +112,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="markup_reseller_silver_input" class="required">Markup Reseller Silver (%)</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('markup_reseller_silver') ? ' is-invalid' : '' }}"
                   name="markup_reseller_silver" id="markup_reseller_silver_input" placeholder="0"
                   value="{{ old('markup_reseller_silver', $product->markup_reseller_silver ?? '') }}" required>
@@ -122,7 +122,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="markup_reseller_gold_input" class="required">Markup Reseller Gold (%)</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('markup_reseller_gold') ? ' is-invalid' : '' }}"
                   name="markup_reseller_gold" id="markup_reseller_gold_input" placeholder="0"
                   value="{{ old('markup_reseller_gold', $product->markup_reseller_gold ?? '') }}" required>
@@ -132,7 +132,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="markup_reseller_vip_input" class="required">Markup Reseller VIP (%)</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('markup_reseller_vip') ? ' is-invalid' : '' }}"
                   name="markup_reseller_vip" id="markup_reseller_vip_input" placeholder="0"
                   value="{{ old('markup_reseller_vip', $product->markup_reseller_vip ?? '') }}" required>

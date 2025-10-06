@@ -30,7 +30,7 @@
                     </div>
                     <div class="form-group">
                         <label for="input_amount">Top-up Amount</label>
-                        <input type="number" name="amount" step="any" class="form-control {{ $errors->has('amount') ? ' is-invalid' : '' }}"
+                        <input type="number" name="amount" step="0.01" class="form-control {{ $errors->has('amount') ? ' is-invalid' : '' }}"
                         id="input_amount" placeholder="Enter amount" value="{{ old('name') }}" required>
                         @include('alerts.feedback', ['field' => 'amount'])
                     </div>

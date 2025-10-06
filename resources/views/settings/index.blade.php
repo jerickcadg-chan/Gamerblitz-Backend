@@ -102,14 +102,14 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="margin_public_input">Margin Public (%)</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('settings.margin_public') ? ' is-invalid' : '' }}" name="settings[margin_public]"
                   id="margin_public_input" placeholder="0" value="{{ old('settings.margin_public', $settings['margin_public'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.margin_public'])
               </div>
               <div class="form-group">
                 <label for="balance_public_input">Minimum Balance Public</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('settings.balance_public') ? ' is-invalid' : '' }}" name="settings[balance_public]"
                   id="balance_public_input" placeholder="0" value="{{ old('settings.balance_public', $settings['balance_public'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.balance_public'])
@@ -118,14 +118,14 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="margin_silver_input">Margin Silver (%)</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('settings.margin_silver') ? ' is-invalid' : '' }}" name="settings[margin_silver]"
                   id="margin_silver_input" placeholder="0" value="{{ old('settings.margin_silver', $settings['margin_silver'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.margin_silver'])
               </div>
               <div class="form-group">
                 <label for="balance_silver_input">Minimum Balance Silver</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('settings.balance_silver') ? ' is-invalid' : '' }}" name="settings[balance_silver]"
                   id="balance_silver_input" placeholder="0" value="{{ old('settings.balance_silver', $settings['balance_silver'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.balance_silver'])
@@ -134,14 +134,14 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="margin_gold_input">Margin Gold (%)</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('settings.margin_gold') ? ' is-invalid' : '' }}" name="settings[margin_gold]"
                   id="margin_gold_input" placeholder="0" value="{{ old('settings.margin_gold', $settings['margin_gold'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.margin_gold'])
               </div>
               <div class="form-group">
                 <label for="balance_gold_input">Minimum Balance Gold</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('settings.balance_gold') ? ' is-invalid' : '' }}" name="settings[balance_gold]"
                   id="balance_gold_input" placeholder="0" value="{{ old('settings.balance_gold', $settings['balance_gold'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.balance_gold'])
@@ -150,14 +150,14 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="margin_vip_input">Margin VIP (%)</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('settings.margin_vip') ? ' is-invalid' : '' }}" name="settings[margin_vip]"
                   id="margin_vip_input" placeholder="0" value="{{ old('settings.margin_vip', $settings['margin_vip'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.margin_vip'])
               </div>
               <div class="form-group">
                 <label for="balance_vip_input">Minimum Balance VIP</label>
-                <input type="number" min="0"
+                <input type="number" min="0" step="0.01"
                   class="form-control {{ $errors->has('settings.balance_vip') ? ' is-invalid' : '' }}" name="settings[balance_vip]"
                   id="balance_vip_input" placeholder="0" value="{{ old('settings.balance_vip', $settings['balance_vip'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.balance_vip'])

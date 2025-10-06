@@ -73,7 +73,7 @@
                 </select>
               </div>
               <div class="col-md-4 mb-2 mb-md-0">
-                <input type="number" name="amount" class="form-control" placeholder="Change amount">
+                <input type="number" step="0.01" name="amount" class="form-control" placeholder="Change amount">
               </div>
               <div class="col mb-2 mb-md-0">
                 <button type="submit" class="btn btn-primary">Update</button>
