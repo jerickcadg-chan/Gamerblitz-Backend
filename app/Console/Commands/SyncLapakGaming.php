@@ -54,7 +54,6 @@ class SyncLapakGaming extends Command
         }
 
         $categoriesUrl = $baseUrl . '/api/category';       // e.g., Mobile Legends, Genshin Impact
-        $productItemsUrl = $baseUrl . '/api/product';      // e.g., Diamond 50, Diamond 100
         $bestProductsUrl = $baseUrl . '/api/group-products';      // e.g., Diamond 50, Diamond 100
 
         $countryCodes = Product::query()
@@ -140,7 +139,10 @@ class SyncLapakGaming extends Command
                     // reset product item status to empty, if item is available it will be mark as active below
                     // IMPORTANT: do not touch product item with status other than active or empty
                     // those items are meant to be managed manually
-                    ProductItem::where('product_id', $product->id)->where('provider', ProviderConstant::LAPAKGAMING)->where('status', 'active')->update(['status' => 'empty']);
+                    ProductItem::where('product_id', $product->id)
+                        ->where('provider', ProviderConstant::LAPAKGAMING)
+                        ->where('status', 'active')
+                        ->update(['status' => 'empty']);
 
                     foreach ($itemsResponse->json('data') as $lgItem) {
                         $item = BestProductItem::from($lgItem);
