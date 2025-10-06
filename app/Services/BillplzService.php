@@ -22,6 +22,7 @@ class BillplzService
 
         $payload = [
             'collection_id'     => Setting::getByKey('billplz_collection_id'),
+            'description'       => $order->productItem->full_name,
             'email'             => $order->cust_email,
             'name'              => $order->cust_email,
             'amount'            => (int) $order->total_price,
@@ -56,6 +57,7 @@ class BillplzService
 
         $payload = [
             'collection_id'     => Setting::getByKey('billplz_collection_id'),
+            'description'       => 'Deposit balance ' . $deposit->total_amount,
             'email'             => $deposit->user->email,
             'name'              => $deposit->user->name,
             'amount'            => (int) ceil($deposit->total_amount),
@@ -85,9 +87,15 @@ class BillplzService
      */
     private function sendBillplzRequest(array $payload): array
     {
-        return Http::withBasicAuth(Setting::getByKey('billplz_api_key'), '')
+        $response = Http::withBasicAuth(Setting::getByKey('billplz_api_key'), '')
             ->asForm()
-            ->post(Setting::getByKey('billplz_api_url') . "/v3/bills", $payload)
-            ->json() ?? [];
+            ->post(Setting::getByKey('billplz_api_url') . "/v3/bills", $payload);
+        $json = $response->json();
+
+        if ($response->failed()) {
+            throw new \Exception("Failed to create payment: " . $json['error']['message'][0]);
+        }
+
+        return $json;
     }
 }

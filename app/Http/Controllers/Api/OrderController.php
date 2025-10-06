@@ -255,8 +255,35 @@ class OrderController extends Controller
     public function billplzCallback(Request $request, OrderService $orderService, DepositService $depositService)
     {
         $data = $request->all();
+        $signatureKey = Setting::getByKey('billplz_signature_payment');
+        $hmac = $data['x_signature'];
+
+        // Unset signature & ksort data
+        unset($data['x_signature']);
+        uksort($data, 'strcasecmp');
 
         Log::info('Billplz Webhook Received', $data);
+
+        if (!$hmac) {
+            return response()->json(['message' => 'Missing HMAC'], 400);
+        }
+
+        $chunks = [];
+        foreach ($data as $k => $v) {
+            $chunks[] = $k . $v;
+        }
+
+        $sourceString = implode('|', $chunks);
+        $calculatedHmac = hash_hmac('sha256', $sourceString, $signatureKey);
+
+        if (!hash_equals($hmac, $calculatedHmac)) {
+            Log::warning('Billplz Webhook HMAC mismatch', [
+                'expected' => $calculatedHmac,
+                'received' => $hmac,
+            ]);
+
+            return api_status_warning('Invalid HMAC');
+        }
 
         $billId = $data['id'] ?? null;
         $state  = $data['state'] ?? null;

@@ -338,6 +338,11 @@
             <input type="text" class="form-control" name="settings[billplz_collection_id]"
               value="{{ old('settings.billplz_collection_id', $settings['billplz_collection_id'] ?? '') }}">
           </div>
+          <div class="form-group">
+            <label>Signature Payment</label>
+            <input type="text" class="form-control" name="settings[billplz_signature_payment]"
+              value="{{ old('settings.billplz_signature_payment', $settings['billplz_signature_payment'] ?? '') }}">
+          </div>
 
           <h4 class="mb-2 mt-5">Deposit Setting</h4>
           <div class="form-group">
