@@ -102,8 +102,8 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($request->order_id);
 
-        if ($order->status != StatusConst::PENDING) {
-            toast('Only pending order can be processed', 'warning');
+        if ($order->status !== StatusConst::DELAY) {
+            toast('Only delayed order can be processed', 'warning');
             return redirect()->back();
         }
 

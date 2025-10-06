@@ -108,9 +108,10 @@ class LapakGamingOrderHandler implements ShouldQueue
     /**
      * Handle a job failure after all retries.
      */
-    public function failed(Throwable $exception, OrderService $orderService): void
+    public function failed(Throwable $exception): void
     {
         Log::channel('lapakgaming')->error("LapakGamingOrderHandler failed for Order {$this->order->id}: " . $exception->getMessage());
+        $orderService = app(OrderService::class);
         $orderService->updateStatus($this->order, StatusConst::PENDING, 'JOB_FAILED');
     }
 }

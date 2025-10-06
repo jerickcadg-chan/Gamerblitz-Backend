@@ -1,9 +1,9 @@
-@php use App\Constants\StatusConst;use App\Models\PaymentMethod; @endphp
+@php use App\Constants\StatusConst;use App\Models\PaymentMethod;use App\Constants\ProviderConstant; @endphp
 @props([
   'order' => $order
 ])
 
-@if (app('env') !== 'production' && $order->status == StatusConst::PENDING && $order->paymentMethod?->vendor !== PaymentMethod::MANUAL)
+@if ($order->status == StatusConst::DELAY && $order->provider !== ProviderConstant::MANUAL)
 <form action="{{ route('order.process') }}" method="post" class="mt-3">
   @csrf
   <input type="hidden" name="order_id" value="{{ $order->id }}">
