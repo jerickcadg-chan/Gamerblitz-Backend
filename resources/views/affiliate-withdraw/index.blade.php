@@ -51,7 +51,7 @@
                   <form action="{{ route('user.affiliate-withdraw.process', $withdraw->id) }}" method="POST" onsubmit="return confirm('Mark this as paid?')">
                     @csrf
                     <input type="hidden" name="status" value="paid">
-                    <button type="submit" class="btn btn-gradient-primary">
+                    <button type="submit" class="btn btn-primary">
                       Mark as Paid
                     </button>
                   </form>

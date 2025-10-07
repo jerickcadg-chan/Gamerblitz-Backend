@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\StatusConst;
 use App\Models\Affiliate;
 use App\Models\AffiliateWithdraw;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class AffiliateWithdrawController extends Controller
             $amountBefore = $affiliate->balance;
 
             // Update withdraw status
-            $affiliateWithdraw->status = 'paid';
+            $affiliateWithdraw->status = StatusConst::PAID;
             $affiliateWithdraw->processed_at = now();
             $affiliateWithdraw->save();
 

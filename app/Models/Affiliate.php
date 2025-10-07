@@ -25,6 +25,6 @@ class Affiliate extends Model
 
     public function affiliateHistories(): MorphMany
     {
-        return $this->morphMany(AffiliateHistory::class, 'affiliate');
+        return $this->morphMany(AffiliateHistory::class, 'affiliateable');
     }
 }

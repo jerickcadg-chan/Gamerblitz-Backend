@@ -95,7 +95,7 @@
           </tbody>
         </table>
         <div class="mt-2">
-          {!! $histories->appends(request()->query())->links() !!}
+          {!! $balanceHistories->appends(request()->query())->links() !!}
         </div>
       </div>
     </div>
@@ -143,7 +143,7 @@
         </table>
 
         <div class="mt-2">
-          {!! $histories->appends(request()->query())->links() !!}
+          {!! $affiliateHistories->appends(request()->query())->links() !!}
         </div>
       </div>
     </div>
