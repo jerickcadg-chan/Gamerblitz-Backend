@@ -8,6 +8,7 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LapakGamingController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PictureController;
@@ -50,6 +51,8 @@ Auth::routes([
 
 Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    Route::get('/lapakgaming/products/{country_code}', [LapakGamingController::class, 'index'])->name('lapakgaming.products');
 
     // Voucher router
     Route::get('/voucher/import', [VoucherController::class, 'import'])->name('voucher.import');
