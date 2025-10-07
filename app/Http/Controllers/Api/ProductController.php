@@ -25,6 +25,9 @@ class ProductController extends Controller
                 return $query->where('name', 'like', '%'.\request('name').'%');
             })
             ->orderByRaw('COALESCE(ordering, 999999) ASC')
+            ->when(request('limit'), function ($query) {
+                return $query->limit(request('limit'));
+            })
             ->get();
 
         return api_status_ok(transformer($products, new ProductTransformer));
