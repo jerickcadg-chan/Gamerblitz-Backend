@@ -65,7 +65,7 @@ class LapakGamingOrderHandler implements ShouldQueue
 
         $payload = new OrderRequestPayload(
             count_order: $order->qty,
-            product_code: $productItem->code,
+            group_code: $productItem->code,
             partner_reference_id: $order->code,
             // TODO: this may return price mismatch if the price is not up to date, in that case we need to sync the price immediately for this product item.
             // price: $order->capital,
