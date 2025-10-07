@@ -48,11 +48,21 @@
               <td>{{ $withdraw->processed_at }}</td>
               <td>
                 @if($withdraw->status === 'pending')
+                  {{-- Paid --}}
                   <form action="{{ route('user.affiliate-withdraw.process', $withdraw->id) }}" method="POST" onsubmit="return confirm('Mark this as paid?')">
                     @csrf
                     <input type="hidden" name="status" value="paid">
                     <button type="submit" class="btn btn-primary">
                       Paid
+                    </button>
+                  </form>
+
+                  {{-- Reject --}}
+                  <form action="{{ route('user.affiliate-withdraw.process', $withdraw->id) }}" method="POST" onsubmit="return confirm('Reject this withdrawal?')">
+                    @csrf
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="btn btn-danger">
+                      Reject
                     </button>
                   </form>
                 @else

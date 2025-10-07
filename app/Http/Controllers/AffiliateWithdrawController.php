@@ -34,12 +34,16 @@ class AffiliateWithdrawController extends Controller
 
     public function process(AffiliateWithdraw $affiliateWithdraw, Request $request)
     {
-        if ($affiliateWithdraw->status === 'paid') {
+        if (!in_array($request->status, [StatusConst::PAID, StatusConst::REJECTED])) {
+            abort(400, 'Invalid status');
+        }
+
+        if ($affiliateWithdraw->status !== StatusConst::PENDING) {
             toast('This withdrawal has already been processed.', 'warning');
             return redirect()->back();
         }
 
-        DB::transaction(function () use ($affiliateWithdraw) {
+        DB::transaction(function () use ($affiliateWithdraw, $request) {
             // Lock the affiliate row for update
             $affiliate = Affiliate::where('id', $affiliateWithdraw->affiliate_id)
                 ->lockForUpdate()
@@ -48,22 +52,24 @@ class AffiliateWithdrawController extends Controller
             $amountBefore = $affiliate->balance;
 
             // Update withdraw status
-            $affiliateWithdraw->status = StatusConst::PAID;
+            $affiliateWithdraw->status = $request->status;
             $affiliateWithdraw->processed_at = now();
             $affiliateWithdraw->save();
 
-            // Update balance
-            $affiliate->balance -= $affiliateWithdraw->amount;
-            $affiliate->save();
+            if ($request->status === StatusConst::PAID) {
+                // Update balance
+                $affiliate->balance -= $affiliateWithdraw->amount;
+                $affiliate->save();
 
-            // Save history
-            $affiliate->affiliateHistories()->create([
-                'affiliate_id'       => $affiliate->id,
-                'affiliateable_type' => 'App\Models\AffiliateWithdraw',
-                'affiliateable_id'   => $affiliateWithdraw->id,
-                'amount'             => -$affiliateWithdraw->amount,
-                'amount_before'      => $amountBefore,
-            ]);
+                // Save history
+                $affiliate->affiliateHistories()->create([
+                    'affiliate_id'       => $affiliate->id,
+                    'affiliateable_type' => 'App\Models\AffiliateWithdraw',
+                    'affiliateable_id'   => $affiliateWithdraw->id,
+                    'amount'             => -$affiliateWithdraw->amount,
+                    'amount_before'      => $amountBefore,
+                ]);
+            }
         });
 
         toast(alert_created_text($this->title), 'success');

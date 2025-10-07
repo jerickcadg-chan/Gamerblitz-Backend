@@ -14,4 +14,5 @@ class StatusConst extends ConstanstAbstraction
     const ON_PROCESS = 'on-process';
     const REFUNDED = 'refunded';
     const DELAY = 'delay';
+    const REJECTED = 'rejected';
 }
