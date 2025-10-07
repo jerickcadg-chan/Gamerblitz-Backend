@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Affiliate;
 use App\Models\AffiliateWithdraw;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AffiliateWithdrawController extends Controller
 {
@@ -12,10 +15,7 @@ class AffiliateWithdrawController extends Controller
     {
         $this->title = 'Affiliate Withdraw';
 
-        $this->middleware(['permission:View Withdraw'])->only('index', 'show');
-        $this->middleware(['permission:Create Withdraw'])->only(['create', 'store']);
-        $this->middleware(['permission:Edit Withdraw'])->only('edit', 'update');
-        $this->middleware(['permission:Delete Withdraw'])->only('destroy');
+        $this->middleware(['permission:View Withdraw'])->only('index', 'show', 'process');
     }
 
     public function index()
@@ -29,5 +29,42 @@ class AffiliateWithdrawController extends Controller
         $title = $this->title;
 
         return view('affiliate-withdraw.index', compact('affiliateWithdraws', 'title'));
+    }
+
+    public function process(AffiliateWithdraw $affiliateWithdraw, Request $request)
+    {
+        if ($affiliateWithdraw->status === 'paid') {
+            toast('This withdrawal has already been processed.', 'warning');
+            return redirect()->back();
+        }
+
+        DB::transaction(function () use ($affiliateWithdraw) {
+            // Lock the affiliate row for update
+            $affiliate = Affiliate::where('id', $affiliateWithdraw->affiliate_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $amountBefore = $affiliate->balance;
+
+            // Update withdraw status
+            $affiliateWithdraw->status = 'paid';
+            $affiliateWithdraw->processed_at = now();
+            $affiliateWithdraw->save();
+
+            // Update balance
+            $affiliate->balance -= $affiliateWithdraw->amount;
+            $affiliate->save();
+
+            // Save history
+            $affiliate->affiliateHistories()->create([
+                'affiliateable_type' => get_class($affiliateWithdraw),
+                'affiliateable_id'   => $affiliateWithdraw->id,
+                'amount'             => -$affiliateWithdraw->amount,
+                'amount_before'      => $amountBefore,
+            ]);
+        });
+
+        toast(alert_created_text($this->title), 'success');
+        return redirect()->route('user.affiliate-withdraw');
     }
 }

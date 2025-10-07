@@ -69,6 +69,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     // User router
     Route::get('user/customer', [UserController::class, 'getCustomer'])->name('user.customer');
     Route::get('user/affiliate-withdraw', [AffiliateWithdrawController::class, 'index'])->name('user.affiliate-withdraw');
+    Route::post('user/affiliate-withdraw/{affiliateWithdraw}', [AffiliateWithdrawController::class, 'process'])->name('user.affiliate-withdraw.process');
     Route::get('user/top-up-manual/{user}', [UserController::class, 'topUpManual'])->name('user.top-up-manual');
     Route::post('user/top-up-manual/{user}', [UserController::class, 'topUpManualStore'])->name('user.top-up-manual.store');
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\StatusConst;
 use App\Http\Requests\UserRequest;
 use App\Models\Affiliate;
+use App\Models\AffiliateHistory;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
 use App\Models\Deposit;
@@ -94,13 +95,22 @@ class UserController extends Controller
             ]
         );
 
-        $histories = BalanceHistory::where('balance_id', $balance->id)
+        $balanceHistories = BalanceHistory::where('balance_id', $balance->id)
             ->latest()
             ->paginate();
 
+        $affiliateHistories = [];
+
+        if ($user->affiliate) {
+            $affiliateHistories = AffiliateHistory::with('affiliateable')
+                ->where('affiliate_id', $user->affiliate->id)
+                ->latest()
+                ->paginate();
+        }
+
         $title = $this->title;
 
-        return view('users.show', compact('user', 'histories','editLink', 'indexLink', 'deleteLink', 'title'));
+        return view('users.show', compact('user', 'balanceHistories', 'affiliateHistories', 'editLink', 'indexLink', 'deleteLink', 'title'));
     }
 
     public function store(UserRequest $request)

@@ -46,7 +46,19 @@
               <td>{{ $withdraw->status }}</td>
               <td>{{ $withdraw->requested_at }}</td>
               <td>{{ $withdraw->processed_at }}</td>
-              <td></td>
+              <td>
+                @if($withdraw->status === 'pending')
+                  <form action="{{ route('user.affiliate-withdraw.process', $withdraw->id) }}" method="POST" onsubmit="return confirm('Mark this as paid?')">
+                    @csrf
+                    <input type="hidden" name="status" value="paid">
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                      Mark as Paid
+                    </button>
+                  </form>
+                @else
+                  <span class="text-gray-500 text-sm">Processed</span>
+                @endif
+              </td>
             </tr>
           @empty
             <tr>

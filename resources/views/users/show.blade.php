@@ -73,9 +73,9 @@
           </tr>
           </thead>
           <tbody>
-          @forelse ($histories as $index => $history)
+          @forelse ($balanceHistories as $index => $history)
             <tr>
-              <td>{{ $histories->firstItem() + $index }}</td>
+              <td>{{ $balanceHistories->firstItem() + $index }}</td>
               <td>{{ parse_date_time($history->created_at) }}</td>
               <td>
                 @if(strpos($history->balanceable_type, 'Deposit'))
@@ -100,4 +100,52 @@
       </div>
     </div>
   </div>
+
+  @if($user->affiliate)
+    <div class="card mt-4">
+      <div class="card-body table-responsive">
+        <h3 class="page-title mb-3">Affiliate History</h3>
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Balance From</th>
+            <th>Balance After</th>
+            <th>Nominal</th>
+          </tr>
+          </thead>
+          <tbody>
+          @forelse ($affiliateHistories as $index => $history)
+            <tr>
+              <td>{{ $affiliateHistories->firstItem() + $index }}</td>
+              <td>{{ parse_date_time($history->created_at) }}</td>
+              <td>
+                @if(strpos($history->affiliateable_type, 'AffiliateWithdraw'))
+                  Withdraw #{{ $history->affiliateable_id }}
+                @elseif(strpos($history->affiliateable_type, 'Order'))
+                  Order #{{ $history->affiliateable->code }}
+                @else
+                  By Admin
+                @endif
+              </td>
+              <td>{{ currency_format($history->amount_before) }}</td>
+              <td>{{ currency_format($history->amount_before + $history->amount) }}</td>
+              <td>{{ currency_format($history->amount) }}</td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="5" class="text-center">No Data</td>
+            </tr>
+          @endforelse
+          </tbody>
+        </table>
+
+        <div class="mt-2">
+          {!! $histories->appends(request()->query())->links() !!}
+        </div>
+      </div>
+    </div>
+  @endif
 @endsection
