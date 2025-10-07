@@ -85,6 +85,18 @@
           </div>
 
           <div class="form-group">
+            <label>Meta Image</label>
+            <div class="mb-2">
+              @if (!empty($settings['meta_image_url']))
+                <img src="{{ $settings['meta_image_url'] }}" alt="Meta Image" style="height:80px">
+              @endif
+            </div>
+            <input type="file" class="form-control {{ $errors->has('files.meta_image') ? 'is-invalid' : '' }}"
+              name="files[meta_image]" accept="image/*">
+            @include('alerts.feedback', ['field' => 'files.meta_image'])
+          </div>
+
+          <div class="form-group">
             <label>Primary Color</label>
             <input type="color"
                    class="form-control form-control-color {{ $errors->has('primary_color') ? ' is-invalid' : '' }}"
