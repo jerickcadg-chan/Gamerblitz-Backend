@@ -35,7 +35,7 @@
           </tr>
           <tr>
             <th>Balance</th>
-            <td>{{ $user->balance->amount ?? 0 }}</td>
+            <td>{{ $user->balance->amount ? currency_format($user->balance->amount) : 0 }}</td>
           </tr>
           <tr>
             <th>Affiliate</th>
