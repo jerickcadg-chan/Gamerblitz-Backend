@@ -157,8 +157,8 @@ class OrderController extends Controller
 
                 switch ($payload->data->status) {
                     case 'SUCCEEDED':
-                        $orderService->processOrder($order);
                         $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+                        $orderService->processOrder($order);
                         break;
 
                     case 'EXPIRED':
