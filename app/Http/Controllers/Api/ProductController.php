@@ -21,6 +21,12 @@ class ProductController extends Controller
                     $query->where('name', request('category'));
                 });
             })
+            ->when(request('exclude_category'), function (Builder $query) {
+                $excluded = explode(',', request('exclude_category'));
+                $query->whereDoesntHave('productCategory', function (Builder $query) use ($excluded) {
+                    $query->whereIn('name', $excluded);
+                });
+            })
             ->when(\request('name'), function ($query) {
                 return $query->where('name', 'like', '%'.\request('name').'%');
             })
