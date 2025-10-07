@@ -58,31 +58,31 @@
               </tr>
               <tr>
                 <th>Price</th>
-                <td>{{ currency_format($order->converted_price) }}</td>
+                <td>{{ currency_format($order->price) }}</td>
               </tr>
               <tr>
                 <th>Discount</th>
-                <td>{{ currency_format($order->converted_discount_price) }}</td>
+                <td>{{ currency_format($order->discount_price) }}</td>
               </tr>
               <tr>
                 <th>Turnover</th>
-                <td>{{ currency_format($order->converted_turnover) }}</td>
+                <td>{{ currency_format($order->turnover) }}</td>
               </tr>
               <tr>
                 <th>Admin Fee</th>
-                <td>{{ currency_format($order->converted_admin_fee) }}</td>
+                <td>{{ currency_format($order->admin_fee) }}</td>
               </tr>
               <tr>
                 <th>Total Price</th>
-                <td>{{ currency_format($order->converted_total_price) }}</td>
+                <td>{{ currency_format($order->total_price) }}</td>
               </tr>
               <tr>
                 <th>Capital</th>
-                <td>{{ currency_format($order->converted_capital) }}</td>
+                <td>{{ currency_format($order->capital) }}</td>
               </tr>
               <tr>
                 <th>Profit</th>
-                <td>{{ currency_format($order->converted_total_income) }}</td>
+                <td>{{ currency_format($order->total_income) }}</td>
               </tr>
               <tr>
                 <th>Payment Method</th>

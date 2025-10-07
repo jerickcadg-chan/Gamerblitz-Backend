@@ -40,16 +40,16 @@ class HomeController extends Controller
     protected function getOrderPastWeek()
     {
         $query = Order::where('status', StatusConst::SUCCESS)
-            ->selectRaw('DATE(created_at) as date, SUM(converted_turnover) as converted_turnover, SUM(converted_total_income) as converted_total_income')
+            ->selectRaw('DATE(created_at) as date, SUM(turnover) as turnover, SUM(total_income) as total_income')
             ->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()])
             ->groupBy('date')
             ->orderBy('date');
-        $turnover = $query->pluck('converted_turnover')->map(
+        $turnover = $query->pluck('turnover')->map(
             function ($total) {
                 return $total;
             }
         );
-        $profit = $query->pluck('converted_total_income')->map(
+        $profit = $query->pluck('total_income')->map(
             function($total) {
                 return $total;
             }
@@ -65,8 +65,8 @@ class HomeController extends Controller
             ->whereYear('created_at', $year)
             ->where('status', StatusConst::SUCCESS);
 
-        $turnover = $orderSumQuery->sum('converted_turnover');
-        $profit = $orderSumQuery->sum('converted_total_income');
+        $turnover = $orderSumQuery->sum('turnover');
+        $profit = $orderSumQuery->sum('total_income');
         $profitMargin = $turnover === 0 ? 0 : round(($profit / $turnover) * 100);
 
         return [
@@ -86,8 +86,8 @@ class HomeController extends Controller
             ->where('status', StatusConst::SUCCESS);
 
 
-        $turnoverToday = $orderTodayQuery->sum('converted_turnover');
-        $profitToday = $orderTodayQuery->sum('converted_total_income');
+        $turnoverToday = $orderTodayQuery->sum('turnover');
+        $profitToday = $orderTodayQuery->sum('total_income');
 
         return [
             'total' => $orderTodayQuery->count(),

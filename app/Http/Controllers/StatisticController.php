@@ -31,9 +31,9 @@ class StatisticController extends Controller
                 '
                 DATE(created_at) as date,
                 COUNT(*) as count,
-                SUM(converted_turnover) as turnover,
-                SUM(converted_total_income) as profit,
-                ROUND((SUM(converted_total_income) / NULLIF(SUM(converted_turnover), 0)) * 100) as profit_margin
+                SUM(turnover) as turnover,
+                SUM(total_income) as profit,
+                ROUND((SUM(total_income) / NULLIF(SUM(turnover), 0)) * 100) as profit_margin
                 '
             )
             ->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()])

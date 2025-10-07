@@ -131,13 +131,13 @@ class LapakGamingController extends Controller
 
                     $order->save();
                     $orderService->updateStatus($order, StatusConst::FAILED, $note);
-                    if ($order->payment_method === PaymentMethod::BALANCE) {
+                    if ($order?->user?->balance) {
                         $balance = Balance::where('user_id', $order->user_id)->first();
 
                         BalanceService::update($balance, [
                             'balanceable_type' => Order::class,
                             'balanceable_id' => $order->id,
-                            'amount' => $order->total_price,
+                            'amount' => $order->turnover,
                             'description' => "Refund $order->code"
                         ]);
                     }

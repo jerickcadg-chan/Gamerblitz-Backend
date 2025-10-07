@@ -93,9 +93,9 @@
                     <span class="text-muted">{{ @$order->productItem->product->name }}</span>
                   </td>
                   <td>{!! $order->cust_account_format !!}</td>
-                  <td>{{ currency_format($order->converted_turnover) }}</td>
-                  <td>{{ currency_format($order->converted_capital) }}</td>
-                  <td>{{ currency_format($order->converted_total_income) }}</td>
+                  <td>{{ currency_format($order->turnover) }}</td>
+                  <td>{{ currency_format($order->capital) }}</td>
+                  <td>{{ currency_format($order->total_income) }}</td>
                   <td>
                     <span class="d-block">{!! $order->order_status_raw !!}</span>
                     <x-input-update-status :order="$order" />

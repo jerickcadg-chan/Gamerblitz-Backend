@@ -52,7 +52,7 @@
                     @csrf
                     <input type="hidden" name="status" value="paid">
                     <button type="submit" class="btn btn-primary">
-                      Mark as Paid
+                      Paid
                     </button>
                   </form>
                 @else
