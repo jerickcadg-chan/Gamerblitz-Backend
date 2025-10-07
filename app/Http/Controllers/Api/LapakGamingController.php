@@ -123,6 +123,13 @@ class LapakGamingController extends Controller
                     $orderService->updateStatus($order, StatusConst::SUCCESS, $note);
                     break;
                 case "REFUNDED":
+                    $transactions = collect($payload->data->transactions ?? []);
+
+                    $order->note = $transactions->pluck('note')
+                        ->filter()
+                        ->implode(',');
+
+                    $order->save();
                     $orderService->updateStatus($order, StatusConst::FAILED, $note);
                     if ($order->payment_method === PaymentMethod::BALANCE) {
                         $balance = Balance::where('user_id', $order->user_id)->first();
@@ -141,6 +148,7 @@ class LapakGamingController extends Controller
                         'order_id' => $order->id,
                         'payload' => $payload->toArray(),
                     ]);
+                    break;
                 default:
                     break;
             }
