@@ -209,6 +209,10 @@ class OrderService
             $adminFee = $this->generateUniqueCode($paymentMethod->currency_code) / $exchangeRate;
         }
 
+        if ($paymentMethod->slug === PaymentMethod::BALANCE) {
+            $adminFee = 0;
+        }
+
         $totalTurnover =  $price - $disc['nominal'];
 
         $totalPrice = $totalTurnover + $adminFee;
