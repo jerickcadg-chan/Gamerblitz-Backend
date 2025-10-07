@@ -59,7 +59,7 @@ class AffiliateWithdrawController extends Controller
             // Save history
             $affiliate->affiliateHistories()->create([
                 'affiliate_id'       => $affiliate->id,
-                'affiliateable_type' => get_class($affiliateWithdraw),
+                'affiliateable_type' => 'App\Models\AffiliateWithdraw',
                 'affiliateable_id'   => $affiliateWithdraw->id,
                 'amount'             => -$affiliateWithdraw->amount,
                 'amount_before'      => $amountBefore,
