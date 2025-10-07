@@ -107,8 +107,8 @@ class OrderController extends Controller
             return redirect()->back();
         }
 
-        $orderService->processOrder($order, sync: true);
         $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+        $orderService->processOrder($order, sync: true);
 
         toast('Order is being processed', 'success');
         return redirect()->back();

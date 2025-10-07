@@ -231,8 +231,8 @@ class OrderController extends Controller
         }
 
         if ($order && $data['payment_request']['status'] === 'completed') {
-            $orderService->processOrder($order);
             $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+            $orderService->processOrder($order);
 
             return api_status_ok([
                 'order' => transformer($order, new OrderTransformer())
@@ -302,8 +302,8 @@ class OrderController extends Controller
         }
 
         if ($order && $isPaid && $state === 'paid') {
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
             $orderService->processOrder($order);
-            $orderService->updateStatus($order, 'on_process');
 
             return api_status_ok([
                 'order' => transformer($order, new OrderTransformer())
