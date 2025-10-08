@@ -38,7 +38,7 @@ class SettingController extends Controller
             'social_tiktok',
         ])->pluck('value', 'key');
 
-        foreach (['logo', 'logo_alt','favicon','popup_image'] as $fileKey) {
+        foreach (['logo', 'logo_alt','favicon','popup_image', 'meta_image'] as $fileKey) {
             if (!empty($setting[$fileKey])) {
                 $setting[$fileKey.'_url'] = Storage::url($setting[$fileKey]);
             }

@@ -27,6 +27,7 @@ class SettingRequest extends FormRequest
             'files.logo_alt'   => ['nullable','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
             'files.favicon'    => ['nullable','mimes:jpg,jpeg,png,svg,gif,webp,ico','max:5120'],
             'files.popup_image'=> ['nullable','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
+            'files.meta_image'=> ['nullable','mimes:jpg,jpeg,png,svg,gif,webp','max:5120'],
         ];
     }
 }

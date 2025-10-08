@@ -313,6 +313,14 @@
             @include('alerts.feedback', ['field' => 'meta_description'])
           </div>
 
+          <div class="form-group">
+            <label for="ordering_input">Ordering</label>
+            <input type="number" class="form-control {{ $errors->has('ordering') ? ' is-invalid' : '' }}"
+                   name="ordering" id="ordering_input"
+                   value="{{ old('ordering', $product->ordering ?? '') }}">
+            @include('alerts.feedback', ['field' => 'ordering'])
+          </div>
+
           <button type="submit" class="btn btn-primary">Submit</button>
           <a href="{{ route('product.index') }}" class="btn btn-light">Cancel</a>
         </form>

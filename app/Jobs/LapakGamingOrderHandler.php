@@ -67,6 +67,7 @@ class LapakGamingOrderHandler implements ShouldQueue
             count_order: $order->qty,
             group_product: $productItem->code,
             partner_reference_id: $order->code,
+            country_code: $productItem->country_code,
             // TODO: this may return price mismatch if the price is not up to date, in that case we need to sync the price immediately for this product item.
             // price: $order->capital,
         );
