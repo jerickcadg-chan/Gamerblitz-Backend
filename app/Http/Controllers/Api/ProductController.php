@@ -15,7 +15,37 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::active()
+        $products = Product::select([
+            'id',
+            'ordering',
+            'name',
+            'code',
+            // 'input_format',
+            'product_category_id',
+            // 'description',
+            'company',
+            // 'how_to_order',
+            'slug',
+            'status',
+            'provider',
+            'provider_code',
+            'provider_country',
+            'markup_user',
+            'markup_reseller_silver',
+            'markup_reseller_gold',
+            'markup_reseller_vip',
+            'default_picture',
+            'default_cover',
+            'meta_title',
+            'meta_keyword',
+            'meta_description',
+            'deleted_at',
+            'created_at',
+            'updated_at',
+            'check_uid',
+            'is_raw_description',
+        ])
+            ->active()
             ->when(request('category'), function (Builder $query) {
                 return $query->whereHas('productCategory', function (Builder $query) {
                     $query->where('name', request('category'));
@@ -36,7 +66,7 @@ class ProductController extends Controller
             })
             ->get();
 
-        return api_status_ok(transformer($products, new ProductTransformer));
+        return api_status_ok(transformer($products, new ProductTransformer()));
     }
 
     public function paginate()
@@ -52,14 +82,14 @@ class ProductController extends Controller
                 return $query->where('name', 'like', '%'.\request('name').'%');
             });
 
-        return api_status_ok(paginateTransformer($products, new ProductTransformer));
+        return api_status_ok(paginateTransformer($products, new ProductTransformer()));
     }
 
     public function showProduct($product)
     {
         $product = Product::where('slug', $product)->firstOrFail();
 
-        return api_status_ok(transformer($product, new ProductTransformer));
+        return api_status_ok(transformer($product, new ProductTransformer()));
     }
 
     public function getProductItems($productId)
@@ -112,7 +142,7 @@ class ProductController extends Controller
     {
         $productItem = ProductItem::with('product')->findOrFail($id);
 
-        return api_status_ok(transformer($productItem, new ProductItemTransformer, ['product']));
+        return api_status_ok(transformer($productItem, new ProductItemTransformer(), ['product']));
     }
 
     public function test(OrderService $orderService)
