@@ -62,7 +62,7 @@ class ReviewTransaction extends Command
         foreach ($orders as $order) {
             Review::create([
                 'order_id' => $order->id,
-                'product_id' => $order->product_id,
+                'product_id' => $order->productItem->product_id,
                 'star' => 5,
                 'body' => collect($bodies[$locale])->random()
             ]);
