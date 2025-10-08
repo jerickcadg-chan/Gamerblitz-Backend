@@ -13,9 +13,6 @@ class Affiliate extends Model
         'code',
         'status',
         'balance',
-        'affiliateable_type',
-        'affiliateable_id',
-        'amount'
     ];
 
     public function user(): BelongsTo

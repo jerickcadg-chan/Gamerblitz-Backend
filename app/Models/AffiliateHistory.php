@@ -13,7 +13,9 @@ class AffiliateHistory extends Model
         'affiliateable_type',
         'affiliateable_id',
         'amount',
-        'amount_before'
+        'amount_before',
+        'latest_balance',
+        'description',
     ];
 
     public function affiliate(): BelongsTo
