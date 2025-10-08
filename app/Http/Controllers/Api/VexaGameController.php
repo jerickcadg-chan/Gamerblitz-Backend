@@ -6,6 +6,7 @@ use App\Constants\StatusConst;
 use App\Http\Controllers\Controller;
 use App\Models\Balance;
 use App\Models\Order;
+use App\Models\Setting;
 use App\Services\BalanceService;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
@@ -24,12 +25,22 @@ class VexaGameController extends Controller
      */
     public function orderCallback(Request $request, OrderService $orderService)
     {
+        $authHeader = $request->header('Authorization');
+        $providedToken = trim(str_replace('Bearer', '', $authHeader));
+
+        if ($providedToken !== Setting::getByKey('vexagame_callback_token')) {
+            return response()->json([
+                'message' => 'FAILED',
+                'reason'  => 'Invalid callback token',
+            ], 404);
+        }
+
         $log = Log::channel('vexagame');
         $payload = $request->all();
 
         try {
             $log->notice('📩 VexaGame callback received', $payload);
-            
+
             $order = Order::query()
                 ->where('provider_ref', $payload['code'] ?? null)
                 ->first();

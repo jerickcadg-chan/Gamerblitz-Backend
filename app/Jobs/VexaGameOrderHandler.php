@@ -57,12 +57,11 @@ class VexaGameOrderHandler implements ShouldQueue
             $code = (string)($orderResponse['code'] ?? '');
             $payloadData = $orderResponse['payload'] ?? [];
     
-            if ($code === '200') {
-                $order->update([
-                    'provider_ref' => $payloadData['code'] ?? '',
-                ]);
-    
+            if ($code == '200') {
                 Log::channel('vexagame')->notice("✅ Order {$order->id} successfully forwarded to VexaGame.");
+                
+                $order->provider_ref = $payloadData['code'] ?? '';
+                $order->save();
             } else {
                 $orderService->updateStatus($order, StatusConst::DELAY, $code);
     
