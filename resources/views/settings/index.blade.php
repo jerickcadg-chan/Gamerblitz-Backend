@@ -291,6 +291,29 @@
               value="{{ old('settings.lapakgaming_ip', $settings['lapakgaming_ip'] ?? '') }}">
           </div>
 
+          {{-- Lapak Gaming --}}
+          <h4 class="mb-2 mt-5">VexaGame</h4>
+          <hr class="mb-4">
+
+          <div class="form-group">
+            <label>API Url</label>
+            <input type="text" class="form-control" name="settings[vexagame_api_url]"
+              placeholder="e.g. https://dev.lapakgaming.com"
+              value="{{ old('settings.vexagame_api_url', $settings['vexagame_api_url'] ?? '') }}">
+          </div>
+
+          <div class="form-group">
+            <label>API Key (Token)</label>
+            <input type="text" class="form-control" name="settings[vexagame_api_token]"
+              value="{{ old('settings.vexagame_api_token', $settings['vexagame_api_token'] ?? '') }}">
+          </div>
+
+          <div class="form-group">
+            <label>Callback Token</label>
+            <input type="text" class="form-control" name="settings[vexagame_callback_token]"
+              value="{{ old('settings.vexagame_callback_token', $settings['vexagame_callback_token'] ?? '') }}">
+          </div>
+
           {{-- Xendit --}}
           <h4 class="mb-2 mt-5">Xendit</h4>
           <hr class="mb-4">
