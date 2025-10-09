@@ -147,6 +147,9 @@ class SyncLapakGaming extends Command
                         ->update(['status' => 'empty']);
                     $this->line("Affected rows: $affectedRows");
 
+                    // Disable all product items not from LapakGaming.
+                    $this->disableInactiveProductItems($product);
+
                     foreach ($itemsResponse->json('data') as $lgItem) {
                         $item = BestProductItem::from($lgItem);
                         $this->line("Processing item {$item->code}");
@@ -218,4 +221,11 @@ class SyncLapakGaming extends Command
         return (is_null($value) || (float)$value <= 0) ? $fallback : (float)$value;
     }
 
+    private function disableInactiveProductItems(Product $product): void
+    {
+        ProductItem::where('product_id', $product->id)
+            ->where('provider', '!=', ProviderConstant::LAPAKGAMING)
+            ->where('status', 'active')
+            ->update(['status' => 'empty']);
+    }
 }
