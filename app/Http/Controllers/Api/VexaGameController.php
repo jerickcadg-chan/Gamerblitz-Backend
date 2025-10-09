@@ -115,8 +115,8 @@ class VexaGameController extends Controller
     {
         $transactions = collect($payload);
 
-        $order->serial_number = $transactions->get('voucher_code', '');
-        $order->note = $transactions->get('note', '');
+        $order->serial_number = $transactions->get('sn', '');
+        $order->note = $transactions->get('description', '');
         $order->save();
 
         $orderService->updateStatus($order, StatusConst::SUCCESS, $note);
