@@ -21,15 +21,13 @@ class BillplzService
         $method          = $order->paymentMethod;
 
         $payload = [
-            'collection_id'     => Setting::getByKey('billplz_collection_id'),
+            'collection_id'     => $method->slug,
             'description'       => $order->productItem->full_name,
             'email'             => $order->cust_email,
             'name'              => $order->cust_email,
             'amount'            => (int) $order->total_price,
             'callback_url'      => route('callback.billplz'),
-            'redirect_url'      => config('app.fe_url').'/'.config('app.fe_invoice_url').'/'. $referenceNumber,
-            'reference_1_label' => 'Bank Code',
-            'reference_1'       => $method->slug,
+            'redirect_url'      => config('app.fe_url').'/'.config('app.fe_invoice_url').'/'. $referenceNumber
         ];
 
         $response = $this->sendBillplzRequest($payload);
@@ -56,15 +54,13 @@ class BillplzService
         $method          = $deposit->paymentMethod;
 
         $payload = [
-            'collection_id'     => Setting::getByKey('billplz_collection_id'),
+            'collection_id'     => $method->slug,
             'description'       => 'Deposit balance ' . $deposit->total_amount,
             'email'             => $deposit->user->email,
             'name'              => $deposit->user->name,
             'amount'            => (int) ceil($deposit->total_amount),
             'callback_url'      => route('callback.billplz'),
-            'redirect_url'      => config('app.fe_url') . '/dashboard/deposit/' . $referenceNumber,
-            'reference_1_label' => 'Bank Code',
-            'reference_1'       => $method->slug,
+            'redirect_url'      => config('app.fe_url') . '/dashboard/deposit/' . $referenceNumber
         ];
 
         $response = $this->sendBillplzRequest($payload);

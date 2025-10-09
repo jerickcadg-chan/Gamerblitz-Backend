@@ -346,11 +346,6 @@
               value="{{ old('settings.billplz_api_key', $settings['billplz_api_key'] ?? '') }}">
           </div>
           <div class="form-group">
-            <label>Collection ID</label>
-            <input type="text" class="form-control" name="settings[billplz_collection_id]"
-              value="{{ old('settings.billplz_collection_id', $settings['billplz_collection_id'] ?? '') }}">
-          </div>
-          <div class="form-group">
             <label>Signature Payment</label>
             <input type="text" class="form-control" name="settings[billplz_signature_payment]"
               value="{{ old('settings.billplz_signature_payment', $settings['billplz_signature_payment'] ?? '') }}">
