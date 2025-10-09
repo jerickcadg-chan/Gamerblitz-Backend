@@ -272,7 +272,11 @@ class OrderService
                 LapakGamingOrderHandler::dispatch($order);
             }
         } elseif ($provider === ProviderConstant::VEXAGAME) {
-            VexaGameOrderHandler::dispatch($order);
+            if ($sync) {
+               return VexaGameOrderHandler::dispatchSync($order);
+            } else {
+                VexaGameOrderHandler::dispatch($order);
+            }
         }
 
         // ... handle other provider
