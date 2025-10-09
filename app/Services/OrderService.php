@@ -13,6 +13,8 @@ use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendOrderNotif;
 use App\Mail\SendSettlementNotif;
+use App\Models\Affiliate;
+use App\Models\AffiliateHistory;
 use App\Models\Balance;
 use App\Models\ExchangeRate;
 use App\Models\Order;
@@ -46,6 +48,11 @@ class OrderService
             DB::beginTransaction();
 
             $authUser = Auth::user();
+
+            $affiliate = null;
+            if ($request->query('affiliate')) {
+                $affiliate = Affiliate::where('code', $request->query('affiliate'))->first();
+            }
 
             $productItem = ProductItem::with('product')->find($request->product_item_id);
 
@@ -104,6 +111,7 @@ class OrderService
             $orderStatus = $paymentMethod->slug === PaymentMethod::BALANCE ? Order::INPROCESS : $orderStatus = Order::PENDING;
 
             $order = new Order();
+            $order->affiliate_id = $affiliate?->id;
             $order->productItem()->associate($productItem);
             $order->user()->associate($authUser ?? null);
             $order->discount()->associate($price['discount']);
@@ -275,6 +283,10 @@ class OrderService
         $order->status = $status;
         $order->save();
 
+        if ($status === StatusConst::SUCCESS && $order->affiliate_id) {
+            $this->rewardAffiliator($order);
+        }
+
         if ($status === StatusConst::ON_PROCESS && $order->provider === ProviderConstant::MANUAL) {
             Mail::queue(new SendSettlementNotif($order));
         }
@@ -288,6 +300,46 @@ class OrderService
         }
 
         $this->createHistory($order->id, $status, 'order', $note);
+    }
+
+    public function rewardAffiliator(Order $order): void
+    {
+        if (!$order->affiliate_id) {
+            return;
+        }
+
+        if ($order->status !== StatusConst::SUCCESS) {
+            return;
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $affiliate = Affiliate::lockForUpdate()->findOrFail($order->affiliate_id);
+
+            $percentage = Setting::getByKey(Setting::KEY_AFFILIATE_PERCENTAGE);
+            $amountBefore = $affiliate->balance;
+            $bonusAmount = $order->price * $percentage / 100;
+            $latestBalance = $affiliate->balance + $bonusAmount;
+
+            $affiliateLog = AffiliateHistory::create([
+                'affiliate_id' => $affiliate->id,
+                'affiliateable_type' => Order::class,
+                'affiliateable_id' => $order->id,
+                'amount' => $bonusAmount,
+                'amount_before' => $amountBefore,
+                'latest_balance' => $latestBalance,
+                'description' => "Bonus from Order {$order->code}",
+            ]);
+
+            $affiliate->balance = $latestBalance;
+            $affiliate->save();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return;
+        }
     }
 
     public function createHistory($orderId, $status, $type, $note = null): bool

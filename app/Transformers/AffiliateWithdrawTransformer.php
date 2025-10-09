@@ -12,17 +12,17 @@ class AffiliateWithdrawTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($affiliate)
+    public function transform($affiliateWithdraw)
     {
         return [
-            'affiliate_id' => $affiliate->affiliate_id,
-            'user_id' => $affiliate->user_id,
-            'amount' => $affiliate->amount,
-            'status' => $affiliate->status,
+            'affiliate_id' => $affiliateWithdraw->affiliate_id,
+            'user_id' => $affiliateWithdraw->user_id,
+            'amount' => $affiliateWithdraw->amount,
+            'status' => $affiliateWithdraw->status,
             // amount will be converted to balance, which use system base currency
             'currency_code' => Setting::getBaseCurrency(),
-            'requested_at' => $affiliate->requested_at,
-            'processed_at' => $affiliate->processed_at,
+            'requested_at' => $affiliateWithdraw->requested_at,
+            'processed_at' => $affiliateWithdraw->processed_at,
         ];
     }
 }

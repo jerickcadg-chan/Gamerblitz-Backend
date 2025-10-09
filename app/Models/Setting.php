@@ -16,6 +16,8 @@ class Setting extends Model
     public const KEY_LAPAKGAMING_API_TOKEN = 'lapakgaming_api_token';
     public const KEY_LAPAKGAMING_IP = 'lapakgaming_ip';
 
+    public const KEY_AFFILIATE_PERCENTAGE = 'affiliate_percentage';
+
     /**
      * specify which setting keys need to be casted to numeric
      * if the key does not exists or have no value, it will default to 0 instead of empty string

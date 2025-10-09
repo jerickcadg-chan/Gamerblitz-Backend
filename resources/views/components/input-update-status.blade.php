@@ -3,7 +3,7 @@
   'order' => $order
 ])
 
-@if ($order->status == StatusConst::DELAY && $order->provider !== ProviderConstant::MANUAL)
+@if ($order->status == StatusConst::DELAY || $order->status === StatusConst::PENDING)
 <form action="{{ route('order.process') }}" method="post" class="mt-3">
   @csrf
   <input type="hidden" name="order_id" value="{{ $order->id }}">

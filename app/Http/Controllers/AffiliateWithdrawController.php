@@ -68,6 +68,9 @@ class AffiliateWithdrawController extends Controller
                     'affiliateable_id'   => $affiliateWithdraw->id,
                     'amount'             => -$affiliateWithdraw->amount,
                     'amount_before'      => $amountBefore,
+                    'latest_balance'     => $affiliate->balance,
+                    'description'        => "Withdraw {$affiliateWithdraw->amount}",
+
                 ]);
             }
         });
