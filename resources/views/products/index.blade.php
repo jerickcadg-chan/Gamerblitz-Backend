@@ -62,7 +62,7 @@
                       {{ App\Constants\ProviderConstant::AVAILABLE_PROVIDER[$product->provider] ?? '-' }}
                       ({{ App\Constants\CountryConstant::name($product->provider_country) ?? '-' }})
                     </div>
-                    <strong class="small">Code: {{ $product->provider_code }}</strong>
+                    <strong class="small">Code: {{ $product->code_by_provider }}</strong>
                   @else
                     -
                   @endisset

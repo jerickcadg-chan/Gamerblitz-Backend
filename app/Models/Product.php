@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\ProviderConstant;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\WithPictures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -47,6 +48,7 @@ class Product extends Model
         'status',
         'provider',
         'provider_code',
+        'provider_code_vexa',
         'provider_country',
         'check_uid',
         'meta_title',
@@ -81,6 +83,15 @@ class Product extends Model
             'active' => '<label class="badge badge-success">Active</label>',
             'inactive' => '<label class="badge badge-danger">Inactive</label>',
             default => '<label class="badge badge-warning">'. $this->status .'</label>',
+        };
+    }
+
+    public function getCodeByProviderAttribute(): ?string
+    {
+        return match ($this->provider) {
+            ProviderConstant::LAPAKGAMING => $this->provider_code,
+            ProviderConstant::VEXAGAME => $this->provider_code_vexa,
+            default => $this->provider_code,
         };
     }
 

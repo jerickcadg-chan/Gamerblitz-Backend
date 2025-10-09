@@ -62,7 +62,7 @@
                 <td>{{ $productItems->firstItem() + $index }}</td>
                 <td>{{ $productItem->product->name }} {{ $productItem->name }}</td>
                 <td>{{ $productItem->code }}</td>
-                <td>{{ $productItem->product->provider }}</td>
+                <td>{{ $productItem->provider }}</td>
                 <td>{{ currency_format($productItem->capital) }}</td>
                 <td>{{ $productItem->margin_percentage ?? 0 }} %</td>
                 <td>{{ $productItem->margin_silver ?? 0 }} %</td>

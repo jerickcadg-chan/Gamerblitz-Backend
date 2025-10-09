@@ -67,6 +67,16 @@
             @include('alerts.feedback', ['field' => 'stock'])
           </div>
 
+          @if($productItem)
+            <div class="form-group">
+              <label for="provider_input">Provider</label>
+              <input type="text" name="provider" id="provider_input"
+                    class="form-control {{ $errors->has('provider') ? 'is-invalid' : '' }}"
+                    value="{{ old('provider', $productItem->provider ?? '') }}" readonly>
+              @include('alerts.feedback', ['field' => 'provider'])
+            </div>
+          @endif
+
           <div class="row">
             <div class="form-group col-md-3">
               <label for="margin_input">Margin Public (%)</label>
