@@ -23,7 +23,7 @@ class ReviewTransformer extends TransformerAbstract
         ];
     }
 
-    private function maskEmail(string $email): string
+    public static function maskEmail(string $email): string
     {
         $parts = explode('@', $email);
         $name = $parts[0] ?? '';
