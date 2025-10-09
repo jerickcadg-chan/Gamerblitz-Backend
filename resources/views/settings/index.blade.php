@@ -291,7 +291,7 @@
               value="{{ old('settings.lapakgaming_ip', $settings['lapakgaming_ip'] ?? '') }}">
           </div>
 
-          {{-- Lapak Gaming --}}
+          {{-- Vexagame --}}
           <h4 class="mb-2 mt-5">VexaGame</h4>
           <hr class="mb-4">
 
