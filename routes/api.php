@@ -17,7 +17,6 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\VexaGameController;
-use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -74,11 +73,12 @@ Route::get('blogs-all', [BlogController::class, 'all']);
 Route::get('blog-categories', [BlogController::class, 'latestPerCategory']);
 Route::get('blogs/{slug}', [BlogController::class, 'show']);
 
+// TODO: need to setup cloudflare as trusted proxy and specify CF IP
 // if (Schema::hasTable('settings')) {
 //     $lapakgamingIp = Setting::getByKey(Setting::KEY_LAPAKGAMING_IP);
 //     Route::middleware(['ip.whitelist:' . $lapakgamingIp])->group(function () {
-// TODO: ip from lapakgaming always changing, skip whitelist ip for now
-Route::post('callback/lapakgaming/product', [LapakGamingController::class, 'productUpdateCallback']);
+// NOTE: we are no longer using product callback since we use best product list which has different structure and code
+// Route::post('callback/lapakgaming/product', [LapakGamingController::class, 'productUpdateCallback']);
 Route::post('callback/lapakgaming/order', [LapakGamingController::class, 'orderCallback']);
 
 Route::post('callback/vexagame/order', [VexaGameController::class, 'orderCallback']);

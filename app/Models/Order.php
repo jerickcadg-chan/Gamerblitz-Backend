@@ -146,10 +146,6 @@ class Order extends Model implements IsFilterable
             return null;
         }
 
-        if (str_contains($this->cust_account, '#')) {
-            return $this->cust_account;
-        }
-
         $decoded = json_decode($this->cust_account, true);
 
         if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {

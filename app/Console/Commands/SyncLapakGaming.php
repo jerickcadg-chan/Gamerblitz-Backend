@@ -138,19 +138,23 @@ class SyncLapakGaming extends Command
                     $product->markup_reseller_vip = $this->useFallbackIfNonPositive($product->markup_reseller_vip, $fallbackMarginVip);
                     $product->save();
 
-                    // reset product item status to empty, if item is available it will be mark as active below
-                    // IMPORTANT: do not touch product item with status other than active or empty
-                    // those items are meant to be managed manually
-                    $affectedRows = ProductItem::where('product_id', $product->id)
-                        ->where('provider', ProviderConstant::LAPAKGAMING)
-                        ->where('status', 'active')
-                        ->update(['status' => 'empty']);
-                    $this->line("Affected rows: $affectedRows");
+                    $lgItems = $itemsResponse->json('data');
 
-                    // Disable all product items not from LapakGaming.
-                    $this->disableInactiveProductItems($product);
+                    if (count($lgItems) > 0) {
+                        // reset product item status to empty, if item is available it will be mark as active below
+                        // IMPORTANT: do not touch product item with status other than active or empty
+                        // those items are meant to be managed manually
+                        $affectedRows = ProductItem::where('product_id', $product->id)
+                            ->where('provider', ProviderConstant::LAPAKGAMING)
+                            ->where('status', 'active')
+                            ->update(['status' => 'empty']);
+                        $this->line("Affected rows: $affectedRows");
 
-                    foreach ($itemsResponse->json('data') as $lgItem) {
+                        // Disable all product items not from LapakGaming.
+                        $this->disableInactiveProductItems($product);
+                    }
+                    
+                    foreach ($lgItems as $lgItem) {
                         $item = BestProductItem::from($lgItem);
                         $this->line("Processing item {$item->code}");
 
