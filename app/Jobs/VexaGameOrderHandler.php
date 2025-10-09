@@ -31,40 +31,41 @@ class VexaGameOrderHandler implements ShouldQueue
             $baseUrl = Setting::getByKey('vexagame_api_url');
             $token   = Setting::getByKey('vexagame_api_token');
             $orderUrl = rtrim($baseUrl, '/') . '/v2/transaction';
-    
+
             $order       = $this->order;
             $productItem = $order->productItem;
-    
+
             $payload = new OrderRequestData(
                 code: $productItem->code,
-                customer_no: json_encode($order->cust_account_array),
+                customer_no: $productItem->product->code === 'ML'
+                    ? implode('', $order->cust_account_array)
+                    : json_encode($order->cust_account_array),
                 qty: $order->qty
             );
-    
+
             $response = Http::withHeaders([
                 'Authorization' => $token,
             ])
                 ->timeout(15)
                 ->post($orderUrl, $payload->toArray());
-    
+
             if ($response->failed()) {
                 throw new Exception("VexaGame API call failed: " . $response->body());
             }
-    
+
             $orderResponse = $response->json();
-    
-    
+
             $code = (string)($orderResponse['code'] ?? '');
             $payloadData = $orderResponse['payload'] ?? [];
-    
+
             if ($code == '200') {
                 Log::channel('vexagame')->notice("✅ Order {$order->id} successfully forwarded to VexaGame.");
-                
+
                 $order->provider_ref = $payloadData['code'] ?? '';
                 $order->save();
             } else {
                 $orderService->updateStatus($order, StatusConst::DELAY, $code);
-    
+
                 Log::channel('vexagame')->error(
                     "❌ Order {$order->id} failed with code: {$code}",
                     ['response' => $orderResponse]
