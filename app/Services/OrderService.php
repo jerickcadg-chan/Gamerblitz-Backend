@@ -313,7 +313,7 @@ class OrderService
         try {
             DB::beginTransaction();
 
-            $affiliate = Affiliate::lockForUpdate()->findOrFail($order->affiliate_id);
+            $affiliate = Affiliate::lockForUpdate()->where('status', 'active')->findOrFail($order->affiliate_id);
 
             $percentage = Setting::getByKey(Setting::KEY_AFFILIATE_PERCENTAGE);
             $amountBefore = $affiliate->balance;

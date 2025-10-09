@@ -44,6 +44,7 @@
             <th>Role</th>
             <th>Verified At</th>
             <th>Is Affiliate</th>
+            <th>Affiliate Bonus</th>
             <th>Action</th>
           </tr>
           </thead>
@@ -57,7 +58,8 @@
               <td>{{ currency_format($user->balance->amount ?? 0) }}</td>
               <td>{{ $user->role }}</td>
               <td>{{ $user->email_verified_at ? parse_date_time($user->email_verified_at) : "-" }}</td>
-              <td>{{ $user->affiliate ? "✅" : "❌ " }}</td>
+              <td>{{ $user->affiliate?->status === 'active' ? "✅" : "❌ " }}</td>
+              <td>{{ currency_format($user->affiliate?->balance ?? 0) }}</td>
               <td>
                 @if ($user->id == 1)
                   @include('master.action', [
@@ -65,7 +67,7 @@
                       'edit_url' => route('user.edit', $user),
                   ])
                 @else
-                  <a class="btn btn-gradient-info btn-sm" data-bs-toggle="tooltip" title="Manual Balance" data-bs-placement="top" href="{{ route('user.top-up-manual', $user) }}"> 
+                  <a class="btn btn-gradient-info btn-sm" data-bs-toggle="tooltip" title="Manual Balance" data-bs-placement="top" href="{{ route('user.top-up-manual', $user) }}">
                       <i class="mdi mdi-cash menu-icon"></i>
                   </a>
                   @include('master.action', [
