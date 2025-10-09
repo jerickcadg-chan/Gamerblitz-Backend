@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
+use App\Transformers\ReviewTransformer;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -28,7 +29,7 @@ class ReviewController extends Controller
             ->get()
             ->map(function ($review) {
                 return [
-                    'user' => '*********',
+                    'buyer' => (new ReviewTransformer())->maskEmail($review->order->cust_email),
                     'star' => $review->star,
                     'body' => $review->body,
                     'created_at' => parse_date($review->created_at),
