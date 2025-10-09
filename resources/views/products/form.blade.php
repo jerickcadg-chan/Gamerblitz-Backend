@@ -69,12 +69,25 @@
             @include('alerts.feedback', ['field' => 'provider'])
           </div>
 
-          <div class="form-group">
-            <label for="provider_code_input" class="required">Provider Product Code</label>
-            <input type="text" class="form-control {{ $errors->has('provider_code') ? ' is-invalid' : '' }}"
-              name="provider_code" id="provider_code_input" placeholder="e.g. ML, VAL, FF, etc"
-              value="{{ old('provider_code', $product->provider_code ?? '') }}" required>
-            @include('alerts.feedback', ['field' => 'provider_code'])
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="provider_code_input" class="required">Provider Product Code (Lapakgaming)</label>
+                <input type="text" class="form-control {{ $errors->has('provider_code') ? ' is-invalid' : '' }}"
+                  name="provider_code" id="provider_code_input" placeholder="e.g. ML, VAL, FF, etc"
+                  value="{{ old('provider_code', $product->provider_code ?? '') }}" required>
+                @include('alerts.feedback', ['field' => 'provider_code'])
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="provider_code_vexa_input" class="">Provider Product Code (Vexagame)</label>
+                <input type="text" class="form-control {{ $errors->has('provider_code_vexa') ? ' is-invalid' : '' }}"
+                  name="provider_code_vexa" id="provider_code_vexa_input" placeholder="e.g. ML, VAL, FF, etc"
+                  value="{{ old('provider_code_vexa', $product->provider_code_vexa ?? '') }}">
+                @include('alerts.feedback', ['field' => 'provider_code_vexa'])
+              </div>
+            </div>
           </div>
 
           <div class="form-group">

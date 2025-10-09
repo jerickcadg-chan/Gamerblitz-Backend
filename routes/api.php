@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ProductItemCategoryController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderController;
+use App\Http\Controllers\Api\VexaGameController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -79,6 +80,8 @@ Route::get('blogs/{slug}', [BlogController::class, 'show']);
 // NOTE: we are no longer using product callback since we use best product list which has different structure and code
 // Route::post('callback/lapakgaming/product', [LapakGamingController::class, 'productUpdateCallback']);
 Route::post('callback/lapakgaming/order', [LapakGamingController::class, 'orderCallback']);
+
+Route::post('callback/vexagame/order', [VexaGameController::class, 'orderCallback']);
 //     });
 // }
 

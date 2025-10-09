@@ -8,6 +8,7 @@ use App\Constants\ProviderConstant;
 use App\Constants\StatusConst;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\LapakGamingOrderHandler;
+use App\Jobs\VexaGameOrderHandler;
 use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendOrderNotif;
@@ -270,6 +271,12 @@ class OrderService
             } else {
                 LapakGamingOrderHandler::dispatch($order);
             }
+        } elseif ($provider === ProviderConstant::VEXAGAME) {
+            if ($sync) {
+               return VexaGameOrderHandler::dispatchSync($order);
+            } else {
+                VexaGameOrderHandler::dispatch($order);
+            }
         }
 
         // ... handle other provider
@@ -294,7 +301,6 @@ class OrderService
             if ($status === StatusConst::DELAY) {
                 Mail::to($order->cust_email)->queue(new SendErrorNotif($order, "There is a problem when processing your order, please contact admin"));
             }
-
         }
 
         $this->createHistory($order->id, $status, 'order', $note);
