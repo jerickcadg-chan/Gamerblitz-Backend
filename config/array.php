@@ -19,7 +19,7 @@ return [
         'order',
         'report',
         'promo' => ['discount', 'slider', 'flash_sale'],
-        'statistic' => ['statistic_order', 'statistic_user'],
+        'statistic' => ['statistic_order', 'statistic_user', 'statistic_product'],
         'user' => ['user', 'guest', 'customer', 'role', 'affiliate_withdraw'],
         'digi' => ['digi_product_create', 'digi_transaction', 'digi_transaction_create']
     ],

@@ -31,9 +31,9 @@
           <h3 class="page-title">Product Statistic {{ parse_date_format($startDate) }}
             - {{ parse_date_format($endDate) }}</h3>
         </div>
-        <div id="order-statistic-chart"></div>
+        {{-- <div id="order-statistic-chart"></div> --}}
 
-        <div class="pt-4 table-responsive">
+        <div class="table-responsive">
           <table class="table table-bordered table-hover">
             <thead>
             <tr>
@@ -90,7 +90,6 @@
 @push('js')
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script>
-    initChart()
     initDaterange()
 
     function initDaterange() {
@@ -101,40 +100,6 @@
           format: 'YYYY-MM-DD'
         }
       })
-    }
-
-    function initChart() {
-      let options = {
-        chart: {
-          type: "area",
-          height: "500",
-          width: '100%',
-          toolbar: {"show": false},
-          zoom: {"enabled": true},
-          fontFamily: 'Helvetica, Arial, sans-serif',
-          foreColor: '#373d3f',
-          sparkline: {"enabled": false},
-        },
-        series: [{
-          name: 'Turnover',
-          data: {{ Js::from($orders->pluck('turnover')) }},
-        }, {
-          name: 'Profit',
-          data: {{ Js::from($orders->pluck('profit')) }}
-        }],
-        yaxis: {
-          labels: {
-            formatter: value => formatter(value)
-          }
-        },
-        xaxis: {
-          categories: {{ Js::from($orders->pluck('product_name')) }}
-        }
-      }
-
-      let chart = new ApexCharts(document.querySelector("#order-statistic-chart"), options);
-
-      chart.render();
     }
 
     function formatter(value, options) {
