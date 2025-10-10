@@ -121,6 +121,9 @@
             <li class="nav-item">
               <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}" href="{{ route('statistic.user') }}"> Statistic User </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ $activePage == 'statistic_product' ? 'active' : null }}" href="{{ route('statistic.product') }}"> Statistic Product </a>
+            </li>
           </ul>
         </div>
       </li>

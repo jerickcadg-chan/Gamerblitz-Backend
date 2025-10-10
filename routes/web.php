@@ -84,6 +84,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     // Statistic
     Route::get('statistic/order', [StatisticController::class, 'showOrderStatistic'])->name('statistic.order');
     Route::get('statistic/user', [StatisticController::class, 'showUserStatistic'])->name('statistic.user');
+    Route::get('statistic/product', [StatisticController::class, 'showProductStatistic'])->name('statistic.product');
 
     // product item
     Route::get('product-item/price-form', [ProductItemPriceController::class, 'index'])->name('product-item.price-form');
