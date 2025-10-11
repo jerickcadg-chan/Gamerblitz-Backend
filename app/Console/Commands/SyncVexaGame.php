@@ -104,12 +104,17 @@ class SyncVexaGame extends Command
      */
     private function syncProduct(Product $product, string $apiUrl, string $token, float $exchangeRate, array $fallbacks): void
     {
+        $log      = Log::channel('vexagame');
         $response = Http::withHeaders(['Authorization' => $token])
             ->timeout(15)
             ->get($apiUrl, ['product_slug' => $product->provider_code_vexa]);
 
         if ($response->failed()) {
-            throw new Exception("API request failed ({$response->status()}) for product: {$product->name}");
+            $message = "API request failed ({$response->status()}) for product: {$product->name}";
+            
+            $log->error("⚠️ {$message}");
+            $this->warn("\n⚠️ {$message}");
+            return;
         }
 
         $payload = $response->json()['payload'] ?? [];
