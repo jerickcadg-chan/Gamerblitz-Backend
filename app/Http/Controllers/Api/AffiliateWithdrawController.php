@@ -8,6 +8,7 @@ use App\Models\AffiliateWithdraw;
 use App\Models\User;
 use App\Transformers\AffiliateWithdrawTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AffiliateWithdrawController extends Controller
 {
@@ -31,24 +32,40 @@ class AffiliateWithdrawController extends Controller
 
     public function claim(Request $request)
     {
-        $user = User::findOrFail($this->userId);
+        try {
+            $user = User::findOrFail($this->userId);
 
-        $affiliate = Affiliate::where('user_id', $user->id)->lockForUpdate()->first();
+            $affiliate = Affiliate::where('user_id', $user->id)->lockForUpdate()->first();
 
-        if ($affiliate->balance < 1) {
-            return api_status_warning('Not enough balance');
+            if ($affiliate->balance < 1) {
+                return api_status_warning('Not enough balance');
+            }
+
+            $affiliateWithdraw = AffiliateWithdraw::create([
+                'affiliate_id' => $affiliate->id,
+                'user_id' => $user->id,
+                'amount' => $affiliate->balance,
+                'requested_at' => now()
+            ]);
+
+            $amountBefore = $affiliate->balance;
+            $affiliate->balance -= $affiliate->balance;
+            $affiliate->save();
+
+            $affiliate->affiliateHistories()->create([
+                'affiliate_id'       => $affiliate->id,
+                'affiliateable_type' => 'App\Models\AffiliateWithdraw',
+                'affiliateable_id'   => $affiliateWithdraw->id,
+                'amount'             => $affiliateWithdraw->amount,
+                'amount_before'      => $amountBefore,
+                'latest_balance'     => $affiliate->balance,
+                'description'        => "Request withdraw {$affiliateWithdraw->amount}",
+            ]);
+
+            return api_status_ok($affiliateWithdraw);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return api_status_warning("Failed to request withdrawal");
         }
-
-        $affiliateWithdraw = AffiliateWithdraw::create([
-            'affiliate_id' => $affiliate->id,
-            'user_id' => $user->id,
-            'amount' => $affiliate->balance,
-            'requested_at' => now()
-        ]);
-
-        $affiliate->balance -= $affiliate->balance;
-        $affiliate->save();
-
-        return api_status_ok($affiliateWithdraw);
     }
 }

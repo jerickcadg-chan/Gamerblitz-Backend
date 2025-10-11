@@ -58,19 +58,32 @@ class AffiliateWithdrawController extends Controller
 
             if ($request->status === StatusConst::PAID) {
                 // Update balance (already reduced when withdrawal was requested)
-                /* $affiliate->balance -= $affiliateWithdraw->amount; */
-                /* $affiliate->save(); */
+                // $affiliate->balance -= $affiliateWithdraw->amount;
+                // $affiliate->save();
 
                 // Save history
+                // $affiliate->affiliateHistories()->create([
+                //     'affiliate_id'       => $affiliate->id,
+                //     'affiliateable_type' => 'App\Models\AffiliateWithdraw',
+                //     'affiliateable_id'   => $affiliateWithdraw->id,
+                //     'amount'             => -$affiliateWithdraw->amount,
+                //     'amount_before'      => $amountBefore,
+                //     'latest_balance'     => $affiliate->balance,
+                //     'description'        => "Withdraw {$affiliateWithdraw->amount}",
+
+                // ]);
+            } else if ($request->status === StatusConst::REJECTED) {
+                $affiliate->balance += $affiliateWithdraw->amount;
+                $affiliate->save();
+
                 $affiliate->affiliateHistories()->create([
                     'affiliate_id'       => $affiliate->id,
                     'affiliateable_type' => 'App\Models\AffiliateWithdraw',
                     'affiliateable_id'   => $affiliateWithdraw->id,
-                    'amount'             => -$affiliateWithdraw->amount,
+                    'amount'             => $affiliateWithdraw->amount,
                     'amount_before'      => $amountBefore,
                     'latest_balance'     => $affiliate->balance,
-                    'description'        => "Withdraw {$affiliateWithdraw->amount}",
-
+                    'description'        => "Withdraw rejected {$affiliateWithdraw->amount}",
                 ]);
             }
         });
