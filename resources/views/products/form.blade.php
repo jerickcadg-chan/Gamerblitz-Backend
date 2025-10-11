@@ -33,6 +33,13 @@
             @include('alerts.feedback', ['field' => 'name'])
           </div>
 
+          <div class="form-group col-md-6">
+            <label>Slug (optional)</label>
+            <input type="text" name="slug" class="form-control {{ $errors->has('slug') ? 'is-invalid' : '' }}"
+                   value="{{ old('slug', $product->slug) }}" placeholder="auto from title if empty">
+            @include('alerts.feedback', ['field' => 'slug'])
+          </div>
+
           <div class="form-group">
             <label for="code_input" class="required">Code</label>
             <input type="text" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" name="code"
