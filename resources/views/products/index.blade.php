@@ -54,6 +54,7 @@
                 <td>
                   <div class="mb-2">{{ $product->name }}</div>
                   <strong class="small">Code: {{ $product->code }}</strong>
+                  <p class="small">Slug: {{ $product->slug }}</p>
                 </td>
                 <td>{{ $product->productCategory?->name }}</td>
                 <td>

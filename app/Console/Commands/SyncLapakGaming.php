@@ -129,7 +129,7 @@ class SyncLapakGaming extends Command
                 try {
                     DB::beginTransaction();
 
-                    $product->input_format = $product->input_format ?? $lgCategory->forms;
+                    $product->input_format = $this->useFallbackIfEmptyJSON($product->input_format, $lgCategory->forms);
                     $product->check_uid = $lgCategory->check_id;
                     $product->updated_at = now();
                     $product->markup_user = $this->useFallbackIfNonPositive($product->markup_user, $fallbackMarginPublic);
@@ -153,7 +153,7 @@ class SyncLapakGaming extends Command
                         // Disable all product items not from LapakGaming.
                         $this->disableInactiveProductItems($product);
                     }
-                    
+
                     foreach ($lgItems as $lgItem) {
                         $item = BestProductItem::from($lgItem);
                         $this->line("Processing item {$item->code}");
@@ -231,5 +231,20 @@ class SyncLapakGaming extends Command
             ->where('provider', '!=', ProviderConstant::LAPAKGAMING)
             ->where('status', 'active')
             ->update(['status' => 'empty']);
+    }
+
+    public function useFallbackIfEmptyJSON(mixed $value, mixed $fallback): mixed
+    {
+        if (empty($value) || $value === false) {
+            return $fallback;
+        }
+
+        $decoded = json_decode($value, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && empty($decoded)) {
+            return $fallback;
+        }
+
+        return $value;
     }
 }

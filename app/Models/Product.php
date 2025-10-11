@@ -18,15 +18,17 @@ use Illuminate\Support\Facades\Storage;
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory, SoftDeletes, WithPictures;
+    use HasFactory;
+    use SoftDeletes;
+    use WithPictures;
 
-    const ACTIVE = 'active';
+    public const ACTIVE = 'active';
 
-    const INACTIVE = 'inactive';
+    public const INACTIVE = 'inactive';
 
-    const VOUCHER = 'voucher';
+    public const VOUCHER = 'voucher';
 
-    const NOT_VISIBLE = 'not_visible';
+    public const NOT_VISIBLE = 'not_visible';
 
     protected $fillable = [
         'name',
@@ -100,10 +102,13 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function setNameAttribute($value): void
+    public function setSlugAttribute($value): void
     {
-        $this->attributes['name'] = $value;
-        $this->attributes['slug'] = \slugify($value);
+        if (empty($value)) {
+            $value = slugify($this->attributes['name'] ?? '');
+        }
+
+        $this->attributes['slug'] = $value;
     }
 
     public function getProductCoverAttribute(): ?string
