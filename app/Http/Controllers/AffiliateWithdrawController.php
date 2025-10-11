@@ -57,9 +57,9 @@ class AffiliateWithdrawController extends Controller
             $affiliateWithdraw->save();
 
             if ($request->status === StatusConst::PAID) {
-                // Update balance
-                $affiliate->balance -= $affiliateWithdraw->amount;
-                $affiliate->save();
+                // Update balance (already reduced when withdrawal was requested)
+                /* $affiliate->balance -= $affiliateWithdraw->amount; */
+                /* $affiliate->save(); */
 
                 // Save history
                 $affiliate->affiliateHistories()->create([

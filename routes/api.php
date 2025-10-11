@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AffiliateWithdrawController;
+use App\Http\Controllers\Api\AffiliateController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CategoryController;
@@ -99,6 +100,7 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::post('deposit', [DepositController::class, 'store']);
 
     Route::get('mutation', [DepositController::class, 'mutation']);
+    Route::get('affiliate/history', [AffiliateController::class, 'balanceLog']);
     Route::get('affiliate-withdraw', [AffiliateWithdrawController::class, 'index']);
     Route::post('affiliate-withdraw/claim', [AffiliateWithdrawController::class, 'claim']);
 
