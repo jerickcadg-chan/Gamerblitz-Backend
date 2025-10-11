@@ -9,6 +9,7 @@ use App\Models\ProductItem;
 use Illuminate\Console\Command;
 use App\Constants\ProviderConstant;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SyncVexaGame extends Command
 {
@@ -39,6 +40,19 @@ class SyncVexaGame extends Command
         $token        = Setting::getByKey('vexagame_api_token');
         $apiUrl       = rtrim($baseUrl, '/') . '/v2/product-item';
         $exchangeRate = get_exchange_rate('IDR', Setting::getBaseCurrency());
+        $log          = Log::channel('vexagame');
+
+        if (!$token) {
+            $log->warning('⚠️ Missing VexaGame API token in setting — skipping sync.');
+            $this->warn('⚠️ Missing VexaGame API token in setting — skipping sync.');
+            return;
+        }
+
+        if (!$baseUrl) {
+            $log->warning('⚠️ Missing VexaGame API URL in setting — skipping sync.');
+            $this->warn('⚠️ Missing VexaGame API URL in setting — skipping sync.');
+            return;
+        }
 
         $fallbacks = [
             'public' => Setting::getByKey('margin_public'),
@@ -126,7 +140,7 @@ class SyncVexaGame extends Command
     {
         $affected = ProductItem::where('product_id', $product->id)
             ->where('provider', '!=', ProviderConstant::VEXAGAME)
-            ->where('status','active')
+            ->where('status', 'active')
             ->update(['status' => 'empty']);
 
         if ($affected > 0) {
