@@ -7,6 +7,7 @@ use App\Models\FetchVarianJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class FetchVarianHandle implements ShouldQueue
 {
@@ -30,11 +31,20 @@ class FetchVarianHandle implements ShouldQueue
      */
     public function handle(): void
     {
-        Artisan::call('app:sync-lapak-gaming');
-        Artisan::call('app:sync-vexa-game');
-
-        FetchVarianJob::find($this->statusId)->update([
-            'status' => 'DONE'
+        try {
+            Artisan::call('app:sync-lapak-gaming');
+        } catch (\Throwable $e) {
+            Log::error("❌ Error in sync-lapak-gaming: " . $e->getMessage());
+        }
+    
+        try {
+            Artisan::call('app:sync-vexa-game');
+        } catch (\Throwable $e) {
+            Log::error("❌ Error in sync-vexa-game: " . $e->getMessage());
+        }
+        
+        FetchVarianJob::find($this->statusId)?->update([
+            'status' => 'DONE',
         ]);
     }
 }
