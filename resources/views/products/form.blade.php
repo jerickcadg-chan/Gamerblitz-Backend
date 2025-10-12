@@ -36,7 +36,7 @@
           <div class="form-group col-md-6">
             <label>Slug (optional)</label>
             <input type="text" name="slug" class="form-control {{ $errors->has('slug') ? 'is-invalid' : '' }}"
-                   value="{{ old('slug', $product->slug) }}" placeholder="auto from title if empty">
+                   value="{{ old('slug', $product->slug ?? "") }}" placeholder="auto from title if empty">
             @include('alerts.feedback', ['field' => 'slug'])
           </div>
 
