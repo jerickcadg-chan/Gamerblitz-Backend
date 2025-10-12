@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\ProviderConstant;
 use App\Http\Requests\ProductItemRequest;
 use App\Jobs\FetchVarianHandle;
 use App\Models\FetchVarianJob;
 use App\Models\ProductItem;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Routing\Controller;
 
 class ProductItemController extends Controller
@@ -59,8 +61,9 @@ class ProductItemController extends Controller
         $title = $this->title;
 
         $products = Product::all();
+        $providers = ProviderConstant::AVAILABLE_PROVIDER;
 
-        return view('product_items.form', compact('products', 'actionLink', 'indexLink', 'title'));
+        return view('product_items.form', compact('products', 'providers', 'actionLink', 'indexLink', 'title'));
     }
 
     public function show(ProductItem $productItem)
@@ -76,7 +79,20 @@ class ProductItemController extends Controller
 
     public function store(ProductItemRequest $request)
     {
-        ProductItem::create($request->all());
+        $fallbackMarginPublic = Setting::getByKey('margin_public');
+        $fallbackMarginSilver = Setting::getByKey('margin_silver');
+        $fallbackMarginGold = Setting::getByKey('margin_gold');
+        $fallbackMarginVip = Setting::getByKey('margin_vip');
+
+        $newProductItem = new ProductItem();
+        $newProductItem->fill($request->all());
+        $newProductItem->margin = $newProductItem->margin ?? $fallbackMarginPublic;
+        $newProductItem->margin_silver = $newProductItem->margin_silver ?? $fallbackMarginSilver;
+        $newProductItem->margin_gold = $newProductItem->margin_gold ?? $fallbackMarginGold;
+        $newProductItem->margin_vip = $newProductItem->margin_vip ?? $fallbackMarginVip;
+        $newProductItem->provider = $newProductItem->provider ?? $newProductItem->product->provider;
+
+        $newProductItem->save();
 
         toast(alert_created_text($this->title), 'success');
         return redirect()->route('product_item.index');
@@ -90,13 +106,25 @@ class ProductItemController extends Controller
         $title = $this->title;
 
         $products = Product::all();
+        $providers = ProviderConstant::AVAILABLE_PROVIDER;
 
-        return view('product_items.form', compact('products', 'actionLink', 'indexLink', 'productItem', 'title'));
+        return view('product_items.form', compact('products', 'providers', 'actionLink', 'indexLink', 'productItem', 'title'));
     }
 
     public function update(ProductItemRequest $request, ProductItem $productItem)
     {
-        $productItem->update($request->all());
+        $fallbackMarginPublic = Setting::getByKey('margin_public');
+        $fallbackMarginSilver = Setting::getByKey('margin_silver');
+        $fallbackMarginGold = Setting::getByKey('margin_gold');
+        $fallbackMarginVip = Setting::getByKey('margin_vip');
+
+        $productItem->fill($request->all());
+        $productItem->margin = $productItem->margin ?? $fallbackMarginPublic;
+        $productItem->margin_silver = $productItem->margin_silver ?? $fallbackMarginSilver;
+        $productItem->margin_gold = $productItem->margin_gold ?? $fallbackMarginGold;
+        $productItem->margin_vip = $productItem->margin_vip ?? $fallbackMarginVip;
+        $productItem->provider = $productItem->provider ?? $productItem->product->provider;
+        $productItem->save();
 
         toast(alert_updated_text($this->title), 'success');
         return redirect()->route('product_item.index');

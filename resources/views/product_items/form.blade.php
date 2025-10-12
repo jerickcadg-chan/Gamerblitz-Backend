@@ -67,7 +67,7 @@
             @include('alerts.feedback', ['field' => 'stock'])
           </div>
 
-          @if($productItem)
+          @if(isset($productItem))
             <div class="form-group">
               <label for="provider_input">Provider</label>
               <input type="text" name="provider" id="provider_input"
@@ -107,6 +107,20 @@
               @include('alerts.feedback', ['field' => 'margin_vip'])
             </div>
           </div>
+
+          <div class="form-group">
+            <label for="provider_input" class="required">Provider</label>
+            <select id="provider_input" class="form-control" name="provider">
+              @php $v = old('provider', $productItem->provider ?? ''); @endphp
+              @foreach ($providers as $providerName => $providerDisplayName)
+                <option value="{{ $providerName }}" {{ $v === $providerName ? 'selected' : '' }}>
+                  {{ $providerDisplayName }}
+                </option>
+              @endforeach
+            </select>
+            @include('alerts.feedback', ['field' => 'provider'])
+          </div>
+
 
           <div class="form-group">
             <label>Status</label>
