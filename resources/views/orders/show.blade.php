@@ -179,6 +179,7 @@
               @endforelse
               </tbody>
             </table>
+            @can('Process Order')
             @if ($order->status == StatusConst::SUCCESS)
               <form action="{{ route('order.status') }}" onsubmit="return confirm('Are you sure?')" method="post" class="mt-3">
                 @csrf
@@ -189,7 +190,10 @@
                 <input type="hidden" id="status" name="status">
               </form>
             @endif
+            @endcan
+            @can('Process Order')
             <x-input-update-status :order="$order" />
+            @endcan
           </div>
         </div>
       </div>

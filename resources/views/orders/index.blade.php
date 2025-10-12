@@ -98,7 +98,9 @@
                   <td>{{ currency_format($order->total_income) }}</td>
                   <td>
                     <span class="d-block">{!! $order->order_status_raw !!}</span>
+                    @can('Process Order')
                     <x-input-update-status :order="$order" />
+                    @endcan
                   </td>
                   <td>{{ @$order->cust_email }}</td>
                   <td><a href="https://wa.me/{{ $order->cust_phone_number }}&text=Hi"

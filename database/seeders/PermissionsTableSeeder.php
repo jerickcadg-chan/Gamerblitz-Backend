@@ -26,6 +26,9 @@ class PermissionsTableSeeder extends Seeder
         $permissions = [
             'View Dashboard',
 
+            'View Order',
+            'Process Order',
+
             'View Transaction Statistic',
             'View User Statistic',
 
