@@ -252,6 +252,74 @@ class OrderController extends Controller
         ]);
     }
 
+    public function mpayCallback(Request $request, OrderService $orderService, DepositService $depositService)
+    {
+        $data = $request->all();
+        Log::info('MPay Callback Received', $data);
+
+        $receivedSign = $data['sign'] ?? null;
+        unset($data['sign']);
+
+        if (!$receivedSign) {
+            return response()->json(['message' => 'Missing signature'], 400);
+        }
+
+        ksort($data);
+
+        // Build query string key1=value1&key2=value2&
+        $stringA = collect($data)
+            ->map(fn($v, $k) => "{$k}={$v}")
+            ->join('&') . '&';
+        
+        // Make signature
+        $md5Key        = md5(Setting::getByKey('mpay_sign_key'));
+        $stringSign    = "{$stringA}key={$md5Key}";
+        $generatedSign = md5($stringSign);
+
+        if ($generatedSign != $receivedSign) {
+            Log::warning('MPay Callback signature mismatch', [
+                'expected' => $generatedSign,
+                'received' => $receivedSign,
+            ]);
+
+            return response()->json(['message' => 'Invalid signature'], 400);
+        }
+
+        // Extract order id & status
+        $orderId   = $data['merchantOrderId'] ?? $data['orderId'] ?? null;
+        $status    = strtoupper($data['msg'] ?? '');
+
+        if (!$orderId) {
+            return response()->json(['message' => 'Missing order ID'], 400);
+        }
+
+        $order   = Order::where('payment_id', $orderId)->first();
+        $deposit = Deposit::where('payment_id', $orderId)->first();
+
+        if (!$order && !$deposit) {
+            Log::warning('MPay Callback: Transaction not found', $data);
+
+            return response('failed');
+        }
+
+        // Handle Order
+        if ($order && $status == 'PAID') {
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+            $orderService->processOrder($order);
+
+            return response('success');
+        }
+
+        // Handle Deposit
+        if ($deposit && $status == 'PAID') {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return response('success');
+        }
+
+        return response('success');
+    }
+
     public function billplzCallback(Request $request, OrderService $orderService, DepositService $depositService)
     {
         $data = $request->all();

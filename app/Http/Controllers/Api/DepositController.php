@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Services\BillplzService;
 use App\Services\DepositService;
 use App\Services\HitpayService;
+use App\Services\MpayService;
 use App\Services\XenditService;
 use App\Transformers\DepositTransformer;
 use App\Transformers\MutationTransformer;
@@ -114,6 +115,10 @@ class DepositController extends Controller
 
         if ($paymentMethod->vendor === PaymentMethod::BILLPLZ) {
             app(BillplzService::class)->createDepositBillplzInvoice($deposit);
+        }
+
+        if ($paymentMethod->vendor === PaymentMethod::MPAY) {
+            app(MpayService::class)->createDepositMpayInvoice($deposit);
         }
 
         return api_status_ok(transformer($deposit, new DepositTransformer()));
