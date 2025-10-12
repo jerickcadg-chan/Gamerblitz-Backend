@@ -27,6 +27,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th> Code </th>
                             <th> Product Item </th>
                             <th> Capital </th>
                             <th> Normal Price </th>
@@ -39,6 +40,7 @@
                         @forelse ($flash_sales as $index => $flash_sale)
                         <tr>
                             <td>{{ $flash_sales->firstItem() + $index }}</td>
+                            <td>{{ $flash_sale->productItem->code }}</td>
                             <td>{{ $flash_sale->productItem->full_name }}</td>
                             <td>{{ currency_format($flash_sale->productItem->capital, $flash_sale->productItem->currencyCode) }}</td>
                             <td>{{ currency_format($flash_sale->productItem->margin_price_public, $flash_sale->productItem->currencyCode) }}</td>
