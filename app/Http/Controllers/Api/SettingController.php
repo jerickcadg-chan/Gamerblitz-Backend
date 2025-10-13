@@ -22,6 +22,7 @@ class SettingController extends Controller
             'favicon',
             'keywords',
             'meta_description',
+            'gtm_id',
             'popup_title',
             'popup_description',
             'popup_image',

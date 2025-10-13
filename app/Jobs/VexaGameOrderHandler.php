@@ -40,7 +40,8 @@ class VexaGameOrderHandler implements ShouldQueue
                 customer_no: $productItem->product->code === 'ML'
                     ? implode('', $order->cust_account_array)
                     : json_encode($order->cust_account_array),
-                qty: $order->qty
+                qty: $order->qty,
+                partner_ref_id: $order->code
             );
 
             $response = Http::withHeaders([

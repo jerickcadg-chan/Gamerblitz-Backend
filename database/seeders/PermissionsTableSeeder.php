@@ -117,6 +117,8 @@ class PermissionsTableSeeder extends Seeder
             'Create Exchange Rate',
             'Edit Exchange Rate',
             'Delete Exchange Rate',
+
+            'View App Log',
         ];
 
         foreach ($permissions as $permission){
