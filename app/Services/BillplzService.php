@@ -25,7 +25,7 @@ class BillplzService
             'description'       => $order->productItem->full_name,
             'email'             => $order->cust_email,
             'name'              => $order->cust_email,
-            'amount'            => (int) $order->total_price,
+            'amount'            => (int) $order->total_price * 1000,
             'callback_url'      => route('callback.billplz'),
             'redirect_url'      => config('app.fe_url').'/'.config('app.fe_invoice_url').'/'. $referenceNumber
         ];
@@ -58,7 +58,7 @@ class BillplzService
             'description'       => 'Deposit balance ' . $deposit->total_amount,
             'email'             => $deposit->user->email,
             'name'              => $deposit->user->name,
-            'amount'            => (int) ceil($deposit->total_amount),
+            'amount'            => (int) ceil($deposit->total_amount * 1000),
             'callback_url'      => route('callback.billplz'),
             'redirect_url'      => config('app.fe_url') . '/dashboard/deposit/' . $referenceNumber
         ];
