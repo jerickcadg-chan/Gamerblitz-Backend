@@ -58,12 +58,12 @@ class MpayService
      */
     public function createDepositMpayInvoice(Deposit $deposit): array
     {
-        $amount = ceil($deposit->total_amount);
+        $amount = ceil($deposit->total_amount * 100);
         $externalId = $deposit->code;
         $method = $deposit->paymentMethod;
 
         $payload = [
-            'amount'            => (int) $amount * 100,
+            'amount'            => (int) $amount,
             'notifyUrl'         => route('callback.mpay'),
             'customerPhone'     => $this->normalizePhone($deposit->user->phone_number),
             'customerName'      => $deposit->user->name,
