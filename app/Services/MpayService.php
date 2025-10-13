@@ -22,10 +22,10 @@ class MpayService
         $method = $order->paymentMethod;
 
         $payload = [
-            'amount'            => $amount,
+            'amount'            => (int) $amount * 100,
             'notifyUrl'         => 'https://webhook.site/1bead8cb-0577-42a8-ace8-e90b0d75807c',
-            'customerPhone'     => $order->cust_phone_number,
-            'customerName'      => $order->cust_email,
+            'customerPhone'     => $this->normalizePhone($order->cust_phone_number),
+            'customerName'      => $this->emailToName($order->cust_email),
             'customerEmail'     => $order->cust_email,
             'merchantOrderId'   => $externalId,
             'payMethod'         => $method->slug
@@ -39,11 +39,9 @@ class MpayService
         $json = $response->json();
         Log::info('Mpay payment requests response', $json);
 
-        if ($response->failed()) {
-            throw new \Exception("Failed to create payment: " . $json['message']);
+        if ($response->failed() || $json['code'] != '200') {
+            throw new \Exception("Failed to create payment: " . $json['msg']);
         }
-
-        dd($payload, $json);
 
         $order->payment_url = $json['payUrl'] ?? null;
         $order->payment_code = $json['orderId'] ?? null;
@@ -65,9 +63,9 @@ class MpayService
         $method = $deposit->paymentMethod;
 
         $payload = [
-            'amount'            => $amount,
+            'amount'            => (int) $amount * 100,
             'notifyUrl'         => route('callback.mpay'),
-            'customerPhone'     => $deposit->user->phone_number,
+            'customerPhone'     => $this->normalizePhone($deposit->user->phone_number),
             'customerName'      => $deposit->user->name,
             'customerEmail'     => $deposit->user->email,
             'merchantOrderId'   => $externalId,
@@ -82,7 +80,7 @@ class MpayService
         $json = $response->json();
         Log::info('Mpay payment requests response', $json);
 
-        if ($response->failed()) {
+        if ($response->failed() || $json['code'] != '200') {
             throw new \Exception("Failed to create payment: " . $json['message']);
         }
 
@@ -92,5 +90,32 @@ class MpayService
         $deposit->save();
 
         return $json;
+    }
+
+    /**
+     * @param mixed $email
+     * 
+     * @return string
+     */
+    private function emailToName($email): string
+    {
+        $username = explode('@', $email)[0];
+        $username = str_replace(['.', '_'], ' ', $username);
+
+        return ucwords($username);
+    }
+
+    /**
+     * @param mixed $phone
+     * 
+     * @return string
+     */
+    private function normalizePhone($phone): string
+    {
+        $phone = preg_replace('/\D/', '', $phone);
+        $phone = preg_replace('/^62/', '', $phone);
+        $phone = ltrim($phone, '0');
+
+        return $phone;
     }
 }
