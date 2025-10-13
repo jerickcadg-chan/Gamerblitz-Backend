@@ -153,6 +153,10 @@ class OrderService
                 app(BillplzService::class)->createOrderBillplzInvoice($order);
             }
 
+            if ($paymentMethod->vendor === PaymentMethod::MPAY) {
+                app(MpayService::class)->createOrderMpayInvoice($order);
+            }
+
             $this->updateStatus($order, StatusConst::PENDING);
 
             if ($paymentMethod->slug == PaymentMethod::BALANCE) {
