@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AffiliateWithdrawController;
+use App\Http\Controllers\AppLogController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DiscountController;
@@ -129,5 +129,6 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'payment_method' => PaymentMethodController::class,
         'exchange_rate' => ExchangeRateController::class,
         'blog' => BlogController::class,
+        'app-log' => AppLogController::class,
     ]);
 });

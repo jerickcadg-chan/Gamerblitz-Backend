@@ -125,7 +125,7 @@
                 @if(strpos($history->affiliateable_type, 'AffiliateWithdraw'))
                   Withdraw #{{ $history->affiliateable_id }}
                 @elseif(strpos($history->affiliateable_type, 'Order'))
-                  Order #{{ $history->affiliateable->code }}
+                  Order #{{ $history->affiliateable?->code }}
                 @else
                   By Admin
                 @endif
