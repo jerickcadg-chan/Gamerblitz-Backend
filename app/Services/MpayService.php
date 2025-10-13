@@ -23,12 +23,12 @@ class MpayService
 
         $payload = [
             'amount'            => $amount,
-            'notifyUrl'         => route('callback.mpay'),
+            'notifyUrl'         => 'https://webhook.site/1bead8cb-0577-42a8-ace8-e90b0d75807c',
             'customerPhone'     => $order->cust_phone_number,
             'customerName'      => $order->cust_email,
             'customerEmail'     => $order->cust_email,
             'merchantOrderId'   => $externalId,
-            'payMethod'         => $method
+            'payMethod'         => $method->slug
         ];
 
         $response = Http::withBasicAuth(
@@ -42,6 +42,8 @@ class MpayService
         if ($response->failed()) {
             throw new \Exception("Failed to create payment: " . $json['message']);
         }
+
+        dd($payload, $json);
 
         $order->payment_url = $json['payUrl'] ?? null;
         $order->payment_code = $json['orderId'] ?? null;
@@ -69,7 +71,7 @@ class MpayService
             'customerName'      => $deposit->user->name,
             'customerEmail'     => $deposit->user->email,
             'merchantOrderId'   => $externalId,
-            'payMethod'         => $method
+            'payMethod'         => $method->slug
         ];
 
         $response = Http::withBasicAuth(
