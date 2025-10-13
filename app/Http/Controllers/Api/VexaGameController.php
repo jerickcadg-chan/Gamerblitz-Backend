@@ -66,7 +66,9 @@ class VexaGameController extends Controller
 
                 case 'GAGAL':
                 case 'REFUNDED':
-                    $this->handleRefund($order, $payload, $orderService, $note);
+                    if ($order->status != StatusConst::FAILED) {
+                        $this->handleRefund($order, $payload, $orderService, $note);
+                    }
                     break;
 
                 case 'DELAY':
