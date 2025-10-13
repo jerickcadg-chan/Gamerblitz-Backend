@@ -23,7 +23,7 @@ class MpayService
 
         $payload = [
             'amount'            => (int) $amount * 100,
-            'notifyUrl'         => 'https://webhook.site/1bead8cb-0577-42a8-ace8-e90b0d75807c',
+            'notifyUrl'         => route('callback.mpay'),
             'customerPhone'     => $this->normalizePhone($order->cust_phone_number),
             'customerName'      => $this->emailToName($order->cust_email),
             'customerEmail'     => $order->cust_email,

@@ -286,15 +286,15 @@ class OrderController extends Controller
         }
 
         // Extract order id & status
-        $orderId   = $data['merchantOrderId'] ?? $data['orderId'] ?? null;
-        $status    = strtoupper($data['msg'] ?? '');
+        $orderId   = $data['merchantOrderId'] ?? null;
+        $status    = $data['msg'] ?? null;
 
         if (!$orderId) {
             return response()->json(['message' => 'Missing order ID'], 400);
         }
 
-        $order   = Order::where('payment_id', $orderId)->first();
-        $deposit = Deposit::where('payment_id', $orderId)->first();
+        $order   = Order::where('code', $orderId)->first();
+        $deposit = Deposit::where('code', $orderId)->first();
 
         if (!$order && !$deposit) {
             Log::warning('MPay Callback: Transaction not found', $data);
