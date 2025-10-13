@@ -97,6 +97,13 @@
           </div>
 
           <div class="form-group">
+            <label>Google Tag Manager ID</label>
+            <input type="text" class="form-control {{ $errors->has('settings.gtm_id') ? 'is-invalid' : '' }}"
+                   name="settings[gtm_id]" value="{{ old('settings.gtm_id', $settings['gtm_id'] ?? '') }}">
+            @include('alerts.feedback', ['field' => 'settings.gtm_id'])
+          </div>
+
+          <div class="form-group">
             <label>Primary Color</label>
             <input type="color"
                    class="form-control form-control-color {{ $errors->has('primary_color') ? ' is-invalid' : '' }}"

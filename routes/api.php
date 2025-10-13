@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AffiliateWithdrawController;
 use App\Http\Controllers\Api\AffiliateController;
+use App\Http\Controllers\Api\AppLogController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CategoryController;
@@ -85,6 +86,8 @@ Route::post('callback/lapakgaming/order', [LapakGamingController::class, 'orderC
 Route::post('callback/vexagame/order', [VexaGameController::class, 'orderCallback']);
 //     });
 // }
+
+Route::post('app-log', [AppLogController::class, 'store']);
 
 Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::put('me', [AuthController::class, 'updateMe']);
