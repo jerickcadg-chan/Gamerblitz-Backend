@@ -39,6 +39,7 @@ class PaymentMethodRequest extends FormRequest
             'admin_type' => ['required', Rule::in(['nominal', 'percentage', 'no-admin'])],
 
             'vendor' => ['required', 'string', 'max:50'],
+            'type' => ['required', 'string', 'max:50'],
             'category' => ['required', 'string', 'max:100'],
 
             'is_active' => ['required', 'boolean'],

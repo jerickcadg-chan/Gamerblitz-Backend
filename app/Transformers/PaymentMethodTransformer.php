@@ -24,6 +24,7 @@ class PaymentMethodTransformer extends TransformerAbstract
             'admin_fee_raw' => $paymentMethod->admin_fee,
             'admin_type' => $paymentMethod->admin_type,
             'vendor' => $paymentMethod->vendor,
+            'type' => $paymentMethod->type,
             'slug' => $paymentMethod->slug,
             'picture_url' => $paymentMethod->picture_url,
             'currency_code' => $paymentMethod->currency_code,

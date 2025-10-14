@@ -43,6 +43,7 @@ class PaymentMethod extends Model implements IsFilterable
         'description',
         'is_raw_description',
         'is_active',
+        'type',
         'ordering'
     ];
 
@@ -60,6 +61,7 @@ class PaymentMethod extends Model implements IsFilterable
     {
         return Filter::only(
             Filter::field('vendor', [FilterType::EQUAL]),
+            Filter::field('type', [FilterType::EQUAL]),
             Filter::field('currency_code', [FilterType::IN, FilterType::EQUAL]),
         );
     }

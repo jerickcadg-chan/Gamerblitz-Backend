@@ -30,6 +30,7 @@
             <th>Name</th>
             <th>Currency</th>
             <th>Vendor</th>
+            <th>Type</th>
             <th>Category</th>
             <th>Active</th>
             <th> Action </th>
@@ -42,6 +43,7 @@
               <td>{{ $paymentMethod->name }}</td>
               <td>{{ $paymentMethod->currency_code }}</td>
               <td>{{ $paymentMethod->vendor }}</td>
+              <td>{{ $paymentMethod->type }}</td>
               <td>{{ $paymentMethod->category }}</td>
               <td>{{ $paymentMethod->is_active ? 'Active' : 'Inactive' }}</td>
               <td>

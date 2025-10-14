@@ -71,6 +71,18 @@
           </div>
 
           <div class="form-group">
+            <label for="type_input" class="required">Type</label>
+            <select class="form-control {{ $errors->has('type') ? ' is-invalid' : '' }}" name="type" id="type_input" required>
+              @foreach(['topup' => 'Top-Up', 'deposit' => 'Deposit'] as $val => $label)
+                <option value="{{ $val }}" {{ old('type', $paymentMethod->type ?? '') == $val ? 'selected' : '' }}>
+                  {{ $label }}
+                </option>
+              @endforeach
+            </select>
+            @include('alerts.feedback', ['field' => 'type'])
+          </div>
+
+          <div class="form-group">
             <label for="account_number_input">Account Number (For Manual)</label>
             <input type="text" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }}"
                    name="account_number" id="account_number_input" placeholder="Account No. / E-Wallet No."
