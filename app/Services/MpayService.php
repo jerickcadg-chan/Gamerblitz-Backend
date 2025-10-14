@@ -94,7 +94,7 @@ class MpayService
 
     /**
      * @param mixed $email
-     * 
+     *
      * @return string
      */
     private function emailToName($email): string
@@ -107,15 +107,36 @@ class MpayService
 
     /**
      * @param mixed $phone
-     * 
+     *
      * @return string
      */
-    private function normalizePhone($phone): string
+    public function normalizePhone(?string $phone): ?string
     {
-        $phone = preg_replace('/\D/', '', $phone);
-        $phone = preg_replace('/^62/', '', $phone);
-        $phone = ltrim($phone, '0');
+        if (!$phone) {
+            return null;
+        }
 
-        return $phone;
+        // Remove all non-digit characters
+        $onlyDigits = preg_replace('/\D/', '', $phone);
+
+        // Convert prefix "62" to "0"
+        if (str_starts_with($onlyDigits, '62')) {
+            $onlyDigits = '0' . substr($onlyDigits, 2);
+        }
+
+        // If the number doesn't start with "0", prepend "0"
+        if (!str_starts_with($onlyDigits, '0')) {
+            $onlyDigits = '0' . $onlyDigits;
+        }
+
+        // If the number is shorter than 11 digits, pad with trailing zeros
+        if (strlen($onlyDigits) < 11) {
+            $onlyDigits = str_pad($onlyDigits, 11, '0');
+        }
+
+        // If the number is longer than 11 digits, truncate it
+        $normalized = substr($onlyDigits, 0, 11);
+
+        return $normalized;
     }
 }
