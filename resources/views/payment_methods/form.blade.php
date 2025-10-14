@@ -73,7 +73,7 @@
           <div class="form-group">
             <label for="type_input" class="required">Type</label>
             <select class="form-control {{ $errors->has('type') ? ' is-invalid' : '' }}" name="type" id="type_input" required>
-              @foreach(['topup' => 'Top-Up', 'deposit' => 'Deposit'] as $val => $label)
+              @foreach(['all' => 'All', 'topup' => 'Top-Up', 'deposit' => 'Deposit'] as $val => $label)
                 <option value="{{ $val }}" {{ old('type', $paymentMethod->type ?? '') == $val ? 'selected' : '' }}>
                   {{ $label }}
                 </option>
