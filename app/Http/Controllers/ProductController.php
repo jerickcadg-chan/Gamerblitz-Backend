@@ -75,8 +75,8 @@ class ProductController extends Controller
             $defaults = [
                 'name' => $category['name'],
                 'code' => $category['code'],
-                'provider_code' => $category['provider_code'],
-                'provider_country' => $lapakGamingCountry,
+                'provider_code' => $category['code'],
+                'provider_country' => $upperCountryCode,
                 'input_format' => $category['forms'],
             ];
 
