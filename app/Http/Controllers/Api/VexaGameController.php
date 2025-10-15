@@ -140,7 +140,7 @@ class VexaGameController extends Controller
     {
         $transactions = collect($payload);
 
-        $order->note = $transactions->get('note', '');
+        $order->note = $transactions->get('description', '');
         $order->save();
 
         $orderService->updateStatus($order, StatusConst::FAILED, $note);
