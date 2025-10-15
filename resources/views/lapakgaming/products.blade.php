@@ -57,6 +57,10 @@
             </thead>
             <tbody>
               @forelse ($products as $index => $product)
+                @php
+                  $code = strtoupper($product['code']);
+                  $alreadyExists = $existingCodes->contains($code);
+                @endphp
                 <tr>
                   <td>{{ $index + 1 }}</td>
                   <td>{{ $product['code'] }}</td>
@@ -65,11 +69,18 @@
                   <td>{{ $product['check_id'] }}</td>
                   <td>{{ $product['country_code'] }}</td>
                   <td>
-                    <a class="btn btn-gradient-warning btn-sm" data-bs-toggle="tooltip" title="Sync to Product Forms"
-                      data-bs-placement="top" target="_blank"
-                      href="{{ route('product.sync.lapak-gaming', ['lapakgaming_country' => $product['country_code'], 'lapakgaming_code' => $product['code']]) }}">
-                      <i class="mdi mdi-tooltip-edit menu-icon"></i>
-                    </a>
+                    @if ($alreadyExists)
+                      <button class="btn btn-success btn-sm" disabled>
+                        <i class="mdi mdi-check-circle menu-icon"></i>
+                        Already
+                      </button>
+                    @else
+                      <a class="btn btn-gradient-warning btn-sm" data-bs-toggle="tooltip" title="Sync to Product Forms"
+                        data-bs-placement="top" target="_blank"
+                        href="{{ route('product.sync.lapak-gaming', ['lapakgaming_country' => $product['country_code'], 'lapakgaming_code' => $product['code']]) }}">
+                        <i class="mdi mdi-tooltip-edit menu-icon"></i>
+                      </a>
+                    @endif
                   </td>
                 </tr>
               @empty
