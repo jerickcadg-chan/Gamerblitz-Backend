@@ -72,7 +72,7 @@
                     @if ($alreadyExists)
                       <button class="btn btn-success btn-sm" disabled>
                         <i class="mdi mdi-check-circle menu-icon"></i>
-                        Already
+                        Added
                       </button>
                     @else
                       <a class="btn btn-gradient-warning btn-sm" data-bs-toggle="tooltip" title="Sync to Product Forms"

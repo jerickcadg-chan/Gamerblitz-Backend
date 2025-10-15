@@ -39,8 +39,7 @@ class LapakGamingController extends Controller
 
             $existingCodes = Product::where('provider_country', strtoupper($countryCode))
                 ->where('provider', ProviderConstant::LAPAKGAMING)
-                ->pluck('provider_code')
-                ->map(fn($c) => strtoupper($c));
+                ->pluck('provider_code');
         }
 
         return view('lapakgaming.products', compact('products', 'countries', 'title', 'error', 'existingCodes'));
