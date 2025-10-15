@@ -65,7 +65,7 @@
                   <td>{{ $product['check_id'] }}</td>
                   <td>{{ $product['country_code'] }}</td>
                   <td>
-                    <a class="btn btn-gradient-warning btn-sm" data-bs-toggle="tooltip" title="Sync Product"
+                    <a class="btn btn-gradient-warning btn-sm" data-bs-toggle="tooltip" title="Sync to Product Forms"
                       data-bs-placement="top" target="_blank"
                       href="{{ route('product.sync.lapak-gaming', ['lapakgaming_country' => $product['country_code'], 'lapakgaming_code' => $product['code']]) }}">
                       <i class="mdi mdi-tooltip-edit menu-icon"></i>

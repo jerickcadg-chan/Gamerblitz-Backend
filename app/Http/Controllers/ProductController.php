@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -67,20 +68,34 @@ class ProductController extends Controller
         if ($lapakGamingCountry && $lapakGamingCode) {
             $upperCountryCode = strtoupper($lapakGamingCountry);
             $lgCategories = Cache::get("lapakgaming_categories_{$upperCountryCode}");
+
+            if (!$lgCategories) {
+                toast('Data not found, please filter again and retry the process', 'error');
+                return back();
+            }
+
             $category = $lgCategories
                 ->where('code', $lapakGamingCode)
                 ->where('country_code', strtolower($lapakGamingCountry))
                 ->first();
 
+            if (!$category) {
+                toast('Data not found, please filter again and retry the process', 'error');
+                return redirect()->back();
+            }
+
             $defaults = [
-                'name' => $category['name'],
-                'code' => $category['code'],
-                'provider_code' => $category['code'],
+                'name'             => $category['name'],
+                'slug'             => Str::slug($category['name']),
+                'code'             => $category['code'],
+                'provider_code'    => $category['code'],
                 'provider_country' => $upperCountryCode,
-                'input_format' => $category['forms'],
+                'input_format'     => json_encode($category['forms']),
             ];
 
-            return redirect()->route('product.create')->withInput($defaults);
+            return redirect()
+                ->route('product.create')
+                ->withInput($defaults);
         }
 
         toast('Failed to create from LapakGaming', 'error');
