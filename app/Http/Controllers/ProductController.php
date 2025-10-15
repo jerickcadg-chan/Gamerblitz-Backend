@@ -65,7 +65,8 @@ class ProductController extends Controller
         $lapakGamingCode = $request->lapakgaming_code;
 
         if ($lapakGamingCountry && $lapakGamingCode) {
-            $lgCategories = Cache::get("lapakgaming_categories_{$lapakGamingCountry}");
+            $upperCountryCode = strtoupper($lapakGamingCountry);
+            $lgCategories = Cache::get("lapakgaming_categories_{$upperCountryCode}");
             $category = $lgCategories
                 ->where('code', $lapakGamingCode)
                 ->where('country_code', strtolower($lapakGamingCountry))
