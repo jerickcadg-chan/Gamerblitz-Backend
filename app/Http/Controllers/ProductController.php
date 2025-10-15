@@ -80,7 +80,7 @@ class ProductController extends Controller
                 'input_format' => $category['forms'],
             ];
 
-            return redirect()->route('products.create')->withInput($defaults);
+            return redirect()->route('product.create')->withInput($defaults);
         }
 
         toast('Failed to create from LapakGaming', 'error');
