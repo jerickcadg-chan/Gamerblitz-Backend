@@ -75,7 +75,7 @@ class VexaGameOrderHandler implements ShouldQueue
         } catch (Exception $e) {
             Log::channel('vexagame')->error("💥 Exception while processing order {$this->order->id}: {$e->getMessage()}");
 
-            $orderService->updateStatus($this->order, StatusConst::DELAY, 'exception');
+            $orderService->updateStatus($this->order, StatusConst::DELAY, $e->getMessage());
         }
     }
 }
