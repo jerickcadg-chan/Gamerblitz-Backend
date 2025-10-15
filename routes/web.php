@@ -52,7 +52,7 @@ Auth::routes([
 Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    Route::get('/lapakgaming/products/{country_code}', [LapakGamingController::class, 'index'])->name('lapakgaming.products');
+    Route::get('/lapakgaming/products', [LapakGamingController::class, 'index'])->name('lapakgaming.products');
 
     // Voucher router
     Route::get('/voucher/import', [VoucherController::class, 'import'])->name('voucher.import');
@@ -85,6 +85,9 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('statistic/order', [StatisticController::class, 'showOrderStatistic'])->name('statistic.order');
     Route::get('statistic/user', [StatisticController::class, 'showUserStatistic'])->name('statistic.user');
     Route::get('statistic/product', [StatisticController::class, 'showProductStatistic'])->name('statistic.product');
+
+    // product
+    Route::get('product/sync/lapak-gaming', [ProductController::class, 'createFromLG'])->name('product.sync.lapak-gaming');
 
     // product item
     Route::get('product-item/price-form', [ProductItemPriceController::class, 'index'])->name('product-item.price-form');

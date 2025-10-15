@@ -15,7 +15,7 @@ return [
     ],
     'menu' => [
         'dashboard',
-        'product' => ['product', 'product_item', 'product_item_category', 'product_category'],
+        'product' => ['product', 'product_item', 'product_item_category', 'product_category', 'lapakgaming.products'],
         'order',
         'report',
         'promo' => ['discount', 'slider', 'flash_sale'],

@@ -40,6 +40,11 @@
                 <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Product </a>
               </li>
             @endcan
+            @can ('View Product')
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'lapakgaming.products' ? 'active' : null }}" href="{{ route('lapakgaming.products') }}"> Product (LapakGaming) </a>
+              </li>
+            @endcan
             @can ('View Product Item')
               <li class="nav-item">
                 <a class="nav-link {{ in_array($activePage, ['product_item']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>

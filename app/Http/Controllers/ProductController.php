@@ -7,7 +7,9 @@ use App\Constants\ProviderConstant;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Services\PictureService;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -55,6 +57,33 @@ class ProductController extends Controller
         $countries = CountryConstant::all();
 
         return view('products.form', compact('providers', 'countries', 'formAction', 'indexLink', 'title'));
+    }
+
+    public function createFromLG(Request $request)
+    {
+        $lapakGamingCountry = $request->lapakgaming_country;
+        $lapakGamingCode = $request->lapakgaming_code;
+
+        if ($lapakGamingCountry && $lapakGamingCode) {
+            $lgCategories = Cache::get("lapakgaming_categories_{$lapakGamingCountry}");
+            $category = $lgCategories
+                ->where('code', $lapakGamingCode)
+                ->where('country_code', strtolower($lapakGamingCountry))
+                ->first();
+
+            $defaults = [
+                'name' => $category['name'],
+                'code' => $category['code'],
+                'provider_code' => $category['provider_code'],
+                'provider_country' => $lapakGamingCountry,
+                'input_format' => $category['forms'],
+            ];
+
+            return redirect()->route('products.create')->withInput($defaults);
+        }
+
+        toast(alert_created_text('Failed to create from LapakGaming'), 'error');
+        return redirect()->back();
     }
 
     public function show(Product $product)
