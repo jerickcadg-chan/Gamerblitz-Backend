@@ -82,7 +82,7 @@ class ProductController extends Controller
             return redirect()->route('products.create')->withInput($defaults);
         }
 
-        toast(alert_created_text('Failed to create from LapakGaming'), 'error');
+        toast('Failed to create from LapakGaming', 'error');
         return redirect()->back();
     }
 
