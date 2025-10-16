@@ -49,7 +49,7 @@
           </div>
         @endif
         @if (!is_null($products))
-          <table class="table-bordered table-hover table">
+          <table class="table-bordered table-hover table" id="productsTable">
             <thead>
               <tr>
                 <th>No</th>
@@ -104,22 +104,25 @@
   </div>
 @endsection
 
-@if (request('country'))
+@push('js')
   <script>
-    const searchInput = document.getElementById('searchInput');
-    const table = document.querySelector('table');
-    const rows = table.querySelectorAll('tbody tr');
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('searchInput');
+      const table = document.getElementById('productsTable');
 
-    searchInput.addEventListener('keyup', function() {
-      const keyword = this.value.toLowerCase();
+      if (!searchInput || !table) console.log(table); // amanin biar gak error
 
-      rows.forEach(row => {
-        // get name column
-        const nameCell = row.querySelector('td:nth-child(3)');
-        const name = nameCell ? nameCell.textContent.toLowerCase() : '';
+      const rows = table.querySelectorAll('tbody tr');
 
-        row.style.display = name.includes(keyword) ? '' : 'none';
+      searchInput.addEventListener('keyup', function() {
+        const keyword = this.value.toLowerCase();
+
+        rows.forEach(row => {
+          const nameCell = row.querySelector('td:nth-child(3)');
+          const name = nameCell ? nameCell.textContent.toLowerCase() : '';
+          row.style.display = name.includes(keyword) ? '' : 'none';
+        });
       });
     });
   </script>
-@endif
+@endpush
