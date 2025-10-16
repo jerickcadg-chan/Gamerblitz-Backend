@@ -25,7 +25,7 @@ class BillplzService
             'description'       => $order->productItem->full_name,
             'email'             => $order->cust_email,
             'name'              => $order->cust_email,
-            'amount'            => (int) $order->total_price * 100,
+            'amount'            => (int) ceil($order->total_price * 100),
             'callback_url'      => route('callback.billplz'),
             'redirect_url'      => config('app.fe_url').'/'.config('app.fe_invoice_url').'/'. $referenceNumber
         ];
