@@ -29,6 +29,12 @@
                 @endforeach
               </select>
             </div>
+            @if (request('country'))
+              <div class="col-md-4 mb-2">
+                <input type="text" class="form-control" id="searchInput" name="name" placeholder="Search product name"
+                  value="{{ request('name') }}">
+              </div>
+            @endif
             <div class="col-md-4">
               <div class="pt-2">
                 <button type="submit" class="btn btn-primary btn-sm">Search</button>
@@ -97,3 +103,21 @@
     </div>
   </div>
 @endsection
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const table = document.querySelector('table');
+  const rows = table.querySelectorAll('tbody tr');
+
+  searchInput.addEventListener('keyup', function() {
+    const keyword = this.value.toLowerCase();
+
+    rows.forEach(row => {
+      // get name column
+      const nameCell = row.querySelector('td:nth-child(3)');
+      const name = nameCell ? nameCell.textContent.toLowerCase() : '';
+      
+      row.style.display = name.includes(keyword) ? '' : 'none';
+    });
+  });
+</script>
