@@ -2,15 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Console\Commands\FetchVariant;
-use App\Models\FetchVarianJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 
 class FetchVarianHandle implements ShouldQueue
 {
@@ -34,20 +31,7 @@ class FetchVarianHandle implements ShouldQueue
      */
     public function handle(): void
     {
-        try {
-            Artisan::call('app:sync-lapak-gaming');
-        } catch (\Throwable $e) {
-            Log::error("❌ Error in sync-lapak-gaming: " . $e->getMessage());
-        }
-    
-        try {
-            Artisan::call('app:sync-vexa-game');
-        } catch (\Throwable $e) {
-            Log::error("❌ Error in sync-vexa-game: " . $e->getMessage());
-        }
-        
-        FetchVarianJob::find($this->statusId)?->update([
-            'status' => 'DONE',
-        ]);
+        Artisan::call('app:sync-lapak-gaming');
+        Artisan::call('app:sync-vexa-game');
     }
 }

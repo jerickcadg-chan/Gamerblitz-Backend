@@ -10,6 +10,7 @@ use App\Models\ProductItem;
 use App\Models\Product;
 use App\Models\Setting;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cache;
 
 class ProductItemController extends Controller
 {
@@ -46,11 +47,9 @@ class ProductItemController extends Controller
         $title = $this->title;
 
         $products = Product::all();
-        $jobVariant = FetchVarianJob::where('command_name', 'app:sync-lapak-gaming')
-            ->latest('created_at')
-            ->first();
+        $isSyncRunning = Cache::has('vexagame-sync') || Cache::has(key: 'lapakgaming-sync');
 
-        return view('product_items.index', compact('products', 'productItems', 'createLink', 'title', 'jobVariant'));
+        return view('product_items.index', compact('products', 'productItems', 'createLink', 'title', 'isSyncRunning'));
     }
 
     public function create()

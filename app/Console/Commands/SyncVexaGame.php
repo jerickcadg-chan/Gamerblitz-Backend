@@ -8,6 +8,7 @@ use App\Models\Setting;
 use App\Models\ProductItem;
 use Illuminate\Console\Command;
 use App\Constants\ProviderConstant;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -41,54 +42,59 @@ class SyncVexaGame extends Command
         $apiUrl       = rtrim($baseUrl, '/') . '/v2/product-item';
         $exchangeRate = get_exchange_rate('IDR', Setting::getBaseCurrency());
         $log          = Log::channel('vexagame');
+        Cache::put('vexagame-sync', 300);
 
-        if (!$token) {
-            $log->warning('⚠️ Missing VexaGame API token in setting — skipping sync.');
-            $this->warn('⚠️ Missing VexaGame API token in setting — skipping sync.');
-            return;
-        }
-
-        if (!$baseUrl) {
-            $log->warning('⚠️ Missing VexaGame API URL in setting — skipping sync.');
-            $this->warn('⚠️ Missing VexaGame API URL in setting — skipping sync.');
-            return;
-        }
-
-        $fallbacks = [
-            'public' => Setting::getByKey('margin_public'),
-            'silver' => Setting::getByKey('margin_silver'),
-            'gold'   => Setting::getByKey('margin_gold'),
-            'vip'    => Setting::getByKey('margin_vip'),
-        ];
-
-        $products = Product::where('provider', ProviderConstant::VEXAGAME)->get();
-
-        if ($products->isEmpty()) {
-            $this->warn('⚠️  No products found for provider: VEXAGAME');
-            return;
-        }
-
-        $this->line("Found {$products->count()} products to sync.\n");
-
-        $progressBar = $this->output->createProgressBar($products->count());
-        $progressBar->setFormat('Syncing products: [%bar%] %percent:3s%% | %current%/%max%');
-        $progressBar->start();
-
-        foreach ($products as $product) {
-            try {
-                $this->syncProduct($product, $apiUrl, $token, $exchangeRate, $fallbacks);
-                $this->disableInactiveProductItems($product);
-            } catch (Exception $e) {
-                $this->error("\n💥 Error syncing {$product->name}: {$e->getMessage()}");
+        try {
+            if (!$token) {
+                $log->warning('⚠️ Missing VexaGame API token in setting — skipping sync.');
+                $this->warn('⚠️ Missing VexaGame API token in setting — skipping sync.');
+                return;
             }
 
-            $progressBar->advance();
+            if (!$baseUrl) {
+                $log->warning('⚠️ Missing VexaGame API URL in setting — skipping sync.');
+                $this->warn('⚠️ Missing VexaGame API URL in setting — skipping sync.');
+                return;
+            }
+
+            $fallbacks = [
+                'public' => Setting::getByKey('margin_public'),
+                'silver' => Setting::getByKey('margin_silver'),
+                'gold'   => Setting::getByKey('margin_gold'),
+                'vip'    => Setting::getByKey('margin_vip'),
+            ];
+
+            $products = Product::where('provider', ProviderConstant::VEXAGAME)->get();
+
+            if ($products->isEmpty()) {
+                $this->warn('⚠️  No products found for provider: VEXAGAME');
+                return;
+            }
+
+            $this->line("Found {$products->count()} products to sync.\n");
+
+            $progressBar = $this->output->createProgressBar($products->count());
+            $progressBar->setFormat('Syncing products: [%bar%] %percent:3s%% | %current%/%max%');
+            $progressBar->start();
+
+            foreach ($products as $product) {
+                try {
+                    $this->syncProduct($product, $apiUrl, $token, $exchangeRate, $fallbacks);
+                    $this->disableInactiveProductItems($product);
+                } catch (Exception $e) {
+                    $this->error("\n💥 Error syncing {$product->name}: {$e->getMessage()}");
+                }
+
+                $progressBar->advance();
+            }
+
+            $progressBar->finish();
+
+            $this->newLine(2);
+            $this->info('🎉 VexaGame product sync completed successfully!');
+        } finally {
+            Cache::forget('vexagame-sync');
         }
-
-        $progressBar->finish();
-
-        $this->newLine(2);
-        $this->info('🎉 VexaGame product sync completed successfully!');
     }
 
     /**
@@ -111,7 +117,7 @@ class SyncVexaGame extends Command
 
         if ($response->failed()) {
             $message = "API request failed ({$response->status()}) for product: {$product->name}";
-            
+
             $log->error("⚠️ {$message}");
             $this->warn("\n⚠️ {$message}");
             return;

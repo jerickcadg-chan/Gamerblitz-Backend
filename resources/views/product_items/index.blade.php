@@ -20,13 +20,14 @@
       <div class="card-body">
         <div class="row mb-2">
           <div class="col-md-12 text-lg-end">
-            @if(is_null($jobVariant) || $jobVariant->status == 'DONE')
-            <form method="POST" action="{{ route('product-item.sync') }}"  onsubmit="return confirm('Are you sure to sync item price & status');" style="display: inline">
-              @csrf
-              <button type="submit" class="btn btn-danger">
-                Sync item Price & Status
-              </button>
-            </form>
+            @if (!$isSyncRunning)
+              <form method="POST" action="{{ route('product-item.sync') }}"
+                onsubmit="return confirm('Are you sure to sync item price & status');" style="display: inline">
+                @csrf
+                <button type="submit" class="btn btn-danger">
+                  Sync item Price & Status
+                </button>
+              </form>
             @else
               <a href="#" class="btn btn-danger">Item has not finished syncing</a>
             @endif
@@ -35,57 +36,57 @@
           </div>
         </div>
         <div class="table-responsive">
-          <table class="table table-bordered table-hover">
+          <table class="table-bordered table-hover table">
             <thead>
-            <tr>
-              <th>No</th>
-              <th>Product</th>
-              <th>Code</th>
-              <th>Provider</th>
-              <th>Capital</th>
-              <th>Margin</th>
-              <th>Margin Reseller Silver</th>
-              <th>Margin Reseller Gold</th>
-              <th>Margin Reseller VIP</th>
-              <th>Public Price</th>
-              <th>Reseller Silver Price</th>
-              <th>Reseller Gold Price</th>
-              <th>Reseller VIP Price</th>
-              <th>Stock</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
+              <tr>
+                <th>No</th>
+                <th>Product</th>
+                <th>Code</th>
+                <th>Provider</th>
+                <th>Capital</th>
+                <th>Margin</th>
+                <th>Margin Reseller Silver</th>
+                <th>Margin Reseller Gold</th>
+                <th>Margin Reseller VIP</th>
+                <th>Public Price</th>
+                <th>Reseller Silver Price</th>
+                <th>Reseller Gold Price</th>
+                <th>Reseller VIP Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
             </thead>
             <tbody>
-            @forelse ($productItems as $index => $productItem)
-              <tr>
-                <td>{{ $productItems->firstItem() + $index }}</td>
-                <td>{{ $productItem->product->name }} {{ $productItem->name }}</td>
-                <td>{{ $productItem->code }}</td>
-                <td>{{ $productItem->provider }}</td>
-                <td>{{ currency_format($productItem->capital) }}</td>
-                <td>{{ $productItem->margin_percentage ?? 0 }} %</td>
-                <td>{{ $productItem->margin_silver ?? 0 }} %</td>
-                <td>{{ $productItem->margin_gold ?? 0 }} %</td>
-                <td>{{ $productItem->margin_vip ?? 0 }} %</td>
-                <td>{{ currency_format($productItem->margin_price_public) }}</td>
-                <td>{{ currency_format($productItem->margin_price_silver) }}</td>
-                <td>{{ currency_format($productItem->margin_price_gold) }}</td>
-                <td>{{ currency_format($productItem->margin_price_vip) }}</td>
-                <td>{{ $productItem->stock === null ? '∞' : $productItem->stock }}</td>
-                <td>{{ $productItem->status }}</td>
-                <td>
-                  @include('master.action', [
-                      'view_url' => route('product_item.show', $productItem),
-                      'edit_url' => route('product_item.edit', $productItem)
-                  ])
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="100%" class="text-center">No Data</td>
-              </tr>
-            @endforelse
+              @forelse ($productItems as $index => $productItem)
+                <tr>
+                  <td>{{ $productItems->firstItem() + $index }}</td>
+                  <td>{{ $productItem->product->name }} {{ $productItem->name }}</td>
+                  <td>{{ $productItem->code }}</td>
+                  <td>{{ $productItem->provider }}</td>
+                  <td>{{ currency_format($productItem->capital) }}</td>
+                  <td>{{ $productItem->margin_percentage ?? 0 }} %</td>
+                  <td>{{ $productItem->margin_silver ?? 0 }} %</td>
+                  <td>{{ $productItem->margin_gold ?? 0 }} %</td>
+                  <td>{{ $productItem->margin_vip ?? 0 }} %</td>
+                  <td>{{ currency_format($productItem->margin_price_public) }}</td>
+                  <td>{{ currency_format($productItem->margin_price_silver) }}</td>
+                  <td>{{ currency_format($productItem->margin_price_gold) }}</td>
+                  <td>{{ currency_format($productItem->margin_price_vip) }}</td>
+                  <td>{{ $productItem->stock === null ? '∞' : $productItem->stock }}</td>
+                  <td>{{ $productItem->status }}</td>
+                  <td>
+                    @include('master.action', [
+                        'view_url' => route('product_item.show', $productItem),
+                        'edit_url' => route('product_item.edit', $productItem),
+                    ])
+                  </td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="100%" class="text-center">No Data</td>
+                </tr>
+              @endforelse
             </tbody>
           </table>
         </div>
