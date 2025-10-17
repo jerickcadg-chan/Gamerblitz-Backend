@@ -38,7 +38,11 @@ class ProductItemPriceController extends Controller
 
         $data = array_filter($data, fn($value) => !is_null($value));
 
-        ProductItem::where('product_id', $request->product_id)->update($data);
+        if ($request->product_id == 0) {
+            ProductItem::query()->update($data);
+        } else {
+            ProductItem::where('product_id', $request->product_id)->update($data);
+        }
 
         toast('Updated product item price', 'success');
         return redirect()->route('product_item.index');
