@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductItemCategoryMetaRequest;
 use App\Http\Requests\ProductItemCategoryRequest;
+use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\ProductItemCategory;
 use App\Models\ProductItemCategoryMeta;
@@ -28,14 +29,16 @@ class ProductItemCategoryController extends Controller
     public function index()
     {
         $productItemCategories = ProductItemCategory::latest()
-            ->when(\request('name'), fn(Builder $q) => $q->where('name', 'like', '%'. \request('name') .'%'))
+            ->when(\request('name'), fn(Builder $q) => $q->where('name', 'like', '%' . \request('name') . '%'))
+            ->when(\request('product_id'), fn(Builder $q) => $q->where('product_id',  \request('product_id')))
             ->paginate();
 
+        $products = Product::latest()->get();
         $createLink = route('product_item_category.create');
 
         $title = $this->title;
 
-        return view('product_item_categories.index', compact('productItemCategories', 'createLink', 'title'));
+        return view('product_item_categories.index', compact('productItemCategories', 'createLink', 'title', 'products'));
     }
 
     public function create()
@@ -63,7 +66,7 @@ class ProductItemCategoryController extends Controller
     {
         ProductItemCategory::create($request->all());
 
-        toast(alert_created_text($this->title),'success');
+        toast(alert_created_text($this->title), 'success');
         return redirect()->route('product_item_category.index');
     }
 
@@ -81,7 +84,7 @@ class ProductItemCategoryController extends Controller
     {
         $productItemCategory->update($request->all());
 
-        toast(alert_updated_text($this->title),'success');
+        toast(alert_updated_text($this->title), 'success');
         return redirect()->route('product_item_category.index');
     }
 
@@ -90,7 +93,7 @@ class ProductItemCategoryController extends Controller
         $productItemCategory->metas()->delete();
         $productItemCategory->delete();
 
-        toast(alert_deleted_text($this->title),'success');
+        toast(alert_deleted_text($this->title), 'success');
         return redirect()->route('product_item_category.index');
     }
 
