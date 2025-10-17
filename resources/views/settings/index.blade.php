@@ -71,16 +71,14 @@
           <div class="form-group">
             <label>Notification Email</label>
             <input type="text" class="form-control {{ $errors->has('settings.notif_mail') ? 'is-invalid' : '' }}"
-                   name="settings[notif_mail]" value="{{ old('settings.notif_mail', $settings['notif_mail'] ?? '') }}">
+              name="settings[notif_mail]" value="{{ old('settings.notif_mail', $settings['notif_mail'] ?? '') }}">
             @include('alerts.feedback', ['field' => 'settings.notif_mail'])
           </div>
 
           <div class="form-group">
             <label>Meta Description</label>
-            <textarea
-              name="settings[meta_description]"
-              class="form-control {{ $errors->has('settings.meta_description') ? 'is-invalid' : '' }}"
-            >{{ old('settings.meta_description', $settings['meta_description'] ?? '') }}</textarea>
+            <textarea name="settings[meta_description]"
+              class="form-control {{ $errors->has('settings.meta_description') ? 'is-invalid' : '' }}">{{ old('settings.meta_description', $settings['meta_description'] ?? '') }}</textarea>
             @include('alerts.feedback', ['field' => 'settings.meta_description'])
           </div>
 
@@ -99,17 +97,16 @@
           <div class="form-group">
             <label>Google Tag Manager ID</label>
             <input type="text" class="form-control {{ $errors->has('settings.gtm_id') ? 'is-invalid' : '' }}"
-                   name="settings[gtm_id]" value="{{ old('settings.gtm_id', $settings['gtm_id'] ?? '') }}">
+              name="settings[gtm_id]" value="{{ old('settings.gtm_id', $settings['gtm_id'] ?? '') }}">
             @include('alerts.feedback', ['field' => 'settings.gtm_id'])
           </div>
 
           <div class="form-group">
             <label>Primary Color</label>
             <input type="color"
-                   class="form-control form-control-color {{ $errors->has('primary_color') ? ' is-invalid' : '' }}"
-                   name="settings[primary_color]"
-                   value="{{ old('primary_color', $settings['primary_color']) }}"
-                   title="Choose your color">
+              class="form-control form-control-color {{ $errors->has('primary_color') ? ' is-invalid' : '' }}"
+              name="settings[primary_color]" value="{{ old('primary_color', $settings['primary_color']) }}"
+              title="Choose your color">
             @include('alerts.feedback', ['field' => 'primary_color'])
           </div>
 
@@ -122,15 +119,17 @@
               <div class="form-group">
                 <label for="margin_public_input">Margin Public (%)</label>
                 <input type="number" min="0" step="0.01"
-                  class="form-control {{ $errors->has('settings.margin_public') ? ' is-invalid' : '' }}" name="settings[margin_public]"
-                  id="margin_public_input" placeholder="0" value="{{ old('settings.margin_public', $settings['margin_public'] ?? '') }}">
+                  class="form-control {{ $errors->has('settings.margin_public') ? ' is-invalid' : '' }}"
+                  name="settings[margin_public]" id="margin_public_input" placeholder="0"
+                  value="{{ old('settings.margin_public', $settings['margin_public'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.margin_public'])
               </div>
               <div class="form-group">
                 <label for="balance_public_input">Minimum Balance Public</label>
                 <input type="number" min="0" step="0.01"
-                  class="form-control {{ $errors->has('settings.balance_public') ? ' is-invalid' : '' }}" name="settings[balance_public]"
-                  id="balance_public_input" placeholder="0" value="{{ old('settings.balance_public', $settings['balance_public'] ?? '') }}">
+                  class="form-control {{ $errors->has('settings.balance_public') ? ' is-invalid' : '' }}"
+                  name="settings[balance_public]" id="balance_public_input" placeholder="0"
+                  value="{{ old('settings.balance_public', $settings['balance_public'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.balance_public'])
               </div>
             </div>
@@ -138,15 +137,17 @@
               <div class="form-group">
                 <label for="margin_silver_input">Margin Silver (%)</label>
                 <input type="number" min="0" step="0.01"
-                  class="form-control {{ $errors->has('settings.margin_silver') ? ' is-invalid' : '' }}" name="settings[margin_silver]"
-                  id="margin_silver_input" placeholder="0" value="{{ old('settings.margin_silver', $settings['margin_silver'] ?? '') }}">
+                  class="form-control {{ $errors->has('settings.margin_silver') ? ' is-invalid' : '' }}"
+                  name="settings[margin_silver]" id="margin_silver_input" placeholder="0"
+                  value="{{ old('settings.margin_silver', $settings['margin_silver'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.margin_silver'])
               </div>
               <div class="form-group">
                 <label for="balance_silver_input">Minimum Balance Silver</label>
                 <input type="number" min="0" step="0.01"
-                  class="form-control {{ $errors->has('settings.balance_silver') ? ' is-invalid' : '' }}" name="settings[balance_silver]"
-                  id="balance_silver_input" placeholder="0" value="{{ old('settings.balance_silver', $settings['balance_silver'] ?? '') }}">
+                  class="form-control {{ $errors->has('settings.balance_silver') ? ' is-invalid' : '' }}"
+                  name="settings[balance_silver]" id="balance_silver_input" placeholder="0"
+                  value="{{ old('settings.balance_silver', $settings['balance_silver'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.balance_silver'])
               </div>
             </div>
@@ -154,15 +155,17 @@
               <div class="form-group">
                 <label for="margin_gold_input">Margin Gold (%)</label>
                 <input type="number" min="0" step="0.01"
-                  class="form-control {{ $errors->has('settings.margin_gold') ? ' is-invalid' : '' }}" name="settings[margin_gold]"
-                  id="margin_gold_input" placeholder="0" value="{{ old('settings.margin_gold', $settings['margin_gold'] ?? '') }}">
+                  class="form-control {{ $errors->has('settings.margin_gold') ? ' is-invalid' : '' }}"
+                  name="settings[margin_gold]" id="margin_gold_input" placeholder="0"
+                  value="{{ old('settings.margin_gold', $settings['margin_gold'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.margin_gold'])
               </div>
               <div class="form-group">
                 <label for="balance_gold_input">Minimum Balance Gold</label>
                 <input type="number" min="0" step="0.01"
-                  class="form-control {{ $errors->has('settings.balance_gold') ? ' is-invalid' : '' }}" name="settings[balance_gold]"
-                  id="balance_gold_input" placeholder="0" value="{{ old('settings.balance_gold', $settings['balance_gold'] ?? '') }}">
+                  class="form-control {{ $errors->has('settings.balance_gold') ? ' is-invalid' : '' }}"
+                  name="settings[balance_gold]" id="balance_gold_input" placeholder="0"
+                  value="{{ old('settings.balance_gold', $settings['balance_gold'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.balance_gold'])
               </div>
             </div>
@@ -170,15 +173,17 @@
               <div class="form-group">
                 <label for="margin_vip_input">Margin VIP (%)</label>
                 <input type="number" min="0" step="0.01"
-                  class="form-control {{ $errors->has('settings.margin_vip') ? ' is-invalid' : '' }}" name="settings[margin_vip]"
-                  id="margin_vip_input" placeholder="0" value="{{ old('settings.margin_vip', $settings['margin_vip'] ?? '') }}">
+                  class="form-control {{ $errors->has('settings.margin_vip') ? ' is-invalid' : '' }}"
+                  name="settings[margin_vip]" id="margin_vip_input" placeholder="0"
+                  value="{{ old('settings.margin_vip', $settings['margin_vip'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.margin_vip'])
               </div>
               <div class="form-group">
                 <label for="balance_vip_input">Minimum Balance VIP</label>
                 <input type="number" min="0" step="0.01"
-                  class="form-control {{ $errors->has('settings.balance_vip') ? ' is-invalid' : '' }}" name="settings[balance_vip]"
-                  id="balance_vip_input" placeholder="0" value="{{ old('settings.balance_vip', $settings['balance_vip'] ?? '') }}">
+                  class="form-control {{ $errors->has('settings.balance_vip') ? ' is-invalid' : '' }}"
+                  name="settings[balance_vip]" id="balance_vip_input" placeholder="0"
+                  value="{{ old('settings.balance_vip', $settings['balance_vip'] ?? '') }}">
                 @include('alerts.feedback', ['field' => 'settings.balance_vip'])
               </div>
             </div>
@@ -200,21 +205,18 @@
               (
               <label class="form-check-label" for="is_raw_description_input">Raw</label>
               <input type="checkbox" class="form-check-input mt-0" id="is_raw_description_input"
-                     name="settings[is_raw_popup_description]" value="1"
+                name="settings[is_raw_popup_description]" value="1"
                 {{ old('settings.is_raw_popup_description', $settings['is_raw_popup_description'] ?? false) ? 'checked' : '' }}>
               )
             </label>
             {{-- Raw textarea --}}
             <textarea class="form-control {{ $errors->has('settings.popup_description') ? 'is-invalid' : '' }}"
-              id="description_textarea"
-              rows="10">{{ old('settings.popup_description', $settings['popup_description'] ?? '') }}</textarea>
+              id="description_textarea" rows="10">{{ old('settings.popup_description', $settings['popup_description'] ?? '') }}</textarea>
 
             {{-- Quill editor --}}
             <div id="quill-wrapper">
               <div class="quill-editor">{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</div>
-              <textarea
-                class="quill-editor-hidden d-none {{ $errors->has('settings.popup_description') ? 'is-invalid' : '' }}"
-              >{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</textarea>
+              <textarea class="quill-editor-hidden d-none {{ $errors->has('settings.popup_description') ? 'is-invalid' : '' }}">{!! old('settings.popup_description', $settings['popup_description'] ?? '') !!}</textarea>
             </div>
             @include('alerts.feedback', ['field' => 'settings.popup_description'])
           </div>
@@ -224,11 +226,16 @@
             <label>Pop Up Image</label>
             <div class="mb-2">
               @if (!empty($settings['popup_image_url']))
-                <img src="{{ $settings['popup_image_url'] }}" alt="Popup" style="height:80px">
+                <img src="{{ $settings['popup_image_url'] }}" alt="Popup" style="height:80px" id="file_popup_image_preview">
               @endif
             </div>
-            <input type="file" class="form-control {{ $errors->has('files.popup_image') ? 'is-invalid' : '' }}"
-              name="files[popup_image]" accept="image/*">
+            <div class="input-group mb-3">
+              <input type="file" class="form-control {{ $errors->has('files.popup_image') ? 'is-invalid' : '' }}"
+                name="files[popup_image]" accept="image/*" id="file_popup_image_input">
+              <input type="hidden" name="clear_files[popup_image]" value="false" id="clear_popup_image_flag">
+              <button type="button" class="btn btn-danger" id="clearBtn"
+                onclick="clearFile('popup_image')">Clear</button>
+            </div>
             @include('alerts.feedback', ['field' => 'files.popup_image'])
           </div>
 
@@ -265,14 +272,14 @@
           </div>
 
           {{-- Flash Sale Setting --}}
-          {{--<h4 class="mb-2 mt-5">Flash Sale Setting</h4>
+          {{-- <h4 class="mb-2 mt-5">Flash Sale Setting</h4>
           <hr class="mb-4">
 
           <div class="form-group">
             <label>Flash Sale Expiry (date time)</label>
             <input type="datetime-local" class="form-control" name="settings[flash_sale_expiry]"
               value="{{ old('settings.flash_sale_expiry', $settings['flash_sale_expiry'] ?? '') }}">
-          </div>--}}
+          </div> --}}
 
           {{-- Lapak Gaming --}}
           <h4 class="mb-2 mt-5">Lapak Gaming</h4>
@@ -411,13 +418,14 @@
           <div class="form-group">
             <label>Affiliate Percentage</label>
             <input type="text" class="form-control" name="settings[affiliate_percentage]"
-                   value="{{ old('settings.affiliate_percentage', $settings['affiliate_percentage'] ?? '') }}">
+              value="{{ old('settings.affiliate_percentage', $settings['affiliate_percentage'] ?? '') }}">
           </div>
 
           <h4 class="mb-2 mt-5">$ Base Currency</h4>
           <div class="form-group">
             <label>System Base Currency</label>
-            <select class="form-control" name="settings[base_currency]" @isset($settings['base_currency']) disabled @endisset>
+            <select class="form-control" name="settings[base_currency]"
+              @isset($settings['base_currency']) disabled @endisset>
               @php $v = old('settings.base_currency', $settings['base_currency'] ?? 'USD'); @endphp
               @foreach ($currencies as $currency)
                 @php
@@ -479,11 +487,8 @@
 
           <div class="form-group">
             <div class="quill-editor">{!! old('settings.terms', $settings['terms'] ?? '') !!}</div>
-            <textarea
-              name="settings[terms]"
-              id="input_terms"
-              class="quill-editor-hidden d-none {{ $errors->has('settings.terms') ? 'is-invalid' : '' }}"
-            >{!! old('settings.terms', $settings['terms'] ?? '') !!}</textarea>
+            <textarea name="settings[terms]" id="input_terms"
+              class="quill-editor-hidden d-none {{ $errors->has('settings.terms') ? 'is-invalid' : '' }}">{!! old('settings.terms', $settings['terms'] ?? '') !!}</textarea>
             @include('alerts.feedback', ['field' => 'settings.terms'])
           </div>
 
@@ -494,11 +499,18 @@
   </div>
 @endsection
 
-  <x-quill-editor />
+<x-quill-editor />
 
 @push('js')
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    function clearFile(key) {
+      const input = document.getElementById(`file_${key}_input`);
+      document.getElementById(`clear_${key}_flag`).value = 'true';
+      document.getElementById(`file_${key}_preview`).classList.add('d-none');
+      input.value = '';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
       const checkbox = document.getElementById("is_raw_description_input");
       const rawTextarea = document.getElementById("description_textarea");
       const quillHidden = document.getElementById("description_input");

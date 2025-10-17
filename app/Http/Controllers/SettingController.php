@@ -17,9 +17,9 @@ class SettingController extends Controller
         $settings = $pairs;
 
         // helper URL untuk preview file
-        foreach (['logo', 'logo_alt','favicon','popup_image', 'meta_image'] as $fileKey) {
+        foreach (['logo', 'logo_alt', 'favicon', 'popup_image', 'meta_image'] as $fileKey) {
             if (!empty($pairs[$fileKey])) {
-                $settings[$fileKey.'_url'] = Storage::url($pairs[$fileKey]);
+                $settings[$fileKey . '_url'] = Storage::url($pairs[$fileKey]);
             }
         }
 
@@ -33,20 +33,25 @@ class SettingController extends Controller
         $settings = $request->input('settings', []);
 
         // file uploads: {random}_{original_name}
-        foreach (['logo', 'logo_alt','favicon','popup_image', 'meta_image'] as $key) {
+        foreach (['logo', 'logo_alt', 'favicon', 'popup_image', 'meta_image'] as $key) {
             if ($request->hasFile("files.$key")) {
                 $file = $request->file("files.$key");
-                $filename = Str::random(10).'_'.$file->getClientOriginalName();
+                $filename = Str::random(10) . '_' . $file->getClientOriginalName();
                 $path = $file->storeAs('settings', $filename, 'public');
                 $settings[$key] = $path;
+            }
+
+            // Kalau user klik clear (frontend kirim null atau string kosong)
+            elseif ($request->input("clear_files.$key") === 'true') {
+                $settings[$key] = null;
             }
         }
 
         // normalisasi on/off
-        foreach (['popup_button_status','popup_status'] as $boolKey) {
+        foreach (['popup_button_status', 'popup_status'] as $boolKey) {
             if (isset($settings[$boolKey])) {
                 $val = strtolower((string)$settings[$boolKey]);
-                $settings[$boolKey] = in_array($val, ['on','1','true','yes']) ? 'on' : 'off';
+                $settings[$boolKey] = in_array($val, ['on', '1', 'true', 'yes']) ? 'on' : 'off';
             }
         }
 
