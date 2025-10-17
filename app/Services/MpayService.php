@@ -81,7 +81,7 @@ class MpayService
         Log::info('Mpay payment requests response', $json);
 
         if ($response->failed() || $json['code'] != '200') {
-            throw new \Exception("Failed to create payment: " . $json['message']);
+            throw new \Exception("Failed to create payment: " . $json['msg']);
         }
 
         $deposit->payment_url = $json['payUrl'] ?? null;
