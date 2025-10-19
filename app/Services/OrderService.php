@@ -256,7 +256,9 @@ class OrderService
         }
 
         $amount = match ($paymentMethod->admin_type) {
-            'percentage' => ceil($realPrice / ((100 - $paymentMethod->admin_fee) / 100)) - $realPrice,
+            'percentage' => $paymentMethod->currency_code === 'IDR'
+                ? ceil($realPrice / ((100 - $paymentMethod->admin_fee) / 100)) - $realPrice
+                : round(($realPrice / ((100 - $paymentMethod->admin_fee) / 100)) - $realPrice, 2),
             'nominal' => $paymentMethod->admin_fee,
             default => 0,
         };
