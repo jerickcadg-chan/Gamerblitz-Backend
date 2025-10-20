@@ -161,7 +161,7 @@ class Order extends Model implements IsFilterable
         return $this->cust_account;
     }
 
-    public function getAddInformationFormatAttribute(): ?string
+    public function getAdditionalInformationHtmlAttribute(): ?string
     {
         if (! $this->additional_informations) {
             return null;

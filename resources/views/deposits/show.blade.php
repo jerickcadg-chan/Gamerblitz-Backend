@@ -63,7 +63,7 @@
           @endif
           <tr>
             <th>Additional Information</th>
-            <td>{!! $deposit->add_information_format !!}</td>
+            <td>{!! $deposit->additional_information_html !!}</td>
           </tr>
         </table>
 

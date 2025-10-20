@@ -112,7 +112,7 @@
               </tr>
               <tr>
                 <th>Additional Information</th>
-                <td>{!! $order->add_information_format !!}</td>
+                <td>{!! $order->additional_information_html !!}</td>
               </tr>
             </table>
           </div>

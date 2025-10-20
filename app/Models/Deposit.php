@@ -62,7 +62,7 @@ class Deposit extends Model
         };
     }
 
-    public function getAddInformationFormatAttribute(): ?string
+    public function getAdditionalInformationHtmlAttribute(): ?string
     {
         if (! $this->additional_informations) {
             return null;
