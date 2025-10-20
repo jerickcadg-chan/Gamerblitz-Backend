@@ -33,6 +33,20 @@ class UpdatePaymentMethodCCTableSeeder extends Seeder
                         'placeholder' => 'Last Name',
                     ],
                     [
+                        'name' => 'holder_email',
+                        'type' => 'text',
+                        'label' => 'Cardholder Email',
+                        'options' => [],
+                        'placeholder' => 'Cardholder Email',
+                    ],
+                    [
+                        'name' => 'holder_phone_number',
+                        'type' => 'text',
+                        'label' => 'Cardholder Phone Number',
+                        'options' => [],
+                        'placeholder' => 'Cardholder Phone Number',
+                    ],
+                    [
                         'name' => 'cvc',
                         'type' => 'number',
                         'label' => 'CVC / CVN',

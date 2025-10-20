@@ -49,8 +49,8 @@ class XenditService
                     'expiry_month' => $order->additional_informations['expiry_month'] ?? null,
                     'cardholder_first_name' => $order->additional_informations['first_name'] ?? null,
                     'cardholder_last_name' => $order->additional_informations['last_name'] ?? null,
-                    'cardholder_email' => $order->cust_email,
-                    'cardholder_phone_number' => "+{$order->cust_phone_number}"
+                    'cardholder_email' => $order->additional_informations['holder_email'] ?? null,
+                    'cardholder_phone_number' => '+' . $order->additional_informations['holder_phone_number'] ?? null
                 ]
             ],
             'description' => "{$order->productItem->product->name} {$order->productItem->name}",
@@ -135,8 +135,8 @@ class XenditService
                     'expiry_month' => $deposit->additional_informations['expiry_month'] ?? null,
                     'cardholder_first_name' => $deposit->additional_informations['first_name'] ?? null,
                     'cardholder_last_name' => $deposit->additional_informations['last_name'] ?? null,
-                    'cardholder_email' => $deposit->cust_email,
-                    'cardholder_phone_number' => "+{$deposit->cust_phone_number}"
+                    'cardholder_email' => $deposit->additional_informations['holder_email'] ?? null,
+                    'cardholder_phone_number' => '+' . $deposit->additional_informations['holder_phone_number'] ?? null
                 ]
             ],
             'description' => "Deposit {$deposit->amount}",

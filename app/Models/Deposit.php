@@ -39,6 +39,7 @@ class Deposit extends Model
         'converted_amount' => 'string',
         'converted_admin_fee' => 'string',
         'converted_total_amount' => 'string',
+        'additional_informations' => 'array',
     ];
 
     public function user(): BelongsTo
