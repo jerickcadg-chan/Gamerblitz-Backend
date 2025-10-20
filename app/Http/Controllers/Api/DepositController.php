@@ -103,6 +103,7 @@ class DepositController extends Controller
             'converted_total_amount' => $totalAmount,
             'expired_at' => now()->addHours(3),
             'status' => StatusConst::PENDING,
+            'additional_informations' => $request?->additional_informations ?? null,
         ]);
 
         if ($paymentMethod->vendor === PaymentMethod::XENDIT) {

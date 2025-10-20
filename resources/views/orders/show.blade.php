@@ -110,6 +110,10 @@
                 <th>Provider Trx Ref</th>
                 <td>{{ $order->provider_ref }}</td>
               </tr>
+              <tr>
+                <th>Additional Information</th>
+                <td>{!! $order->add_information_format !!}</td>
+              </tr>
             </table>
           </div>
         </div>

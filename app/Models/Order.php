@@ -36,6 +36,7 @@ class Order extends Model implements IsFilterable
     public const DONE = 'done';
 
     protected $casts = [
+        'additional_informations' => 'array',
         'expired_at' => 'datetime',
     ];
 
@@ -65,7 +66,8 @@ class Order extends Model implements IsFilterable
         'exchange_rate',
         'payment_url',
         'payment_code',
-        'payment_id'
+        'payment_id',
+        'additional_informations'
     ];
 
     protected $appends = ['cust_account_array'];
@@ -157,6 +159,25 @@ class Order extends Model implements IsFilterable
         }
 
         return $this->cust_account;
+    }
+
+    public function getAddInformationFormatAttribute(): ?string
+    {
+        if (! $this->additional_informations) {
+            return null;
+        }
+
+        $decoded = $this->additional_informations;
+
+        if (is_array($decoded)) {
+            $custAccount = '';
+            foreach ($decoded as $key => $value) {
+                $custAccount .= "<p>{$key}: {$value}</p>";
+            }
+            return $custAccount;
+        }
+
+        return null;
     }
 
     public function getCustAccountArrayAttribute()

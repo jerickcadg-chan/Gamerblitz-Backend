@@ -61,6 +61,10 @@
               <td>{{ parse_date_time($deposit->paid_at) }}</td>
             </tr>
           @endif
+          <tr>
+            <th>Additional Information</th>
+            <td>{!! $deposit->add_information_format !!}</td>
+          </tr>
         </table>
 
         @if($deposit->status === \App\Constants\StatusConst::PENDING)

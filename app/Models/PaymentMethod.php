@@ -44,7 +44,12 @@ class PaymentMethod extends Model implements IsFilterable
         'is_raw_description',
         'is_active',
         'type',
-        'ordering'
+        'ordering',
+        'additional_input',
+    ];
+
+    protected $casts = [
+        'additional_input' => 'array'
     ];
 
     public function getDisplayNameAttribute(): string

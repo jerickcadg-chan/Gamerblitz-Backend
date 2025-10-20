@@ -47,13 +47,20 @@ class PaymentMethodController extends Controller
 
     public function store(PaymentMethodRequest $request)
     {
+        $data = array_merge(
+            $request->all(),
+            [
+                'additional_input' => json_decode($request?->additional_input ?? '', true)
+            ]
+        );
+
         $pictureService = new PictureService();
 
         if ($request->hasFile('default_picture')) {
             $request['picture'] = $pictureService->insert($request->default_picture);
         }
 
-        $paymentMethod = PaymentMethod::create($request->all());
+        $paymentMethod = PaymentMethod::create($data);
 
         toast(alert_created_text($this->title), 'success');
         return redirect()->route('payment_method.index');
@@ -70,13 +77,20 @@ class PaymentMethodController extends Controller
 
     public function update(PaymentMethodRequest $request, PaymentMethod $paymentMethod)
     {
+        $data = array_merge(
+            $request->all(),
+            [
+                'additional_input' => json_decode($request?->additional_input ?? '', true)
+            ]
+        );
+
         $pictureService = new PictureService();
 
         if ($request->hasFile('default_picture')) {
             $request['picture'] = $pictureService->insert($request->default_picture);
         }
 
-        $paymentMethod->update($request->all());
+        $paymentMethod->update($data);
 
         toast(alert_updated_text($this->title), 'success');
 

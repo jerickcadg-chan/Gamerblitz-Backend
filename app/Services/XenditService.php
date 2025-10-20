@@ -39,9 +39,19 @@ class XenditService
             'channel_properties' => [
                 'expires_at' => $expiresAt,
                 'payer_name' => $order->user?->name ?? "guest user",
-                'success_return_url' => config('app.fe_url').'/'.config('app.fe_invoice_url').'/'.$externalId,
-                'failure_return_url' => config('app.fe_url').'/'.config('app.fe_invoice_url').'/'.$externalId,
-                'cancel_return_url' => config('app.fe_url').'/'.config('app.fe_invoice_url').'/'.$externalId,
+                'success_return_url' => config('app.fe_url') . '/' . config('app.fe_invoice_url') . '/' . $externalId,
+                'failure_return_url' => config('app.fe_url') . '/' . config('app.fe_invoice_url') . '/' . $externalId,
+                'cancel_return_url' => config('app.fe_url') . '/' . config('app.fe_invoice_url') . '/' . $externalId,
+                'card_details' => [
+                    'cvn' => $order->additional_informations['cvc'] ?? null,
+                    'card_number' => $order->additional_informations['card_number'] ?? null,
+                    'expiry_year' => $order->additional_informations['expiry_year'] ?? null,
+                    'expiry_month' => $order->additional_informations['expiry_month'] ?? null,
+                    'cardholder_first_name' => $order->additional_informations['first_name'] ?? null,
+                    'cardholder_last_name' => $order->additional_informations['last_name'] ?? null,
+                    'cardholder_email' => $order->cust_email,
+                    'cardholder_phone_number' => "+{$order->cust_phone_number}"
+                ]
             ],
             'description' => "{$order->productItem->product->name} {$order->productItem->name}",
             'metadata'    => [
@@ -59,12 +69,17 @@ class XenditService
             ]
         ];
 
-        $r = Http::withBasicAuth(Setting::getByKey('xendit_secret_key'), '')
+        $response = Http::withBasicAuth(Setting::getByKey('xendit_secret_key'), '')
             ->withHeaders(['api-version' => '2024-11-11', 'Content-Type' => 'application/json'])
-            ->post(Setting::getByKey('xendit_api_url').'/v3/payment_requests', $payload)
-            ->json();
+            ->post(Setting::getByKey('xendit_api_url') . '/v3/payment_requests', $payload);
+
+        $r = $response->json();
 
         Log::info('Xendit payment requests response', $r);
+
+        if ($response->failed()) {
+            throw new \Exception("Failed to create payment: " . $r['message']);
+        }
 
         $paymentUrl = null;
         $paymentCode = null;
@@ -98,7 +113,7 @@ class XenditService
         $countryCode = CurrencyConstant::countryCodeByCurrency($method->currency_code);
         $channelCode = $method->slug;
 
-        $returnUrl = config('app.fe_url').'/dashboard/deposit/' . $externalId;
+        $returnUrl = config('app.fe_url') . '/dashboard/deposit/' . $externalId;
 
         $payload = PaymentRequestPayload::from([
             'reference_id'   => $externalId,
@@ -113,6 +128,16 @@ class XenditService
                 'success_return_url' => $returnUrl,
                 'failure_return_url' => $returnUrl,
                 'cancel_return_url' => $returnUrl,
+                'card_details' => [
+                    'cvn' => $deposit->additional_informations['cvc'] ?? null,
+                    'card_number' => $deposit->additional_informations['card_number'] ?? null,
+                    'expiry_year' => $deposit->additional_informations['expiry_year'] ?? null,
+                    'expiry_month' => $deposit->additional_informations['expiry_month'] ?? null,
+                    'cardholder_first_name' => $deposit->additional_informations['first_name'] ?? null,
+                    'cardholder_last_name' => $deposit->additional_informations['last_name'] ?? null,
+                    'cardholder_email' => $deposit->cust_email,
+                    'cardholder_phone_number' => "+{$deposit->cust_phone_number}"
+                ]
             ],
             'description' => "Deposit {$deposit->amount}",
             'metadata'    => [
@@ -132,7 +157,7 @@ class XenditService
 
         $r = Http::withBasicAuth(Setting::getByKey('xendit_secret_key'), '')
             ->withHeaders(['api-version' => '2024-11-11', 'Content-Type' => 'application/json'])
-            ->post(Setting::getByKey('xendit_api_url').'/v3/payment_requests', $payload->toArray());
+            ->post(Setting::getByKey('xendit_api_url') . '/v3/payment_requests', $payload->toArray());
 
         $json = $r->json();
 
@@ -162,6 +187,5 @@ class XenditService
         $deposit->save();
 
         return $json;
-
     }
 }
