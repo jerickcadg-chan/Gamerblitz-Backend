@@ -261,6 +261,10 @@ class OrderController extends Controller
         unset($data['sign']);
 
         if (!$receivedSign) {
+            Log::warning('MPay Missing signature', [
+                'request_body' => $data,
+            ]);
+
             return response()->json(['message' => 'Missing signature'], 400);
         }
 
@@ -290,6 +294,10 @@ class OrderController extends Controller
         $status    = $data['msg'] ?? null;
 
         if (!$orderId) {
+            Log::warning('MPay Missing order ID', [
+                'request_body' => $data,
+            ]);
+
             return response()->json(['message' => 'Missing order ID'], 400);
         }
 
