@@ -69,6 +69,20 @@ class DepositController extends Controller
 
         $amount = $request->amount;
         if ($amount <= 0) {
+            \Illuminate\Support\Facades\Log::warning('Suspicious deposit attempt', ['user_id' => $this->userId, 'ip' => $request->ip(), 'deposit_data' => $request->all()]);
+
+            // Ban user if authenticated
+            if ($this->userId) {
+                $user = \App\Models\User::find($this->userId);
+                $user->update(['banned_at' => now(), 'ban_reason' => 'Suspicious deposit attempt']);
+            }
+
+            // Ban IP
+            \App\Models\BannedIp::firstOrCreate(['ip_address' => $request->ip()], [
+                'banned_at' => now(),
+                'ban_reason' => 'Suspicious deposit attempt',
+            ]);
+
             return api_status_warning('Invalid deposit amount');
         }
 

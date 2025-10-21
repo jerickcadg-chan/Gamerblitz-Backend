@@ -34,7 +34,9 @@ class User extends Authenticatable
         'phone_number',
         'client_id',
         'first_login',
-        'google2fa_secret'
+        'google2fa_secret',
+        'banned_at',
+        'ban_reason'
     ];
 
     /**
@@ -55,7 +57,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed'
+        'password' => 'hashed',
+        'banned_at' => 'datetime'
     ];
 
     public function balance(): HasOne
@@ -75,6 +78,16 @@ class User extends Authenticatable
         return $query->whereHas('roles', function ($query) {
             $query->whereIn('name', [DefaultRole::CUSTOMER, DefaultRole::RESELLER_SILVER, DefaultRole::RESELLER_VIP, DefaultRole::RESELLER_GOLD]);
         });
+    }
+
+    public function scopeBanned($query)
+    {
+        return $query->whereNotNull('banned_at');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->whereNull('banned_at');
     }
 
     public function setNameAttribute($value): void

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AffiliateWithdrawController;
 use App\Http\Controllers\AppLogController;
+use App\Http\Controllers\BannedIpController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DiscountController;
@@ -140,5 +141,6 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'exchange_rate' => ExchangeRateController::class,
         'blog' => BlogController::class,
         'app-log' => AppLogController::class,
+        'banned-ip' => BannedIpController::class,
     ]);
 });

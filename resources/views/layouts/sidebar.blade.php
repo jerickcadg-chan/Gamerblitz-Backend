@@ -95,15 +95,23 @@
         </div>
       </li>
     @endcan
-    @can('View Deposit')
-    <li class="nav-item {{ $activePage == 'deposit' ? 'active' : null }}">
-      <a class="nav-link" href="{{ route('deposit.index') }}">
-        <span class="menu-title">Deposit</span>
-        <i class="mdi mdi-cash menu-icon"></i>
-      </a>
-    </li>
-    @endcan
-    @can ('View Report')
+     @can('View Deposit')
+     <li class="nav-item {{ $activePage == 'deposit' ? 'active' : null }}">
+       <a class="nav-link" href="{{ route('deposit.index') }}">
+         <span class="menu-title">Deposit</span>
+         <i class="mdi mdi-cash menu-icon"></i>
+       </a>
+     </li>
+     @endcan
+     @can('View Banned IP')
+     <li class="nav-item {{ $activePage == 'banned-ip' ? 'active' : null }}">
+       <a class="nav-link" href="{{ route('banned-ip.index') }}">
+         <span class="menu-title">Banned IPs</span>
+         <i class="mdi mdi-lock menu-icon"></i>
+       </a>
+     </li>
+     @endcan
+     @can ('View Report')
       <li class="nav-item {{ $activePage == 'report' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('report.index') }}">
           <span class="menu-title">Report</span>

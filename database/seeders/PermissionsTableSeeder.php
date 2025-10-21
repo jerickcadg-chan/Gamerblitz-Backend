@@ -119,6 +119,10 @@ class PermissionsTableSeeder extends Seeder
             'Delete Exchange Rate',
 
             'View App Log',
+
+            'View Banned IP',
+            'Create Banned IP',
+            'Delete Banned IP',
         ];
 
         foreach ($permissions as $permission){
