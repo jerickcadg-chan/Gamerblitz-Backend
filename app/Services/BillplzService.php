@@ -15,8 +15,9 @@ class BillplzService
      *
      * @return array
      */
-    public function createOrderBillplzInvoice(Order $order): array
+    public function createOrderBillplzInvoice(Order $orderParam): array
     {
+        $order = Order::find($orderParam->id);
         $referenceNumber = $order->code;
         $method          = $order->paymentMethod;
 
