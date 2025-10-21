@@ -81,6 +81,13 @@ class OrderService
                 return $error;
             }
 
+            // Prevent negative total_price from allowing balance addition
+            if ($price['total_price'] <= 0) {
+                DB::rollBack();
+
+                return 'Invalid order total price';
+            }
+
             if ($productItem->stock === 0) {
                 DB::rollBack();
 

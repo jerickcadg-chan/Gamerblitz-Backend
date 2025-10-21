@@ -84,6 +84,11 @@ class DepositController extends Controller
 
         $totalAmount = $amount + $adminFee;
 
+        // Prevent negative deposit amounts
+        if ($amount <= 0) {
+            return api_status_warning('Invalid deposit amount');
+        }
+
         $baseAmount = $amount * $exchangeRateToBase;
         $baseAdminFee = $adminFee * $exchangeRateToBase;
         $baseTotalAmount = $totalAmount * $exchangeRateToBase;
