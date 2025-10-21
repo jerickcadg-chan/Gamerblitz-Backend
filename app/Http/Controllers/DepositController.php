@@ -14,7 +14,7 @@ class DepositController extends Controller
 
     public function __construct()
     {
-        $this->title = 'Product Item';
+        $this->title = 'Deposit';
 
         $this->middleware(['permission:View Deposit'])->only('index', 'show');
         $this->middleware(['permission:Edit Deposit'])->only('updateStatus');
