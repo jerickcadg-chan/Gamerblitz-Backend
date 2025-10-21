@@ -72,9 +72,11 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::put('deposit/{deposit}/status', [DepositController::class, 'updateStatus'])->name('deposit.update-status');
     Route::get('deposit/{deposit}', [DepositController::class, 'show'])->name('deposit.show');
 
-    // User router
-    Route::get('user/customer', [UserController::class, 'getCustomer'])->name('user.customer');
-    Route::get('user/affiliate-withdraw', [AffiliateWithdrawController::class, 'index'])->name('user.affiliate-withdraw');
+     // User router
+     Route::get('user/customer', [UserController::class, 'getCustomer'])->name('user.customer');
+     Route::post('user/{user}/ban', [UserController::class, 'ban'])->name('user.ban');
+     Route::post('user/{user}/unban', [UserController::class, 'unban'])->name('user.unban');
+     Route::get('user/affiliate-withdraw', [AffiliateWithdrawController::class, 'index'])->name('user.affiliate-withdraw');
     Route::post('user/affiliate-withdraw/{affiliateWithdraw}', [AffiliateWithdrawController::class, 'process'])->name('user.affiliate-withdraw.process');
     Route::get('user/top-up-manual/{user}', [UserController::class, 'topUpManual'])->name('user.top-up-manual');
     Route::post('user/top-up-manual/{user}', [UserController::class, 'topUpManualStore'])->name('user.top-up-manual.store');

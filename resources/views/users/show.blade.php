@@ -49,14 +49,41 @@
             <th>Created At</th>
             <td>{{ parse_date_time($user->created_at) }}</td>
           </tr>
-          <tr>
-            <th>Updated At</th>
-            <td>{{ parse_date_time($user->updated_at) }}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  </div>
+           <tr>
+             <th>Updated At</th>
+             <td>{{ parse_date_time($user->updated_at) }}</td>
+           </tr>
+           <tr>
+             <th>Banned At</th>
+             <td>{{ $user->banned_at ? parse_date_time($user->banned_at) : '-' }}</td>
+           </tr>
+           <tr>
+             <th>Ban Reason</th>
+             <td>{{ $user->ban_reason ?: '-' }}</td>
+           </tr>
+         </table>
+         @if ($user->id != 1)
+         @if (!$user->banned_at)
+           @can('Ban User')
+           <div class="mt-3">
+             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#banModal">
+               <i class="mdi mdi-account-off"></i> Ban User
+             </button>
+           </div>
+           @endcan
+         @else
+           @can('Unban User')
+           <div class="mt-3">
+             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#unbanModal">
+               <i class="mdi mdi-account-check"></i> Unban User
+             </button>
+           </div>
+           @endcan
+         @endif
+         @endif
+       </div>
+     </div>
+   </div>
 
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
@@ -146,6 +173,77 @@
           {!! $affiliateHistories->appends(request()->query())->links() !!}
         </div>
       </div>
-    </div>
-  @endif
+     </div>
+   @endif
+
+   <!-- Ban Modal -->
+   <div class="modal fade" id="banModal" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-dialog-centered">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="banModalLabel">Ban User</h5>
+           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <form method="POST" action="{{ route('user.ban', $user) }}">
+           @csrf
+           <div class="modal-body">
+             <div class="mb-3">
+               <label for="reason" class="form-label">Ban Reason</label>
+               <textarea class="form-control" id="reason" name="reason" placeholder="Ban Reason" required></textarea>
+             </div>
+           </div>
+           <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+             <button type="submit" class="btn btn-warning">Ban User</button>
+           </div>
+         </form>
+       </div>
+     </div>
+   </div>
+
+   <!-- Unban Modal -->
+   <div class="modal fade" id="unbanModal" tabindex="-1" aria-labelledby="unbanModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-dialog-centered">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="unbanModalLabel">Unban User</h5>
+           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+           Are you sure you want to unban this user?
+         </div>
+         <div class="modal-footer">
+           <form method="POST" action="{{ route('user.unban', $user) }}" style="display: inline;">
+             @csrf
+             @method('POST')
+             <button type="submit" class="btn btn-success">Yes, Unban</button>
+           </form>
+           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <!-- Unban Modal -->
+   <div class="modal fade" id="unbanModal" tabindex="-1" aria-labelledby="unbanModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-dialog-centered">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="unbanModalLabel">Unban User</h5>
+           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+           Are you sure you want to unban this user: {{ $user->name }}?
+         </div>
+         <div class="modal-footer">
+           <form method="POST" action="{{ route('user.unban', $user) }}" style="display: inline;">
+             @csrf
+             @method('POST')
+             <button type="submit" class="btn btn-success">Yes, Unban</button>
+           </form>
+           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+   </div>
 @endsection

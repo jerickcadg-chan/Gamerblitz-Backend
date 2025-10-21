@@ -72,6 +72,8 @@ class PermissionsTableSeeder extends Seeder
             'Create User',
             'Edit User',
             'Delete User',
+            'Ban User',
+            'Unban User',
 
             'View Guest',
             'Create Guest',

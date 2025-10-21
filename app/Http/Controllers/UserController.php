@@ -32,6 +32,8 @@ class UserController extends Controller
         $this->middleware(['permission:Create User'])->only(['create', 'store']);
         $this->middleware(['permission:Edit User'])->only('edit', 'update');
         $this->middleware(['permission:Delete User'])->only('destroy');
+        $this->middleware(['permission:Ban User'])->only('ban');
+        $this->middleware(['permission:Unban User'])->only('unban');
     }
 
     public function index()
@@ -49,23 +51,43 @@ class UserController extends Controller
         return view('users.index', compact('users', 'createLink', 'title'));
     }
 
+    public function ban(Request $request, User $user)
+    {
+        $request->validate([
+            'reason' => 'required|string|max:255',
+        ]);
+
+        $user->update([
+            'banned_at' => now(),
+            'ban_reason' => $request->reason,
+        ]);
+
+        return redirect()->back()->with('success', 'User banned successfully.');
+    }
+
+    public function unban(Request $request, User $user)
+    {
+        $user->update([
+            'banned_at' => null,
+            'ban_reason' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'User unbanned successfully.');
+    }
+
     public function getCustomer()
     {
         $users = User::customer()->latest()
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'. request('name') .'%');
             })
-            ->when(request('email'), function ($query) {
-                return $query->where('email', 'like', '%'. request('email') .'%');
-            })
-            ->when(request('phone'), function ($query) {
-                return $query->where('phone_number', 'like', '%'. request('phone') .'%');
-            })
             ->paginate();
 
-        $title = $this->title;
+        $createLink = route('user.create');
 
-        return view('users.customer', compact('users', 'title'));
+        $title = 'Customer';
+
+        return view('users.customer', compact('users', 'createLink', 'title'));
     }
 
     public function create()
