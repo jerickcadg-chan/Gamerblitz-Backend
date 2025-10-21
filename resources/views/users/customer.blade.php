@@ -27,7 +27,23 @@
             <div class="col-md-4 mb-2">
               <input type="text" class="form-control" name="phone" placeholder="Search user phone number" value="{{ request('phone') }}">
             </div>
-            <div class="col-md-6 pt-2">
+            <div class="col-md-4 pt-2">
+              <div class="form-check form-check-inline">
+                <label class="form-check-label" for="banned">
+                  <input class="form-check-input" type="checkbox" id="banned" name="banned" value="1" {{ request('banned') ? 'checked' : '' }}>
+                  Only Banned Users
+                </label>
+              </div>
+            </div>
+            <div class="col-md-4 pt-2">
+              <div class="form-check form-check-inline">
+                <label class="form-check-label" for="affiliate">
+                  <input class="form-check-input" type="checkbox" id="affiliate" name="affiliate" value="1" {{ request('affiliate') ? 'checked' : '' }}>
+                  Only Affiliate Users
+                </label>
+              </div>
+            </div>
+            <div class="col-md-4 pt-2">
               <button type="submit" class="btn btn-sm btn-primary">Search</button>
               <a href="{{ url()->current() }}" class="btn btn-sm btn-danger">Reset</a>
             </div>
@@ -42,6 +58,7 @@
             <th>Phone Number</th>
             <th>Balance</th>
             <th>Role</th>
+            <th>Status</th>
             <th>Verified At</th>
             <th>Is Affiliate</th>
             <th>Affiliate Bonus</th>
@@ -57,6 +74,13 @@
               <td>{{ $user->phone_number }}</td>
               <td>{{ currency_format($user->balance->amount ?? 0) }}</td>
               <td>{{ $user->role }}</td>
+              <td>
+                @if($user->banned_at)
+                  <span class="badge bg-danger">Banned</span>
+                @else
+                  <span class="badge bg-success">Active</span>
+                @endif
+              </td>
               <td>{{ $user->email_verified_at ? parse_date_time($user->email_verified_at) : "-" }}</td>
               <td>{{ $user->affiliate?->status === 'active' ? "✅" : "❌ " }}</td>
               <td>{{ currency_format($user->affiliate?->balance ?? 0) }}</td>
@@ -80,7 +104,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="100%" class="text-center">No Data</td>
+              <td colspan="11" class="text-center">No Data</td>
             </tr>
           @endforelse
           </tbody>

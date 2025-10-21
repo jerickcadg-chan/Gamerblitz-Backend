@@ -108,6 +108,20 @@ class UserController extends Controller
             ->when(request('name'), function ($query) {
                 return $query->where('name', 'like', '%'.request('name').'%');
             })
+            ->when(request('email'), function ($query) {
+                return $query->where('email', 'like', '%'.request('email').'%');
+            })
+            ->when(request('phone'), function ($query) {
+                return $query->where('phone_number', 'like', '%'.request('phone').'%');
+            })
+            ->when(request('banned'), function ($query) {
+                return $query->whereNotNull('banned_at');
+            })
+            ->when(request('affiliate'), function ($query) {
+                return $query->whereHas('affiliate', function ($q) {
+                    $q->where('status', 'active');
+                });
+            })
             ->paginate();
 
         $createLink = route('user.create');
