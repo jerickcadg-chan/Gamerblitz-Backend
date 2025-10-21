@@ -8,6 +8,7 @@ use App\Models\Balance;
 use App\Constants\StatusConst;
 use App\Models\BalanceHistory;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DepositService

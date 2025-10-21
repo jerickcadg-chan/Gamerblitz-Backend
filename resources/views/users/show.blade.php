@@ -91,13 +91,14 @@
         <h3 class="page-title mb-3"> Balance History </h3>
         <table class="table table-bordered table-hover">
           <thead>
-          <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Balance From</th>
-            <th>Nominal</th>
-            <th>Description</th>
-          </tr>
+           <tr>
+             <th>#</th>
+             <th>Date</th>
+             <th>Balance From</th>
+             <th>Nominal</th>
+             <th>Description</th>
+             <th>Updated By</th>
+           </tr>
           </thead>
           <tbody>
           @forelse ($balanceHistories as $index => $history)
@@ -110,14 +111,21 @@
                 @else
                   By Admin
                 @endif
-              </td>
-              <td>{{ currency_format($history->amount) }}</td>
-              <td>{{ $history->description }}</td>
-            </tr>
+               </td>
+               <td>{{ currency_format($history->amount) }}</td>
+               <td>{{ $history->description }}</td>
+               <td>
+                 @if($history->updater)
+                   <a href="{{ route('user.show', $history->updater) }}">{{ $history->updater->name }}</a>
+                 @else
+                   -
+                 @endif
+               </td>
+             </tr>
           @empty
-            <tr>
-              <td colspan="100%" class="text-center">No Data</td>
-            </tr>
+             <tr>
+               <td colspan="6" class="text-center">No Data</td>
+             </tr>
           @endforelse
           </tbody>
         </table>

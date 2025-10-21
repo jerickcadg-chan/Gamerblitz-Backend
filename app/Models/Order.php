@@ -65,7 +65,8 @@ class Order extends Model implements IsFilterable
         'exchange_rate',
         'payment_url',
         'payment_code',
-        'payment_id'
+        'payment_id',
+        'updated_by'
     ];
 
     protected $appends = ['cust_account_array'];
@@ -98,6 +99,11 @@ class Order extends Model implements IsFilterable
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     public function discount(): BelongsTo

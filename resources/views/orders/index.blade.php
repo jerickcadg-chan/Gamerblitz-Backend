@@ -59,17 +59,18 @@
           <div class="table-responsive">
             <table class="table table-bordered table-hover table-responsive">
               <thead>
-              <tr class="text-center">
-                <th rowspan="2">#</th>
-                <th rowspan="2">Code</th>
-                <th rowspan="2">Product</th>
-                <th rowspan="2">Customer Account</th>
-                <th rowspan="2">Turnover</th>
-                <th rowspan="2">Capital</th>
-                <th rowspan="2">Profit</th>
-                <th rowspan="2">Status</th>
-                <th colspan="2">Buyer</th>
-              </tr>
+               <tr class="text-center">
+                 <th rowspan="2">#</th>
+                 <th rowspan="2">Code</th>
+                 <th rowspan="2">Product</th>
+                 <th rowspan="2">Customer Account</th>
+                 <th rowspan="2">Turnover</th>
+                 <th rowspan="2">Capital</th>
+                 <th rowspan="2">Profit</th>
+                 <th rowspan="2">Status</th>
+                 <th rowspan="2">Updated By</th>
+                 <th colspan="2">Buyer</th>
+               </tr>
               <tr class="text-center">
                 <th>Email</th>
                 <th>Whatsapp</th>
@@ -98,13 +99,20 @@
                   <td>{{ currency_format($order->turnover) }}</td>
                   <td>{{ currency_format($order->capital) }}</td>
                   <td>{{ currency_format($order->total_income) }}</td>
-                  <td>
-                    <span class="d-block">{!! $order->order_status_raw !!}</span>
-                    @can('Process Order')
-                    <x-input-update-status :order="$order" />
-                    @endcan
-                  </td>
-                  <td>{{ @$order->cust_email }}</td>
+                   <td>
+                     <span class="d-block">{!! $order->order_status_raw !!}</span>
+                     @can('Process Order')
+                     <x-input-update-status :order="$order" />
+                     @endcan
+                   </td>
+                   <td>
+                     @if($order->updater)
+                       <a href="{{ route('user.show', $order->updater) }}">{{ $order->updater->name }}</a>
+                     @else
+                       -
+                     @endif
+                   </td>
+                   <td>{{ @$order->cust_email }}</td>
                   <td><a href="https://wa.me/{{ $order->cust_phone_number }}&text=Hi"
                          target="_blank">{{ $order->cust_phone_number }}</a></td>
                 </tr>

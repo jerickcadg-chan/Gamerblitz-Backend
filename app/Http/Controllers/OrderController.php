@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\StatusConst;
+use App\Events\UserIpLogged;
 use App\Mail\SendOrderNotif;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
@@ -27,7 +28,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::latest()
-            ->with('productItem', 'user')
+            ->with('productItem', 'user', 'updater')
             ->when(request('cust_account'), function ($query) {
                 return $query->where('cust_account', 'like', '%'. request('cust_account') .'%');
             })
@@ -80,6 +81,12 @@ class OrderController extends Controller
             $request->only(['serial_number', 'note']),
             fn ($value) => $value !== null && $value !== ''
         ));
+
+        $order->updated_by = auth()->user()->id;
+        $order->save();
+
+        // Log user action
+        event(new UserIpLogged(auth()->user()->id, request()->ip(), 'order_updated'));
 
         $orderService->updateStatus($order, $request->status);
 

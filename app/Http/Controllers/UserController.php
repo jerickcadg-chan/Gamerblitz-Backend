@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserIpLogged;
 use App\Http\Requests\UserRequest;
 use App\Models\Affiliate;
 use App\Models\AffiliateHistory;
@@ -159,6 +160,7 @@ class UserController extends Controller
         );
 
         $balanceHistories = BalanceHistory::where('balance_id', $balance->id)
+            ->with('updater')
             ->latest()
             ->paginate();
 
@@ -299,10 +301,14 @@ class UserController extends Controller
 
             BalanceService::update($balance, [
                 'balanceable_type' => User::class,
-                'balanceable_id' => Auth::id(),
+                'balanceable_id' => auth()->user()->id,
                 'amount' => $request->amount,
                 'description' => 'Topup Balance by Admin',
+                'updated_by' => auth()->user()->id,
             ]);
+
+            // Log user action
+            event(new UserIpLogged(auth()->user()->id, request()->ip(), 'balance_manual_update'));
 
             toast('Top up manual success', 'success');
 
