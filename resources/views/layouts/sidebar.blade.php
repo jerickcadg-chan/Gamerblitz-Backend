@@ -198,5 +198,11 @@
         </a>
       </li>
     @endcan
+    <li class="nav-item {{ $activePage == '2fa' ? 'active' : null }}">
+      <a class="nav-link" href="{{ route('2fa.show') }}">
+        <span class="menu-title">Two-Factor Auth</span>
+        <i class="mdi mdi-shield menu-icon"></i>
+      </a>
+    </li>
   </ul>
 </nav>

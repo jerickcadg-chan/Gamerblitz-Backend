@@ -49,6 +49,8 @@ Auth::routes([
     'verify' => true,
 ]);
 
+Route::post('login/verify-2fa', [App\Http\Controllers\Auth\LoginController::class, 'verify2fa'])->name('login.verify2fa');
+
 Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -75,6 +77,11 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::post('user/affiliate-withdraw/{affiliateWithdraw}', [AffiliateWithdrawController::class, 'process'])->name('user.affiliate-withdraw.process');
     Route::get('user/top-up-manual/{user}', [UserController::class, 'topUpManual'])->name('user.top-up-manual');
     Route::post('user/top-up-manual/{user}', [UserController::class, 'topUpManualStore'])->name('user.top-up-manual.store');
+
+    // 2FA router
+    Route::get('2fa', [App\Http\Controllers\Auth\TwoFactorAuthController::class, 'show'])->name('2fa.show');
+    Route::post('2fa/enable', [App\Http\Controllers\Auth\TwoFactorAuthController::class, 'enable'])->name('2fa.enable');
+    Route::post('2fa/disable', [App\Http\Controllers\Auth\TwoFactorAuthController::class, 'disable'])->name('2fa.disable');
 
     // Report router
     Route::get('report', [ReportController::class, 'index'])->name('report.index');

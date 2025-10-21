@@ -33,7 +33,8 @@ class User extends Authenticatable
         'password',
         'phone_number',
         'client_id',
-        'first_login'
+        'first_login',
+        'google2fa_secret'
     ];
 
     /**
@@ -44,6 +45,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'google2fa_secret',
     ];
 
     /**
