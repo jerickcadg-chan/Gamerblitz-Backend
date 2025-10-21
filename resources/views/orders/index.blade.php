@@ -92,7 +92,9 @@
                     </p>
                     <span class="text-muted">{{ @$order->productItem->product->name }}</span>
                   </td>
-                  <td>{!! $order->cust_account_format !!}</td>
+                  <td style="max-width: 250px;">
+                    <div style="white-space: pre-wrap;">{!! $order->cust_account_format !!}</div>
+                  </td>
                   <td>{{ currency_format($order->turnover) }}</td>
                   <td>{{ currency_format($order->capital) }}</td>
                   <td>{{ currency_format($order->total_income) }}</td>
