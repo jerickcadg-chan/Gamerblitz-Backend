@@ -114,6 +114,12 @@ class OrderController extends Controller
             return redirect()->back();
         }
 
+        // Log user action
+        event(new UserIpLogged(auth()->user()->id, request()->ip(), 'order_processed:' . $order->code));
+
+        $order->updated_by = auth()->user()->id;
+        $order->save();
+
         $orderService->updateStatus($order, StatusConst::ON_PROCESS);
         $orderService->processOrder($order, sync: true);
 
