@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserIpLogged;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -72,6 +73,8 @@ class LoginController extends Controller
                 $request->session()->put('auth.password_confirmed_at', time());
             }
 
+            event(new UserIpLogged($user->id, $request->ip(), 'login'));
+
             return $this->sendLoginResponse($request);
         }
 
@@ -103,6 +106,7 @@ class LoginController extends Controller
         if ($valid) {
             $this->guard()->login($user, Session::get('2fa_remember', false));
             Session::forget(['2fa_user_id', '2fa_remember', '2fa_email']);
+            event(new UserIpLogged($user->id, request()->ip(), 'login'));
             return redirect()->intended($this->redirectPath());
         } else {
             toast('Invalid 2FA code', 'error');

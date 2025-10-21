@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\UserIpLogged;
+use App\Listeners\LogUserIp;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;

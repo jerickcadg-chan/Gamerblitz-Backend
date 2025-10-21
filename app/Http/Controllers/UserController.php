@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Constants\StatusConst;
 use App\Http\Requests\UserRequest;
 use App\Models\Affiliate;
 use App\Models\AffiliateHistory;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
-use App\Models\Deposit;
-use App\Models\Setting;
 use App\Models\User;
 use App\Services\BalanceService;
-use App\Services\DepositService;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
@@ -40,7 +36,7 @@ class UserController extends Controller
     {
         $users = User::nonCustomer()->latest()
             ->when(request('name'), function ($query) {
-                return $query->where('name', 'like', '%'. request('name') .'%');
+                return $query->where('name', 'like', '%'.request('name').'%');
             })
             ->paginate();
 
@@ -55,12 +51,32 @@ class UserController extends Controller
     {
         $request->validate([
             'reason' => 'required|string|max:255',
+            'ban_ip' => 'nullable|boolean',
         ]);
 
         $user->update([
             'banned_at' => now(),
             'ban_reason' => $request->reason,
         ]);
+
+        if ($request->ban_ip) {
+            // Get all unique IPs from user_ip_logs
+            $ipLogs = DB::table('user_ip_logs')
+                ->where('user_id', $user->id)
+                ->select('ip_address')
+                ->distinct()
+                ->get();
+
+            foreach ($ipLogs as $ipLog) {
+                \App\Models\BannedIp::firstOrCreate(
+                    ['ip_address' => $ipLog->ip_address],
+                    [
+                        'banned_at' => now(),
+                        'ban_reason' => $this->getUserIpBanReason($user, $request->reason),
+                    ]
+                );
+            }
+        }
 
         return redirect()->back()->with('success', 'User banned successfully.');
     }
@@ -72,6 +88,17 @@ class UserController extends Controller
             'ban_reason' => null,
         ]);
 
+        // Unban IPs that were banned along with this user
+        $userIps = DB::table('user_ip_logs')
+            ->where('user_id', $user->id)
+            ->select('ip_address')
+            ->distinct()
+            ->pluck('ip_address');
+
+        \App\Models\BannedIp::whereIn('ip_address', $userIps)
+            ->where('ban_reason', 'like', $this->getUserIpBanReason($user, '%'))
+            ->delete();
+
         return redirect()->back()->with('success', 'User unbanned successfully.');
     }
 
@@ -79,7 +106,7 @@ class UserController extends Controller
     {
         $users = User::customer()->latest()
             ->when(request('name'), function ($query) {
-                return $query->where('name', 'like', '%'. request('name') .'%');
+                return $query->where('name', 'like', '%'.request('name').'%');
             })
             ->paginate();
 
@@ -110,10 +137,10 @@ class UserController extends Controller
 
         $balance = Balance::query()->firstOrCreate(
             [
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ],
             [
-                'amount' => 0
+                'amount' => 0,
             ]
         );
 
@@ -130,9 +157,11 @@ class UserController extends Controller
                 ->paginate();
         }
 
+        $ipLogs = DB::table('user_ip_logs')->where('user_id', $user->id)->latest()->paginate();
+
         $title = $this->title;
 
-        return view('users.show', compact('user', 'balanceHistories', 'affiliateHistories', 'editLink', 'indexLink', 'deleteLink', 'title'));
+        return view('users.show', compact('user', 'balanceHistories', 'affiliateHistories', 'ipLogs', 'editLink', 'indexLink', 'deleteLink', 'title'));
     }
 
     public function store(UserRequest $request)
@@ -142,7 +171,7 @@ class UserController extends Controller
         $user->assignRole($request->role_id);
 
         if ($request->affiliate_on == 1) {
-            if (!$user->affiliate) {
+            if (! $user->affiliate) {
                 $code = $this->generateUniqueAffiliateCode();
 
                 if (Affiliate::where('code', $code)->exists()) {
@@ -155,14 +184,15 @@ class UserController extends Controller
 
                 Affiliate::create([
                     'user_id' => $user->id,
-                    'code'    => $code,
-                    'status'  => 'active',
+                    'code' => $code,
+                    'status' => 'active',
                     'balance' => 0,
                 ]);
             }
         }
 
-        toast(alert_created_text($this->title),'success');
+        toast(alert_created_text($this->title), 'success');
+
         return redirect()->route('user.show', $user);
     }
 
@@ -202,8 +232,8 @@ class UserController extends Controller
 
                 Affiliate::create([
                     'user_id' => $user->id,
-                    'code'    => $code,
-                    'status'  => 'active',
+                    'code' => $code,
+                    'status' => 'active',
                     'balance' => 0,
                 ]);
             }
@@ -214,6 +244,7 @@ class UserController extends Controller
         }
 
         toast(alert_updated_text($this->title), 'success');
+
         return redirect()->route('user.show', $user);
     }
 
@@ -221,7 +252,8 @@ class UserController extends Controller
     {
         $user->delete();
 
-        toast(alert_deleted_text($this->title),'success');
+        toast(alert_deleted_text($this->title), 'success');
+
         return redirect()->route('user.index');
     }
 
@@ -230,7 +262,7 @@ class UserController extends Controller
         $actionLink = route('user.top-up-manual.store', $user);
         $indexLink = route('user.index');
 
-        $title = 'Top up Manual ' . $this->title;
+        $title = 'Top up Manual '.$this->title;
 
         return view('users.topup-manual', compact('actionLink', 'indexLink', 'title', 'user'));
     }
@@ -238,16 +270,16 @@ class UserController extends Controller
     public function topUpManualStore(Request $request, User $user)
     {
         $request->validate([
-            'amount' => 'required'
+            'amount' => 'required',
         ]);
 
         try {
             $balance = Balance::query()->lockForUpdate()->firstOrCreate(
                 [
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
                 ],
                 [
-                    'amount' => 0
+                    'amount' => 0,
                 ]
             );
 
@@ -255,17 +287,22 @@ class UserController extends Controller
                 'balanceable_type' => User::class,
                 'balanceable_id' => Auth::id(),
                 'amount' => $request->amount,
-                'description' => "Topup Balance by Admin"
+                'description' => 'Topup Balance by Admin',
             ]);
 
-            toast("Top up manual success", 'success');
+            toast('Top up manual success', 'success');
 
             return redirect()->route('user.show', $user);
         } catch (\Exception $e) {
-            toast("Top Up Manual Failed " . $e->getMessage(), 'error');
+            toast('Top Up Manual Failed '.$e->getMessage(), 'error');
 
             return redirect()->back();
         }
+    }
+
+    private function getUserIpBanReason(User $user, string $reason): string
+    {
+        return 'Banned along with user '.$user->email.': '.$reason;
     }
 
     private function generateUniqueAffiliateCode(): string
@@ -283,13 +320,14 @@ class UserController extends Controller
         $candidate = $base;
         $i = 1;
         while (Affiliate::where('code', $candidate)->exists()) {
-            $candidate = $base . $i;
+            $candidate = $base.$i;
             $i++;
             if ($i > 9999) { // fallback hard-stop
                 $candidate = $this->generateUniqueAffiliateCode();
                 break;
             }
         }
+
         return $candidate;
     }
 }

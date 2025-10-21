@@ -174,9 +174,44 @@
         </div>
       </div>
      </div>
-   @endif
+    @endif
 
-   <!-- Ban Modal -->
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body table-responsive">
+          <h3 class="page-title mb-3"> IP Logs </h3>
+          <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>#</th>
+              <th>IP Address</th>
+              <th>Action</th>
+              <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            @forelse ($ipLogs as $index => $log)
+              <tr>
+                <td>{{ ($ipLogs->currentPage() - 1) * $ipLogs->perPage() + $index + 1 }}</td>
+                <td>{{ $log->ip_address }}</td>
+                <td>{{ $log->action }}</td>
+                <td>{{ parse_date_time($log->created_at) }}</td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="100%" class="text-center">No Data</td>
+              </tr>
+            @endforelse
+            </tbody>
+          </table>
+          <div class="mt-2">
+            {!! $ipLogs->links() !!}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ban Modal -->
    <div class="modal fade" id="banModal" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-dialog-centered">
        <div class="modal-content">
@@ -184,19 +219,40 @@
            <h5 class="modal-title" id="banModalLabel">Ban User</h5>
            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
-         <form method="POST" action="{{ route('user.ban', $user) }}">
-           @csrf
-           <div class="modal-body">
-             <div class="mb-3">
-               <label for="reason" class="form-label">Ban Reason</label>
-               <textarea class="form-control" id="reason" name="reason" placeholder="Ban Reason" required></textarea>
-             </div>
-           </div>
-           <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-             <button type="submit" class="btn btn-warning">Ban User</button>
-           </div>
-         </form>
+        <form method="POST" action="{{ route('user.ban', $user) }}">
+          @csrf
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="reason" class="form-label">Ban Reason</label>
+              <textarea class="form-control" id="reason" name="reason" placeholder="Ban Reason" required></textarea>
+            </div>
+            <div class="mb-3">
+              <h6>User's Recent IP:</h6>
+              <div style="max-height: 200px; overflow-y: auto;">
+                <ul class="list-group mb-3">
+                  @forelse($ipLogs->take(5) as $log)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      {{ $log->ip_address }}
+                      <small class="text-muted">{{ $log->action }} - {{ parse_date_time($log->created_at) }}</small>
+                    </li>
+                  @empty
+                    <li class="list-group-item">No IP logs available</li>
+                  @endforelse
+                </ul>
+              </div>
+              <div class="form-check mb-3">
+                <label class="form-check-label" for="ban_ip">
+                  <input type="checkbox" class="form-check-input" id="ban_ip" name="ban_ip" value="1" checked>
+                  Also ban all user's IPs
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-warning">Ban User</button>
+          </div>
+        </form>
        </div>
      </div>
    </div>

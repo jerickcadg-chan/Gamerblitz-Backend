@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Constants\StatusConst;
+use App\Events\UserIpLogged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepositRequest;
 use App\Models\Balance;
@@ -143,6 +144,8 @@ class DepositController extends Controller
         if ($paymentMethod->vendor === PaymentMethod::MPAY) {
             app(MpayService::class)->createDepositMpayInvoice($deposit);
         }
+
+        event(new UserIpLogged($this->userId, $request->ip(), 'deposit_created'));
 
         return api_status_ok(transformer($deposit, new DepositTransformer()));
     }
