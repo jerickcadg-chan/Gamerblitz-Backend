@@ -144,5 +144,6 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'blog' => BlogController::class,
         'app-log' => AppLogController::class,
         'banned-ip' => BannedIpController::class,
+        'guest-ip-logs' => \App\Http\Controllers\GuestIpLogController::class,
     ]);
 });

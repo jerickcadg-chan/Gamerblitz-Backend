@@ -26,13 +26,19 @@ class BannedIpController extends Controller
             'reason' => 'required|string|max:255',
         ]);
 
+        if (BannedIp::where('ip_address', $request->ip_address)->exists()) {
+            toast('IP is already banned.', 'error');
+            return redirect()->back();
+        }
+
         BannedIp::create([
             'ip_address' => $request->ip_address,
             'ban_reason' => $request->reason,
             'banned_at' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'IP banned successfully.');
+        toast('IP banned successfully.', 'success');
+        return redirect()->back();
     }
 
     public function destroy($id)
@@ -40,6 +46,7 @@ class BannedIpController extends Controller
         $bannedIp = BannedIp::findOrFail($id);
         $bannedIp->delete();
 
-        return redirect()->back()->with('success', 'IP unbanned successfully.');
+        toast('IP unbanned successfully.', 'success');
+        return redirect()->back();
     }
 }

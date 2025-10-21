@@ -78,6 +78,8 @@ class LoginController extends Controller
             return $this->sendLoginResponse($request);
         }
 
+        event(new UserIpLogged(null, $request->ip(), 'login_failed'));
+
         $this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);

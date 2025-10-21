@@ -21,7 +21,7 @@ class UserIpLogged
     /**
      * Create a new event instance.
      */
-    public function __construct($userId, $ipAddress, $action)
+    public function __construct(?int $userId, string $ipAddress, string $action)
     {
         $this->userId = $userId;
         $this->ipAddress = $ipAddress;

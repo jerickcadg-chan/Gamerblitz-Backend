@@ -29,15 +29,28 @@ class LogUserIp
              'updated_at' => now(),
          ]);
 
-         // Keep only the latest 10 IP logs per user to maintain storage efficiency
-         $count = DB::table('user_ip_logs')->where('user_id', $event->userId)->count();
-         if ($count > 10) {
-             $toDelete = $count - 10;
-             DB::table('user_ip_logs')
-                 ->where('user_id', $event->userId)
-                 ->orderBy('created_at', 'asc')
-                 ->limit($toDelete)
-                 ->delete();
-         }
+          // Keep only the latest 10 IP logs per user or per IP for guests to maintain storage efficiency
+          if ($event->userId) {
+              $count = DB::table('user_ip_logs')->where('user_id', $event->userId)->count();
+              if ($count > 10) {
+                  $toDelete = $count - 10;
+                  DB::table('user_ip_logs')
+                      ->where('user_id', $event->userId)
+                      ->orderBy('created_at', 'asc')
+                      ->limit($toDelete)
+                      ->delete();
+              }
+          } else {
+              $count = DB::table('user_ip_logs')->whereNull('user_id')->where('ip_address', $event->ipAddress)->count();
+              if ($count > 10) {
+                  $toDelete = $count - 10;
+                  DB::table('user_ip_logs')
+                      ->whereNull('user_id')
+                      ->where('ip_address', $event->ipAddress)
+                      ->orderBy('created_at', 'asc')
+                      ->limit($toDelete)
+                      ->delete();
+              }
+          }
      }
 }
