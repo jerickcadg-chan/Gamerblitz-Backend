@@ -274,7 +274,7 @@ class OrderController extends Controller
         $stringA = collect($data)
             ->map(fn($v, $k) => "{$k}={$v}")
             ->join('&') . '&';
-        
+
         // Make signature
         $md5Key        = md5(Setting::getByKey('mpay_sign_key'));
         $stringSign    = "{$stringA}key={$md5Key}";
@@ -331,44 +331,34 @@ class OrderController extends Controller
     public function billplzCallback(Request $request, OrderService $orderService, DepositService $depositService)
     {
         $data = $request->all();
-        $signatureKey = Setting::getByKey('billplz_signature_payment');
-        $hmac = $data['x_signature'];
-
-        // Unset signature & ksort data
-        unset($data['x_signature']);
-        uksort($data, 'strcasecmp');
 
         Log::info('Billplz Webhook Received', $data);
 
+        $hmac     = $data['x_signature'] ?? null;
+        $billId   = $data['id'] ?? null;
+        $state    = $data['state'] ?? null;
+        $isPaid   = filter_var($data['paid'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        // === Basic validation ===
         if (!$hmac) {
             return response()->json(['message' => 'Missing HMAC'], 400);
         }
-
-        $chunks = [];
-        foreach ($data as $k => $v) {
-            $chunks[] = $k . $v;
-        }
-
-        $sourceString = implode('|', $chunks);
-        $calculatedHmac = hash_hmac('sha256', $sourceString, $signatureKey);
-
-        if (!hash_equals($hmac, $calculatedHmac)) {
-            Log::warning('Billplz Webhook HMAC mismatch', [
-                'expected' => $calculatedHmac,
-                'received' => $hmac,
-            ]);
-
-            return api_status_warning('Invalid HMAC');
-        }
-
-        $billId = $data['id'] ?? null;
-        $state  = $data['state'] ?? null;
-        $isPaid = filter_var($data['paid'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if (!$billId) {
             return api_status_warning('Missing bill ID');
         }
 
+        // === Check Billplz Transaction Status ===
+        $responseStatus = $this->sendBillplzRequest($billId);
+        $transactions   = collect($responseStatus['transactions'] ?? []);
+        $hasCompleted   = $transactions->contains('status', 'completed');
+        $isFullyPaid = $hasCompleted && $isPaid && $state === 'paid';
+
+        if (!$isFullyPaid) {
+            return api_status_warning('Payment not completed or invalid state');
+        }
+
+        // === Check Order / Deposit ===
         $order   = Order::where('payment_id', $billId)->first();
         $deposit = Deposit::where('payment_id', $billId)->first();
 
@@ -377,26 +367,26 @@ class OrderController extends Controller
             return api_status_warning('Transaction not found');
         }
 
-        if ($order && $isPaid && $state === 'paid') {
+        // === Handle Order Payment ===
+        if ($order && $order->status !== StatusConst::SUCCESS) {
             $orderService->updateStatus($order, StatusConst::ON_PROCESS);
             $orderService->processOrder($order);
 
             return api_status_ok([
-                'order' => transformer($order, new OrderTransformer())
+                'order' => transformer($order, new OrderTransformer()),
             ]);
         }
 
-        if ($deposit && $isPaid && $state === 'paid') {
+        // === Handle Deposit Payment ===
+        if ($deposit && $deposit->status !== StatusConst::PAID) {
             $depositService->handlePaymentSettlement($deposit);
 
             return api_status_ok([
-                'deposit' => transformer($deposit, new DepositTransformer())
+                'deposit' => transformer($deposit, new DepositTransformer()),
             ]);
         }
 
-        return api_status_ok([
-            'message' => 'Payment not completed'
-        ]);
+        return api_status_ok(['message' => 'Payment already processed']);
     }
 
     public function checkUid()
@@ -450,5 +440,19 @@ class OrderController extends Controller
                 'name' => null,
             ]);
         }
+    }
+
+    private function sendBillplzRequest(string $orderId): array
+    {
+        $response = Http::withBasicAuth(Setting::getByKey('billplz_api_key'), '')
+            ->asForm()
+            ->get(Setting::getByKey('billplz_api_url') . "/v3/bills/{$orderId}/transactions");
+        $json = $response->json();
+
+        if ($response->failed()) {
+            throw new \Exception("Failed to check status");
+        }
+
+        return $json;
     }
 }
