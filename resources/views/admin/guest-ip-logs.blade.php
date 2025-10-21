@@ -16,6 +16,19 @@
    <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body table-responsive">
+        <form method="GET" action="{{ route('guest-ip-logs.index') }}" class="mb-3">
+          <div class="row">
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="ip" name="ip" value="{{ request('ip') }}" placeholder="Enter IP address">
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-primary">Search</button>
+              @if(request('ip'))
+                <a href="{{ route('guest-ip-logs.index') }}" class="btn btn-secondary ms-2">Clear</a>
+              @endif
+            </div>
+          </div>
+        </form>
         <table class="table table-bordered table-hover">
            <thead>
            <tr>

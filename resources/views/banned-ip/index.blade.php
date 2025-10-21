@@ -13,21 +13,40 @@
     </nav>
   </div>
 
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <form method="get" class="row g-3">
+          <div class="col-md-4">
+            <label for="ip" class="form-label">IP Address</label>
+            <input type="text" class="form-control" id="ip" name="ip" placeholder="Search IP Address" value="{{ request('ip') }}">
+          </div>
+          <div class="col-md-4">
+            <label for="reason" class="form-label">Ban Reason</label>
+            <input type="text" class="form-control" id="reason" name="reason" placeholder="Search Ban Reason" value="{{ request('reason') }}">
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">Search</button>
+            @if(request('ip') || request('reason'))
+              <a href="{{ route('banned-ip.index') }}" class="btn btn-secondary">Clear</a>
+            @endif
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
    <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
-      <div class="card-body table-responsive">
+      <div class="card-body">
         <div class="row mb-2">
-          <div class="col-md-4 mb-2">
-            <form method="get">
-              <input type="text" class="form-control" name="ip" placeholder="Search IP Address" value="{{ request('ip') }}">
-            </form>
-          </div>
-          <div class="col-md-8 text-lg-end">
+          <div class="col-md-12 text-lg-end">
             @can('Create Banned IP')
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBannedIpModal">Add Banned IP</button>
             @endcan
           </div>
         </div>
+        <div class="table-responsive">
         <table class="table table-bordered table-hover">
           <thead>
           <tr>

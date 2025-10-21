@@ -15,6 +15,10 @@ class BannedIpController extends Controller
             $query->where('ip_address', 'like', '%' . request('ip') . '%');
         }
 
+        if (request('reason')) {
+            $query->where('ban_reason', 'like', '%' . request('reason') . '%');
+        }
+
         $bannedIps = $query->paginate();
         return view('banned-ip.index', compact('bannedIps'));
     }
