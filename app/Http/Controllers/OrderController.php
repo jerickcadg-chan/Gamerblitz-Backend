@@ -86,7 +86,7 @@ class OrderController extends Controller
         $order->save();
 
         // Log user action
-        event(new UserIpLogged(auth()->user()->id, request()->ip(), 'order_updated'));
+        event(new UserIpLogged(auth()->user()->id, request()->ip(), 'order_updated:' . $order->code));
 
         $orderService->updateStatus($order, $request->status);
 

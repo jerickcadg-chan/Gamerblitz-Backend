@@ -54,7 +54,7 @@ class DepositController extends Controller
             $deposit->save();
 
             // Log user action
-            event(new UserIpLogged(auth()->user()->id, request()->ip(), 'deposit_updated'));
+            event(new UserIpLogged(auth()->user()->id, request()->ip(), 'deposit_updated:' . $deposit->code));
 
             $action = DepositService::updateStatus($deposit, $request->status, $request->amount);
 

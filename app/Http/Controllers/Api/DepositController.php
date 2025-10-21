@@ -145,7 +145,7 @@ class DepositController extends Controller
             app(MpayService::class)->createDepositMpayInvoice($deposit);
         }
 
-        event(new UserIpLogged($this->userId, $request->ip(), 'deposit_created'));
+        event(new UserIpLogged($this->userId, $request->ip(), 'deposit_created:' . $deposit->code));
 
         return api_status_ok(transformer($deposit, new DepositTransformer()));
     }

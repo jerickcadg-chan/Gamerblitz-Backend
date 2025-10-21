@@ -308,7 +308,7 @@ class UserController extends Controller
             ]);
 
             // Log user action
-            event(new UserIpLogged(auth()->user()->id, request()->ip(), 'balance_manual_update'));
+            event(new UserIpLogged(auth()->user()->id, request()->ip(), 'balance_manual_update:' . $user->email));
 
             toast('Top up manual success', 'success');
 

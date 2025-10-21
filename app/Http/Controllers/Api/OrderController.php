@@ -116,7 +116,7 @@ class OrderController extends Controller
                 return api_status_warning($order);
             }
 
-            event(new UserIpLogged($this->userId, $request->ip(), 'order_created'));
+            event(new UserIpLogged($this->userId, $request->ip(), 'order_created:' . $order->code));
 
             return api_status_ok(transformer($order, new OrderTransformer()));
         } catch (ValidationException $e) {
