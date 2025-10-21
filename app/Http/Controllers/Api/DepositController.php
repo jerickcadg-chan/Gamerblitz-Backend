@@ -59,6 +59,7 @@ class DepositController extends Controller
         $exchangeRateToBase = get_exchange_rate($userCurrency, $baseCurrency);
 
         $minAmount = DepositService::getDepositMinAmount($userCurrency);
+        $maxAmount = DepositService::getDepositMaxAmount($userCurrency);
 
         $paymentMethod = PaymentMethod::find($request->payment_method_id);
 
@@ -67,8 +68,16 @@ class DepositController extends Controller
         }
 
         $amount = $request->amount;
+        if ($amount <= 0) {
+            return api_status_warning('Invalid deposit amount');
+        }
+
         if ($amount < $minAmount) {
             return api_status_warning('Min deposit amount is ' . currency_format($minAmount, $userCurrency));
+        }
+
+        if ($maxAmount && $amount > $maxAmount) {
+            return api_status_warning('Max deposit amount is ' . currency_format($maxAmount, $userCurrency));
         }
 
         $adminFee = match ($paymentMethod->admin_type) {
@@ -83,11 +92,6 @@ class DepositController extends Controller
         }
 
         $totalAmount = $amount + $adminFee;
-
-        // Prevent negative deposit amounts
-        if ($amount <= 0) {
-            return api_status_warning('Invalid deposit amount');
-        }
 
         $baseAmount = $amount * $exchangeRateToBase;
         $baseAdminFee = $adminFee * $exchangeRateToBase;
@@ -154,8 +158,10 @@ class DepositController extends Controller
 
         $userCurrency = $request->currency_code;
 
+        $maxAmount = DepositService::getDepositMaxAmount($userCurrency);
         return api_status_ok([
             'min_amount' => (string) DepositService::getDepositMinAmount($userCurrency),
+            'max_amount' => $maxAmount ? (string) $maxAmount : null,
             'currency_code' => $userCurrency,
         ]);
     }

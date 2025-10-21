@@ -408,12 +408,18 @@
               value="{{ old('settings.mpay_sign_key', $settings['mpay_sign_key'] ?? '') }}">
           </div>
 
-          <h4 class="mb-2 mt-5">Deposit Setting</h4>
-          <div class="form-group">
-            <label>Minimum Deposit Amount</label>
-            <input type="text" class="form-control" name="settings[deposit_min_amount]"
-              value="{{ old('settings.deposit_min_amount', $settings['deposit_min_amount'] ?? '') }}">
-          </div>
+           <h4 class="mb-2 mt-5">Deposit Setting</h4>
+           <div class="form-group">
+             <label>Minimum Deposit Amount</label>
+             <input type="text" class="form-control" name="settings[deposit_min_amount]"
+               value="{{ old('settings.deposit_min_amount', $settings['deposit_min_amount'] ?? '') }}">
+           </div>
+
+           <div class="form-group">
+             <label>Maximum Deposit Amount</label>
+             <input type="text" class="form-control" name="settings[deposit_max_amount]"
+               value="{{ old('settings.deposit_max_amount', $settings['deposit_max_amount'] ?? '') }}">
+           </div>
 
           <div class="form-group">
             <label>Affiliate Percentage</label>
