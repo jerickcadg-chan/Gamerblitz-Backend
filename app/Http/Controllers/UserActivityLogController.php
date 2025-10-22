@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\DefaultRole;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -51,6 +52,15 @@ class UserActivityLogController extends Controller
                 $q->where('users.name', 'like', '%' . request('search') . '%')
                   ->orWhere('users.email', 'like', '%' . request('search') . '%');
             });
+        }
+
+        if (request('dates')) {
+            $dates = explode(' - ', request('dates'));
+            if (count($dates) == 2) {
+                $start = Carbon::createFromFormat('m/d/Y', $dates[0])->startOfDay();
+                $end = Carbon::createFromFormat('m/d/Y', $dates[1])->endOfDay();
+                $query->whereBetween('user_activity_logs.created_at', [$start, $end]);
+            }
         }
 
         $logs = $query->orderBy('user_activity_logs.created_at', 'desc')
