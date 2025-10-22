@@ -126,7 +126,7 @@ class PermissionsTableSeeder extends Seeder
             'Create Banned IP',
             'Delete Banned IP',
 
-            'View Guest IP Logs',
+            'View User Activity Logs',
         ];
 
         foreach ($permissions as $permission){

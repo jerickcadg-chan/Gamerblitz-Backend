@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\StatusConst;
-use App\Events\UserIpLogged;
+use App\Events\UserActivityLogged;
 use App\Mail\SendOrderNotif;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
@@ -86,7 +86,7 @@ class OrderController extends Controller
         $order->save();
 
         // Log user action
-        event(new UserIpLogged(auth()->user()->id, request()->ip(), 'order_updated:' . $order->code));
+        event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'order_updated:' . $order->code));
 
         $orderService->updateStatus($order, $request->status);
 
@@ -115,7 +115,7 @@ class OrderController extends Controller
         }
 
         // Log user action
-        event(new UserIpLogged(auth()->user()->id, request()->ip(), 'order_processed:' . $order->code));
+        event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'order_processed:' . $order->code));
 
         $order->updated_by = auth()->user()->id;
         $order->save();

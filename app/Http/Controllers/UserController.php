@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\UserIpLogged;
+use App\Events\UserActivityLogged;
 use App\Http\Requests\UserRequest;
 use App\Models\Affiliate;
 use App\Models\AffiliateHistory;
@@ -61,8 +61,8 @@ class UserController extends Controller
         ]);
 
         if ($request->ban_ip) {
-            // Get all unique IPs from user_ip_logs
-            $ipLogs = DB::table('user_ip_logs')
+            // Get all unique IPs from user_activity_logs
+            $ipLogs = DB::table('user_activity_logs')
                 ->where('user_id', $user->id)
                 ->select('ip_address')
                 ->distinct()
@@ -90,7 +90,7 @@ class UserController extends Controller
         ]);
 
         // Unban IPs that were banned along with this user
-        $userIps = DB::table('user_ip_logs')
+        $userIps = DB::table('user_activity_logs')
             ->where('user_id', $user->id)
             ->select('ip_address')
             ->distinct()
@@ -173,7 +173,7 @@ class UserController extends Controller
                 ->paginate();
         }
 
-        $ipLogs = DB::table('user_ip_logs')->where('user_id', $user->id)->latest()->paginate();
+        $ipLogs = DB::table('user_activity_logs')->where('user_id', $user->id)->latest()->paginate();
 
         $title = $this->title;
 
@@ -308,7 +308,7 @@ class UserController extends Controller
             ]);
 
             // Log user action
-            event(new UserIpLogged(auth()->user()->id, request()->ip(), 'balance_manual_update:' . $user->email));
+            event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'balance_manual_update:' . $user->email));
 
             toast('Top up manual success', 'success');
 

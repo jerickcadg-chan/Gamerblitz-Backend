@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\UserIpLogged;
+use App\Events\UserActivityLogged;
 use App\Mail\SentVerificationLink;
 use App\Models\Balance;
 use App\Models\Setting;
@@ -64,7 +64,7 @@ class AuthController extends Controller
                 return api_status_warning(trans('auth.unverified'), 400);
             }
 
-            event(new UserIpLogged($user->id, $request->ip(), 'api_login'));
+            event(new UserActivityLogged($user->id, $request->ip(), 'api_login'));
 
             return api_status_ok([
                 'token' => $user->createToken('access_token')->plainTextToken,

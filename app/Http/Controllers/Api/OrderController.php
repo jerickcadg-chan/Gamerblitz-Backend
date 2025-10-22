@@ -6,7 +6,7 @@ use App\Constants\StatusConst;
 use App\Data\LapakGaming\CheckUidRequest;
 use App\Data\LapakGaming\CheckUidResponse;
 use App\Data\Xendit\PaymentCallbackPayload;
-use App\Events\UserIpLogged;
+use App\Events\UserActivityLogged;
 use App\Http\Controllers\Controller;
 use App\Models\Deposit;
 use App\Models\Order;
@@ -116,7 +116,7 @@ class OrderController extends Controller
                 return api_status_warning($order);
             }
 
-            event(new UserIpLogged($this->userId, $request->ip(), 'order_created:' . $order->code));
+            event(new UserActivityLogged($this->userId, $request->ip(), 'order_created:' . $order->code));
 
             return api_status_ok(transformer($order, new OrderTransformer()));
         } catch (ValidationException $e) {

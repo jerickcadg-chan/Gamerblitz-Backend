@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\UserIpLogged;
+use App\Events\UserActivityLogged;
 use App\Services\DepositService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -54,7 +54,7 @@ class DepositController extends Controller
             $deposit->save();
 
             // Log user action
-            event(new UserIpLogged(auth()->user()->id, request()->ip(), 'deposit_updated:' . $deposit->code));
+            event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'deposit_updated:' . $deposit->code));
 
             $action = DepositService::updateStatus($deposit, $request->status, $request->amount);
 

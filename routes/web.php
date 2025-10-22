@@ -144,6 +144,6 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'blog' => BlogController::class,
         'app-log' => AppLogController::class,
         'banned-ip' => BannedIpController::class,
-        'user-ip-logs' => \App\Http\Controllers\UserIpLogController::class,
+        'user-activity-logs' => \App\Http\Controllers\UserActivityLogController::class,
     ]);
 });

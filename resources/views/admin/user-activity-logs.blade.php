@@ -1,13 +1,13 @@
 @extends('layouts.app', [
-    'activePage' => 'user-ip-logs',
+    'activePage' => 'user-activity-logs',
 ])
 
 @section('content')
   <div class="page-header">
-    <h3 class="page-title"> User IP Logs </h3>
+    <h3 class="page-title"> User Activity Logs </h3>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('user-ip-logs.index') }}">User IP Logs</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('user-activity-logs.index') }}">User Activity Logs</a></li>
         <li class="breadcrumb-item active" aria-current="page">Data List</li>
       </ol>
     </nav>
@@ -16,7 +16,7 @@
    <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body table-responsive">
-        <form method="GET" action="{{ route('user-ip-logs.index') }}" class="mb-3">
+        <form method="GET" action="{{ route('user-activity-logs.index') }}" class="mb-3">
           <div class="row">
              <div class="col-xl-3 col-md-6 col-sm-12 mb-2">
                 <select class="form-control" id="type" name="type">
@@ -35,7 +35,7 @@
             <div class="col-xl-3 col-md-6 mb-2">
                <button type="submit" class="btn btn-primary">Filter</button>
                @if(request('type') || request('search') || request('ip'))
-                 <a href="{{ route('user-ip-logs.index') }}" class="btn btn-secondary ms-2">Clear</a>
+                  <a href="{{ route('user-activity-logs.index') }}" class="btn btn-secondary ms-2">Clear</a>
                @endif
             </div>
           </div>
@@ -62,7 +62,7 @@
                     Guest
                   @endif
                 </td>
-                <td>{{ $log->ip_address }} @if($log->is_banned) <span class="badge bg-danger">Banned</span> @endif</td>
+                <td>{{ $log->ip_address }} @if($log->is_banned) <span class="badge bg-danger">Banned</span> @else <span class="badge bg-success">Active</span> @endif</td>
                 <td>{{ $log->action }}</td>
                 <td>{{ parse_date_time($log->created_at) }}</td>
                 <td>

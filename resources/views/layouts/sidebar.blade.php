@@ -206,10 +206,10 @@
       </a>
     </li>
     @endcan
-    @can('View User IP Logs')
-    <li class="nav-item {{ $activePage == 'user-ip-logs' ? 'active' : null }}">
-      <a class="nav-link" href="{{ route('user-ip-logs.index') }}">
-        <span class="menu-title">User IP Logs</span>
+    @can('View User Activity Logs')
+    <li class="nav-item {{ $activePage == 'user-activity-logs' ? 'active' : null }}">
+      <a class="nav-link" href="{{ route('user-activity-logs.index') }}">
+        <span class="menu-title">User Activity Logs</span>
         <i class="mdi mdi-eye menu-icon"></i>
       </a>
     </li>
