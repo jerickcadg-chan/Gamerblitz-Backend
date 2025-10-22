@@ -62,7 +62,7 @@
                     Guest
                   @endif
                 </td>
-                <td>{{ $log->ip_address }} @if($log->is_banned) <span class="badge bg-danger">Banned</span> @else <span class="badge bg-success">Active</span> @endif</td>
+                <td>{{ $log->ip_address }} @if($log->is_banned) <span class="badge bg-danger">Banned</span> @endif</td>
                 <td>{{ $log->action }}</td>
                 <td>{{ parse_date_time($log->created_at) }}</td>
                 <td>
