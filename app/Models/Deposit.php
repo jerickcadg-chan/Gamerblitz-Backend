@@ -29,7 +29,8 @@ class Deposit extends Model
         'payment_url',
         'payment_code',
         'payment_id',
-        'additional_informations'
+        'additional_informations',
+        'updated_by'
     ];
 
     protected $casts = [
@@ -50,6 +51,11 @@ class Deposit extends Model
     public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     public function getStatusRawAttribute(): string

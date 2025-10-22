@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserActivityLogged;
 use App\Services\DepositService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class DepositController extends Controller
 
     public function __construct()
     {
-        $this->title = 'Product Item';
+        $this->title = 'Deposit';
 
         $this->middleware(['permission:View Deposit'])->only('index', 'show');
         $this->middleware(['permission:Edit Deposit'])->only('updateStatus');
@@ -21,7 +22,7 @@ class DepositController extends Controller
 
     public function index()
     {
-        $deposits = Deposit::with('user')
+        $deposits = Deposit::with('user', 'updater')
             ->latest()
             ->whereHas('user', function (Builder $query) {
                 $query
@@ -49,6 +50,12 @@ class DepositController extends Controller
     public function updateStatus(Deposit $deposit, Request $request)
     {
         try {
+            $deposit->updated_by = auth()->user()->id;
+            $deposit->save();
+
+            // Log user action
+            event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'deposit_updated:' . $deposit->code));
+
             $action = DepositService::updateStatus($deposit, $request->status, $request->amount);
 
             if (!$action['status']) {

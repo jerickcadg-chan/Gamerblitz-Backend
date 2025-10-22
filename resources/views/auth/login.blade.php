@@ -15,9 +15,10 @@
                 <div class="form-group">
                   <input id="email" type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="Email" required autocomplete="email" autofocus>
                 </div>
-                <div class="form-group">
-                  <input id="password" type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" name="password" placeholder="Password" required autocomplete="current-password">
-                </div>
+                 <div class="form-group">
+                   <input id="password" type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" name="password" placeholder="Password" required autocomplete="current-password">
+                 </div>
+
                 @error('email')
                 <span class="text-danger" role="alert">
                   <p>{{ $message }}</p>
@@ -33,13 +34,47 @@
                   {{ __('Remember Me') }}
                 </label>
               </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- content-wrapper ends -->
-    </div>
-    <!-- page-body-wrapper ends -->
-  </div>
-@endsection
+               </form>
+             </div>
+           </div>
+         </div>
+       </div>
+       <!-- content-wrapper ends -->
+     </div>
+     <!-- page-body-wrapper ends -->
+
+     <!-- 2FA Modal -->
+     @if(session('show_2fa_modal'))
+     <div class="modal fade show" id="twofaModal" tabindex="-1" role="dialog" aria-labelledby="twofaModalLabel" aria-hidden="false" style="display: block;">
+       <div class="modal-dialog" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title" id="twofaModalLabel">Enter 2FA Code</h5>
+           </div>
+           <form action="{{ route('login.verify2fa') }}" method="POST">
+             @csrf
+             <div class="modal-body">
+               <div class="form-group">
+                 <input id="one_time_password" type="text" class="form-control @error('one_time_password') is-invalid @enderror" name="one_time_password" placeholder="Google Authenticator Code" autocomplete="one-time-code" required autofocus>
+                 @error('one_time_password')
+                 <span class="text-danger">{{ $message }}</span>
+                 @enderror
+               </div>
+             </div>
+             <div class="modal-footer">
+               <button type="submit" class="btn btn-primary">Verify</button>
+             </div>
+           </form>
+         </div>
+       </div>
+     </div>
+      <div class="modal-backdrop fade show"></div>
+      @endif
+      @if(session('show_2fa_modal'))
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          document.getElementById('one_time_password').focus();
+        });
+      </script>
+      @endif
+  @endsection

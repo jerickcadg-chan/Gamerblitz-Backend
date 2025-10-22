@@ -32,15 +32,16 @@
         </form>
         <table class="table table-bordered table-hover">
           <thead>
-          <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Kode</th>
-            <th>User</th>
-            <th>Nominal</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
+           <tr>
+             <th>#</th>
+             <th>Date</th>
+             <th>Kode</th>
+             <th>User</th>
+             <th>Nominal</th>
+             <th>Status</th>
+             <th>Updated By</th>
+             <th>Action</th>
+           </tr>
           </thead>
           <tbody>
           @forelse ($deposits as $index => $deposit)
@@ -49,9 +50,16 @@
               <td>{{ parse_date_time($deposit->created_at) }}</td>
               <td>{{ $deposit->code }}</td>
               <td>{{ $deposit->user->name }}</td>
-              <td>{{ currency_format($deposit->total_amount) }}</td>
-              <td>{!! $deposit->status_raw !!}</td>
-              <td>
+               <td>{{ currency_format($deposit->total_amount) }}</td>
+               <td>{!! $deposit->status_raw !!}</td>
+               <td>
+                 @if($deposit->updater)
+                   <a href="{{ route('user.show', $deposit->updater) }}">{{ $deposit->updater->name }}</a>
+                 @else
+                   -
+                 @endif
+               </td>
+               <td>
                 @include('master.action', [
                     'view_url' => route('deposit.show', $deposit),
                 ])

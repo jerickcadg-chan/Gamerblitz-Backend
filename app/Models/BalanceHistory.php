@@ -17,6 +17,7 @@ class BalanceHistory extends Model
         'description',
         'amount',
         'latest_balance',
+        'updated_by',
     ];
 
     public function balance(): BelongsTo
@@ -27,5 +28,10 @@ class BalanceHistory extends Model
     public function balanceable()
     {
         return $this->morphTo();
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Constants\StatusConst;
+use App\Events\UserActivityLogged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepositRequest;
 use App\Models\Balance;
@@ -59,6 +60,7 @@ class DepositController extends Controller
         $exchangeRateToBase = get_exchange_rate($userCurrency, $baseCurrency);
 
         $minAmount = DepositService::getDepositMinAmount($userCurrency);
+        $maxAmount = DepositService::getDepositMaxAmount($userCurrency);
 
         $paymentMethod = PaymentMethod::find($request->payment_method_id);
 
@@ -67,8 +69,30 @@ class DepositController extends Controller
         }
 
         $amount = $request->amount;
+        if ($amount <= 0) {
+            \Illuminate\Support\Facades\Log::warning('Suspicious deposit attempt', ['user_id' => $this->userId, 'ip' => $request->ip(), 'deposit_data' => $request->all()]);
+
+            // Ban user if authenticated
+            if ($this->userId) {
+                $user = \App\Models\User::find($this->userId);
+                $user->update(['banned_at' => now(), 'ban_reason' => 'Suspicious deposit attempt']);
+            }
+
+            // Ban IP
+            \App\Models\BannedIp::firstOrCreate(['ip_address' => $request->ip()], [
+                'banned_at' => now(),
+                'ban_reason' => 'Suspicious deposit attempt',
+            ]);
+
+            return api_status_warning('Invalid deposit amount');
+        }
+
         if ($amount < $minAmount) {
             return api_status_warning('Min deposit amount is ' . currency_format($minAmount, $userCurrency));
+        }
+
+        if ($maxAmount && $amount > $maxAmount) {
+            return api_status_warning('Max deposit amount is ' . currency_format($maxAmount, $userCurrency));
         }
 
         $adminFee = match ($paymentMethod->admin_type) {
@@ -122,6 +146,8 @@ class DepositController extends Controller
             app(MpayService::class)->createDepositMpayInvoice($deposit);
         }
 
+        event(new UserActivityLogged($this->userId, $request->ip(), 'deposit_created:' . $deposit->code));
+
         return api_status_ok(transformer($deposit, new DepositTransformer()));
     }
 
@@ -150,8 +176,10 @@ class DepositController extends Controller
 
         $userCurrency = $request->currency_code;
 
+        $maxAmount = DepositService::getDepositMaxAmount($userCurrency);
         return api_status_ok([
             'min_amount' => (string) DepositService::getDepositMinAmount($userCurrency),
+            'max_amount' => $maxAmount ? (string) $maxAmount : null,
             'currency_code' => $userCurrency,
         ]);
     }

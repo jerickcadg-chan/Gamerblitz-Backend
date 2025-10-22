@@ -28,7 +28,8 @@ class BalanceService
             'balanceable_id' => $request['balanceable_id'],
             'amount' => $request['amount'],
             'latest_balance' => $request['latest_balance'],
-            'description' => $request['description'] ?? null
+            'description' => $request['description'] ?? null,
+            'updated_by' => $request['updated_by'] ?? null
         ]);
     }
 }
