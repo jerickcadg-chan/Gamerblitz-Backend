@@ -79,10 +79,13 @@
               </tr>
            @endforelse
            </tbody>
-         </table>
-       </div>
-     </div>
-   </div>
+          </table>
+          <div class="mt-4">
+          {{ $logs->links() }}
+          </div>
+        </div>
+      </div>
+    </div>
 
    <!-- Ban IP Modal -->
    <div class="modal fade" id="banModal" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">

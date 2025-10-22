@@ -54,8 +54,7 @@ class UserActivityLogController extends Controller
         }
 
         $logs = $query->orderBy('user_activity_logs.created_at', 'desc')
-            ->limit(50)
-            ->get();
+            ->paginate(50);
 
         return view('admin.user-activity-logs', compact('logs'));
     }
