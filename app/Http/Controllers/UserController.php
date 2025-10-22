@@ -162,7 +162,7 @@ class UserController extends Controller
         $balanceHistories = BalanceHistory::where('balance_id', $balance->id)
             ->with('updater')
             ->latest()
-            ->paginate();
+            ->paginate(15, ['*'], 'balance_page');
 
         $affiliateHistories = [];
 
@@ -170,10 +170,10 @@ class UserController extends Controller
             $affiliateHistories = AffiliateHistory::with('affiliateable')
                 ->where('affiliate_id', $user->affiliate->id)
                 ->latest()
-                ->paginate();
+                ->paginate(15, ['*'], 'affiliate_page');
         }
 
-        $activityLogs = DB::table('user_activity_logs')->where('user_id', $user->id)->latest()->paginate();
+        $activityLogs = DB::table('user_activity_logs')->where('user_id', $user->id)->latest()->paginate(15, ['*'], 'activity_page');
 
         $title = $this->title;
 

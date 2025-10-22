@@ -213,7 +213,7 @@
             </tbody>
            </table>
            <div class="mt-2">
-             {!! $activityLogs->links() !!}
+             {!! $activityLogs->appends(request()->query())->links() !!}
            </div>
         </div>
       </div>
