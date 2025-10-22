@@ -103,22 +103,6 @@
        </a>
      </li>
      @endcan
-      @can('View Banned IP')
-      <li class="nav-item {{ $activePage == 'banned-ip' ? 'active' : null }}">
-        <a class="nav-link" href="{{ route('banned-ip.index') }}">
-          <span class="menu-title">Banned IPs</span>
-          <i class="mdi mdi-lock menu-icon"></i>
-        </a>
-      </li>
-      @endcan
-      @can('View Guest IP Logs')
-      <li class="nav-item {{ $activePage == 'guest-ip-logs' ? 'active' : null }}">
-        <a class="nav-link" href="{{ route('guest-ip-logs.index') }}">
-          <span class="menu-title">Guest IP Logs</span>
-          <i class="mdi mdi-eye menu-icon"></i>
-        </a>
-      </li>
-      @endcan
      @can ('View Report')
       <li class="nav-item {{ $activePage == 'report' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('report.index') }}">
@@ -213,6 +197,22 @@
           <i class="mdi mdi-cogs menu-icon"></i>
         </a>
       </li>
+    @endcan
+    @can('View Banned IP')
+    <li class="nav-item {{ $activePage == 'banned-ip' ? 'active' : null }}">
+      <a class="nav-link" href="{{ route('banned-ip.index') }}">
+        <span class="menu-title">Banned IPs</span>
+        <i class="mdi mdi-lock menu-icon"></i>
+      </a>
+    </li>
+    @endcan
+    @can('View User IP Logs')
+    <li class="nav-item {{ $activePage == 'user-ip-logs' ? 'active' : null }}">
+      <a class="nav-link" href="{{ route('user-ip-logs.index') }}">
+        <span class="menu-title">User IP Logs</span>
+        <i class="mdi mdi-eye menu-icon"></i>
+      </a>
+    </li>
     @endcan
     <li class="nav-item {{ $activePage == '2fa' ? 'active' : null }}">
       <a class="nav-link" href="{{ route('2fa.show') }}">
