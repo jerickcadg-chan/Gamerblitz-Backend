@@ -187,7 +187,7 @@
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body table-responsive">
-          <h3 class="page-title mb-3"> IP Logs </h3>
+           <h3 class="page-title mb-3"> User Activity Log </h3>
           <table class="table table-bordered table-hover">
             <thead>
             <tr>
@@ -198,9 +198,9 @@
             </tr>
             </thead>
             <tbody>
-            @forelse ($ipLogs as $index => $log)
+             @forelse ($activityLogs as $index => $log)
               <tr>
-                <td>{{ ($ipLogs->currentPage() - 1) * $ipLogs->perPage() + $index + 1 }}</td>
+                 <td>{{ ($activityLogs->currentPage() - 1) * $activityLogs->perPage() + $index + 1 }}</td>
                 <td>{{ $log->ip_address }}</td>
                 <td>{{ $log->action }}</td>
                 <td>{{ parse_date_time($log->created_at) }}</td>
@@ -211,10 +211,10 @@
               </tr>
             @endforelse
             </tbody>
-          </table>
-          <div class="mt-2">
-            {!! $ipLogs->links() !!}
-          </div>
+           </table>
+           <div class="mt-2">
+             {!! $activityLogs->links() !!}
+           </div>
         </div>
       </div>
     </div>
@@ -235,10 +235,10 @@
               <textarea class="form-control" id="reason" name="reason" placeholder="Ban Reason" required></textarea>
             </div>
             <div class="mb-3">
-              <h6>User's Recent IP:</h6>
+               <h6>User's Recent IPs:</h6>
               <div style="max-height: 200px; overflow-y: auto;">
                 <ul class="list-group mb-3">
-                  @forelse($ipLogs->take(5) as $log)
+                   @forelse($activityLogs->take(5) as $log)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                       {{ $log->ip_address }}
                       <small class="text-muted">{{ $log->action }} - {{ parse_date_time($log->created_at) }}</small>

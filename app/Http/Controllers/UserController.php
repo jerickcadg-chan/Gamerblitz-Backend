@@ -62,15 +62,15 @@ class UserController extends Controller
 
         if ($request->ban_ip) {
             // Get all unique IPs from user_activity_logs
-            $ipLogs = DB::table('user_activity_logs')
+            $activityLogs = DB::table('user_activity_logs')
                 ->where('user_id', $user->id)
                 ->select('ip_address')
                 ->distinct()
                 ->get();
 
-            foreach ($ipLogs as $ipLog) {
+            foreach ($activityLogs as $activityLog) {
                 \App\Models\BannedIp::firstOrCreate(
-                    ['ip_address' => $ipLog->ip_address],
+                    ['ip_address' => $activityLog->ip_address],
                     [
                         'banned_at' => now(),
                         'ban_reason' => $this->getUserIpBanReason($user, $request->reason),
@@ -90,13 +90,13 @@ class UserController extends Controller
         ]);
 
         // Unban IPs that were banned along with this user
-        $userIps = DB::table('user_activity_logs')
+        $activityLogs = DB::table('user_activity_logs')
             ->where('user_id', $user->id)
             ->select('ip_address')
             ->distinct()
             ->pluck('ip_address');
 
-        \App\Models\BannedIp::whereIn('ip_address', $userIps)
+        \App\Models\BannedIp::whereIn('ip_address', $activityLogs)
             ->where('ban_reason', 'like', $this->getUserIpBanReason($user, '%'))
             ->delete();
 
@@ -173,11 +173,11 @@ class UserController extends Controller
                 ->paginate();
         }
 
-        $ipLogs = DB::table('user_activity_logs')->where('user_id', $user->id)->latest()->paginate();
+        $activityLogs = DB::table('user_activity_logs')->where('user_id', $user->id)->latest()->paginate();
 
         $title = $this->title;
 
-        return view('users.show', compact('user', 'balanceHistories', 'affiliateHistories', 'ipLogs', 'editLink', 'indexLink', 'deleteLink', 'title'));
+        return view('users.show', compact('user', 'balanceHistories', 'affiliateHistories', 'activityLogs', 'editLink', 'indexLink', 'deleteLink', 'title'));
     }
 
     public function store(UserRequest $request)
