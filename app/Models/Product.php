@@ -56,7 +56,8 @@ class Product extends Model
         'meta_title',
         'meta_keyword',
         'meta_description',
-        'is_raw_description'
+        'is_raw_description',
+        'is_raw_how_to_order'
     ];
 
     protected $attributes = [
