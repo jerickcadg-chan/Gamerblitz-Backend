@@ -27,6 +27,7 @@ class ProductRequest extends FormRequest
             case 'POST':
                 return [
                     'name' => 'required|max:255',
+                    'slug' => 'required|unique:products,slug',
                     'code' => 'required|max:100',
                     'company' => 'required|max:100',
                     'product_category_id' => 'required',
@@ -41,6 +42,7 @@ class ProductRequest extends FormRequest
             case 'PATCH':
                 return [
                     'name' => 'required|max:255',
+                    'slug' => 'required|unique:products,slug,' . $this->route('product')->id,
                     'code' => 'required|max:100',
                     'company' => 'required|max:100',
                     'product_category_id' => 'required',
