@@ -61,7 +61,9 @@ class VexaGameController extends Controller
 
             switch ($status) {
                 case 'SUKSES':
-                    $this->handleSuccess($order, $payload, $orderService, $note);
+                    if ($order->status != StatusConst::SUCCESS) {
+                        $this->handleSuccess($order, $payload, $orderService, $note);
+                    }
                     break;
 
                 case 'GAGAL':
