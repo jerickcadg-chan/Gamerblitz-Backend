@@ -26,6 +26,7 @@ class PaymentMethod extends Model implements IsFilterable
     const HITPAY = 'hitpay';
     const BILLPLZ = 'billplz';
     const MPAY = 'mpay';
+    const CRYPTOMUS = 'cryptomus';
     const MANUAL = 'manual';
     const BALANCE = 'balance';
     const ALL = 'ALL';

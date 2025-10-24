@@ -392,6 +392,74 @@ class OrderController extends Controller
         return api_status_ok(['message' => 'Payment already processed']);
     }
 
+    public function cryptomusCallback(Request $request, OrderService $orderService, DepositService $depositService)
+    {
+        $data = $request->all();
+
+        Log::info('Cryptomus Webhook Received', $data);
+
+        $apiKey = Setting::where('key', 'cryptomus_api_key')->first()?->value ?? null;
+        $sign = $data['sign'] ?? null;
+        $orderId = $data['order_id'] ?? null;
+        $status = $data['status'] ?? null;
+
+        // Unset sign first before hash
+        unset($data['sign']);
+
+        if (!$sign) {
+            return response()->json(['message' => 'Missing Sign'], 400);
+        }
+
+        if (!$orderId) {
+            return api_status_warning('Missing Order ID');
+        }
+
+        $calculatedHash = md5(base64_encode(json_encode($data, JSON_UNESCAPED_UNICODE)) . $apiKey);
+
+        if (!hash_equals($calculatedHash, $sign)) {
+            Log::warning('Cryptomus Webhook SIGN mismatch', [
+                'expected' => $calculatedHash,
+                'received' => $sign,
+            ]);
+            
+            return api_status_warning('Invalid Sign');
+        }
+
+        if ($status != 'paid') {
+            return api_status_warning('Payment not completed');
+        }
+
+        // === Check Order / Deposit ===
+        $order   = Order::where('code', $orderId)->first();
+        $deposit = Deposit::where('code', $orderId)->first();
+
+        if (!$order && !$deposit) {
+            Log::warning('Cryptomus Webhook: Transaction not found', $data);
+            return api_status_warning('Transaction not found');
+        }
+
+        // === Handle Order Payment ===
+        if ($order && $order->status !== StatusConst::SUCCESS) {
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+            $orderService->processOrder($order);
+
+            return api_status_ok([
+                'order' => transformer($order, new OrderTransformer()),
+            ]);
+        }
+
+        // === Handle Deposit Payment ===
+        if ($deposit && $deposit->status !== StatusConst::PAID) {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return api_status_ok([
+                'deposit' => transformer($deposit, new DepositTransformer()),
+            ]);
+        }
+
+        return api_status_ok(['message' => 'Payment already processed']);
+    }
+
     public function checkUid()
     {
         $product = Product::where('id', request('product_id'))->firstOrFail();

@@ -63,6 +63,7 @@ Route::post('order/xendit', [OrderController::class, 'xenditCallback'])->name('c
 Route::post('order/hitpay', [OrderController::class, 'hitpayCallback'])->name('callback.hitpay');
 Route::post('order/billplz', [OrderController::class, 'billplzCallback'])->name('callback.billplz');
 Route::post('order/mpay', [OrderController::class, 'mpayCallback'])->name('callback.mpay');
+Route::post('order/cryptomus', [OrderController::class, 'cryptomusCallback'])->name('callback.cryptomus');
 Route::get('order/{order}', [OrderController::class, 'show']);
 
 Route::get('setting', [SettingController::class, 'index']);

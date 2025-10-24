@@ -63,7 +63,7 @@
             <label for="vendor_input" class="required">Vendor</label>
             <select class="form-control {{ $errors->has('vendor') ? ' is-invalid' : '' }}" name="vendor"
               id="vendor_input" required>
-              @foreach (['xendit' => 'Xendit', 'manual' => 'Manual', 'hitpay' => 'Hitpay', 'billplz' => 'BillPlz', 'mpay' => 'Mpay'] as $val => $label)
+              @foreach (['xendit' => 'Xendit', 'manual' => 'Manual', 'hitpay' => 'Hitpay', 'billplz' => 'BillPlz', 'mpay' => 'Mpay', 'cryptomus' => 'Cryptomus'] as $val => $label)
                 <option value="{{ $val }}"
                   {{ old('vendor', $paymentMethod->vendor ?? '') == $val ? 'selected' : '' }}>
                   {{ $label }}

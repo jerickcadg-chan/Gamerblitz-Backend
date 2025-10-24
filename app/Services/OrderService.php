@@ -177,6 +177,10 @@ class OrderService
                 app(MpayService::class)->createOrderMpayInvoice($order);
             }
 
+            if ($paymentMethod->vendor === PaymentMethod::CRYPTOMUS) {
+                app(CryptomusService::class)->createOrderCryptomusInvoice($order);
+            }
+
             $this->updateStatus($order, StatusConst::PENDING);
 
             if ($paymentMethod->slug == PaymentMethod::BALANCE) {

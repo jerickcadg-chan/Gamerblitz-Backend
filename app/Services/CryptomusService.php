@@ -18,9 +18,12 @@ class CryptomusService
      */
     public function createOrderCryptomusInvoice(Order $order): array
     {
+        $apiKey = Setting::where('key', 'cryptomus_api_key')->first()?->value ?? null;
+        $merchantId = Setting::getByKey('cryptomus_merchant_id');
+
         $payload = [
-            'amount'       => $order->total_price,
-            'currency'     => $order->paymentMethod->currency,
+            'amount'       => (string) ceil($order->total_price),
+            'currency'     => $order->paymentMethod->currency_code,
             'order_id'     => $order->code,
             'url_return'   => $order->payment_url_full,
             'url_success'  => $order->payment_url_full,
@@ -28,10 +31,10 @@ class CryptomusService
         ];
 
         $response = Http::withHeaders([
-            'merchant' => Setting::getByKey('cryptomus_merchant_id'),
+            'merchant' => $merchantId,
             'sign'     => md5(
                 base64_encode(json_encode($payload)) .
-                Setting::getByKey('cryptomus_api_Key')
+                $apiKey
             ),
         ])->post(
             Setting::getByKey('cryptomus_api_url') . '/payment',
@@ -62,9 +65,12 @@ class CryptomusService
      */
     public function createDepositCryptomusInvoice(Deposit $deposit): array
     {
+        $apiKey = Setting::where('key', 'cryptomus_api_key')->first()?->value ?? null;
+        $merchantId = Setting::getByKey('cryptomus_merchant_id');
+
         $payload = [
-            'amount'       => ceil($deposit->total_amount),
-            'currency'     => $deposit->paymentMethod->currency,
+            'amount'       => (string) ceil($deposit->total_amount),
+            'currency'     => $deposit->paymentMethod->currency_code,
             'order_id'     => $deposit->code,
             'url_return'   => config('app.fe_url') . '/dashboard/deposit/' . $deposit->code,
             'url_success'  => config('app.fe_url') . '/dashboard/deposit/' . $deposit->code,
@@ -72,10 +78,10 @@ class CryptomusService
         ];
 
         $response = Http::withHeaders([
-            'merchant' => Setting::getByKey('cryptomus_merchant_id'),
+            'merchant' => $merchantId,
             'sign'     => md5(
                 base64_encode(json_encode($payload)) .
-                Setting::getByKey('cryptomus_api_Key')
+                $apiKey
             ),
         ])->post(
             Setting::getByKey('cryptomus_api_url') . '/payment',

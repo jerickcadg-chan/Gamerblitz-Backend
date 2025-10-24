@@ -12,6 +12,7 @@ use App\Models\Deposit;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
 use App\Services\BillplzService;
+use App\Services\CryptomusService;
 use App\Services\DepositService;
 use App\Services\HitpayService;
 use App\Services\MpayService;
@@ -144,6 +145,10 @@ class DepositController extends Controller
 
         if ($paymentMethod->vendor === PaymentMethod::MPAY) {
             app(MpayService::class)->createDepositMpayInvoice($deposit);
+        }
+
+        if ($paymentMethod->vendor === PaymentMethod::CRYPTOMUS) {
+            app(CryptomusService::class)->createDepositCryptomusInvoice($deposit);
         }
 
         event(new UserActivityLogged($this->userId, $request->ip(), 'deposit_created:' . $deposit->code));
