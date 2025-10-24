@@ -38,11 +38,12 @@ class PaymentMethodController extends Controller
 
     public function create()
     {
+        $supportPayments = explode(',', env('SUPPORTED_PAYMENT', 'xendit'));
         $formAction = route('payment_method.store');
 
         $title = $this->title;
 
-        return view('payment_methods.form', compact('formAction', 'title'));
+        return view('payment_methods.form', compact('formAction', 'title', 'supportPayments'));
     }
 
     public function store(PaymentMethodRequest $request)
@@ -68,11 +69,12 @@ class PaymentMethodController extends Controller
 
     public function edit(PaymentMethod $paymentMethod)
     {
+        $supportPayments = explode(',', env('SUPPORTED_PAYMENT', 'xendit'));
         $formAction = route('payment_method.update', $paymentMethod);
 
         $title = $this->title;
 
-        return view('payment_methods.form', compact('title', 'formAction', 'paymentMethod'));
+        return view('payment_methods.form', compact('title', 'formAction', 'paymentMethod', 'supportPayments'));
     }
 
     public function update(PaymentMethodRequest $request, PaymentMethod $paymentMethod)
