@@ -408,26 +408,6 @@
               value="{{ old('settings.mpay_sign_key', $settings['mpay_sign_key'] ?? '') }}">
           </div>
 
-          {{-- Cryptomus --}}
-          <h4 class="mb-2 mt-5">Cryptomus</h4>
-          <hr class="mb-4">
-
-          <div class="form-group">
-            <label>Cryptomus API Url</label>
-            <input type="text" class="form-control" name="settings[cryptomus_api_url]"
-              value="{{ old('settings.cryptomus_api_url', $settings['cryptomus_api_url'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Cryptomus App ID</label>
-            <input type="text" class="form-control" name="settings[mpay_app_id]"
-              value="{{ old('settings.mpay_app_id', $settings['mpay_app_id'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Mpay Sign Key</label>
-            <input type="text" class="form-control" name="settings[mpay_sign_key]"
-              value="{{ old('settings.mpay_sign_key', $settings['mpay_sign_key'] ?? '') }}">
-          </div>
-
            <h4 class="mb-2 mt-5">Deposit Setting</h4>
            <div class="form-group">
              <label>Minimum Deposit Amount</label>

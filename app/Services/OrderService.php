@@ -151,7 +151,7 @@ class OrderService
             $order->expired_at = now()->addHours(1);
             $order->note = $request->note;
             $order->currency_code = $baseCurrency;
-            $order->additional_informations = $request?->additional_informations;
+            $order->additional_informations = $request?->additional_informations ?? null;
             $order->converted_currency_code = $userCurrency;
             $order->exchange_rate = $exchangeRate;
             $order->save();
