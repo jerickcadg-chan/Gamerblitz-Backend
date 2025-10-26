@@ -177,13 +177,17 @@
                       id="description_textarea"
                       rows="10">{{ old('description', $product->description ?? '') }}</textarea>
 
-            {{-- Quill editor --}}
-            <div id="quill-wrapper">
-              <div class="quill-editor">
-                {!! old('description', $product->description ?? '') !!}
-              </div>
-              <textarea class="d-none quill-editor-hidden" id="description_input"></textarea>
-            </div>
+             {{-- Quill editor --}}
+             <div id="quill-wrapper">
+               <div class="quill-editor">
+                 @if(old('is_raw_description', $product->is_raw_description ?? false))
+                   {{ old('description', $product->description ?? '') }}
+                 @else
+                   {!! old('description', $product->description ?? '') !!}
+                 @endif
+               </div>
+               <textarea class="d-none quill-editor-hidden" id="description_input"></textarea>
+             </div>
 
             @include('alerts.feedback', ['field' => 'description'])
           </div>
@@ -273,13 +277,17 @@
                        id="how_to_order_textarea"
                        rows="10">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
 
-             {{-- Quill editor --}}
-             <div id="how-to-order-quill-wrapper">
-               <div class="quill-editor">
-                 {!! old('how_to_order', $product->how_to_order ?? '') !!}
-               </div>
-               <textarea class="d-none quill-editor-hidden" id="how_to_order_input"></textarea>
-             </div>
+              {{-- Quill editor --}}
+              <div id="how-to-order-quill-wrapper">
+                <div class="quill-editor">
+                  @if(old('is_raw_how_to_order', $product->is_raw_how_to_order ?? false))
+                    {{ old('how_to_order', $product->how_to_order ?? '') }}
+                  @else
+                    {!! old('how_to_order', $product->how_to_order ?? '') !!}
+                  @endif
+                </div>
+                <textarea class="d-none quill-editor-hidden" id="how_to_order_input"></textarea>
+              </div>
 
              @include('alerts.feedback', ['field' => 'how_to_order'])
            </div>
