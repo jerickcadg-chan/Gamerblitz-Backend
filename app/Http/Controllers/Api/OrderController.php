@@ -164,12 +164,19 @@ class OrderController extends Controller
                         return api_status_warning('Order not found');
                     }
 
-                    match ($status) {
-                        'SUCCEEDED' => $orderService->updateStatus($order, StatusConst::ON_PROCESS)
-                            && $orderService->processOrder($order),
-                        'EXPIRED'   => $orderService->updateStatus($order, StatusConst::EXPIRED),
-                        default     => fn() => api_status_warning('Invalid request status'),
-                    };
+                    switch ($status) {
+                        case 'SUCCEEDED':
+                            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+                            $orderService->processOrder($order);
+                            break;
+                    
+                        case 'EXPIRED':
+                            $orderService->updateStatus($order, StatusConst::EXPIRED);
+                            break;
+                    
+                        default:
+                            return api_status_warning('Invalid request status');
+                    }                    
 
                     return api_status_ok([
                         'order' => transformer($order, new OrderTransformer()),
