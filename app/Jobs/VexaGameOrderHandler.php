@@ -51,6 +51,11 @@ class VexaGameOrderHandler implements ShouldQueue
                 ->post($orderUrl, $payload->toArray());
 
             if ($response->failed()) {
+                Log::channel('vexagame')->error(
+                    "❌ Order {$order->id} failed",
+                    ['response' => $response->body()]
+                );
+
                 throw new Exception("VexaGame API call failed: " . $response->body());
             }
 
