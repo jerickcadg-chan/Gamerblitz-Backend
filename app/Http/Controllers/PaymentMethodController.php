@@ -58,7 +58,7 @@ class PaymentMethodController extends Controller
         $pictureService = new PictureService();
 
         if ($request->hasFile('default_picture')) {
-            $request['picture'] = $pictureService->insert($request->default_picture);
+            $data['picture'] = $pictureService->insert($request->default_picture);
         }
 
         $paymentMethod = PaymentMethod::create($data);
@@ -89,7 +89,7 @@ class PaymentMethodController extends Controller
         $pictureService = new PictureService();
 
         if ($request->hasFile('default_picture')) {
-            $request['picture'] = $pictureService->insert($request->default_picture);
+            $data['picture'] = $pictureService->insert($request->default_picture);
         }
 
         $paymentMethod->update($data);

@@ -25,11 +25,12 @@ class PictureService extends Controller
         return $modelPicture;
     }
 
-    public function insert($picture)
+    public function insert(UploadedFile $picture)
     {
         $imageName = substr(uniqid(), -9).'-'.$picture->getClientOriginalName();
+        $path = Storage::disk('public')->putFileAs('image', $picture, $imageName);
 
-        return $picture->storeAs('image', $imageName, 'public');
+        return $path;
     }
 
     public function delete(Picture $picture)
