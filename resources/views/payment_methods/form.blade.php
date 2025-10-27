@@ -226,8 +226,8 @@
             @include('alerts.feedback', ['field' => 'default_picture'])
             @if (!empty($paymentMethod->picture))
               <p class="d-block text-small mt-2">Current</p>
-              <a href="{{ asset('storage/' .$paymentMethod->picture) }}" target="_blank">
-                <img src="{{ asset('storage/' . $paymentMethod->picture) }}" height="100" alt="image preview" />
+              <a href="{{ $paymentMethod->picture_url }}" target="_blank">
+                <img src="{{ $paymentMethod->picture_url }}" height="100" alt="image preview" />
               </a>
             @endif
             @include('alerts.feedback', ['field' => 'picture'])
