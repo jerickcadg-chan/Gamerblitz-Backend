@@ -78,9 +78,19 @@ if (!function_exists('api_status_error')) {
                 'line' => $exception->getLine(),
             ]);
         } else {
-            $acceptedMessage = ['Invalid ID'];
+            $acceptedKeywords = ['Invalid ID', 'Failed to create payment'];
 
-            $response['message'] = in_array($exception->getMessage(), $acceptedMessage) ? $exception->getMessage() : 'Internal Server Error';
+            $message = $exception->getMessage();
+
+            $containsAccepted = false;
+            foreach ($acceptedKeywords as $keyword) {
+                if (str_contains($message, $keyword)) {
+                    $containsAccepted = true;
+                    break;
+                }
+            }
+
+            $response['message'] = $containsAccepted ? $message : 'Internal Server Error';
         }
 
         return response($response, 500);
