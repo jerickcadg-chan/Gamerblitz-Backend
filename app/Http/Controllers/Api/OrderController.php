@@ -149,6 +149,8 @@ class OrderController extends Controller
 
         $raw = $request->all();
 
+        Log::warning('Xendit Webhook', $raw);
+
         // === XENDIT v3 Webhook (Payment API) ===
         if (isset($raw['data'])) {
             $payload    = PaymentCallbackPayload::from($raw);
@@ -223,7 +225,7 @@ class OrderController extends Controller
             return api_status_warning('Transaction not found');
         }
 
-        if ($raw['status'] !== 'PAID') {
+        if ($raw['status'] != 'PAID') {
             return api_status_warning('Payment not completed');
         }
 
