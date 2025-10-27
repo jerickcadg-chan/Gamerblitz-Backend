@@ -17,6 +17,7 @@ use App\Services\DepositService;
 use App\Services\HitpayService;
 use App\Services\MpayService;
 use App\Services\XenditService;
+use App\Services\XenditV2Service;
 use App\Transformers\DepositTransformer;
 use App\Transformers\MutationTransformer;
 use Illuminate\Database\Eloquent\Builder;
@@ -132,7 +133,11 @@ class DepositController extends Controller
         ]);
 
         if ($paymentMethod->vendor === PaymentMethod::XENDIT) {
-            app(XenditService::class)->createDepositXenditInvoice($deposit);
+            $service = $paymentMethod->slug === 'CARDS'
+                    ? XenditV2Service::class
+                    : XenditService::class;
+
+            app($service)->createDepositXenditInvoice($deposit);
         }
 
         if ($paymentMethod->vendor === PaymentMethod::HITPAY) {

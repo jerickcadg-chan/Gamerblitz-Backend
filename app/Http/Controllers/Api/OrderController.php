@@ -141,65 +141,105 @@ class OrderController extends Controller
         $xenditCallbackKey = Setting::getByKey(Setting::KEY_XENDIT_CALLBACK_KEY);
         $hCallbackToken = $request->header('x-callback-token');
         $validCallbackKey = $xenditCallbackKey == $hCallbackToken;
+
         if (!$validCallbackKey) {
             Log::info(json_encode($request->header(), JSON_PRETTY_PRINT));
             return api_status_warning("callback token didn't register yet, or invalid token!!!!");
         }
 
-        $payload = PaymentCallbackPayload::from($request->all());
-        $paymentId = $payload->data->payment_request_id;
-        $type = $payload->data->metadata['type'] ?? 'order';
+        $raw = $request->all();
 
-        switch ($type) {
-            case 'order':
-                $order = Order::where('payment_id', $paymentId)->first();
+        // === XENDIT v3 Webhook (Payment API) ===
+        if (isset($raw['data'])) {
+            $payload    = PaymentCallbackPayload::from($raw);
+            $paymentId  = $payload->data->payment_request_id;
+            $type       = $payload->data->metadata['type'] ?? 'order';
+            $status     = $payload->data->status;
 
-                if (empty($order)) {
-                    return api_status_warning('Order not found');
-                }
+            switch ($type) {
+                case 'order':
+                    $order = Order::where('payment_id', $paymentId)->first();
 
-                switch ($payload->data->status) {
-                    case 'SUCCEEDED':
-                        $orderService->updateStatus($order, StatusConst::ON_PROCESS);
-                        $orderService->processOrder($order);
-                        break;
+                    if (!$order) {
+                        return api_status_warning('Order not found');
+                    }
 
-                    case 'EXPIRED':
-                        $orderService->updateStatus($order, StatusConst::EXPIRED);
-                        break;
+                    match ($status) {
+                        'SUCCEEDED' => $orderService->updateStatus($order, StatusConst::ON_PROCESS)
+                            && $orderService->processOrder($order),
+                        'EXPIRED'   => $orderService->updateStatus($order, StatusConst::EXPIRED),
+                        default     => fn() => api_status_warning('Invalid request status'),
+                    };
 
-                    default:
-                        return api_status_warning('Invalid request status');
-                }
+                    return api_status_ok([
+                        'order' => transformer($order, new OrderTransformer()),
+                    ]);
 
-                return api_status_ok([
-                    'order' => transformer($order, new OrderTransformer())
-                ]);
-            case 'deposit':
-                $deposit = Deposit::where('payment_id', $paymentId)->first();
+                case 'deposit':
+                    $deposit = Deposit::where('payment_id', $paymentId)->first();
 
-                if (!$deposit) {
-                    return api_status_warning("Deposit not found");
-                }
+                    if (!$deposit) {
+                        return api_status_warning('Deposit not found');
+                    }
 
-                $err = match ($payload->data->status) {
-                    'SUCCEEDED' => $depositService->handlePaymentSettlement($deposit),
-                    'EXPIRED' => $depositService->handlePaymentExpired($deposit),
-                    default => 'Invalid request status'
-                };
+                    $err = match ($status) {
+                        'SUCCEEDED' => $depositService->handlePaymentSettlement($deposit),
+                        'EXPIRED'   => $depositService->handlePaymentExpired($deposit),
+                        default     => 'Invalid request status',
+                    };
 
-                if ($err) {
-                    return api_status_warning($err);
-                }
+                    if ($err) {
+                        return api_status_warning($err);
+                    }
 
-                return api_status_ok([
-                    'deposit' => transformer($deposit, new DepositTransformer())
-                ]);
-            default:
-                break;
+                    return api_status_ok([
+                        'deposit' => transformer($deposit, new DepositTransformer()),
+                    ]);
+
+                default:
+                    return api_status_warning('Transaction type not recognized');
+            }
         }
 
-        return api_status_warning('Transaction not found');
+        // === XENDIT v2 Webhook (Invoice API) ===
+        $externalId = $raw['external_id'] ?? null;
+
+        if (!$externalId) {
+            return api_status_warning('Missing external ID');
+        }
+
+        $order   = Order::where('payment_id', $externalId)->first();
+        $deposit = Deposit::where('payment_id', $externalId)->first();
+
+        if (!$order && !$deposit) {
+            Log::warning('Xendit Webhook: Transaction not found', $raw);
+            return api_status_warning('Transaction not found');
+        }
+
+        if ($raw['status'] !== 'PAID') {
+            return api_status_warning('Payment not completed');
+        }
+
+        // === Handle Order Payment ===
+        if ($order && $order->status !== StatusConst::SUCCESS) {
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+            $orderService->processOrder($order);
+
+            return api_status_ok([
+                'order' => transformer($order, new OrderTransformer()),
+            ]);
+        }
+
+        // === Handle Deposit Payment ===
+        if ($deposit && $deposit->status !== StatusConst::PAID) {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return api_status_ok([
+                'deposit' => transformer($deposit, new DepositTransformer()),
+            ]);
+        }
+
+        return api_status_ok(['message' => 'Payment already processed']);
     }
 
     public function hitpayCallback(Request $request, OrderService $orderService, DepositService $depositService)
@@ -421,7 +461,7 @@ class OrderController extends Controller
                 'expected' => $calculatedHash,
                 'received' => $sign,
             ]);
-            
+
             return api_status_warning('Invalid Sign');
         }
 

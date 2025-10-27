@@ -162,7 +162,11 @@ class OrderService
             }
 
             if ($paymentMethod->vendor === PaymentMethod::XENDIT) {
-                app(XenditService::class)->createOrderXenditInvoice($order);
+                $service = $paymentMethod->slug === 'CARDS'
+                    ? XenditV2Service::class
+                    : XenditService::class;
+
+                app($service)->createOrderXenditInvoice($order);
             }
 
             if ($paymentMethod->vendor === PaymentMethod::HITPAY) {
@@ -303,7 +307,7 @@ class OrderService
             }
         } elseif ($provider === ProviderConstant::VEXAGAME) {
             if ($sync) {
-               return VexaGameOrderHandler::dispatchSync($order);
+                return VexaGameOrderHandler::dispatchSync($order);
             } else {
                 VexaGameOrderHandler::dispatch($order);
             }
