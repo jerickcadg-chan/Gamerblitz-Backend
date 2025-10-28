@@ -32,6 +32,7 @@ class BlogRequest extends FormRequest
             'meta_description'  => ['nullable','string'],
             'status'            => ['required', Rule::in(['draft','published'])],
             'thumbnail'         => ['nullable','image','max:5120'],
+            'thumbnail_url'     => ['nullable','url'],
         ];
     }
 }
