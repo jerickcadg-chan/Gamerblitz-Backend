@@ -44,6 +44,7 @@ class BlogTransformer extends TransformerAbstract
 
         $arr['thumbnail_url'] = $blog->thumbnail_url;
         $arr['category'] = $blog->category->name;
+        $arr['tags'] = $blog->tags->pluck('name');
         $arr['author'] = $blog->author->name;
 
         return $arr;
