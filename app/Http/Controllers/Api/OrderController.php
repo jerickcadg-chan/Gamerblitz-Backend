@@ -217,8 +217,8 @@ class OrderController extends Controller
             return api_status_warning('Missing external ID');
         }
 
-        $order   = Order::where('payment_id', $externalId)->first();
-        $deposit = Deposit::where('payment_id', $externalId)->first();
+        $order   = Order::where('code', $externalId)->first();
+        $deposit = Deposit::where('code', $externalId)->first();
 
         if (!$order && !$deposit) {
             Log::warning('Xendit Webhook: Transaction not found', $raw);
