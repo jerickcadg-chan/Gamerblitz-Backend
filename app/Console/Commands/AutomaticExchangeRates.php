@@ -2,9 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\FetchVarianHandle;
 use App\Models\ExchangeRate;
+use App\Models\FetchVarianJob;
 use App\Models\Setting;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -62,6 +65,13 @@ class AutomaticExchangeRates extends Command
                     $newRate->rate = $rates;
                     $newRate->effective_at = now();
                     $newRate->save();
+
+                    $status = FetchVarianJob::create([
+                        'command_name' => 'app:sync-lapak-gaming',
+                        'status' => 'PENDING',
+                    ]);
+            
+                    FetchVarianHandle::dispatch($status->id);
                 }
             }
         } catch (\Exception $e) {
