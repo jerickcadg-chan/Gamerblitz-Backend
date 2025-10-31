@@ -482,6 +482,20 @@
             </label>
           </div>
 
+          <h4 class="mb-2 mt-5">Exchangerates.io</h4>
+          <hr class="mb-4">
+
+          <div class="form-group">
+            <label>Exchangerates Api Url</label>
+            <input type="text" class="form-control" name="settings[exchangerates_api_url]"
+              value="{{ old('settings.exchangerates_api_url', $settings['exchangerates_api_url'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Exchangerates Api Key</label>
+            <input type="text" class="form-control" name="settings[exchangerates_api_key]"
+              value="{{ old('settings.exchangerates_api_key', $settings['exchangerates_api_key'] ?? '') }}">
+          </div>
+
           {{-- Social Media Setting --}}
           <h4 class="mb-2 mt-5">Social Media Setting</h4>
           <hr class="mb-4">

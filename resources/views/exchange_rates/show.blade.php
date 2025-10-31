@@ -28,7 +28,7 @@
                         @forelse ($exchangeRates as $index => $exchangeRate)
                         <tr>
                             <td>{{ 1 + $index }}</td>
-                            <td>{{ currency_format($exchangeRate->rate, 8) }}</td>
+                            <td>{{ $exchangeRate->rate }}</td>
                             <td>{{ parse_date_time_full($exchangeRate->effective_at) }}</td>
                         </tr>
                         @empty
