@@ -350,6 +350,10 @@ class OrderService
             return;
         }
 
+        if ($order->user && $order->user->reseller_level != DefaultRole::CUSTOMER) {
+            return;
+        }
+
         try {
             DB::beginTransaction();
 
