@@ -12,6 +12,7 @@ class SettingController extends Controller
 {
     public function index()
     {
+        $supportPayments = explode(',', env('SUPPORTED_PAYMENT', 'xendit'));
         $pairs = Setting::query()->pluck('value', 'key')->toArray();
 
         $settings = $pairs;
@@ -25,7 +26,7 @@ class SettingController extends Controller
 
         $currencies = CurrencyConstant::all();
 
-        return view('settings.index', compact('settings', 'currencies'));
+        return view('settings.index', compact('settings', 'currencies', 'supportPayments'));
     }
 
     public function update(SettingRequest $request)

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AffiliateWithdrawController;
 use App\Http\Controllers\AppLogController;
+use App\Http\Controllers\BannedIpController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DiscountController;
@@ -49,6 +50,8 @@ Auth::routes([
     'verify' => true,
 ]);
 
+Route::post('login/verify-2fa', [App\Http\Controllers\Auth\LoginController::class, 'verify2fa'])->name('login.verify2fa');
+
 Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -69,12 +72,19 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::put('deposit/{deposit}/status', [DepositController::class, 'updateStatus'])->name('deposit.update-status');
     Route::get('deposit/{deposit}', [DepositController::class, 'show'])->name('deposit.show');
 
-    // User router
-    Route::get('user/customer', [UserController::class, 'getCustomer'])->name('user.customer');
-    Route::get('user/affiliate-withdraw', [AffiliateWithdrawController::class, 'index'])->name('user.affiliate-withdraw');
+     // User router
+     Route::get('user/customer', [UserController::class, 'getCustomer'])->name('user.customer');
+     Route::post('user/{user}/ban', [UserController::class, 'ban'])->name('user.ban');
+     Route::post('user/{user}/unban', [UserController::class, 'unban'])->name('user.unban');
+     Route::get('user/affiliate-withdraw', [AffiliateWithdrawController::class, 'index'])->name('user.affiliate-withdraw');
     Route::post('user/affiliate-withdraw/{affiliateWithdraw}', [AffiliateWithdrawController::class, 'process'])->name('user.affiliate-withdraw.process');
     Route::get('user/top-up-manual/{user}', [UserController::class, 'topUpManual'])->name('user.top-up-manual');
     Route::post('user/top-up-manual/{user}', [UserController::class, 'topUpManualStore'])->name('user.top-up-manual.store');
+
+    // 2FA router
+    Route::get('2fa', [App\Http\Controllers\Auth\TwoFactorAuthController::class, 'show'])->name('2fa.show');
+    Route::post('2fa/enable', [App\Http\Controllers\Auth\TwoFactorAuthController::class, 'enable'])->name('2fa.enable');
+    Route::post('2fa/disable', [App\Http\Controllers\Auth\TwoFactorAuthController::class, 'disable'])->name('2fa.disable');
 
     // Report router
     Route::get('report', [ReportController::class, 'index'])->name('report.index');
@@ -133,5 +143,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'exchange_rate' => ExchangeRateController::class,
         'blog' => BlogController::class,
         'app-log' => AppLogController::class,
+        'banned-ip' => BannedIpController::class,
+        'user-activity-logs' => \App\Http\Controllers\UserActivityLogController::class,
     ]);
 });

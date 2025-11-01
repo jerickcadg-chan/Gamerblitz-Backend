@@ -26,6 +26,7 @@ class OrderRequest extends FormRequest
         return [
             'email' => ['nullable', 'email'],
             'cust_phone_number' => 'nullable',
+            'additional_informations' => 'nullable',
             'product_item_id' => ['required', 'exists:product_items,id'],
             'qty' => ['required', 'integer', 'min:1', 'max:10'],
             'payment_method_id' => 'required|exists:payment_methods,id',

@@ -6,6 +6,7 @@ use App\Http\Requests\BlogRequest;
 use App\Models\Blog;
 use App\Models\BlogCategory;
 use App\Models\Tag;
+use App\Services\PictureService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -69,6 +70,10 @@ class BlogController extends Controller
             $data['thumbnail'] = $file->storeAs('blogs/thumbnail', $filename, 'public');
         }
 
+        if ($request->filled('thumbnail_url')) {
+            $data['thumbnail'] = (new PictureService())->insertFromUrl('blogs/thumbnail', $request->thumbnail_url);
+        }
+
         $blog = Blog::create($data);
 
         $this->updateTags($blog, $request);
@@ -114,6 +119,10 @@ class BlogController extends Controller
                 Storage::disk('public')->delete($blog->thumbnail);
             }
             $data['thumbnail'] = $path;
+        }
+
+        if ($request->filled('thumbnail_url')) {
+            $data['thumbnail'] = (new PictureService())->insertFromUrl('blogs/thumbnail', $request->thumbnail_url);
         }
 
         $blog->update($data);

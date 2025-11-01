@@ -226,7 +226,8 @@
             <label>Pop Up Image</label>
             <div class="mb-2">
               @if (!empty($settings['popup_image_url']))
-                <img src="{{ $settings['popup_image_url'] }}" alt="Popup" style="height:80px" id="file_popup_image_preview">
+                <img src="{{ $settings['popup_image_url'] }}" alt="Popup" style="height:80px"
+                  id="file_popup_image_preview">
               @endif
             </div>
             <div class="input-group mb-3">
@@ -329,90 +330,126 @@
           </div>
 
           {{-- Xendit --}}
-          <h4 class="mb-2 mt-5">Xendit</h4>
-          <hr class="mb-4">
+          @if (in_array('xendit', $supportPayments))
+            <h4 class="mb-2 mt-5">Xendit</h4>
+            <hr class="mb-4">
 
-          <div class="form-group">
-            <label>API Url</label>
-            <input type="text" class="form-control" name="settings[xendit_api_url]"
-              value="{{ old('settings.xendit_api_url', $settings['xendit_api_url'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Secret Api Key</label>
-            <input type="text" class="form-control" name="settings[xendit_secret_key]"
-              value="{{ old('settings.xendit_secret_key', $settings['xendit_secret_key'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Callback Key</label>
-            <input type="text" class="form-control" name="settings[xendit_callback_key]"
-              value="{{ old('settings.xendit_callback_key', $settings['xendit_callback_key'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>API Url</label>
+              <input type="text" class="form-control" name="settings[xendit_api_url]"
+                value="{{ old('settings.xendit_api_url', $settings['xendit_api_url'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Secret Api Key</label>
+              <input type="text" class="form-control" name="settings[xendit_secret_key]"
+                value="{{ old('settings.xendit_secret_key', $settings['xendit_secret_key'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Callback Key</label>
+              <input type="text" class="form-control" name="settings[xendit_callback_key]"
+                value="{{ old('settings.xendit_callback_key', $settings['xendit_callback_key'] ?? '') }}">
+            </div>
+          @endif
 
           {{-- Hitpay --}}
-          <h4 class="mb-2 mt-5">Hitpay</h4>
-          <hr class="mb-4">
+          @if (in_array('hitpay', $supportPayments))
+            <h4 class="mb-2 mt-5">Hitpay</h4>
+            <hr class="mb-4">
 
-          <div class="form-group">
-            <label>API Url</label>
-            <input type="text" class="form-control" name="settings[hitpay_api_url]"
-              value="{{ old('settings.hitpay_api_url', $settings['hitpay_api_url'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Api Key</label>
-            <input type="text" class="form-control" name="settings[hitpay_api_key]"
-              value="{{ old('settings.hitpay_api_key', $settings['hitpay_api_key'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Salt Key</label>
-            <input type="text" class="form-control" name="settings[hitpay_salt_key]"
-              value="{{ old('settings.hitpay_salt_key', $settings['hitpay_salt_key'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>API Url</label>
+              <input type="text" class="form-control" name="settings[hitpay_api_url]"
+                value="{{ old('settings.hitpay_api_url', $settings['hitpay_api_url'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Api Key</label>
+              <input type="text" class="form-control" name="settings[hitpay_api_key]"
+                value="{{ old('settings.hitpay_api_key', $settings['hitpay_api_key'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Salt Key</label>
+              <input type="text" class="form-control" name="settings[hitpay_salt_key]"
+                value="{{ old('settings.hitpay_salt_key', $settings['hitpay_salt_key'] ?? '') }}">
+            </div>
+          @endif
 
           {{-- BillPlz --}}
-          <h4 class="mb-2 mt-5">BillPlz</h4>
-          <hr class="mb-4">
+          @if (in_array('billplz', $supportPayments))
+            <h4 class="mb-2 mt-5">BillPlz</h4>
+            <hr class="mb-4">
 
-          <div class="form-group">
-            <label>API Url</label>
-            <input type="text" class="form-control" name="settings[billplz_api_url]"
-              value="{{ old('settings.billplz_api_url', $settings['billplz_api_url'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Api Key</label>
-            <input type="text" class="form-control" name="settings[billplz_api_key]"
-              value="{{ old('settings.billplz_api_key', $settings['billplz_api_key'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Signature Payment</label>
-            <input type="text" class="form-control" name="settings[billplz_signature_payment]"
-              value="{{ old('settings.billplz_signature_payment', $settings['billplz_signature_payment'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>API Url</label>
+              <input type="text" class="form-control" name="settings[billplz_api_url]"
+                value="{{ old('settings.billplz_api_url', $settings['billplz_api_url'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Api Key</label>
+              <input type="text" class="form-control" name="settings[billplz_api_key]"
+                value="{{ old('settings.billplz_api_key', $settings['billplz_api_key'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Signature Payment</label>
+              <input type="text" class="form-control" name="settings[billplz_signature_payment]"
+                value="{{ old('settings.billplz_signature_payment', $settings['billplz_signature_payment'] ?? '') }}">
+            </div>
+          @endif
 
           {{-- Mpay --}}
-          <h4 class="mb-2 mt-5">Mpay</h4>
-          <hr class="mb-4">
+          @if (in_array('mpay', $supportPayments))
+            <h4 class="mb-2 mt-5">Mpay</h4>
+            <hr class="mb-4">
 
-          <div class="form-group">
-            <label>Mpay API Url</label>
-            <input type="text" class="form-control" name="settings[mpay_api_url]"
-              value="{{ old('settings.mpay_api_url', $settings['mpay_api_url'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Mpay App ID</label>
-            <input type="text" class="form-control" name="settings[mpay_app_id]"
-              value="{{ old('settings.mpay_app_id', $settings['mpay_app_id'] ?? '') }}">
-          </div>
-          <div class="form-group">
-            <label>Mpay Sign Key</label>
-            <input type="text" class="form-control" name="settings[mpay_sign_key]"
-              value="{{ old('settings.mpay_sign_key', $settings['mpay_sign_key'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>Mpay API Url</label>
+              <input type="text" class="form-control" name="settings[mpay_api_url]"
+                value="{{ old('settings.mpay_api_url', $settings['mpay_api_url'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Mpay App ID</label>
+              <input type="text" class="form-control" name="settings[mpay_app_id]"
+                value="{{ old('settings.mpay_app_id', $settings['mpay_app_id'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Mpay Sign Key</label>
+              <input type="text" class="form-control" name="settings[mpay_sign_key]"
+                value="{{ old('settings.mpay_sign_key', $settings['mpay_sign_key'] ?? '') }}">
+            </div>
+          @endif
+
+          {{-- Cryptomus --}}
+          @if (in_array('cryptomus', $supportPayments))
+            <h4 class="mb-2 mt-5">Cryptomus</h4>
+            <hr class="mb-4">
+
+            <div class="form-group">
+              <label>Cryptomus API Url</label>
+              <input type="text" class="form-control" name="settings[cryptomus_api_url]"
+                value="{{ old('settings.cryptomus_api_url', $settings['cryptomus_api_url'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Cryptomus Merchant ID</label>
+              <input type="text" class="form-control" name="settings[cryptomus_merchant_id]"
+                value="{{ old('settings.cryptomus_merchant_id', $settings['cryptomus_merchant_id'] ?? '') }}">
+            </div>
+            <div class="form-group">
+              <label>Cryptomus Api Key</label>
+              <input type="text" class="form-control" name="settings[cryptomus_api_key]"
+                value="{{ old('settings.cryptomus_api_key', $settings['cryptomus_api_key'] ?? '') }}">
+            </div>
+          @endif
 
           <h4 class="mb-2 mt-5">Deposit Setting</h4>
           <div class="form-group">
             <label>Minimum Deposit Amount</label>
             <input type="text" class="form-control" name="settings[deposit_min_amount]"
               value="{{ old('settings.deposit_min_amount', $settings['deposit_min_amount'] ?? '') }}">
+          </div>
+
+          <div class="form-group">
+            <label>Maximum Deposit Amount</label>
+            <input type="text" class="form-control" name="settings[deposit_max_amount]"
+              value="{{ old('settings.deposit_max_amount', $settings['deposit_max_amount'] ?? '') }}">
           </div>
 
           <div class="form-group">
@@ -443,6 +480,20 @@
               <small>⚠️ Please note that if you change the base currency, all future transactions will use the selected
                 currency for converting the transaction amounts.</small><br />
             </label>
+          </div>
+
+          <h4 class="mb-2 mt-5">Exchangerates.io</h4>
+          <hr class="mb-4">
+
+          <div class="form-group">
+            <label>Exchangerates Api Url</label>
+            <input type="text" class="form-control" name="settings[exchangerates_api_url]"
+              value="{{ old('settings.exchangerates_api_url', $settings['exchangerates_api_url'] ?? '') }}">
+          </div>
+          <div class="form-group">
+            <label>Exchangerates Api Key</label>
+            <input type="text" class="form-control" name="settings[exchangerates_api_key]"
+              value="{{ old('settings.exchangerates_api_key', $settings['exchangerates_api_key'] ?? '') }}">
           </div>
 
           {{-- Social Media Setting --}}

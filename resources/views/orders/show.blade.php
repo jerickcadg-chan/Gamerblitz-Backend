@@ -61,6 +61,10 @@
                 <td>{{ currency_format($order->price) }}</td>
               </tr>
               <tr>
+                <th>Quantity</th>
+                <td>{{ $order->qty }}</td>
+              </tr>
+              <tr>
                 <th>Discount</th>
                 <td>{{ currency_format($order->discount_price) }}</td>
               </tr>
@@ -109,6 +113,10 @@
               <tr>
                 <th>Provider Trx Ref</th>
                 <td>{{ $order->provider_ref }}</td>
+              </tr>
+              <tr>
+                <th>Additional Information</th>
+                <td>{!! $order->additional_information_html !!}</td>
               </tr>
             </table>
           </div>

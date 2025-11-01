@@ -72,6 +72,8 @@ class PermissionsTableSeeder extends Seeder
             'Create User',
             'Edit User',
             'Delete User',
+            'Ban User',
+            'Unban User',
 
             'View Guest',
             'Create Guest',
@@ -119,6 +121,12 @@ class PermissionsTableSeeder extends Seeder
             'Delete Exchange Rate',
 
             'View App Log',
+
+            'View Banned IP',
+            'Create Banned IP',
+            'Delete Banned IP',
+
+            'View User Activity Logs',
         ];
 
         foreach ($permissions as $permission){

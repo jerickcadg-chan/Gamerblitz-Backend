@@ -177,13 +177,17 @@
                       id="description_textarea"
                       rows="10">{{ old('description', $product->description ?? '') }}</textarea>
 
-            {{-- Quill editor --}}
-            <div id="quill-wrapper">
-              <div class="quill-editor">
-                {!! old('description', $product->description ?? '') !!}
-              </div>
-              <textarea class="d-none quill-editor-hidden" id="description_input"></textarea>
-            </div>
+             {{-- Quill editor --}}
+             <div id="quill-wrapper">
+               <div class="quill-editor">
+                 @if(old('is_raw_description', $product->is_raw_description ?? false))
+                   {{ old('description', $product->description ?? '') }}
+                 @else
+                   {!! old('description', $product->description ?? '') !!}
+                 @endif
+               </div>
+               <textarea class="d-none quill-editor-hidden" id="description_input"></textarea>
+             </div>
 
             @include('alerts.feedback', ['field' => 'description'])
           </div>
@@ -257,12 +261,36 @@
             @include('alerts.feedback', ['field' => 'input_format'])
           </div>
 
-          <div class="form-group">
-            <label for="how_to_order_input" class="required">How to Order</label>
-            <div class="quill-editor">{!! old('how_to_order', $product->how_to_order ?? '') !!}</div>
-            <textarea class="d-none quill-editor-hidden" name="how_to_order" id="how_to_order_input"></textarea>
-            @include('alerts.feedback', ['field' => 'how_to_order'])
-          </div>
+           <div class="form-group" id="how-to-order-group">
+             <label for="how_to_order_input" class="required">
+               How to Order
+               (
+               <label class="form-check-label" for="is_raw_how_to_order_input">Raw</label>
+               <input type="checkbox" class="form-check-input mt-0" id="is_raw_how_to_order_input"
+                      name="is_raw_how_to_order" value="1"
+                 {{ old('is_raw_how_to_order', $product->is_raw_how_to_order ?? false) ? 'checked' : '' }}>
+               )
+             </label>
+
+             {{-- Raw textarea --}}
+             <textarea class="form-control {{ $errors->has('how_to_order') ? ' is-invalid' : '' }}"
+                       id="how_to_order_textarea"
+                       rows="10">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
+
+              {{-- Quill editor --}}
+              <div id="how-to-order-quill-wrapper">
+                <div class="quill-editor">
+                  @if(old('is_raw_how_to_order', $product->is_raw_how_to_order ?? false))
+                    {{ old('how_to_order', $product->how_to_order ?? '') }}
+                  @else
+                    {!! old('how_to_order', $product->how_to_order ?? '') !!}
+                  @endif
+                </div>
+                <textarea class="d-none quill-editor-hidden" id="how_to_order_input"></textarea>
+              </div>
+
+             @include('alerts.feedback', ['field' => 'how_to_order'])
+           </div>
 
           <div class="form-group">
             <label for="cover">Cover</label>
@@ -354,33 +382,63 @@
 @push('js')
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const checkbox = document.getElementById("is_raw_description_input");
-      const rawTextarea = document.getElementById("description_textarea");
-      const quillHidden = document.getElementById("description_input");
-      const quillWrapper = document.getElementById("quill-wrapper");
+      // Description toggle
+      const descCheckbox = document.getElementById("is_raw_description_input");
+      const descRawTextarea = document.getElementById("description_textarea");
+      const descQuillHidden = document.getElementById("description_input");
+      const descQuillWrapper = document.getElementById("quill-wrapper");
 
       function toggleDescription() {
-        if (checkbox.checked) {
-          rawTextarea.name = "description";
-          rawTextarea.style.display = '';
-          rawTextarea.disabled = false;
+        if (descCheckbox.checked) {
+          descRawTextarea.name = "description";
+          descRawTextarea.style.display = '';
+          descRawTextarea.disabled = false;
 
-          quillWrapper.style.display = 'none';
-          quillHidden.disabled = true;
-          quillHidden.removeAttribute("name");
+          descQuillWrapper.style.display = 'none';
+          descQuillHidden.disabled = true;
+          descQuillHidden.removeAttribute("name");
         } else {
-          rawTextarea.removeAttribute("name");
-          rawTextarea.style.display = 'none';
-          rawTextarea.disabled = true;
+          descRawTextarea.removeAttribute("name");
+          descRawTextarea.style.display = 'none';
+          descRawTextarea.disabled = true;
 
-          quillWrapper.style.display = '';
-          quillHidden.disabled = false;
-          quillHidden.name = "description";
+          descQuillWrapper.style.display = '';
+          descQuillHidden.disabled = false;
+          descQuillHidden.name = "description";
         }
       }
 
-      checkbox.addEventListener("change", toggleDescription);
+      descCheckbox.addEventListener("change", toggleDescription);
       toggleDescription(); // initial load
+
+      // How to Order toggle
+      const htoCheckbox = document.getElementById("is_raw_how_to_order_input");
+      const htoRawTextarea = document.getElementById("how_to_order_textarea");
+      const htoQuillHidden = document.getElementById("how_to_order_input");
+      const htoQuillWrapper = document.getElementById("how-to-order-quill-wrapper");
+
+      function toggleHowToOrder() {
+        if (htoCheckbox.checked) {
+          htoRawTextarea.name = "how_to_order";
+          htoRawTextarea.style.display = '';
+          htoRawTextarea.disabled = false;
+
+          htoQuillWrapper.style.display = 'none';
+          htoQuillHidden.disabled = true;
+          htoQuillHidden.removeAttribute("name");
+        } else {
+          htoRawTextarea.removeAttribute("name");
+          htoRawTextarea.style.display = 'none';
+          htoRawTextarea.disabled = true;
+
+          htoQuillWrapper.style.display = '';
+          htoQuillHidden.disabled = false;
+          htoQuillHidden.name = "how_to_order";
+        }
+      }
+
+      htoCheckbox.addEventListener("change", toggleHowToOrder);
+      toggleHowToOrder(); // initial load
     });
   </script>
 

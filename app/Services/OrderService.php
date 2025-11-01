@@ -16,6 +16,7 @@ use App\Mail\SendSettlementNotif;
 use App\Models\Affiliate;
 use App\Models\AffiliateHistory;
 use App\Models\Balance;
+use App\Models\BannedIp;
 use App\Models\ExchangeRate;
 use App\Models\Order;
 use App\Models\Setting;
@@ -81,6 +82,24 @@ class OrderService
                 return $error;
             }
 
+            // Prevent negative total_price from allowing balance addition
+            if ($price['total_price'] <= 0) {
+                Log::warning('Suspicious order attempt', ['user_id' => $authUser->id, 'ip' => request()->ip(), 'order_data' => $request->all()]);
+
+                // Ban user
+                $authUser->update(['banned_at' => now(), 'ban_reason' => 'Suspicious order attempt']);
+
+                // Ban IP
+                BannedIp::firstOrCreate(['ip_address' => request()->ip()], [
+                    'banned_at' => now(),
+                    'ban_reason' => 'Suspicious order attempt',
+                ]);
+
+                DB::rollBack();
+
+                return 'Invalid order total price';
+            }
+
             if ($productItem->stock === 0) {
                 DB::rollBack();
 
@@ -132,6 +151,7 @@ class OrderService
             $order->expired_at = now()->addHours(1);
             $order->note = $request->note;
             $order->currency_code = $baseCurrency;
+            $order->additional_informations = $request?->additional_informations ?? null;
             $order->converted_currency_code = $userCurrency;
             $order->exchange_rate = $exchangeRate;
             $order->save();
@@ -142,7 +162,11 @@ class OrderService
             }
 
             if ($paymentMethod->vendor === PaymentMethod::XENDIT) {
-                app(XenditService::class)->createOrderXenditInvoice($order);
+                $service = $paymentMethod->slug === 'CARDS'
+                    ? XenditV2Service::class
+                    : XenditService::class;
+
+                app($service)->createOrderXenditInvoice($order);
             }
 
             if ($paymentMethod->vendor === PaymentMethod::HITPAY) {
@@ -155,6 +179,10 @@ class OrderService
 
             if ($paymentMethod->vendor === PaymentMethod::MPAY) {
                 app(MpayService::class)->createOrderMpayInvoice($order);
+            }
+
+            if ($paymentMethod->vendor === PaymentMethod::CRYPTOMUS) {
+                app(CryptomusService::class)->createOrderCryptomusInvoice($order);
             }
 
             $this->updateStatus($order, StatusConst::PENDING);
@@ -279,7 +307,7 @@ class OrderService
             }
         } elseif ($provider === ProviderConstant::VEXAGAME) {
             if ($sync) {
-               return VexaGameOrderHandler::dispatchSync($order);
+                return VexaGameOrderHandler::dispatchSync($order);
             } else {
                 VexaGameOrderHandler::dispatch($order);
             }

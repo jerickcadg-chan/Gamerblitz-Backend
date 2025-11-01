@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Constants\StatusConst;
+use App\Events\UserActivityLogged;
 use App\Http\Requests\UserRequest;
 use App\Models\Affiliate;
 use App\Models\AffiliateHistory;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
-use App\Models\Deposit;
-use App\Models\Setting;
 use App\Models\User;
 use App\Services\BalanceService;
-use App\Services\DepositService;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
@@ -32,13 +29,15 @@ class UserController extends Controller
         $this->middleware(['permission:Create User'])->only(['create', 'store']);
         $this->middleware(['permission:Edit User'])->only('edit', 'update');
         $this->middleware(['permission:Delete User'])->only('destroy');
+        $this->middleware(['permission:Ban User'])->only('ban');
+        $this->middleware(['permission:Unban User'])->only('unban');
     }
 
     public function index()
     {
         $users = User::nonCustomer()->latest()
             ->when(request('name'), function ($query) {
-                return $query->where('name', 'like', '%'. request('name') .'%');
+                return $query->where('name', 'like', '%'.request('name').'%');
             })
             ->paginate();
 
@@ -49,23 +48,88 @@ class UserController extends Controller
         return view('users.index', compact('users', 'createLink', 'title'));
     }
 
+    public function ban(Request $request, User $user)
+    {
+        $request->validate([
+            'reason' => 'required|string|max:255',
+            'ban_ip' => 'nullable|boolean',
+        ]);
+
+        $user->update([
+            'banned_at' => now(),
+            'ban_reason' => $request->reason,
+        ]);
+
+        if ($request->ban_ip) {
+            // Get all unique IPs from user_activity_logs
+            $activityLogs = DB::table('user_activity_logs')
+                ->where('user_id', $user->id)
+                ->select('ip_address')
+                ->distinct()
+                ->get();
+
+            foreach ($activityLogs as $activityLog) {
+                \App\Models\BannedIp::firstOrCreate(
+                    ['ip_address' => $activityLog->ip_address],
+                    [
+                        'banned_at' => now(),
+                        'ban_reason' => $this->getUserIpBanReason($user, $request->reason),
+                    ]
+                );
+            }
+        }
+
+        return redirect()->back()->with('success', 'User banned successfully.');
+    }
+
+    public function unban(Request $request, User $user)
+    {
+        $user->update([
+            'banned_at' => null,
+            'ban_reason' => null,
+        ]);
+
+        // Unban IPs that were banned along with this user
+        $activityLogs = DB::table('user_activity_logs')
+            ->where('user_id', $user->id)
+            ->select('ip_address')
+            ->distinct()
+            ->pluck('ip_address');
+
+        \App\Models\BannedIp::whereIn('ip_address', $activityLogs)
+            ->where('ban_reason', 'like', $this->getUserIpBanReason($user, '%'))
+            ->delete();
+
+        return redirect()->back()->with('success', 'User unbanned successfully.');
+    }
+
     public function getCustomer()
     {
         $users = User::customer()->latest()
             ->when(request('name'), function ($query) {
-                return $query->where('name', 'like', '%'. request('name') .'%');
+                return $query->where('name', 'like', '%'.request('name').'%');
             })
             ->when(request('email'), function ($query) {
-                return $query->where('email', 'like', '%'. request('email') .'%');
+                return $query->where('email', 'like', '%'.request('email').'%');
             })
             ->when(request('phone'), function ($query) {
-                return $query->where('phone_number', 'like', '%'. request('phone') .'%');
+                return $query->where('phone_number', 'like', '%'.request('phone').'%');
+            })
+            ->when(request('banned'), function ($query) {
+                return $query->whereNotNull('banned_at');
+            })
+            ->when(request('affiliate'), function ($query) {
+                return $query->whereHas('affiliate', function ($q) {
+                    $q->where('status', 'active');
+                });
             })
             ->paginate();
 
-        $title = $this->title;
+        $createLink = route('user.create');
 
-        return view('users.customer', compact('users', 'title'));
+        $title = 'Customer';
+
+        return view('users.customer', compact('users', 'createLink', 'title'));
     }
 
     public function create()
@@ -88,16 +152,17 @@ class UserController extends Controller
 
         $balance = Balance::query()->firstOrCreate(
             [
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ],
             [
-                'amount' => 0
+                'amount' => 0,
             ]
         );
 
         $balanceHistories = BalanceHistory::where('balance_id', $balance->id)
+            ->with('updater')
             ->latest()
-            ->paginate();
+            ->paginate(15, ['*'], 'balance_page');
 
         $affiliateHistories = [];
 
@@ -105,12 +170,14 @@ class UserController extends Controller
             $affiliateHistories = AffiliateHistory::with('affiliateable')
                 ->where('affiliate_id', $user->affiliate->id)
                 ->latest()
-                ->paginate();
+                ->paginate(15, ['*'], 'affiliate_page');
         }
+
+        $activityLogs = DB::table('user_activity_logs')->where('user_id', $user->id)->latest()->paginate(15, ['*'], 'activity_page');
 
         $title = $this->title;
 
-        return view('users.show', compact('user', 'balanceHistories', 'affiliateHistories', 'editLink', 'indexLink', 'deleteLink', 'title'));
+        return view('users.show', compact('user', 'balanceHistories', 'affiliateHistories', 'activityLogs', 'editLink', 'indexLink', 'deleteLink', 'title'));
     }
 
     public function store(UserRequest $request)
@@ -120,7 +187,7 @@ class UserController extends Controller
         $user->assignRole($request->role_id);
 
         if ($request->affiliate_on == 1) {
-            if (!$user->affiliate) {
+            if (! $user->affiliate) {
                 $code = $this->generateUniqueAffiliateCode();
 
                 if (Affiliate::where('code', $code)->exists()) {
@@ -133,14 +200,15 @@ class UserController extends Controller
 
                 Affiliate::create([
                     'user_id' => $user->id,
-                    'code'    => $code,
-                    'status'  => 'active',
+                    'code' => $code,
+                    'status' => 'active',
                     'balance' => 0,
                 ]);
             }
         }
 
-        toast(alert_created_text($this->title),'success');
+        toast(alert_created_text($this->title), 'success');
+
         return redirect()->route('user.show', $user);
     }
 
@@ -180,8 +248,8 @@ class UserController extends Controller
 
                 Affiliate::create([
                     'user_id' => $user->id,
-                    'code'    => $code,
-                    'status'  => 'active',
+                    'code' => $code,
+                    'status' => 'active',
                     'balance' => 0,
                 ]);
             }
@@ -192,6 +260,7 @@ class UserController extends Controller
         }
 
         toast(alert_updated_text($this->title), 'success');
+
         return redirect()->route('user.show', $user);
     }
 
@@ -199,7 +268,8 @@ class UserController extends Controller
     {
         $user->delete();
 
-        toast(alert_deleted_text($this->title),'success');
+        toast(alert_deleted_text($this->title), 'success');
+
         return redirect()->route('user.index');
     }
 
@@ -208,7 +278,7 @@ class UserController extends Controller
         $actionLink = route('user.top-up-manual.store', $user);
         $indexLink = route('user.index');
 
-        $title = 'Top up Manual ' . $this->title;
+        $title = 'Top up Manual '.$this->title;
 
         return view('users.topup-manual', compact('actionLink', 'indexLink', 'title', 'user'));
     }
@@ -216,34 +286,43 @@ class UserController extends Controller
     public function topUpManualStore(Request $request, User $user)
     {
         $request->validate([
-            'amount' => 'required'
+            'amount' => 'required',
         ]);
 
         try {
             $balance = Balance::query()->lockForUpdate()->firstOrCreate(
                 [
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
                 ],
                 [
-                    'amount' => 0
+                    'amount' => 0,
                 ]
             );
 
             BalanceService::update($balance, [
                 'balanceable_type' => User::class,
-                'balanceable_id' => Auth::id(),
+                'balanceable_id' => auth()->user()->id,
                 'amount' => $request->amount,
-                'description' => "Topup Balance by Admin"
+                'description' => 'Topup Balance by Admin',
+                'updated_by' => auth()->user()->id,
             ]);
 
-            toast("Top up manual success", 'success');
+            // Log user action
+            event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'balance_manual_update:' . $user->email));
+
+            toast('Top up manual success', 'success');
 
             return redirect()->route('user.show', $user);
         } catch (\Exception $e) {
-            toast("Top Up Manual Failed " . $e->getMessage(), 'error');
+            toast('Top Up Manual Failed '.$e->getMessage(), 'error');
 
             return redirect()->back();
         }
+    }
+
+    private function getUserIpBanReason(User $user, string $reason): string
+    {
+        return 'Banned along with user '.$user->email.': '.$reason;
     }
 
     private function generateUniqueAffiliateCode(): string
@@ -261,13 +340,14 @@ class UserController extends Controller
         $candidate = $base;
         $i = 1;
         while (Affiliate::where('code', $candidate)->exists()) {
-            $candidate = $base . $i;
+            $candidate = $base.$i;
             $i++;
             if ($i > 9999) { // fallback hard-stop
                 $candidate = $this->generateUniqueAffiliateCode();
                 break;
             }
         }
+
         return $candidate;
     }
 }

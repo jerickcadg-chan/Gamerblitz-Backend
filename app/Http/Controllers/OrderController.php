@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\StatusConst;
+use App\Events\UserActivityLogged;
 use App\Mail\SendOrderNotif;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
@@ -27,7 +28,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::latest()
-            ->with('productItem', 'user')
+            ->with('productItem', 'user', 'updater')
             ->when(request('cust_account'), function ($query) {
                 return $query->where('cust_account', 'like', '%'. request('cust_account') .'%');
             })
@@ -81,6 +82,12 @@ class OrderController extends Controller
             fn ($value) => $value !== null && $value !== ''
         ));
 
+        $order->updated_by = auth()->user()->id;
+        $order->save();
+
+        // Log user action
+        event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'order_updated:' . $order->code));
+
         $orderService->updateStatus($order, $request->status);
 
         if ($order->paymentMethod->slug == PaymentMethod::BALANCE && in_array($order->status, [StatusConst::FAILED, StatusConst::REFUNDED])) {
@@ -106,6 +113,12 @@ class OrderController extends Controller
             toast('Only pending or delayed order can be processed', 'warning');
             return redirect()->back();
         }
+
+        // Log user action
+        event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'order_processed:' . $order->code));
+
+        $order->updated_by = auth()->user()->id;
+        $order->save();
 
         $orderService->updateStatus($order, StatusConst::ON_PROCESS);
         $orderService->processOrder($order, sync: true);

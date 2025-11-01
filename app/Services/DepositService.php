@@ -8,10 +8,17 @@ use App\Models\Balance;
 use App\Constants\StatusConst;
 use App\Models\BalanceHistory;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DepositService
 {
+    /**
+     * @param Deposit $deposit
+     * @param string $status
+     * @param string $amount
+     * @return array
+     */
     public static function updateStatus(Deposit $deposit, $status, $amount = ''): array
     {
         if ($deposit->status == $status) {
@@ -100,14 +107,34 @@ class DepositService
         return null;
     }
 
+    /**
+     * @param string $userCurrency
+     * @return float
+     */
     public static function getDepositMinAmount(string $userCurrency)
     {
         $baseCurrency = Setting::getBaseCurrency();
         $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
-        $depositMinAmount = Setting::getByKey('deposit_min_amount');
+        $depositMinAmount = Setting::getByKey('deposit_min_amount') ?: 0;
         return $depositMinAmount * $exchangeRate;
     }
 
+    /**
+     * @param string $userCurrency
+     * @return float|null
+     */
+    public static function getDepositMaxAmount(string $userCurrency)
+    {
+        $baseCurrency = Setting::getBaseCurrency();
+        $exchangeRate = get_exchange_rate($baseCurrency, $userCurrency);
+        $depositMaxAmount = Setting::getByKey('deposit_max_amount');
+        return $depositMaxAmount ? $depositMaxAmount * $exchangeRate : null;
+    }
+
+    /**
+     * @param Balance $balance
+     * @param User $user
+     */
     public static function updateUserLevel($balance, $user)
     {
         $totalDeposit = BalanceHistory::where('balance_id', $balance->id)
@@ -117,6 +144,10 @@ class DepositService
         $user->assignRole($level);
     }
 
+    /**
+     * @param int $balance
+     * @return string
+     */
     public static function getTierByBalance($balance)
     {
         $balance = (int) $balance;

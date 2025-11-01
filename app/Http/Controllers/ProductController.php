@@ -158,7 +158,7 @@ class ProductController extends Controller
         $product->update($request->all());
 
         toast(alert_updated_text($this->title), 'success');
-        return redirect()->route('product.index');
+        return redirect()->back();
     }
 
     public function destroy(Product $product)

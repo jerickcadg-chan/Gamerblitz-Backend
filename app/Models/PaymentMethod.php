@@ -26,6 +26,7 @@ class PaymentMethod extends Model implements IsFilterable
     const HITPAY = 'hitpay';
     const BILLPLZ = 'billplz';
     const MPAY = 'mpay';
+    const CRYPTOMUS = 'cryptomus';
     const MANUAL = 'manual';
     const BALANCE = 'balance';
     const ALL = 'ALL';
@@ -44,7 +45,12 @@ class PaymentMethod extends Model implements IsFilterable
         'is_raw_description',
         'is_active',
         'type',
-        'ordering'
+        'ordering',
+        'additional_input',
+    ];
+
+    protected $casts = [
+        'additional_input' => 'array'
     ];
 
     public function getDisplayNameAttribute(): string

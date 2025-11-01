@@ -6,6 +6,7 @@ use App\Constants\StatusConst;
 use App\Data\LapakGaming\CheckUidRequest;
 use App\Data\LapakGaming\CheckUidResponse;
 use App\Data\Xendit\PaymentCallbackPayload;
+use App\Events\UserActivityLogged;
 use App\Http\Controllers\Controller;
 use App\Models\Deposit;
 use App\Models\Order;
@@ -115,6 +116,8 @@ class OrderController extends Controller
                 return api_status_warning($order);
             }
 
+            event(new UserActivityLogged($this->userId, $request->ip(), 'order_created:' . $order->code));
+
             return api_status_ok(transformer($order, new OrderTransformer()));
         } catch (ValidationException $e) {
             throw $e;
@@ -138,65 +141,114 @@ class OrderController extends Controller
         $xenditCallbackKey = Setting::getByKey(Setting::KEY_XENDIT_CALLBACK_KEY);
         $hCallbackToken = $request->header('x-callback-token');
         $validCallbackKey = $xenditCallbackKey == $hCallbackToken;
+
         if (!$validCallbackKey) {
             Log::info(json_encode($request->header(), JSON_PRETTY_PRINT));
             return api_status_warning("callback token didn't register yet, or invalid token!!!!");
         }
 
-        $payload = PaymentCallbackPayload::from($request->all());
-        $paymentId = $payload->data->payment_request_id;
-        $type = $payload->data->metadata['type'] ?? 'order';
+        $raw = $request->all();
 
-        switch ($type) {
-            case 'order':
-                $order = Order::where('payment_id', $paymentId)->first();
+        Log::warning('Xendit Webhook', $raw);
 
-                if (empty($order)) {
-                    return api_status_warning('Order not found');
-                }
+        // === XENDIT v3 Webhook (Payment API) ===
+        if (isset($raw['data'])) {
+            $payload    = PaymentCallbackPayload::from($raw);
+            $paymentId  = $payload->data->payment_request_id;
+            $type       = $payload->data->metadata['type'] ?? 'order';
+            $status     = $payload->data->status;
 
-                switch ($payload->data->status) {
-                    case 'SUCCEEDED':
-                        $orderService->updateStatus($order, StatusConst::ON_PROCESS);
-                        $orderService->processOrder($order);
-                        break;
+            switch ($type) {
+                case 'order':
+                    $order = Order::where('payment_id', $paymentId)->first();
 
-                    case 'EXPIRED':
-                        $orderService->updateStatus($order, StatusConst::EXPIRED);
-                        break;
+                    if (!$order) {
+                        return api_status_warning('Order not found');
+                    }
 
-                    default:
-                        return api_status_warning('Invalid request status');
-                }
+                    switch ($status) {
+                        case 'SUCCEEDED':
+                            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+                            $orderService->processOrder($order);
+                            break;
+                    
+                        case 'EXPIRED':
+                            $orderService->updateStatus($order, StatusConst::EXPIRED);
+                            break;
+                    
+                        default:
+                            return api_status_warning('Invalid request status');
+                    }                    
 
-                return api_status_ok([
-                    'order' => transformer($order, new OrderTransformer())
-                ]);
-            case 'deposit':
-                $deposit = Deposit::where('payment_id', $paymentId)->first();
+                    return api_status_ok([
+                        'order' => transformer($order, new OrderTransformer()),
+                    ]);
 
-                if (!$deposit) {
-                    return api_status_warning("Deposit not found");
-                }
+                case 'deposit':
+                    $deposit = Deposit::where('payment_id', $paymentId)->first();
 
-                $err = match ($payload->data->status) {
-                    'SUCCEEDED' => $depositService->handlePaymentSettlement($deposit),
-                    'EXPIRED' => $depositService->handlePaymentExpired($deposit),
-                    default => 'Invalid request status'
-                };
+                    if (!$deposit) {
+                        return api_status_warning('Deposit not found');
+                    }
 
-                if ($err) {
-                    return api_status_warning($err);
-                }
+                    $err = match ($status) {
+                        'SUCCEEDED' => $depositService->handlePaymentSettlement($deposit),
+                        'EXPIRED'   => $depositService->handlePaymentExpired($deposit),
+                        default     => 'Invalid request status',
+                    };
 
-                return api_status_ok([
-                    'deposit' => transformer($deposit, new DepositTransformer())
-                ]);
-            default:
-                break;
+                    if ($err) {
+                        return api_status_warning($err);
+                    }
+
+                    return api_status_ok([
+                        'deposit' => transformer($deposit, new DepositTransformer()),
+                    ]);
+
+                default:
+                    return api_status_warning('Transaction type not recognized');
+            }
         }
 
-        return api_status_warning('Transaction not found');
+        // === XENDIT v2 Webhook (Invoice API) ===
+        $externalId = $raw['external_id'] ?? null;
+
+        if (!$externalId) {
+            return api_status_warning('Missing external ID');
+        }
+
+        $order   = Order::where('code', $externalId)->first();
+        $deposit = Deposit::where('code', $externalId)->first();
+
+        if (!$order && !$deposit) {
+            Log::warning('Xendit Webhook: Transaction not found', $raw);
+            return api_status_warning('Transaction not found');
+        }
+
+        if ($raw['status'] != 'PAID') {
+            return api_status_warning('Payment not completed');
+        }
+
+        // === Handle Order Payment ===
+        if ($order && $order->status !== StatusConst::SUCCESS) {
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+            $orderService->processOrder($order);
+
+            return api_status_ok([
+                'order' => transformer($order, new OrderTransformer()),
+            ]);
+        }
+
+        // === Handle Deposit Payment ===
+        if ($deposit && $deposit->status !== StatusConst::PAID) {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return api_status_ok([
+                'deposit' => transformer($deposit, new DepositTransformer()),
+            ]);
+        }
+
+        return api_status_ok(['message' => 'Payment already processed']);
     }
 
     public function hitpayCallback(Request $request, OrderService $orderService, DepositService $depositService)
@@ -274,7 +326,7 @@ class OrderController extends Controller
         $stringA = collect($data)
             ->map(fn($v, $k) => "{$k}={$v}")
             ->join('&') . '&';
-        
+
         // Make signature
         $md5Key        = md5(Setting::getByKey('mpay_sign_key'));
         $stringSign    = "{$stringA}key={$md5Key}";
@@ -331,44 +383,34 @@ class OrderController extends Controller
     public function billplzCallback(Request $request, OrderService $orderService, DepositService $depositService)
     {
         $data = $request->all();
-        $signatureKey = Setting::getByKey('billplz_signature_payment');
-        $hmac = $data['x_signature'];
-
-        // Unset signature & ksort data
-        unset($data['x_signature']);
-        uksort($data, 'strcasecmp');
 
         Log::info('Billplz Webhook Received', $data);
 
+        $hmac     = $data['x_signature'] ?? null;
+        $billId   = $data['id'] ?? null;
+        $state    = $data['state'] ?? null;
+        $isPaid   = filter_var($data['paid'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        // === Basic validation ===
         if (!$hmac) {
             return response()->json(['message' => 'Missing HMAC'], 400);
         }
-
-        $chunks = [];
-        foreach ($data as $k => $v) {
-            $chunks[] = $k . $v;
-        }
-
-        $sourceString = implode('|', $chunks);
-        $calculatedHmac = hash_hmac('sha256', $sourceString, $signatureKey);
-
-        if (!hash_equals($hmac, $calculatedHmac)) {
-            Log::warning('Billplz Webhook HMAC mismatch', [
-                'expected' => $calculatedHmac,
-                'received' => $hmac,
-            ]);
-
-            return api_status_warning('Invalid HMAC');
-        }
-
-        $billId = $data['id'] ?? null;
-        $state  = $data['state'] ?? null;
-        $isPaid = filter_var($data['paid'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if (!$billId) {
             return api_status_warning('Missing bill ID');
         }
 
+        // === Check Billplz Transaction Status ===
+        $responseStatus = $this->sendBillplzRequest($billId);
+        $transactions   = collect($responseStatus['transactions'] ?? []);
+        $hasCompleted   = $transactions->contains('status', 'completed');
+        $isFullyPaid = $hasCompleted && $isPaid && $state === 'paid';
+
+        if (!$isFullyPaid) {
+            return api_status_warning('Payment not completed or invalid state');
+        }
+
+        // === Check Order / Deposit ===
         $order   = Order::where('payment_id', $billId)->first();
         $deposit = Deposit::where('payment_id', $billId)->first();
 
@@ -377,26 +419,94 @@ class OrderController extends Controller
             return api_status_warning('Transaction not found');
         }
 
-        if ($order && $isPaid && $state === 'paid') {
+        // === Handle Order Payment ===
+        if ($order && $order->status !== StatusConst::SUCCESS) {
             $orderService->updateStatus($order, StatusConst::ON_PROCESS);
             $orderService->processOrder($order);
 
             return api_status_ok([
-                'order' => transformer($order, new OrderTransformer())
+                'order' => transformer($order, new OrderTransformer()),
             ]);
         }
 
-        if ($deposit && $isPaid && $state === 'paid') {
+        // === Handle Deposit Payment ===
+        if ($deposit && $deposit->status !== StatusConst::PAID) {
             $depositService->handlePaymentSettlement($deposit);
 
             return api_status_ok([
-                'deposit' => transformer($deposit, new DepositTransformer())
+                'deposit' => transformer($deposit, new DepositTransformer()),
             ]);
         }
 
-        return api_status_ok([
-            'message' => 'Payment not completed'
-        ]);
+        return api_status_ok(['message' => 'Payment already processed']);
+    }
+
+    public function cryptomusCallback(Request $request, OrderService $orderService, DepositService $depositService)
+    {
+        $data = $request->all();
+
+        Log::info('Cryptomus Webhook Received', $data);
+
+        $apiKey = Setting::where('key', 'cryptomus_api_key')->first()?->value ?? null;
+        $sign = $data['sign'] ?? null;
+        $orderId = $data['order_id'] ?? null;
+        $status = $data['status'] ?? null;
+
+        // Unset sign first before hash
+        unset($data['sign']);
+
+        if (!$sign) {
+            return response()->json(['message' => 'Missing Sign'], 400);
+        }
+
+        if (!$orderId) {
+            return api_status_warning('Missing Order ID');
+        }
+
+        $calculatedHash = md5(base64_encode(json_encode($data, JSON_UNESCAPED_UNICODE)) . $apiKey);
+
+        if (!hash_equals($calculatedHash, $sign)) {
+            Log::warning('Cryptomus Webhook SIGN mismatch', [
+                'expected' => $calculatedHash,
+                'received' => $sign,
+            ]);
+
+            return api_status_warning('Invalid Sign');
+        }
+
+        if ($status != 'paid') {
+            return api_status_warning('Payment not completed');
+        }
+
+        // === Check Order / Deposit ===
+        $order   = Order::where('code', $orderId)->first();
+        $deposit = Deposit::where('code', $orderId)->first();
+
+        if (!$order && !$deposit) {
+            Log::warning('Cryptomus Webhook: Transaction not found', $data);
+            return api_status_warning('Transaction not found');
+        }
+
+        // === Handle Order Payment ===
+        if ($order && $order->status !== StatusConst::SUCCESS) {
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+            $orderService->processOrder($order);
+
+            return api_status_ok([
+                'order' => transformer($order, new OrderTransformer()),
+            ]);
+        }
+
+        // === Handle Deposit Payment ===
+        if ($deposit && $deposit->status !== StatusConst::PAID) {
+            $depositService->handlePaymentSettlement($deposit);
+
+            return api_status_ok([
+                'deposit' => transformer($deposit, new DepositTransformer()),
+            ]);
+        }
+
+        return api_status_ok(['message' => 'Payment already processed']);
     }
 
     public function checkUid()
@@ -450,5 +560,19 @@ class OrderController extends Controller
                 'name' => null,
             ]);
         }
+    }
+
+    private function sendBillplzRequest(string $orderId): array
+    {
+        $response = Http::withBasicAuth(Setting::getByKey('billplz_api_key'), '')
+            ->asForm()
+            ->get(Setting::getByKey('billplz_api_url') . "/v3/bills/{$orderId}/transactions");
+        $json = $response->json();
+
+        if ($response->failed()) {
+            throw new \Exception("Failed to check status");
+        }
+
+        return $json;
     }
 }

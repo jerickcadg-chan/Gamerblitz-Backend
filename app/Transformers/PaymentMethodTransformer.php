@@ -29,6 +29,7 @@ class PaymentMethodTransformer extends TransformerAbstract
             'picture_url' => $paymentMethod->picture_url,
             'currency_code' => $paymentMethod->currency_code,
             'description' => $paymentMethod->description,
+            'additional_input' => $paymentMethod->additional_input,
         ];
     }
 }
