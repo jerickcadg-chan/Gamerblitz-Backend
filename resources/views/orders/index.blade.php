@@ -81,6 +81,9 @@
                 <tr>
                   <td>{{ $orders->firstItem() + $index }}</td>
                   <td>
+                    @if($order->provider_ref)
+                      <p>{{ $order->provider_ref }}</p>
+                    @endif
                     <p class="mt-3">
                       <a href="{{ route('order.show', $order->id) }}">{{ $order->code }}</a>
                     </p>
