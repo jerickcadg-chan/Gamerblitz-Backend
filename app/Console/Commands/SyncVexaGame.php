@@ -184,8 +184,12 @@ class SyncVexaGame extends Command
             'sync_at'      => now(),
         ];
 
-        if ($productItem && in_array($productItem->status, ['active', 'empty'])) {
-            $productItem->update($baseData);
+        if ($productItem) {
+            if (in_array($productItem->status, ['active', 'empty'])) {
+                $productItem->update($baseData);
+            } else {
+                return;
+            }
         } else {
             ProductItem::create(array_merge($baseData, [
                 'product_id'    => $product->id,
