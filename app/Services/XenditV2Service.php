@@ -23,17 +23,22 @@ class XenditV2Service
         $externalId = $order->code;
         $method = $order->paymentMethod;
 
+        $customer = [
+            "given_names" => $order->cust_email,
+            "surname" => $order->cust_email,
+            "email" => $order->cust_email,
+        ];
+        
+        if (!empty($order?->cust_phone_number)) {
+            $customer["mobile_number"] = $order->cust_phone_number;
+        }
+
         $payload = [
             "external_id" => $externalId,
             "amount" => $amount,
             "description" => $order->productItem->full_name,
             "invoice_duration" => 86400,
-            "customer" => [
-                "given_names" => $order->cust_email,
-                "surname" => $order->cust_email,
-                "email" => $order->cust_email,
-                "mobile_number" => $order->cust_phone_number,
-            ],
+            "customer" => $customer,
             "success_redirect_url" => config('app.fe_url') . '/' . config('app.fe_invoice_url') . '/' . $externalId,
             "failure_redirect_url" => config('app.fe_url') . '/' . config('app.fe_invoice_url') . '/' . $externalId,
             "currency" => $method->currency_code,
@@ -73,16 +78,21 @@ class XenditV2Service
         $externalId = $deposit->code;
         $method = $deposit->paymentMethod;
 
+        $customer = [
+            "given_names" => $deposit->user->name,
+            "surname" => $deposit->user->name,
+            "email" => $deposit->user->email,
+        ];
+        
+        if (!empty($deposit?->user?->phone_number)) {
+            $customer["mobile_number"] = $deposit?->user?->phone_number;
+        }
+
         $payload = [
             "external_id" => $externalId,
             "amount" => $amount,
             "invoice_duration" => 86400,
-            "customer" => [
-                "given_names" => $deposit->user->name,
-                "surname" => $deposit->user->name,
-                "email" => $deposit->user->email,
-                "mobile_number" => $deposit->user->phone_number,
-            ],
+            "customer" => $customer,
             "success_redirect_url" => config('app.fe_url') . '/dashboard/deposit/' . $externalId,
             "failure_redirect_url" => config('app.fe_url') . '/dashboard/deposit/' . $externalId,
             "currency" => $method->currency_code,
