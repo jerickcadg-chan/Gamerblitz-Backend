@@ -526,10 +526,17 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label>Youtube</label>
-            <input type="text" class="form-control" name="settings[social_youtube]"
-              value="{{ old('settings.social_youtube', $settings['social_youtube'] ?? '') }}">
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label>Telegram</label>
+              <input type="text" class="form-control" name="settings[social_telegram]"
+                value="{{ old('settings.social_telegram', $settings['social_telegram'] ?? '') }}">
+            </div>
+            <div class="form-group col-md-6">
+              <label>Youtube</label>
+              <input type="text" class="form-control" name="settings[social_youtube]"
+                     value="{{ old('settings.social_youtube', $settings['social_youtube'] ?? '') }}">
+            </div>
           </div>
 
           {{-- Terms and Conditions --}}
