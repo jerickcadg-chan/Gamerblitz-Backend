@@ -281,7 +281,7 @@ class OrderController extends Controller
         $salt = Setting::getByKey('hitpay_salt_key');
         $hmac = $request->header('hitpay-signature');
 
-        Log::info('HitPay Webhook received', $data);
+        Log::warning('HitPay Webhook received', $data);
 
         if (!$hmac) {
             return response()->json(['message' => 'Missing HMAC'], 400);
@@ -331,7 +331,7 @@ class OrderController extends Controller
     public function mpayCallback(Request $request, OrderService $orderService, DepositService $depositService)
     {
         $data = $request->all();
-        Log::info('MPay Callback Received', $data);
+        Log::warning('MPay Callback Received', $data);
 
         $receivedSign = $data['sign'] ?? null;
         unset($data['sign']);
