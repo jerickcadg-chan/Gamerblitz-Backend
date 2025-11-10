@@ -45,7 +45,7 @@ class SyncLapakGaming extends Command
         $fallbackMarginVip = Setting::getByKey('margin_vip');
 
         $log = Log::channel('lapakgaming');
-        Cache::put('lapakgaming-sync', 300);
+        Cache::put('lapakgaming-sync', true, 120);
 
         try {
             if (!$token) {

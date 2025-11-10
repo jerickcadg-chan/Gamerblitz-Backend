@@ -66,12 +66,15 @@ class AutomaticExchangeRates extends Command
                     $newRate->effective_at = now();
                     $newRate->save();
 
-                    $status = FetchVarianJob::create([
-                        'command_name' => 'app:sync-lapak-gaming',
-                        'status' => 'PENDING',
-                    ]);
-            
-                    FetchVarianHandle::dispatch($status->id);
+                    // Only sync item when idr to php changed
+                    if ($exchangeRate->currency_code == 'IDR') {
+                        $status = FetchVarianJob::create([
+                            'command_name' => 'app:sync-lapak-gaming',
+                            'status' => 'PENDING',
+                        ]);
+
+                        FetchVarianHandle::dispatch($status->id);
+                    }
                 }
             }
         } catch (\Exception $e) {

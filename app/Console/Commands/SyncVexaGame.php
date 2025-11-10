@@ -42,7 +42,7 @@ class SyncVexaGame extends Command
         $apiUrl       = rtrim($baseUrl, '/') . '/v2/product-item';
         $exchangeRate = get_exchange_rate('IDR', Setting::getBaseCurrency());
         $log          = Log::channel('vexagame');
-        Cache::put('vexagame-sync', 300);
+        Cache::put('vexagame-sync', true, 120);
 
         try {
             if (!$token) {
@@ -184,8 +184,12 @@ class SyncVexaGame extends Command
             'sync_at'      => now(),
         ];
 
-        if ($productItem && in_array($productItem->status, ['active', 'empty'])) {
-            $productItem->update($baseData);
+        if ($productItem) {
+            if (in_array($productItem->status, ['active', 'empty'])) {
+                $productItem->update($baseData);
+            } else {
+                return;
+            }
         } else {
             ProductItem::create(array_merge($baseData, [
                 'product_id'    => $product->id,

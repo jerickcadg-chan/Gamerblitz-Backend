@@ -35,7 +35,9 @@ class ProductItemRequest extends FormRequest
                 'max:100',
                 $this->isMethod('post')
                     ? Rule::unique('product_items', 'code')
-                    : Rule::unique('product_items', 'code')->ignore($productItemId),
+                    : Rule::unique('product_items', 'code')
+                    ->where(fn($query) => $query->where('product_id', $this->input('product_id')))
+                    ->ignore($productItemId),
             ],
             'name'       => ['required', 'string', 'max:255'],
             'capital'    => ['required', 'numeric', 'min:0'],

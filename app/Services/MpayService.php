@@ -113,7 +113,7 @@ class MpayService
     public function normalizePhone(?string $phone): ?string
     {
         if (!$phone) {
-            return null;
+            return '08' . str_pad(rand(0, 999999999), 9, '0', STR_PAD_LEFT);
         }
 
         // Remove all non-digit characters
