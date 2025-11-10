@@ -171,14 +171,14 @@ class OrderController extends Controller
                             $orderService->updateStatus($order, StatusConst::ON_PROCESS);
                             $orderService->processOrder($order);
                             break;
-                    
+
                         case 'EXPIRED':
                             $orderService->updateStatus($order, StatusConst::EXPIRED);
                             break;
-                    
+
                         default:
                             return api_status_warning('Invalid request status');
-                    }                    
+                    }
 
                     return api_status_ok([
                         'order' => transformer($order, new OrderTransformer()),
@@ -225,11 +225,35 @@ class OrderController extends Controller
             return api_status_warning('Transaction not found');
         }
 
-        if ($raw['status'] != 'PAID') {
-            return api_status_warning('Payment not completed');
+        $status = $raw['status'] ?? null;
+
+        // === Handle expired transactions ===
+        if ($status === 'EXPIRED') {
+            if ($order && $order->status !== StatusConst::SUCCESS) {
+                $orderService->updateStatus($order, StatusConst::EXPIRED);
+
+                return api_status_ok([
+                    'order' => transformer($order, new OrderTransformer()),
+                ]);
+            }
+
+            if ($deposit && $deposit->status !== StatusConst::PAID) {
+                $depositService->handlePaymentExpired($deposit);
+
+                return api_status_ok([
+                    'deposit' => transformer($deposit, new DepositTransformer()),
+                ]);
+            }
+
+            return api_status_ok(['message' => 'Already expired']);
         }
 
-        // === Handle Order Payment ===
+        // === Ignore non-paid statuses ===
+        if ($status !== 'PAID') {
+            return api_status_ok(['message' => 'Ignored non-paid status']);
+        }
+
+        // === Handle successful order payment ===
         if ($order && $order->status !== StatusConst::SUCCESS) {
             $orderService->updateStatus($order, StatusConst::ON_PROCESS);
             $orderService->processOrder($order);
@@ -239,7 +263,7 @@ class OrderController extends Controller
             ]);
         }
 
-        // === Handle Deposit Payment ===
+        // === Handle successful deposit payment ===
         if ($deposit && $deposit->status !== StatusConst::PAID) {
             $depositService->handlePaymentSettlement($deposit);
 
@@ -342,8 +366,9 @@ class OrderController extends Controller
         }
 
         // Extract order id & status
-        $orderId   = $data['merchantOrderId'] ?? null;
-        $status    = $data['msg'] ?? null;
+        $orderId       = $data['merchantOrderId'] ?? null;
+        $status        = $data['msg'] ?? null;
+        $statusCode    = $data['status'] ?? null;
 
         if (!$orderId) {
             Log::warning('MPay Missing order ID', [
@@ -363,16 +388,28 @@ class OrderController extends Controller
         }
 
         // Handle Order
-        if ($order && $status == 'PAID') {
-            $orderService->updateStatus($order, StatusConst::ON_PROCESS);
-            $orderService->processOrder($order);
+        if ($order) {
+            if ($statusCode == '03') {
+                $orderService->updateStatus($order, StatusConst::EXPIRED);
+            }
+
+            if ($statusCode == '01' && $status == 'PAID') {
+                $orderService->updateStatus($order, StatusConst::ON_PROCESS);
+                $orderService->processOrder($order);
+            }
 
             return response('success');
         }
 
         // Handle Deposit
-        if ($deposit && $status == 'PAID') {
-            $depositService->handlePaymentSettlement($deposit);
+        if ($deposit) {
+            if ($statusCode == '03') {
+                $depositService->handlePaymentExpired($deposit);
+            }
+
+            if ($statusCode == '01' && $status == 'PAID') {
+                $depositService->handlePaymentSettlement($deposit);
+            }
 
             return response('success');
         }
