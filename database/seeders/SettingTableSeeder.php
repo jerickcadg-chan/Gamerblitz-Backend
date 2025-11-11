@@ -57,6 +57,7 @@ class SettingTableSeeder extends Seeder
             'social_facebook',
             'social_tiktok',
             'social_youtube',
+            'social_telegram',
 
             // Terms and Conditions
             'terms',

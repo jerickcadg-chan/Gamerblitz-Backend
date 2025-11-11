@@ -18,7 +18,7 @@
     <div class="col-lg-7">
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
-          <div class="card-body">
+          <div class="card-body table-responsive">
             <table class="table table-nospace table-hover">
               <tr>
                 <th>Invoice Code</th>
