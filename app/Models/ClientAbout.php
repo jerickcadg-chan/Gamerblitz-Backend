@@ -19,6 +19,7 @@ class ClientAbout extends Model
         'social_youtube',
         'social_facebook',
         'social_instagram',
+        'social_telegram',
         'social_tiktok',
         'app_footer',
         'mgclient_level',

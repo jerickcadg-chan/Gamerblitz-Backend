@@ -36,6 +36,7 @@ class SettingController extends Controller
             'social_youtube',
             'social_facebook',
             'social_instagram',
+            'social_telegram',
             'social_tiktok',
         ])->pluck('value', 'key');
 
