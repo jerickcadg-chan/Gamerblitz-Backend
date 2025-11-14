@@ -49,7 +49,7 @@
                   </span>
                 </td>
                 <td>
-                  {{ $withdraw->amount }}
+                  {{ currency_format($withdraw->amount) }}
                   <br>
                   <br>
                   {!! $withdraw->status_raw !!}
