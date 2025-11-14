@@ -32,6 +32,11 @@ class UserTransformer extends TransformerAbstract
                 'status' => $user->affiliate?->status ?? "inactive",
                 'balance' => ($user->affiliate?->balance ?? 0) * $this->exchangeRate,
             ],
+            'payout_account' => [
+                'bank_name' => $user->payoutAccount?->bank_name ?? null, 
+                'account_name' => $user->payoutAccount?->account_name ?? null, 
+                'account_number' => $user->payoutAccount?->account_number ?? null, 
+            ]
         ];
     }
 }
