@@ -53,9 +53,23 @@
           </div>
 
           <div class="form-group">
-            <label class="required">Content</label>
-            <div class="quill-editor">{!! old('content', $blog->content) !!}</div>
-            <textarea name="content" class="d-none quill-editor-hidden {{ $errors->has('content') ? 'is-invalid' : '' }}" required></textarea>
+            <label class="required">
+              Content
+              (
+              <label class="form-check-label" for="is_raw_content_input">Raw</label>
+              <input type="checkbox" class="form-check-input mt-0" id="is_raw_content_input" name="is_raw_content_input"
+                value="1" {{ old('is_raw_content_input', false) ? 'checked' : '' }}>
+              )
+            </label>
+
+            {{-- Raw textarea --}}
+            <textarea class="form-control {{ $errors->has('content') ? 'is-invalid' : '' }}" id="content_textarea" rows="10">{{ old('content', $blog->content) }}</textarea>
+
+            {{-- Quill editor --}}
+            <div id="quill-wrapper">
+              <div class="quill-editor">{!! old('content', $blog->content) !!}</div>
+              <textarea name="content" class="d-none quill-editor-hidden {{ $errors->has('content') ? 'is-invalid' : '' }}" id="content_input" required></textarea>
+            </div>
             @include('alerts.feedback', ['field' => 'content'])
           </div>
 
@@ -225,6 +239,36 @@
           urlInput.value = '';
         }
       });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const checkbox = document.getElementById("is_raw_content_input");
+      const rawTextarea = document.getElementById("content_textarea");
+      const quillHidden = document.getElementById("content_input");
+      const quillWrapper = document.getElementById("quill-wrapper");
+
+      function toggleDescription() {
+        if (checkbox.checked) {
+          rawTextarea.name = "content";
+          rawTextarea.style.display = '';
+          rawTextarea.disabled = false;
+
+          quillWrapper.style.display = 'none';
+          quillHidden.disabled = true;
+          quillHidden.removeAttribute("name");
+        } else {
+          rawTextarea.removeAttribute("name");
+          rawTextarea.style.display = 'none';
+          rawTextarea.disabled = true;
+
+          quillWrapper.style.display = '';
+          quillHidden.disabled = false;
+          quillHidden.name = "content";
+        }
+      }
+
+      checkbox.addEventListener("change", toggleDescription);
+      toggleDescription(); // initial load
     });
   </script>
 @endpush
