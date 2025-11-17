@@ -95,7 +95,7 @@ class Order extends Model implements IsFilterable
 
         static::updating(function ($order) {
             if ($order->isDirty('status') && $order->status == StatusConst::SUCCESS) {
-                broadcast(new OrderStatusUpdated($order->code, $order->status));
+                broadcast(new OrderStatusUpdated($order));
             }
         });
     }

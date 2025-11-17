@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Order;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -15,22 +16,16 @@ class OrderStatusUpdated implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * @var string
+     * @var Order
      */
-    public string $code;
-
-    /**
-     * @var string
-     */
-    public string $status;
+    public $order;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($code, $status)
+    public function __construct($order)
     {
-        $this->code = $code;
-        $this->status = $status;
+        $this->order = $order;
     }
 
     /**
@@ -41,7 +36,7 @@ class OrderStatusUpdated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('orders.' . $this->code),
+            new Channel('orders.updated'),
         ];
     }
 
@@ -58,9 +53,18 @@ class OrderStatusUpdated implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
+        $code = $this->order->code;
+        $maskedCode = substr($code, 0, 7) . 'XXXXX';
+
+        $price = (string) $this->order->total_price;
+        $maskedAmount = substr($price, 0, 2) . 'XXXX';
+
         return [
-            'code' => $this->code,
-            'status' => $this->status,
+            'code' => $maskedCode,
+            'amount' => $maskedAmount,
+            'product' => $this->order->productItem->full_name,
+            'thumbnail' => $this->order->productItem->product->product_picture,
+            'status' => $this->order->status,
         ];
     }
 }
