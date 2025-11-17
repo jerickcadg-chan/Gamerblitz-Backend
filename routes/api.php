@@ -106,6 +106,7 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
 
     Route::get('mutation', [DepositController::class, 'mutation']);
     Route::get('affiliate/history', [AffiliateController::class, 'balanceLog']);
+    Route::post('affiliate/payout-account', [AffiliateController::class, 'payoutAccount']);
     Route::get('affiliate-withdraw', [AffiliateWithdrawController::class, 'index']);
     Route::post('affiliate-withdraw/claim', [AffiliateWithdrawController::class, 'claim']);
 

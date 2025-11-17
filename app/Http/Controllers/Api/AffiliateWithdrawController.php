@@ -41,9 +41,14 @@ class AffiliateWithdrawController extends Controller
                 return api_status_warning('Not enough balance');
             }
 
+            if (!$user->payoutAccount) {
+                return api_status_warning('Setup Payout Account first!');
+            }
+
             $affiliateWithdraw = AffiliateWithdraw::create([
                 'affiliate_id' => $affiliate->id,
                 'user_id' => $user->id,
+                'payout_account_id' => $user->payoutAccount?->id ?? null,
                 'amount' => $affiliate->balance,
                 'requested_at' => now()
             ]);

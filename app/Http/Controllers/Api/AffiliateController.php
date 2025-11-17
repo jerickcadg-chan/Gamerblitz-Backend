@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Affiliate;
 use App\Models\AffiliateHistory;
+use App\Models\PayoutAccount;
 use App\Transformers\AffiliateHistoryTransformer;
+use App\Transformers\UserTransformer;
+use Illuminate\Http\Request;
 
 class AffiliateController extends Controller
 {
@@ -30,5 +33,23 @@ class AffiliateController extends Controller
         $affiliateWithdraws = AffiliateHistory::latest()->where('affiliate_id', $affiliate->id);
 
         return api_status_ok(paginateTransformer($affiliateWithdraws, new AffiliateHistoryTransformer()));
+    }
+
+    public function payoutAccount(Request $request)
+    {
+        $request->validate([
+            'bank_name' => 'required',
+            'account_name' => 'required',
+            'account_number' => 'required',
+        ]);
+
+        $payoutAccount = PayoutAccount::updateOrCreate(
+            [
+                'user_id' => auth()->user()->id
+            ],
+            $request->all()
+        );
+        
+        return api_status_ok(transformer($payoutAccount->user, UserTransformer::class), 'Profile updated');
     }
 }
