@@ -66,12 +66,10 @@ class VexaGameOrderHandler implements ShouldQueue
                         "⚠️ Order {$order->id} failed with 400 but exist_code found. provider_ref updated."
                     );
                 } else {
-                    $message = $orderResponse['message'] ?? 'Unknown error';
-
-                    $orderService->updateStatus($order, StatusConst::DELAY, $message);
+                    $orderService->updateStatus($order, StatusConst::DELAY, json_encode($orderResponse));
 
                     Log::channel('vexagame')->error(
-                        "❌ Order {$order->id} failed with 400: {$message}",
+                        "❌ Order {$order->id} failed with 400",
                         ['response' => $orderResponse]
                     );
                 }
