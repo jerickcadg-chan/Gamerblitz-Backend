@@ -27,58 +27,85 @@ class VexaGameOrderHandler implements ShouldQueue
      */
     public function handle(OrderService $orderService): void
     {
+        $order = $this->order;
+        $productItem = $order->productItem;
+
+        $baseUrl = Setting::getByKey('vexagame_api_url');
+        $token   = Setting::getByKey('vexagame_api_token');
+        $orderUrl = rtrim($baseUrl, '/') . '/v2/transaction';
+
+        $payload = new OrderRequestData(
+            code: $productItem->code,
+            customer_no: $productItem->product->code === 'ML'
+                ? implode('', $order->cust_account_array)
+                : json_encode($order->cust_account_array),
+            qty: $order->qty,
+            partner_ref_id: $order->code
+        );
+
         try {
-            $baseUrl = Setting::getByKey('vexagame_api_url');
-            $token   = Setting::getByKey('vexagame_api_token');
-            $orderUrl = rtrim($baseUrl, '/') . '/v2/transaction';
-
-            $order       = $this->order;
-            $productItem = $order->productItem;
-
-            $payload = new OrderRequestData(
-                code: $productItem->code,
-                customer_no: $productItem->product->code === 'ML'
-                    ? implode('', $order->cust_account_array)
-                    : json_encode($order->cust_account_array),
-                qty: $order->qty,
-                partner_ref_id: $order->code
-            );
-
             $response = Http::withHeaders([
                 'Authorization' => $token,
             ])->post($orderUrl, $payload->toArray());
 
-            if ($response->failed()) {
-                Log::channel('vexagame')->error(
-                    "❌ Order {$order->id} failed",
-                    ['response' => $response->body()]
-                );
-
-                throw new Exception("VexaGame API call failed: " . $response->body());
-            }
-
             $orderResponse = $response->json();
-
+            $httpStatus = $response->status();
             $code = (string)($orderResponse['code'] ?? '');
             $payloadData = $orderResponse['payload'] ?? [];
 
-            if ($code == '200') {
-                Log::channel('vexagame')->notice("✅ Order {$order->id} successfully forwarded to VexaGame.");
+            // Jika HTTP 400 → cek exist_code
+            if ($httpStatus === 400) {
+                $existProviderCode = $payloadData['exist_code'] ?? null;
 
+                if ($existProviderCode) {
+                    // Update provider_ref jika sudah ada
+                    $order->provider_ref = $existProviderCode;
+                    $order->save();
+
+                    Log::channel('vexagame')->notice(
+                        "⚠️ Order {$order->id} failed with 400 but exist_code found. provider_ref updated."
+                    );
+                } else {
+                    $message = $orderResponse['message'] ?? 'Unknown error';
+
+                    $orderService->updateStatus($order, StatusConst::DELAY, $message);
+
+                    Log::channel('vexagame')->error(
+                        "❌ Order {$order->id} failed with 400: {$message}",
+                        ['response' => $orderResponse]
+                    );
+                }
+            }
+            // Jika API JSON code 200 → sukses
+            elseif ($code === '200') {
                 $order->provider_ref = $payloadData['code'] ?? '';
                 $order->save();
-            } else {
-                $orderService->updateStatus($order, StatusConst::DELAY, $code);
+
+                Log::channel('vexagame')->notice(
+                    "✅ Order {$order->id} successfully forwarded to VexaGame."
+                );
+            }
+            // Lainnya → DELAY
+            else {
+                $orderService->updateStatus($order, StatusConst::DELAY, json_encode($orderResponse));
 
                 Log::channel('vexagame')->error(
                     "❌ Order {$order->id} failed with code: {$code}",
                     ['response' => $orderResponse]
                 );
             }
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            // Gagal koneksi / timeout
+            Log::channel('vexagame')->warning(
+                "⚠️ Order {$order->id} request failed: {$e->getMessage()}"
+            );
+            $orderService->updateStatus($order, StatusConst::ON_PROCESS, $e->getMessage());
         } catch (Exception $e) {
-            Log::channel('vexagame')->error("💥 Exception while processing order {$this->order->id}: {$e->getMessage()}");
-
-            $orderService->updateStatus($this->order, StatusConst::DELAY, $e->getMessage());
+            // Error lain, misal balance empty
+            Log::channel('vexagame')->error(
+                "💥 Exception while processing order {$order->id}: {$e->getMessage()}"
+            );
+            $orderService->updateStatus($order, StatusConst::DELAY, $e->getMessage());
         }
     }
 }
