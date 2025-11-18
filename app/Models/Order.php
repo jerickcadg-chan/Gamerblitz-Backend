@@ -93,11 +93,11 @@ class Order extends Model implements IsFilterable
             $order->converted_total_income   = $order->total_income * $rate;
         });
 
-        static::updating(function ($order) {
-            if ($order->isDirty('status') && $order->status == StatusConst::SUCCESS) {
-                broadcast(new OrderStatusUpdated($order));
-            }
-        });
+        // static::updating(function ($order) {
+        //     if ($order->isDirty('status') && $order->status == StatusConst::SUCCESS) {
+        //         broadcast(new OrderStatusUpdated($order));
+        //     }
+        // });
     }
 
     public function productItem(): BelongsTo
