@@ -66,6 +66,11 @@ class User extends Authenticatable
         return $this->hasOne(Balance::class);
     }
 
+    public function payoutAccount(): HasOne
+    {
+        return $this->hasOne(PayoutAccount::class);
+    }
+
     public function scopeNonCustomer($query)
     {
         return $query->whereHas('roles', function ($q) {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\StatusConst;
+use App\Events\OrderStatusUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -90,6 +91,12 @@ class Order extends Model implements IsFilterable
             $order->converted_discount_price = $order->discount_price * $rate;
             $order->converted_total_price    = $order->total_price * $rate;
             $order->converted_total_income   = $order->total_income * $rate;
+        });
+
+        static::updating(function ($order) {
+            if ($order->isDirty('status') && $order->status == StatusConst::SUCCESS) {
+                broadcast(new OrderStatusUpdated($order));
+            }
         });
     }
 
