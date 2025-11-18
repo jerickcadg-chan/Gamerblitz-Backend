@@ -46,9 +46,7 @@ class VexaGameOrderHandler implements ShouldQueue
 
             $response = Http::withHeaders([
                 'Authorization' => $token,
-            ])
-                ->timeout(15)
-                ->post($orderUrl, $payload->toArray());
+            ])->post($orderUrl, $payload->toArray());
 
             if ($response->failed()) {
                 Log::channel('vexagame')->error(
