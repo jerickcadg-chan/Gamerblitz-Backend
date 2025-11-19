@@ -44,7 +44,7 @@ class CheckVexagameTransaction extends Command
             $orderTime = Carbon::parse($order->created_at);
 
             // Cek order sudah lewat 2 menit
-            if ($now->diffInMinutes($orderTime) >= 2) {
+            if ($now->diffInMinutes($orderTime, true) < 2) {
                 continue;
             }
 
