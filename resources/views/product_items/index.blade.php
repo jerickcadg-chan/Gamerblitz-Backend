@@ -81,7 +81,15 @@
                   <td>{{ currency_format($productItem->margin_price_gold) }}</td>
                   <td>{{ currency_format($productItem->margin_price_vip) }}</td>
                   <td>{{ $productItem->stock === null ? '∞' : $productItem->stock }}</td>
-                  <td>{{ $productItem->status }}</td>
+                  <td>
+                    {{ $productItem->status }}
+                    @if ($productItem->is_locked)
+                      <br>
+                      <span class="badge badge-danger mt-1">
+                        Locked
+                      </span>
+                    @endif
+                  </td>
                   <td>
                     @include('master.action', [
                         'view_url' => route('product_item.show', $productItem),
