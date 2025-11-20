@@ -37,6 +37,7 @@ class ProductItem extends Model implements IsFilterable
         'country_code',
         'status',
         'provider',
+        'is_locked',
     ];
 
     protected $appends = [
