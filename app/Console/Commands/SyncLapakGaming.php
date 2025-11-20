@@ -236,6 +236,7 @@ class SyncLapakGaming extends Command
         ProductItem::where('product_id', $product->id)
             ->where('provider', '!=', ProviderConstant::LAPAKGAMING)
             ->where('status', 'active')
+            ->where('is_locked', 0)
             ->update(['status' => 'empty']);
     }
 

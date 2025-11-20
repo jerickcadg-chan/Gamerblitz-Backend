@@ -297,7 +297,7 @@ class OrderService
     public function processOrder(Order $order, bool $sync = false)
     {
         $productItem = $order->productItem;
-        $provider = $productItem->product->provider;
+        $provider = $productItem?->provider ?? $productItem->product->provider;
 
         if ($provider === ProviderConstant::LAPAKGAMING) {
             if ($sync) {

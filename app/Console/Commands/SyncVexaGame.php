@@ -152,6 +152,7 @@ class SyncVexaGame extends Command
         $affected = ProductItem::where('product_id', $product->id)
             ->where('provider', '!=', ProviderConstant::VEXAGAME)
             ->where('status', 'active')
+            ->where('is_locked', 0)
             ->update(['status' => 'empty']);
 
         if ($affected > 0) {
