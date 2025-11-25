@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\FlashSaleController;
 use App\Http\Controllers\Api\ForgotPassword;
 use App\Http\Controllers\Api\LapakGamingController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PageDescriptionController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductItemCategoryController;
 use App\Http\Controllers\Api\ReviewController;
@@ -114,6 +115,9 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::post('order/auth', [OrderController::class, 'store']);
     Route::get('order', [OrderController::class, 'index']);
     Route::get('order/{order}/auth', [OrderController::class, 'show']);
+
+    Route::get('/page-description', [PageDescriptionController::class, 'index']);
+    Route::get('/page-description/{slug}', [PageDescriptionController::class, 'show']);
 
     Route::get('product-items/{productId}/auth', [ProductController::class, 'getProductItems']);
 });
