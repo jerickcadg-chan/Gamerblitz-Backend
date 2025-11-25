@@ -23,43 +23,50 @@
     </li>
     @canany(['View Product Category', 'View Product Item', 'View Product Item Category'])
       <li class="nav-item {{ in_array($activePage, config('array.menu.product')) ? 'active' : null }}">
-        <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+        <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false"
+          aria-controls="general-pages">
           <span class="menu-title">Product</span>
           <i class="menu-arrow"></i>
           <i class="mdi mdi-briefcase menu-icon"></i>
         </a>
-        <div class="collapse {{ in_array($activePage, config('array.menu.product')) ? 'show' : null }}" id="general-pages">
+        <div class="{{ in_array($activePage, config('array.menu.product')) ? 'show' : null }} collapse"
+          id="general-pages">
           <ul class="nav flex-column sub-menu">
-            @can ('View Product Category')
+            @can('View Product Category')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'product_category' ? 'active' : null }}" href="{{ route('product_category.index') }}"> Category </a>
+                <a class="nav-link {{ $activePage == 'product_category' ? 'active' : null }}"
+                  href="{{ route('product_category.index') }}"> Category </a>
               </li>
             @endcan
-            @can ('View Product')
+            @can('View Product')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}"> Product </a>
+                <a class="nav-link {{ $activePage == 'product' ? 'active' : null }}" href="{{ route('product.index') }}">
+                  Product </a>
               </li>
             @endcan
-            @can ('View Product')
+            @can('View Product')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'lapakgaming.products' ? 'active' : null }}" href="{{ route('lapakgaming.products') }}"> Product (LapakGaming) </a>
+                <a class="nav-link {{ $activePage == 'lapakgaming.products' ? 'active' : null }}"
+                  href="{{ route('lapakgaming.products') }}"> Product (LapakGaming) </a>
               </li>
             @endcan
-            @can ('View Product Item')
+            @can('View Product Item')
               <li class="nav-item">
-                <a class="nav-link {{ in_array($activePage, ['product_item']) ? 'active' : null }}" href="{{ route('product_item.index') }}"> Item </a>
+                <a class="nav-link {{ in_array($activePage, ['product_item']) ? 'active' : null }}"
+                  href="{{ route('product_item.index') }}"> Item </a>
               </li>
             @endcan
-            @can ('View Product Item Category')
+            @can('View Product Item Category')
               <li class="nav-item">
-                <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}" href="{{ route('product_item_category.index') }}">Item Category </a>
+                <a class="nav-link {{ in_array($activePage, ['product_item_category']) ? 'active' : null }}"
+                  href="{{ route('product_item_category.index') }}">Item Category </a>
               </li>
             @endcan
           </ul>
         </div>
       </li>
     @endcan
-    @can ('View Order')
+    @can('View Order')
       <li class="nav-item {{ $activePage == 'order' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('order.index') }}">
           <span class="menu-title">Order</span>
@@ -69,41 +76,51 @@
     @endcan
     @canany(['View Discount', 'View Slider'])
       <li class="nav-item {{ in_array($activePage, config('array.menu.promo')) ? 'active' : null }}">
-        <a class="nav-link" data-bs-toggle="collapse" href="#promo-pages" aria-expanded="false" aria-controls="promo-pages">
+        <a class="nav-link" data-bs-toggle="collapse" href="#promo-pages" aria-expanded="false"
+          aria-controls="promo-pages">
           <span class="menu-title">Promo</span>
           <i class="menu-arrow"></i>
           <i class="mdi mdi-bell menu-icon"></i>
         </a>
-        <div class="collapse {{ in_array($activePage, config('array.menu.promo')) ? 'show' : null }}" id="promo-pages">
+        <div class="{{ in_array($activePage, config('array.menu.promo')) ? 'show' : null }} collapse" id="promo-pages">
           <ul class="nav flex-column sub-menu">
-            @can ('View Discount')
+            @can('View Discount')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'discount' ? 'active' : null }}" href="{{ route('discount.index') }}"> Discount </a>
+                <a class="nav-link {{ $activePage == 'discount' ? 'active' : null }}"
+                  href="{{ route('discount.index') }}"> Discount </a>
               </li>
             @endcan
-            @can ('View Slider')
+            @can('View Slider')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'slider' ? 'active' : null }}" href="{{ route('slider.index') }}"> Slider </a>
+                <a class="nav-link {{ $activePage == 'slider' ? 'active' : null }}" href="{{ route('slider.index') }}">
+                  Slider </a>
               </li>
             @endcan
-            @can ('View Flash Sales')
+            @can('View Flash Sales')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'flash_sale' ? 'active' : null }}" href="{{ route('flash_sale.index') }}">Flash Sales</a>
+                <a class="nav-link {{ $activePage == 'flash_sale' ? 'active' : null }}"
+                  href="{{ route('flash_sale.index') }}">Flash Sales</a>
+              </li>
+            @endcan
+            @can('View Blog')
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'page_description' ? 'active' : null }}"
+                  href="{{ route('page-descriptions.index') }}"> Page Description </a>
               </li>
             @endcan
           </ul>
         </div>
       </li>
     @endcan
-     @can('View Deposit')
-     <li class="nav-item {{ $activePage == 'deposit' ? 'active' : null }}">
-       <a class="nav-link" href="{{ route('deposit.index') }}">
-         <span class="menu-title">Deposit</span>
-         <i class="mdi mdi-cash menu-icon"></i>
-       </a>
-     </li>
-     @endcan
-     @can ('View Report')
+    @can('View Deposit')
+      <li class="nav-item {{ $activePage == 'deposit' ? 'active' : null }}">
+        <a class="nav-link" href="{{ route('deposit.index') }}">
+          <span class="menu-title">Deposit</span>
+          <i class="mdi mdi-cash menu-icon"></i>
+        </a>
+      </li>
+    @endcan
+    @can('View Report')
       <li class="nav-item {{ $activePage == 'report' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('report.index') }}">
           <span class="menu-title">Report</span>
@@ -113,21 +130,26 @@
     @endcan
     @can('View Statistic')
       <li class="nav-item {{ in_array($activePage, config('array.menu.statistic')) ? 'active' : null }}">
-        <a class="nav-link" data-bs-toggle="collapse" href="#statistic-pages" aria-expanded="false" aria-controls="statistic-pages">
+        <a class="nav-link" data-bs-toggle="collapse" href="#statistic-pages" aria-expanded="false"
+          aria-controls="statistic-pages">
           <span class="menu-title">Statistic</span>
           <i class="menu-arrow"></i>
           <i class="mdi mdi-chart-areaspline menu-icon"></i>
         </a>
-        <div class="collapse {{ in_array($activePage, config('array.menu.statistic')) ? 'show' : null }}" id="statistic-pages">
+        <div class="{{ in_array($activePage, config('array.menu.statistic')) ? 'show' : null }} collapse"
+          id="statistic-pages">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
-              <a class="nav-link {{ $activePage == 'statistic_order' ? 'active' : null }}" href="{{ route('statistic.order') }}"> Statistic Order </a>
+              <a class="nav-link {{ $activePage == 'statistic_order' ? 'active' : null }}"
+                href="{{ route('statistic.order') }}"> Statistic Order </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}" href="{{ route('statistic.user') }}"> Statistic User </a>
+              <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}"
+                href="{{ route('statistic.user') }}"> Statistic User </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ $activePage == 'statistic_product' ? 'active' : null }}" href="{{ route('statistic.product') }}"> Statistic Product </a>
+              <a class="nav-link {{ $activePage == 'statistic_product' ? 'active' : null }}"
+                href="{{ route('statistic.product') }}"> Statistic Product </a>
             </li>
           </ul>
         </div>
@@ -135,38 +157,43 @@
     @endcan
     @canany(['View User', 'View Role'])
       <li class="nav-item {{ in_array($activePage, config('array.menu.user')) ? 'active' : null }}">
-        <a class="nav-link" data-bs-toggle="collapse" href="#user-pages" aria-expanded="false" aria-controls="user-pages">
+        <a class="nav-link" data-bs-toggle="collapse" href="#user-pages" aria-expanded="false"
+          aria-controls="user-pages">
           <span class="menu-title">User</span>
           <i class="menu-arrow"></i>
           <i class="mdi mdi-account menu-icon"></i>
         </a>
-        <div class="collapse {{ in_array($activePage, config('array.menu.user')) ? 'show' : null }}" id="user-pages">
+        <div class="{{ in_array($activePage, config('array.menu.user')) ? 'show' : null }} collapse" id="user-pages">
           <ul class="nav flex-column sub-menu">
-            @can ('View User')
+            @can('View User')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'user' ? 'active' : null }}" href="{{ route('user.index') }}"> Non-Customer </a>
+                <a class="nav-link {{ $activePage == 'user' ? 'active' : null }}" href="{{ route('user.index') }}">
+                  Non-Customer </a>
               </li>
             @endcan
-            @can ('View Customer')
+            @can('View Customer')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'customer' ? 'active' : null }}" href="{{ route('user.customer') }}"> Customer </a>
+                <a class="nav-link {{ $activePage == 'customer' ? 'active' : null }}"
+                  href="{{ route('user.customer') }}"> Customer </a>
               </li>
             @endcan
-            @can ('View Permission')
+            @can('View Permission')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'role' ? 'active' : null }}" href="{{ route('role.index') }}"> Permissions </a>
+                <a class="nav-link {{ $activePage == 'role' ? 'active' : null }}" href="{{ route('role.index') }}">
+                  Permissions </a>
               </li>
             @endcan
-            @can ('View User')
+            @can('View User')
               <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'affiliate_withdraw' ? 'active' : null }}" href="{{ route('user.affiliate-withdraw') }}"> Affiliate Withdraw </a>
+                <a class="nav-link {{ $activePage == 'affiliate_withdraw' ? 'active' : null }}"
+                  href="{{ route('user.affiliate-withdraw') }}"> Affiliate Withdraw </a>
               </li>
             @endcan
           </ul>
         </div>
       </li>
     @endcan
-    @can ('View Payment Methods')
+    @can('View Payment Methods')
       <li class="nav-item {{ $activePage == 'payment_method' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('payment_method.index') }}">
           <span class="menu-title">Payment Method</span>
@@ -174,7 +201,7 @@
         </a>
       </li>
     @endcan
-    @can ('View Exchange Rate')
+    @can('View Exchange Rate')
       <li class="nav-item {{ $activePage == 'exchange_rate' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('exchange_rate.index') }}">
           <span class="menu-title">Exchange Rate</span>
@@ -182,7 +209,7 @@
         </a>
       </li>
     @endcan
-    @can ('View Blog')
+    @can('View Blog')
       <li class="nav-item {{ $activePage == 'blog' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('blog.index') }}">
           <span class="menu-title">Blog</span>
@@ -190,7 +217,7 @@
         </a>
       </li>
     @endcan
-    @can ('View Setting')
+    @can('View Setting')
       <li class="nav-item {{ $activePage == 'setting' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('setting.index') }}">
           <span class="menu-title">Setting</span>
@@ -199,20 +226,20 @@
       </li>
     @endcan
     @can('View Banned IP')
-    <li class="nav-item {{ $activePage == 'banned-ip' ? 'active' : null }}">
-      <a class="nav-link" href="{{ route('banned-ip.index') }}">
-        <span class="menu-title">Banned IPs</span>
-        <i class="mdi mdi-lock menu-icon"></i>
-      </a>
-    </li>
+      <li class="nav-item {{ $activePage == 'banned-ip' ? 'active' : null }}">
+        <a class="nav-link" href="{{ route('banned-ip.index') }}">
+          <span class="menu-title">Banned IPs</span>
+          <i class="mdi mdi-lock menu-icon"></i>
+        </a>
+      </li>
     @endcan
     @can('View User Activity Logs')
-    <li class="nav-item {{ $activePage == 'user-activity-logs' ? 'active' : null }}">
-      <a class="nav-link" href="{{ route('user-activity-logs.index') }}">
-        <span class="menu-title">User Activity Logs</span>
-        <i class="mdi mdi-eye menu-icon"></i>
-      </a>
-    </li>
+      <li class="nav-item {{ $activePage == 'user-activity-logs' ? 'active' : null }}">
+        <a class="nav-link" href="{{ route('user-activity-logs.index') }}">
+          <span class="menu-title">User Activity Logs</span>
+          <i class="mdi mdi-eye menu-icon"></i>
+        </a>
+      </li>
     @endcan
     <li class="nav-item {{ $activePage == '2fa' ? 'active' : null }}">
       <a class="nav-link" href="{{ route('2fa.show') }}">

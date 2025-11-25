@@ -11,6 +11,7 @@ use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LapakGamingController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PageDescriptionController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PictureController;
 use App\Http\Controllers\ProductCategoryController;
@@ -142,6 +143,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'payment_method' => PaymentMethodController::class,
         'exchange_rate' => ExchangeRateController::class,
         'blog' => BlogController::class,
+        'page-descriptions' => PageDescriptionController::class,
         'app-log' => AppLogController::class,
         'banned-ip' => BannedIpController::class,
         'user-activity-logs' => \App\Http\Controllers\UserActivityLogController::class,
