@@ -138,7 +138,7 @@ class OrderService
             $order->cust_email = $request->cust_email;
             $order->cust_phone_number = $request->cust_phone_number;
             $order->payment_method_id = $paymentMethod->id;
-            $order->provider = $productItem->product->provider;
+            $order->provider = $productItem?->provider ?? $productItem->product->provider;
             $order->status = $orderStatus;
             $order->qty = $request->qty;
             $order->price = $price['price'];
