@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PageDescription extends Model
@@ -26,5 +27,13 @@ class PageDescription extends Model
     public function content(): HasOne
     {
         return $this->hasOne(PageDescriptionContent::class);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function contents(): HasMany
+    {
+        return $this->hasMany(PageDescriptionContent::class);
     }
 }

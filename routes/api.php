@@ -92,6 +92,9 @@ Route::post('callback/vexagame/order', [VexaGameController::class, 'orderCallbac
 
 Route::post('app-log', [AppLogController::class, 'store']);
 
+Route::get('/page-description', [PageDescriptionController::class, 'index']);
+Route::get('/page-description/{slug}', [PageDescriptionController::class, 'show']);
+
 Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::put('me', [AuthController::class, 'updateMe']);
     Route::get('me', [AuthController::class, 'me']);
@@ -115,9 +118,6 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::post('order/auth', [OrderController::class, 'store']);
     Route::get('order', [OrderController::class, 'index']);
     Route::get('order/{order}/auth', [OrderController::class, 'show']);
-
-    Route::get('/page-description', [PageDescriptionController::class, 'index']);
-    Route::get('/page-description/{slug}', [PageDescriptionController::class, 'show']);
 
     Route::get('product-items/{productId}/auth', [ProductController::class, 'getProductItems']);
 });
