@@ -30,15 +30,15 @@
             <div class="form-group col-md-6">
               <label>Slug</label>
               <input type="text" name="slug" class="form-control {{ $errors->has('slug') ? 'is-invalid' : '' }}"
-                value="{{ old('slug', $pageDescription->slug) }}" placeholder="Enter the slug from the website, e.g., 'home' for Home page or 'games' for Games page">
+                value="{{ old('slug', $pageDescription->slug) }}"
+                placeholder="Enter the slug from the website, e.g., 'home' for Home page or 'games' for Games page">
               @include('alerts.feedback', ['field' => 'slug'])
             </div>
           </div>
 
           <div class="form-group">
             <label>Title</label>
-            <input type="text" name="title"
-              class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}"
+            <input type="text" name="title" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}"
               value="{{ old('title', $pageDescription->content?->title ?? null) }}"></input>
             @include('alerts.feedback', ['field' => 'title'])
           </div>
@@ -104,7 +104,7 @@
       }
 
       checkbox.addEventListener("change", toggleDescription);
-      toggleDescription(); // initial load
+      toggleDescription();
     });
   </script>
 @endpush
