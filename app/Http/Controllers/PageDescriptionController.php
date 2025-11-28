@@ -40,7 +40,7 @@ class PageDescriptionController extends Controller
         $formAction = route('page-descriptions.store');
         $isEdit = false;
 
-        return view('page_description.forms', compact('pageDescription','formAction', 'isEdit'));
+        return view('page_description.forms', compact('pageDescription', 'formAction', 'isEdit'));
     }
 
     public function store(Request $request)
@@ -48,18 +48,21 @@ class PageDescriptionController extends Controller
         $request->validate([
             'name' => 'required',
             'slug' => 'required',
-            'title' => 'required',
-            'content' => 'required',
+            'title' => 'nullable',
+            'content' => 'nullable',
         ]);
 
         $data = $request->all();
 
         $pageDescription = PageDescription::create($data);
-        $pageDescription->content()->create([
-            'title' => $data['title'],
-            'type' => 'content',
-            'content' => $data['content'],
-        ]);
+
+        if ($data['title'] && $data['content']) {
+            $pageDescription->content()->create([
+                'title' => $data['title'],
+                'type' => 'content',
+                'content' => $data['content'],
+            ]);
+        }
 
         toast(alert_created_text($this->title), 'success');
 
@@ -79,18 +82,33 @@ class PageDescriptionController extends Controller
         $request->validate([
             'name' => 'required',
             'slug' => 'required',
-            'title' => 'required',
-            'content' => 'required',
+            'title' => 'nullable',
+            'content' => 'nullable',
         ]);
 
         $data = $request->all();
 
         $pageDescription->update($data);
-        $pageDescription->content()->update([
-            'title' => $data['title'],
-            'type' => 'content',
-            'content' => $data['content'],
-        ]);
+
+        $hasContentInput = $request->filled(['title', 'content']);
+        $content = $pageDescription->content;
+
+        if ($hasContentInput) {
+            // Create or update
+            $pageDescription->content()->updateOrCreate(
+                ['page_description_id' => $pageDescription->id],
+                [
+                    'title'   => $data['title'],
+                    'type'    => 'content',
+                    'content' => $data['content'],
+                ]
+            );
+        } else {
+            // Remove content if exists
+            if ($content) {
+                $content->delete();
+            }
+        }
 
         toast(alert_updated_text($this->title), 'success');
 
