@@ -18,7 +18,7 @@ return [
         'product' => ['product', 'product_item', 'product_item_category', 'product_category', 'lapakgaming.products'],
         'order',
         'report',
-        'promo' => ['discount', 'slider', 'flash_sale'],
+        'promo' => ['discount', 'slider', 'flash_sale', 'page_description'],
         'statistic' => ['statistic_order', 'statistic_user', 'statistic_product'],
         'user' => ['user', 'guest', 'customer', 'role', 'affiliate_withdraw'],
         'digi' => ['digi_product_create', 'digi_transaction', 'digi_transaction_create']
