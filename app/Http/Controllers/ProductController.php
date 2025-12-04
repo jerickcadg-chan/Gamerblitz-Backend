@@ -67,7 +67,8 @@ class ProductController extends Controller
 
         if ($lapakGamingCountry && $lapakGamingCode) {
             $upperCountryCode = strtoupper($lapakGamingCountry);
-            $lgCategories = Cache::get("lapakgaming_categories_{$upperCountryCode}");
+
+            $lgCategories = collect(Cache::get("lapakgaming_categories_{$upperCountryCode}"));
 
             if (!$lgCategories) {
                 toast('Data not found, please filter again and retry the process', 'error');
@@ -79,9 +80,34 @@ class ProductController extends Controller
                 ->where('country_code', strtolower($lapakGamingCountry))
                 ->first();
 
+            if ($category && isset($category['servers'])) {
+                unset($category['servers']);
+            }
+
             if (!$category) {
                 toast('Data not found, please filter again and retry the process', 'error');
-                return redirect()->back();
+                return back();
+            }
+
+            if (isset($category['forms']) && is_array($category['forms'])) {
+                foreach ($category['forms'] as $key => $form) {
+
+                    if (
+                        isset($form['type']) &&
+                        $form['type'] === 'option' &&
+                        isset($form['options']) &&
+                        count($form['options']) > 500
+                    ) {
+                        // ubah jadi text
+                        $category['forms'][$key]['type'] = 'text';
+
+                        // tambahkan placeholder dari option pertama
+                        $category['forms'][$key]['placeholder'] = $form['options'][0]['value'] ?? 'Input value';
+
+                        // hapus option biar gak berat
+                        unset($category['forms'][$key]['options']);
+                    }
+                }
             }
 
             $defaults = [
