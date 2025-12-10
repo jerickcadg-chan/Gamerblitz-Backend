@@ -7,6 +7,7 @@ use App\Constants\ProductConstant;
 use App\Constants\ProviderConstant;
 use App\Constants\StatusConst;
 use App\Http\Requests\OrderRequest;
+use App\Jobs\DynastyGdsOrderHandler;
 use App\Jobs\LapakGamingOrderHandler;
 use App\Jobs\VexaGameOrderHandler;
 use App\Mail\OrderAccountSucceed;
@@ -310,6 +311,12 @@ class OrderService
                 return VexaGameOrderHandler::dispatchSync($order);
             } else {
                 VexaGameOrderHandler::dispatch($order);
+            }
+        } elseif ($provider === ProviderConstant::DYNASTY_DGS) {
+            if ($sync) {
+                return DynastyGdsOrderHandler::dispatchSync($order);
+            } else {
+                DynastyGdsOrderHandler::dispatch($order);
             }
         }
 

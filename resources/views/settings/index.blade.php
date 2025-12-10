@@ -283,51 +283,80 @@
           </div> --}}
 
           {{-- Lapak Gaming --}}
-          <h4 class="mb-2 mt-5">Lapak Gaming</h4>
-          <hr class="mb-4">
+          @if (in_array('lapakgaming', $supportProviders))
+            <h4 class="mb-2 mt-5">Lapak Gaming</h4>
+            <hr class="mb-4">
 
-          <div class="form-group">
-            <label>API Url</label>
-            <input type="text" class="form-control" name="settings[lapakgaming_api_url]"
-              placeholder="e.g. https://dev.lapakgaming.com"
-              value="{{ old('settings.lapakgaming_api_url', $settings['lapakgaming_api_url'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>API Url</label>
+              <input type="text" class="form-control" name="settings[lapakgaming_api_url]"
+                placeholder="e.g. https://dev.lapakgaming.com"
+                value="{{ old('settings.lapakgaming_api_url', $settings['lapakgaming_api_url'] ?? '') }}">
+            </div>
 
-          <div class="form-group">
-            <label>API Key (Token)</label>
-            <input type="text" class="form-control" name="settings[lapakgaming_api_token]"
-              value="{{ old('settings.lapakgaming_api_token', $settings['lapakgaming_api_token'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>API Key (Token)</label>
+              <input type="text" class="form-control" name="settings[lapakgaming_api_token]"
+                value="{{ old('settings.lapakgaming_api_token', $settings['lapakgaming_api_token'] ?? '') }}">
+            </div>
 
-          <div class="form-group">
-            <label>Whitelist IP <small><em>(Allow these IP to access the callback endpoint)</em></small></label>
-            <input type="text" class="form-control" name="settings[lapakgaming_ip]"
-              placeholder="e.g. '123.123.123.123,124.124.124.124'"
-              value="{{ old('settings.lapakgaming_ip', $settings['lapakgaming_ip'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>Whitelist IP <small><em>(Allow these IP to access the callback endpoint)</em></small></label>
+              <input type="text" class="form-control" name="settings[lapakgaming_ip]"
+                placeholder="e.g. '123.123.123.123,124.124.124.124'"
+                value="{{ old('settings.lapakgaming_ip', $settings['lapakgaming_ip'] ?? '') }}">
+            </div>
+          @endif
 
           {{-- Vexagame --}}
-          <h4 class="mb-2 mt-5">VexaGame</h4>
-          <hr class="mb-4">
+          @if (in_array('vexagame', $supportProviders))
+            <h4 class="mb-2 mt-5">VexaGame</h4>
+            <hr class="mb-4">
 
-          <div class="form-group">
-            <label>API Url</label>
-            <input type="text" class="form-control" name="settings[vexagame_api_url]"
-              placeholder="e.g. https://dev.lapakgaming.com"
-              value="{{ old('settings.vexagame_api_url', $settings['vexagame_api_url'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>API Url</label>
+              <input type="text" class="form-control" name="settings[vexagame_api_url]"
+                placeholder="e.g. https://dev.lapakgaming.com"
+                value="{{ old('settings.vexagame_api_url', $settings['vexagame_api_url'] ?? '') }}">
+            </div>
 
-          <div class="form-group">
-            <label>API Key (Token)</label>
-            <input type="text" class="form-control" name="settings[vexagame_api_token]"
-              value="{{ old('settings.vexagame_api_token', $settings['vexagame_api_token'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>API Key (Token)</label>
+              <input type="text" class="form-control" name="settings[vexagame_api_token]"
+                value="{{ old('settings.vexagame_api_token', $settings['vexagame_api_token'] ?? '') }}">
+            </div>
 
-          <div class="form-group">
-            <label>Callback Token</label>
-            <input type="text" class="form-control" name="settings[vexagame_callback_token]"
-              value="{{ old('settings.vexagame_callback_token', $settings['vexagame_callback_token'] ?? '') }}">
-          </div>
+            <div class="form-group">
+              <label>Callback Token</label>
+              <input type="text" class="form-control" name="settings[vexagame_callback_token]"
+                value="{{ old('settings.vexagame_callback_token', $settings['vexagame_callback_token'] ?? '') }}">
+            </div>
+          @endif
+
+          {{-- Dynasty GDS --}}
+          @if (in_array('dynasty_dgs', $supportProviders))
+            <h4 class="mb-2 mt-5">Dynasty GDS</h4>
+            <hr class="mb-4">
+
+            <div class="form-group">
+              <label>API Url</label>
+              <input type="text" class="form-control" name="settings[dynasty_gds_api_url]"
+                placeholder="e.g. https://dev.lapakgaming.com"
+                value="{{ old('settings.dynasty_gds_api_url', $settings['dynasty_gds_api_url'] ?? '') }}">
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input type="text" class="form-control" name="settings[dynasty_gds_email]"
+                value="{{ old('settings.dynasty_gds_email', $settings['dynasty_gds_email'] ?? '') }}">
+            </div>
+
+            <div class="form-group">
+              <label>Password</label>
+              <input type="text" class="form-control" name="settings[dynasty_gds_password]"
+                value="{{ old('settings.dynasty_gds_password', $settings['dynasty_gds_password'] ?? '') }}">
+            </div>
+          @endif
 
           {{-- Xendit --}}
           @if (in_array('xendit', $supportPayments))
@@ -535,7 +564,7 @@
             <div class="form-group col-md-6">
               <label>Youtube</label>
               <input type="text" class="form-control" name="settings[social_youtube]"
-                     value="{{ old('settings.social_youtube', $settings['social_youtube'] ?? '') }}">
+                value="{{ old('settings.social_youtube', $settings['social_youtube'] ?? '') }}">
             </div>
           </div>
 
