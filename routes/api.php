@@ -121,3 +121,15 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
 
     Route::get('product-items/{productId}/auth', [ProductController::class, 'getProductItems']);
 });
+
+Route::middleware('partner-api')->group(function () {
+    Route::group(['prefix' => 'partner'], function () {
+        Route::get('/me', [AuthController::class, 'me']);
+        Route::get('/balance', [AuthController::class, 'balance']);
+        // Route::get('/transaction', [TransactionControllerV2::class, 'index']);
+        // Route::get('/transaction/{code}', [TransactionControllerV2::class, 'show']);
+        // Route::post('/transaction', [TransactionControllerV2::class, 'store']);
+        // Route::get('/product', [ProductControllerV2::class, 'getProduct']);
+        // Route::get('/product-item', [ProductControllerV2::class, 'getProductItem']);
+    });
+});

@@ -135,6 +135,14 @@ class User extends Authenticatable
         return $this->hasOne(Affiliate::class);
     }
 
+    /**
+     * @return HasOne
+     */
+    public function api(): HasOne
+    {
+        return $this->hasOne(User::class);
+    }
+
     public function fullName(): Attribute
     {
         $profile = $this->profile;
