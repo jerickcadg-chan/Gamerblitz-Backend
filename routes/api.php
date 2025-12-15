@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ForgotPassword;
 use App\Http\Controllers\Api\LapakGamingController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PageDescriptionController;
+use App\Http\Controllers\Api\Partner\OrderController as PartnerOrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductItemCategoryController;
 use App\Http\Controllers\Api\ReviewController;
@@ -126,10 +127,10 @@ Route::middleware('partner-api')->group(function () {
     Route::group(['prefix' => 'partner'], function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::get('/balance', [AuthController::class, 'balance']);
-        // Route::get('/transaction', [TransactionControllerV2::class, 'index']);
-        // Route::get('/transaction/{code}', [TransactionControllerV2::class, 'show']);
-        // Route::post('/transaction', [TransactionControllerV2::class, 'store']);
-        // Route::get('/product', [ProductControllerV2::class, 'getProduct']);
-        // Route::get('/product-item', [ProductControllerV2::class, 'getProductItem']);
+        Route::get('/order', [PartnerOrderController::class, 'index']);
+        Route::get('/order/{code}', [PartnerOrderController::class, 'show']);
+        Route::post('/order', [OrderController::class, 'store']);
+        Route::get('/product', [ProductController::class, 'index']);
+        Route::get('/product-item/{productId}', [ProductController::class, 'getProductItems']);
     });
 });

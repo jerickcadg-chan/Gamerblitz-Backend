@@ -43,12 +43,14 @@ class Order extends Model implements IsFilterable
 
     protected $fillable = [
         'code',
+        'partner_ref',
         'user_id',
         'cust_email',
         'cust_phone_number',
         'product_item_id',
         'cust_account',
         'provider',
+        'provider_ref',
         'payment_method',
         'status',
         'serial_number',

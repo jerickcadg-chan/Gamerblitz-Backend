@@ -44,7 +44,7 @@ class OrderService
     /**
      * @throws Exception|Throwable
      */
-    public function store(OrderRequest $request): Order|string|array
+    public function store($request): Order|string|array
     {
         try {
             DB::beginTransaction();
@@ -140,6 +140,7 @@ class OrderService
             $order->cust_phone_number = $request->cust_phone_number;
             $order->payment_method_id = $paymentMethod->id;
             $order->provider = $productItem?->provider ?? $productItem->product->provider;
+            $order->partner_ref = $request?->partner_ref ?? null;
             $order->status = $orderStatus;
             $order->qty = $request->qty;
             $order->price = $price['price'];
