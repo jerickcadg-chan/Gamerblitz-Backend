@@ -135,7 +135,8 @@ class DynastyGdsService
      * 
      * @return array|null
      */
-    public function safeRequest(string $url, string $method, ?array $payload = null, bool $useToken = true): ?array {
+    public function safeRequest(string $url, string $method, ?array $payload = null, bool $useToken = true): ?array 
+    {
         try {
             $request = Http::retry(3, 200)->timeout(5);
     
@@ -146,7 +147,7 @@ class DynastyGdsService
             $response = $method === 'GET'
                 ? $request->get($url, $payload)
                 : $request->post($url, $payload);
-    
+
             return $response->json();
         } catch (ConnectionException $e) {
             return [
@@ -154,8 +155,12 @@ class DynastyGdsService
                 'statusMessage' => 'timeout',
                 'errorMessage' => $e->getMessage(),
             ];
-        } catch (RequestException $e) {
-            return $e->response->json();
+        } catch (ConnectionException | RequestException $e) {
+            return [
+                'statusCode' => $e->getCode(),
+                'statusMessage' => 'Failed to connect Dynasty GDS API',
+                'errorMessage' => $e->getMessage(),
+            ];
         }
     }
     
