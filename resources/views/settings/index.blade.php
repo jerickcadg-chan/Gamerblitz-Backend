@@ -353,7 +353,7 @@
 
             <div class="form-group">
               <label>Password</label>
-              <input type="text" class="form-control" name="settings[dynasty_gds_password]"
+              <input type="password" class="form-control" name="settings[dynasty_gds_password]"
                 value="{{ old('settings.dynasty_gds_password', $settings['dynasty_gds_password'] ?? '') }}">
             </div>
           @endif
