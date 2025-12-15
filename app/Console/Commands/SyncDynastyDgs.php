@@ -40,7 +40,7 @@ class SyncDynastyDgs extends Command
         $email        = Setting::getByKey('dynasty_gds_email');
         $password     = Setting::getByKey('dynasty_gds_password');
 
-        $exchangeRate = get_exchange_rate('PHP', Setting::getBaseCurrency());
+        $exchangeRate = get_exchange_rate('MYR', Setting::getBaseCurrency());
         $log          = Log::channel('dynasty_gds');
 
         Cache::put('dynasty-gds-sync', true, 120);
