@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Constants\ProviderConstant;
+use App\Models\FetchVarianJob;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\Setting;
@@ -89,6 +90,9 @@ class SyncDynastyDgs extends Command
             }
 
             $progressBar->finish();
+
+            // Save Logs
+            $this->createLogs();
 
             $this->newLine(2);
             $this->info('🎉 Dynasty GDS product sync completed successfully!');
@@ -263,5 +267,16 @@ class SyncDynastyDgs extends Command
         }
 
         return $mapped;
+    }
+
+    /**
+     * @return void
+     */
+    private function createLogs(): void
+    {
+        FetchVarianJob::create([
+            'command_name' => 'Sync Dynasty DGS',
+            'status' => 'DONE',
+        ]);
     }
 }

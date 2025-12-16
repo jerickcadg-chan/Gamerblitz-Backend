@@ -33,5 +33,6 @@ class FetchVarianHandle implements ShouldQueue
     {
         Artisan::call('app:sync-lapak-gaming');
         Artisan::call('app:sync-vexa-game');
+        Artisan::call('app:sync-dynasty-dgs');
     }
 }

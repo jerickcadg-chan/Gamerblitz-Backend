@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Constants\ProviderConstant;
 use App\Data\LapakGaming\Category;
 use App\Data\LapakGaming\BestProductItem;
+use App\Models\FetchVarianJob;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\Setting;
@@ -217,6 +218,9 @@ class SyncLapakGaming extends Command
                 }
             }
 
+            // Save Logs
+            $this->createLogs();
+
             $this->line("Start: " . $memstart);
             $this->line("End: " . memory_get_usage());
             $this->line("Peak: " . memory_get_peak_usage());
@@ -253,5 +257,16 @@ class SyncLapakGaming extends Command
         }
 
         return $value;
+    }
+
+    /**
+     * @return void
+     */
+    private function createLogs(): void
+    {
+        FetchVarianJob::create([
+            'command_name' => 'Sync Dynasty LapakGaming',
+            'status' => 'DONE',
+        ]);
     }
 }
