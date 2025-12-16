@@ -12,6 +12,7 @@ use App\Services\BalanceService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Services\DynastyGdsService;
 use App\Services\OrderService;
 
 class OrderController extends Controller
@@ -63,6 +64,8 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
+        $gdsService = new DynastyGdsService();
+
         $title = $this->title;
 
         $mutations = BalanceHistory::latest()
