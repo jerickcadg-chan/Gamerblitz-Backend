@@ -14,16 +14,10 @@ class FetchVarianHandle implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * @var int
-     */
-    public int $statusId;
-
-    /**
      * Create a new job instance.
      */
-    public function __construct(int $statusId)
+    public function __construct()
     {
-        $this->statusId = $statusId;
     }
 
     /**

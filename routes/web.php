@@ -104,6 +104,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('product-item/price-form', [ProductItemPriceController::class, 'index'])->name('product-item.price-form');
     Route::put('product-item/price-form', [ProductItemPriceController::class, 'update'])->name('product-item.price-form-update');
     Route::post('product-item/sync-price', [ProductItemController::class, 'syncItem'])->name('product-item.sync');
+    Route::get('product-item/logs-provider', [ProductItemController::class, 'logSync'])->name('product-item.logs');
 
     // product_item_category meta
     Route::group(['prefix' => 'product_item_category', 'as' => 'product_item_categories.'], function () {
