@@ -140,7 +140,7 @@ class User extends Authenticatable
      */
     public function api(): HasOne
     {
-        return $this->hasOne(User::class);
+        return $this->hasOne(UserApi::class);
     }
 
     public function fullName(): Attribute
