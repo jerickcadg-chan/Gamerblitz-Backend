@@ -38,6 +38,7 @@
                 Sync item Price & Status
               </button>
             </form>
+            <a href="{{ route('product-item.logs') }}" class="btn btn-danger">Logs Provider</a>
             <a href="{{ route('product-item.price-form') }}" class="btn btn-info">Adjust Price Margin</a>
             <a href="{{ $createLink }}" class="btn btn-primary">Create data</a>
           </div>

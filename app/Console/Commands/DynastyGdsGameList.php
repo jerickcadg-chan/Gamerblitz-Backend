@@ -9,26 +9,27 @@ use Illuminate\Support\Facades\Storage;
 class DynastyGdsGameList extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
      * @var string
      */
     protected $signature = 'dynasty-gds:game-list';
 
     /**
-     * The console command description.
-     *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Get Dynasty GDS game list with balance info';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $dynastyGdsService = new DynastyGdsService();
-        $data = $dynastyGdsService->productList();
+        
+        $productList = $dynastyGdsService->productList();
+        $balanceInfo = $dynastyGdsService->balance(); 
+
+        // Struktur final JSON
+        $data = [
+            'balance_info' => $balanceInfo,
+            'products'     => $productList,
+        ];
 
         $path = 'dynasty-gds/game-list.json';
 

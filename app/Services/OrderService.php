@@ -338,10 +338,10 @@ class OrderService
         }
 
         if ($order->cust_email) {
-            Mail::to($order->cust_email)->queue(new SendOrderNotif($order));
+            Mail::to($order->cust_email)->send(new SendOrderNotif($order));
 
             if ($status === StatusConst::DELAY) {
-                Mail::to($order->cust_email)->queue(new SendErrorNotif($order, "There is a problem when processing your order, please contact admin"));
+                Mail::to($order->cust_email)->send(new SendErrorNotif($order, "There is a problem when processing your order, please contact admin"));
             }
         }
 

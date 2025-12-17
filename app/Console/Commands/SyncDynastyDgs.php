@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Constants\ProviderConstant;
+use App\Models\FetchVarianJob;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\Setting;
@@ -11,7 +12,6 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Str;
 
 class SyncDynastyDgs extends Command
 {
@@ -91,6 +91,9 @@ class SyncDynastyDgs extends Command
 
             $progressBar->finish();
 
+            // Save Logs
+            $this->createLogs();
+
             $this->newLine(2);
             $this->info('🎉 Dynasty GDS product sync completed successfully!');
         } finally {
@@ -118,7 +121,7 @@ class SyncDynastyDgs extends Command
 
         // Update input format by provider
         $product->update([
-            'input_format' => $response['requiredInfos']
+            'input_format' => $this->mapRequireInfo($response['requiredInfos'])
         ]);
 
         if (empty($payload)) {
@@ -176,7 +179,7 @@ class SyncDynastyDgs extends Command
         $baseData = [
             'name'         => $item['name'],
             'status'       => 'active',
-            'country_code' => 'ID',
+            'country_code' => 'MY',
             'provider'     => ProviderConstant::DYNASTY_DGS,
             'capital'      => $item['price'] * $exchangeRate,
             'sync_at'      => now(),
@@ -256,7 +259,7 @@ class SyncDynastyDgs extends Command
                 'placeholder' => $info['description'], // sesuai permintaan
                 'options'     => $isOption
                     ? array_map(fn($s) => [
-                        'label' => $s['name'],
+                        'name'  => $s['name'],
                         'value' => $s['code'],
                     ], $info['selection'])
                     : []
@@ -264,5 +267,16 @@ class SyncDynastyDgs extends Command
         }
 
         return $mapped;
+    }
+
+    /**
+     * @return void
+     */
+    private function createLogs(): void
+    {
+        FetchVarianJob::create([
+            'command_name' => 'Sync Dynasty DGS',
+            'status' => 'DONE',
+        ]);
     }
 }

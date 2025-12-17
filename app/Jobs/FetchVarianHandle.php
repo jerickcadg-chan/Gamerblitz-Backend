@@ -14,16 +14,10 @@ class FetchVarianHandle implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * @var int
-     */
-    public int $statusId;
-
-    /**
      * Create a new job instance.
      */
-    public function __construct(int $statusId)
+    public function __construct()
     {
-        $this->statusId = $statusId;
     }
 
     /**
@@ -33,5 +27,6 @@ class FetchVarianHandle implements ShouldQueue
     {
         Artisan::call('app:sync-lapak-gaming');
         Artisan::call('app:sync-vexa-game');
+        Artisan::call('app:sync-dynasty-dgs');
     }
 }

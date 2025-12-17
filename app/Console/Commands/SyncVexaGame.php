@@ -8,6 +8,7 @@ use App\Models\Setting;
 use App\Models\ProductItem;
 use Illuminate\Console\Command;
 use App\Constants\ProviderConstant;
+use App\Models\FetchVarianJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -89,6 +90,9 @@ class SyncVexaGame extends Command
             }
 
             $progressBar->finish();
+
+            // Save Logs
+            $this->createLogs();
 
             $this->newLine(2);
             $this->info('🎉 VexaGame product sync completed successfully!');
@@ -237,5 +241,16 @@ class SyncVexaGame extends Command
         return (is_null($value) || (float) $value <= 0)
             ? $fallback
             : (float) $value;
+    }
+
+    /**
+     * @return void
+     */
+    private function createLogs(): void
+    {
+        FetchVarianJob::create([
+            'command_name' => 'Sync VexaGame',
+            'status' => 'DONE',
+        ]);
     }
 }

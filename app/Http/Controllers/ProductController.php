@@ -161,37 +161,6 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        dd($this->mapRequireInfo(
-            [
-                [
-                    "name" => "Input1",
-                    "description" => "User ID",
-                    "selection" => []
-                ],
-                [
-                    "name" => "Input2",
-                    "description" => "Server ID",
-                    "selection" => [
-                        [
-                            "name" => "Asia",
-                            "code" => "os_asia"
-                        ],
-                        [
-                            "name" => "Europe",
-                            "code" => "os_euro"
-                        ],
-                        [
-                            "name" => "America",
-                            "code" => "os_usa"
-                        ],
-                        [
-                            "name" => "TW, HK, MO",
-                            "code" => "os_cht"
-                        ]
-                    ]
-                ]
-            ]
-        ));
         $formAction = route('product.update', $product);
         $indexLink = route('product.index');
 

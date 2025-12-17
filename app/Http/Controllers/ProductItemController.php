@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\ProviderConstant;
 use App\Http\Requests\ProductItemRequest;
 use App\Jobs\FetchVarianHandle;
+use App\Models\ExchangeRate;
 use App\Models\FetchVarianJob;
 use App\Models\ProductItem;
 use App\Models\Product;
@@ -139,15 +140,19 @@ class ProductItemController extends Controller
 
     public function syncItem()
     {
-        $status = FetchVarianJob::create([
-            'command_name' => 'app:sync-lapak-gaming',
-            'status' => 'PENDING',
-        ]);
-
-        FetchVarianHandle::dispatch($status->id);
+        FetchVarianHandle::dispatch();
 
         toast('Item is still syncing', 'success');
 
         return redirect()->back();
+    }
+
+    public function logSync()
+    {
+        $title = $this->title;
+
+        $fetchVariantJobs = FetchVarianJob::latest()->get();
+
+        return view('product_items.logs', compact('fetchVariantJobs', 'title'));
     }
 }

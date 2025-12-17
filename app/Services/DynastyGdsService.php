@@ -38,7 +38,7 @@ class DynastyGdsService
 
         $this->generateToken();
     }
-    
+
     /**
      * Generate API token.
      * 
@@ -58,15 +58,16 @@ class DynastyGdsService
 
         $this->token = $response['token'] ?? null;
     }
-
+    
     /**
      * Create order request.
      * 
      * @param Order $order
+     * @param mixed $merchantRef
      * 
      * @return array|null
      */
-    public function order(Order $order): ?array
+    public function order(Order $order, $merchantRef): ?array
     {
         return $this->safeRequest(
             "{$this->url}/api/Order/Create",
@@ -74,7 +75,7 @@ class DynastyGdsService
             [
                 'denomCode'   => $order->productItem->code,
                 'inputs'      => json_decode($order->cust_account, true),
-                'merchantRef' => $order->code,
+                'merchantRef' => $merchantRef,
             ]
         );
     }
@@ -83,18 +84,18 @@ class DynastyGdsService
      * Check order status.
      * 
      * @param string $providerCode
-     * @param string $orderCode
+     * @param string $merchantRef
      * 
      * @return array|null
      */
-    public function check(string $providerCode, string $orderCode): ?array
+    public function check(string $providerCode, string $merchantRef): ?array
     {
         return $this->safeRequest(
             "{$this->url}/api/Order/TrackOrder",
             "GET",
             [
                 'orderNo'     => $providerCode,
-                'merchantRef' => $orderCode,
+                'merchantRef' => $merchantRef,
             ]
         );
     }
@@ -128,6 +129,21 @@ class DynastyGdsService
     }
 
     /**
+     * Get Balance.
+     * 
+     * @param string $providerCode
+     * 
+     * @return array|null
+     */
+    public function balance(): ?array
+    {
+        return $this->safeRequest(
+            "{$this->url}/api/Merchant/Balance",
+            "GET"
+        );
+    }
+
+    /**
      * @param string $url
      * @param string $method
      * @param array|null $payload
@@ -135,28 +151,31 @@ class DynastyGdsService
      * 
      * @return array|null
      */
-    public function safeRequest(string $url, string $method, ?array $payload = null, bool $useToken = true): ?array {
+    public function safeRequest(string $url, string $method, ?array $payload = null, bool $useToken = true): ?array
+    {
         try {
             $request = Http::retry(3, 200)->timeout(5);
-    
+
             if ($useToken && $this->token) {
                 $request = $request->withToken($this->token);
             }
-    
+
             $response = $method === 'GET'
                 ? $request->get($url, $payload)
                 : $request->post($url, $payload);
-    
+
             return $response->json();
+        } catch (RequestException $e) {
+            return $e->response->json() ? $e->response->json()
+                : [
+                    'statusCode' => $e->getCode(),
+                    'errorMessage' => $e->getMessage(),
+                ];
         } catch (ConnectionException $e) {
             return [
                 'statusCode' => 408,
-                'statusMessage' => 'timeout',
                 'errorMessage' => $e->getMessage(),
             ];
-        } catch (RequestException $e) {
-            return $e->response->json();
         }
     }
-    
 }

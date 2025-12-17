@@ -40,11 +40,12 @@ class DynastyGdsOrderHandler implements ShouldQueue
         try {
             // Loop per item index (0 .. qty-1)
             for ($i = 0; $i < $order->qty; $i++) {
+                $merchantRef = $order->code . '-' . $i;
 
                 // If provider_ref already exists for this index -> just check
                 if (!empty($providerCodes[$i])) {
                     $orderNo       = $providerCodes[$i];
-                    $checkResponse = $dynasty->check($orderNo, $order->code);
+                    $checkResponse = $dynasty->check($orderNo, $merchantRef);
                     $mappedStatus  = $this->mapStatusResponse($checkResponse);
 
                     $itemStatuses[$i]  = $mappedStatus;
@@ -58,7 +59,7 @@ class DynastyGdsOrderHandler implements ShouldQueue
                 }
 
                 // provider_ref not exists -> create order
-                $createResponse = $dynasty->order($order);
+                $createResponse = $dynasty->order($order, $merchantRef);
                 $mapCreate      = $this->mapOrderResponse($createResponse);
 
                 // save create response for this item
@@ -132,7 +133,6 @@ class DynastyGdsOrderHandler implements ShouldQueue
      */
     private function mapOrderResponse(array $response): string
     {
-        $status = ($response['status'] ?? null) === 'Created';
         $message = $response['message'] ?? null;
 
         $successMessages = [
@@ -140,13 +140,12 @@ class DynastyGdsOrderHandler implements ShouldQueue
             'Merchant ref duplicated',
         ];
 
-        if ($status || in_array($message, $successMessages, true)) {
+        if (in_array($message, $successMessages, true)) {
             return StatusConst::SUCCESS;
         }
 
         return StatusConst::DELAY;
     }
-
 
     /**
      * Map order status check.
@@ -159,6 +158,7 @@ class DynastyGdsOrderHandler implements ShouldQueue
     {
         return match ($response['status'] ?? null) {
             'success'   => StatusConst::SUCCESS,
+            'Created'   => StatusConst::SUCCESS,
             'pending'   => StatusConst::ON_PROCESS,
             'cancelled',
             'error'     => StatusConst::DELAY,
