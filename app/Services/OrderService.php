@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Constants\DefaultRole;
+use App\Constants\PlatformConstant;
 use App\Constants\ProductConstant;
 use App\Constants\ProviderConstant;
 use App\Constants\StatusConst;
@@ -141,6 +142,7 @@ class OrderService
             $order->payment_method_id = $paymentMethod->id;
             $order->provider = $productItem?->provider ?? $productItem->product->provider;
             $order->partner_ref = $request?->partner_ref ?? null;
+            $order->platform = $request?->platform ?? PlatformConstant::B2C;
             $order->status = $orderStatus;
             $order->qty = $request->qty;
             $order->price = $price['price'];
@@ -331,6 +333,10 @@ class OrderService
 
         if ($status === StatusConst::SUCCESS && $order->affiliate_id) {
             $this->rewardAffiliator($order);
+
+            if ($order->platform == PlatformConstant::B2B) {
+                $this->sendCallback($order);
+            }
         }
 
         if ($status === StatusConst::ON_PROCESS && $order->provider === ProviderConstant::MANUAL) {
@@ -346,6 +352,27 @@ class OrderService
         }
 
         $this->createHistory($order->id, $status, 'order', $note);
+    }
+
+    public function sendCallback(Order $order)
+    {
+        $callback = [
+            'name' => $order->user->name,
+            'code' => $order->code,
+            'partner_ref_id' => $order->partner_ref_id,
+            'status' => $order->status,
+            'cust_account' => $order->cust_account,
+            'item' => $order->productItem->full_name,
+            'description' => $order->note,
+            'sn' => $order->serial_number,
+            'price' => $order->price
+        ];
+
+        $user = $order->user;
+        $response = Http::withToken($user->api->callback_token)
+            ->post($user->api->callback_url, $callback);
+
+        $this->createHistory($order->id, $order->status, 'callback_order', json_encode($response->collect()));
     }
 
     public function rewardAffiliator(Order $order): void

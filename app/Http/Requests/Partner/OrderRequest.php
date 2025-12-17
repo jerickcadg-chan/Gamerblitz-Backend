@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Partner;
 
+use App\Constants\PlatformConstant;
 use App\Models\PaymentMethod;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -43,6 +44,7 @@ class OrderRequest extends FormRequest
             'cust_account' => $this->cust_account,
             'qty' => $this->qty,
             'payment_method_id' => $paymentMethod->id,
+            'platform' => PlatformConstant::B2B,
         ];
     }
 }
