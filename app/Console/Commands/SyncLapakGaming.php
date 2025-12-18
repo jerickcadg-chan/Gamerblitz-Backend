@@ -265,7 +265,7 @@ class SyncLapakGaming extends Command
     private function createLogs(): void
     {
         FetchVarianJob::create([
-            'command_name' => 'Sync Dynasty LapakGaming',
+            'command_name' => 'Sync LapakGaming',
             'status' => 'DONE',
         ]);
     }
