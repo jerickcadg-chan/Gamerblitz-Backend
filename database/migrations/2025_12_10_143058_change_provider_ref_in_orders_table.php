@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('provider_code_vexa')->nullable();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropUnique(['provider_ref']);
+            $table->text('provider_ref')->nullable()->change();
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('provider_code_vexa');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('provider_ref')->nullable()->unique()->change();
         });
     }
 };

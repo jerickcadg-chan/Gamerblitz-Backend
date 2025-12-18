@@ -54,10 +54,12 @@ class ProductController extends Controller
 
         $title = $this->title;
 
+        $supportProviders = explode(',', env('SUPPORTED_PROVIDER', 'lapakgaming'));
+
         $providers = ProviderConstant::AVAILABLE_PROVIDER;
         $countries = CountryConstant::all();
 
-        return view('products.form', compact('providers', 'countries', 'formAction', 'indexLink', 'title'));
+        return view('products.form', compact('providers', 'supportProviders', 'countries', 'formAction', 'indexLink', 'title'));
     }
 
     public function createFromLG(Request $request)
@@ -164,10 +166,12 @@ class ProductController extends Controller
 
         $title = $this->title;
 
+        $supportProviders = explode(',', env('SUPPORTED_PROVIDER', 'lapakgaming'));
+
         $providers = ProviderConstant::AVAILABLE_PROVIDER;
         $countries = CountryConstant::all();
 
-        return view('products.form', compact('providers', 'countries', 'formAction', 'indexLink', 'product', 'title'));
+        return view('products.form', compact('providers', 'supportProviders', 'countries', 'formAction', 'indexLink', 'product', 'title'));
     }
 
     public function update(ProductRequest $request, Product $product)

@@ -2,59 +2,59 @@
 
 namespace App\Console\Commands;
 
-use Exception;
-use App\Models\Product;
-use App\Models\Setting;
-use App\Models\ProductItem;
-use Illuminate\Console\Command;
 use App\Constants\ProviderConstant;
 use App\Models\FetchVarianJob;
+use App\Models\Product;
+use App\Models\ProductItem;
+use App\Models\Setting;
+use App\Services\DynastyDgsService;
+use Exception;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class SyncVexaGame extends Command
+class SyncDynastyDgs extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:sync-vexa-game';
+    protected $signature = 'app:sync-dynasty-dgs';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sync products and product items from VexaGame API into the local database.';
+    protected $description = 'Sync products and product items from Dynasty GDS API into the local database.';
 
     /**
      * Execute the console command.
-     * 
-     * @return void
      */
-    public function handle(): void
+    public function handle()
     {
-        $this->info('🚀 Starting VexaGame product synchronization...');
+        $this->info('🚀 Starting Dynasty GDS product synchronization...');
 
-        $baseUrl      = Setting::getByKey('vexagame_api_url');
-        $token        = Setting::getByKey('vexagame_api_token');
-        $apiUrl       = rtrim($baseUrl, '/') . '/v2/product-item';
-        $exchangeRate = get_exchange_rate('IDR', Setting::getBaseCurrency());
-        $log          = Log::channel('vexagame');
-        Cache::put('vexagame-sync', true, 120);
+        $baseUrl      = Setting::getByKey('dynasty_gds_api_url');
+        $email        = Setting::getByKey('dynasty_gds_email');
+        $password     = Setting::getByKey('dynasty_gds_password');
+
+        $exchangeRate = get_exchange_rate('MYR', Setting::getBaseCurrency());
+        $log          = Log::channel('dynasty_gds');
+
+        Cache::put('dynasty-gds-sync', true, 120);
 
         try {
-            if (!$token) {
-                $log->warning('⚠️ Missing VexaGame API token in setting — skipping sync.');
-                $this->warn('⚠️ Missing VexaGame API token in setting — skipping sync.');
+            if (!$email || !$password) {
+                $log->warning('⚠️ Missing Dynasty GDS API email or password in setting — skipping sync.');
+                $this->warn('⚠️ Missing Dynasty GDS API email or password in setting — skipping sync.');
                 return;
             }
 
             if (!$baseUrl) {
-                $log->warning('⚠️ Missing VexaGame API URL in setting — skipping sync.');
-                $this->warn('⚠️ Missing VexaGame API URL in setting — skipping sync.');
+                $log->warning('⚠️ Missing Dynasty GDS API URL in setting — skipping sync.');
+                $this->warn('⚠️ Missing Dynasty GDS API URL in setting — skipping sync.');
                 return;
             }
 
@@ -65,10 +65,10 @@ class SyncVexaGame extends Command
                 'vip'    => Setting::getByKey('margin_vip'),
             ];
 
-            $products = Product::where('provider', ProviderConstant::VEXAGAME)->get();
+            $products = Product::where('provider', ProviderConstant::DYNASTY_DGS)->get();
 
             if ($products->isEmpty()) {
-                $this->warn('⚠️  No products found for provider: VEXAGAME');
+                $this->warn('⚠️  No products found for provider: Dynasty GDS');
                 return;
             }
 
@@ -80,7 +80,7 @@ class SyncVexaGame extends Command
 
             foreach ($products as $product) {
                 try {
-                    $this->syncProduct($product, $apiUrl, $token, $exchangeRate, $fallbacks);
+                    $this->syncProduct($product, $exchangeRate, $fallbacks);
                     $this->disableInactiveProductItems($product);
                 } catch (Exception $e) {
                     $this->error("\n💥 Error syncing {$product->name}: {$e->getMessage()}");
@@ -95,9 +95,9 @@ class SyncVexaGame extends Command
             $this->createLogs();
 
             $this->newLine(2);
-            $this->info('🎉 VexaGame product sync completed successfully!');
+            $this->info('🎉 Dynasty GDS product sync completed successfully!');
         } finally {
-            Cache::forget('vexagame-sync');
+            Cache::forget('dynasty-gds-sync');
         }
     }
 
@@ -112,22 +112,18 @@ class SyncVexaGame extends Command
      * 
      * @return void
      */
-    private function syncProduct(Product $product, string $apiUrl, string $token, float $exchangeRate, array $fallbacks): void
+    private function syncProduct(Product $product, float $exchangeRate, array $fallbacks): void
     {
-        $log      = Log::channel('vexagame');
-        $response = Http::withHeaders(['Authorization' => $token])
-            ->timeout(15)
-            ->get($apiUrl, ['product_slug' => $product->provider_code_vexa]);
+        $dynasty = new DynastyDgsService();
 
-        if ($response->failed()) {
-            $message = "API request failed ({$response->status()}) for product: {$product->name}";
+        $response = $dynasty->productInfo($product->provider_code_dynasty_dgs);
+        $payload = $response['denoms'];
 
-            $log->error("⚠️ {$message}");
-            $this->warn("\n⚠️ {$message}");
-            return;
-        }
+        // Update input format by provider
+        $product->update([
+            'input_format' => $this->mapRequireInfo($response['requiredInfos'])
+        ]);
 
-        $payload = $response->json()['payload'] ?? [];
         if (empty($payload)) {
             $this->warn("\n⚠️  No product items found for: {$product->name}");
             return;
@@ -145,7 +141,7 @@ class SyncVexaGame extends Command
     }
 
     /**
-     * Disable all product items not from VexaGame.
+     * Disable all product items not from Dynasty GDS.
      * 
      * @param Product $product
      * 
@@ -154,7 +150,7 @@ class SyncVexaGame extends Command
     private function disableInactiveProductItems(Product $product): void
     {
         $affected = ProductItem::where('product_id', $product->id)
-            ->where('provider', '!=', ProviderConstant::VEXAGAME)
+            ->where('provider', '!=', ProviderConstant::DYNASTY_DGS)
             ->where('status', 'active')
             ->where('is_locked', 0)
             ->update(['status' => 'empty']);
@@ -176,16 +172,16 @@ class SyncVexaGame extends Command
     private function syncProductItem(Product $product, array $item, float $exchangeRate): void
     {
         $productItem = ProductItem::where('product_id', $product->id)
-            ->where('code', $item['code'])
-            ->where('provider', ProviderConstant::VEXAGAME)
+            ->where('code', $item['denomCode'])
+            ->where('provider', ProviderConstant::DYNASTY_DGS)
             ->first();
 
         $baseData = [
             'name'         => $item['name'],
             'status'       => 'active',
-            'country_code' => 'ID',
-            'provider'     => ProviderConstant::VEXAGAME,
-            'capital'      => $item['price_raw'] * $exchangeRate,
+            'country_code' => 'MY',
+            'provider'     => ProviderConstant::DYNASTY_DGS,
+            'capital'      => $item['price'] * $exchangeRate,
             'sync_at'      => now(),
         ];
 
@@ -198,7 +194,7 @@ class SyncVexaGame extends Command
         } else {
             ProductItem::create(array_merge($baseData, [
                 'product_id'    => $product->id,
-                'code'          => $item['code'],
+                'code'          => $item['denomCode'],
                 'stock'         => null,
                 'margin'        => $product->markup_user,
                 'margin_silver' => $product->markup_reseller_silver,
@@ -244,12 +240,42 @@ class SyncVexaGame extends Command
     }
 
     /**
+     * @param array $requiredInfos
+     * 
+     * @return array
+     */
+    private function mapRequireInfo(array $requiredInfos): array
+    {
+        $mapped = [];
+
+        foreach ($requiredInfos as $info) {
+            // type = option jika selection tidak kosong
+            $isOption = !empty($info['selection']);
+
+            $mapped[] = (object)[
+                'name'        => $info['name'], // ← langsung pakai name dari provider
+                'type'        => $isOption ? 'option' : 'text',
+                'label'       => $info['description'], // boleh pakai description (contohmu)
+                'placeholder' => $info['description'], // sesuai permintaan
+                'options'     => $isOption
+                    ? array_map(fn($s) => [
+                        'name'  => $s['name'],
+                        'value' => $s['code'],
+                    ], $info['selection'])
+                    : []
+            ];
+        }
+
+        return $mapped;
+    }
+
+    /**
      * @return void
      */
     private function createLogs(): void
     {
         FetchVarianJob::create([
-            'command_name' => 'Sync VexaGame',
+            'command_name' => 'Sync Dynasty DGS',
             'status' => 'DONE',
         ]);
     }

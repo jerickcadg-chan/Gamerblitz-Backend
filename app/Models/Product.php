@@ -51,6 +51,7 @@ class Product extends Model
         'provider',
         'provider_code',
         'provider_code_vexa',
+        'provider_code_dynasty_dgs',
         'provider_country',
         'check_uid',
         'meta_title',

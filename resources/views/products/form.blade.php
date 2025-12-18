@@ -36,7 +36,7 @@
           <div class="form-group col-md-6">
             <label>Slug (optional)</label>
             <input type="text" name="slug" class="form-control {{ $errors->has('slug') ? 'is-invalid' : '' }}"
-                   value="{{ old('slug', $product->slug ?? "") }}" placeholder="auto from title if empty">
+              value="{{ old('slug', $product->slug ?? '') }}" placeholder="auto from title if empty">
             @include('alerts.feedback', ['field' => 'slug'])
           </div>
 
@@ -68,33 +68,52 @@
             <select id="provider_input" class="form-control" name="provider">
               @php $v = old('provider', $product->provider ?? ''); @endphp
               @foreach ($providers as $providerName => $providerDisplayName)
-                <option value="{{ $providerName }}" {{ $v === $providerName ? 'selected' : '' }}>
-                  {{ $providerDisplayName }}
-                </option>
+                @if (in_array($providerName, $supportProviders) || $providerName === 'manual')
+                  <option value="{{ $providerName }}" {{ $v === $providerName ? 'selected' : '' }}>
+                    {{ $providerDisplayName }}
+                  </option>
+                @endif
               @endforeach
             </select>
             @include('alerts.feedback', ['field' => 'provider'])
           </div>
 
           <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="provider_code_input" class="required">Provider Product Code (Lapakgaming)</label>
-                <input type="text" class="form-control {{ $errors->has('provider_code') ? ' is-invalid' : '' }}"
-                  name="provider_code" id="provider_code_input" placeholder="e.g. ML, VAL, FF, etc"
-                  value="{{ old('provider_code', $product->provider_code ?? '') }}" required>
-                @include('alerts.feedback', ['field' => 'provider_code'])
+            @if (in_array('lapakgaming', $supportProviders) || $providerName === 'manual')
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="provider_code_input" class="required">Provider Product Code (Lapakgaming)</label>
+                  <input type="text" class="form-control {{ $errors->has('provider_code') ? ' is-invalid' : '' }}"
+                    name="provider_code" id="provider_code_input" placeholder="e.g. ML, VAL, FF, etc"
+                    value="{{ old('provider_code', $product->provider_code ?? '') }}" required>
+                  @include('alerts.feedback', ['field' => 'provider_code'])
+                </div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="provider_code_vexa_input" class="">Provider Product Code (Vexagame)</label>
-                <input type="text" class="form-control {{ $errors->has('provider_code_vexa') ? ' is-invalid' : '' }}"
-                  name="provider_code_vexa" id="provider_code_vexa_input" placeholder="e.g. ML, VAL, FF, etc"
-                  value="{{ old('provider_code_vexa', $product->provider_code_vexa ?? '') }}">
-                @include('alerts.feedback', ['field' => 'provider_code_vexa'])
+            @endif
+            @if (in_array('vexagame', $supportProviders))
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="provider_code_vexa_input" class="">Provider Product Code (Vexagame)</label>
+                  <input type="text"
+                    class="form-control {{ $errors->has('provider_code_vexa') ? ' is-invalid' : '' }}"
+                    name="provider_code_vexa" id="provider_code_vexa_input" placeholder="e.g. ML, VAL, FF, etc"
+                    value="{{ old('provider_code_vexa', $product->provider_code_vexa ?? '') }}">
+                  @include('alerts.feedback', ['field' => 'provider_code_vexa'])
+                </div>
               </div>
-            </div>
+            @endif
+            @if (in_array('dynasty_dgs', $supportProviders))
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="provider_code_dynasty_dgs_input" class="">Provider Product Code (Dynasty DGS)</label>
+                  <input type="text"
+                    class="form-control {{ $errors->has('provider_code_dynasty_dgs') ? ' is-invalid' : '' }}"
+                    name="provider_code_dynasty_dgs" id="provider_code_dynasty_dgs_input" placeholder="e.g. ML, VAL, FF, etc"
+                    value="{{ old('provider_code_dynasty_dgs', $product->provider_code_dynasty_dgs ?? '') }}">
+                  @include('alerts.feedback', ['field' => 'provider_code_dynasty_dgs'])
+                </div>
+              </div>
+            @endif
           </div>
 
           <div class="form-group">
@@ -167,27 +186,26 @@
               (
               <label class="form-check-label" for="is_raw_description_input">Raw</label>
               <input type="checkbox" class="form-check-input mt-0" id="is_raw_description_input"
-                     name="is_raw_description" value="1"
+                name="is_raw_description" value="1"
                 {{ old('is_raw_description', $product->is_raw_description ?? false) ? 'checked' : '' }}>
               )
             </label>
 
             {{-- Raw textarea --}}
-            <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }}"
-                      id="description_textarea"
-                      rows="10">{{ old('description', $product->description ?? '') }}</textarea>
+            <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }}" id="description_textarea"
+              rows="10">{{ old('description', $product->description ?? '') }}</textarea>
 
-             {{-- Quill editor --}}
-             <div id="quill-wrapper">
-               <div class="quill-editor">
-                 @if(old('is_raw_description', $product->is_raw_description ?? false))
-                   {{ old('description', $product->description ?? '') }}
-                 @else
-                   {!! old('description', $product->description ?? '') !!}
-                 @endif
-               </div>
-               <textarea class="d-none quill-editor-hidden" id="description_input"></textarea>
-             </div>
+            {{-- Quill editor --}}
+            <div id="quill-wrapper">
+              <div class="quill-editor">
+                @if (old('is_raw_description', $product->is_raw_description ?? false))
+                  {{ old('description', $product->description ?? '') }}
+                @else
+                  {!! old('description', $product->description ?? '') !!}
+                @endif
+              </div>
+              <textarea class="d-none quill-editor-hidden" id="description_input"></textarea>
+            </div>
 
             @include('alerts.feedback', ['field' => 'description'])
           </div>
@@ -198,11 +216,11 @@
             {{-- Builder UI --}}
             <div x-data="inputFormatBuilder">
               <template x-for="(field, i) in fields" :key="i">
-                <div class="border p-3 mb-3 rounded">
+                <div class="mb-3 rounded border p-3">
                   <div class="row">
                     <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="Name"
-                             x-model="field.name" @input="updateHidden()">
+                      <input type="text" class="form-control" placeholder="Name" x-model="field.name"
+                        @input="updateHidden()">
                     </div>
                     <div class="col-md-2">
                       <select class="form-control" x-model="field.type" @change="updateHidden()">
@@ -216,12 +234,12 @@
                       </select>
                     </div>
                     <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="Label"
-                             x-model="field.label" @input="updateHidden()">
+                      <input type="text" class="form-control" placeholder="Label" x-model="field.label"
+                        @input="updateHidden()">
                     </div>
                     <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="Placeholder"
-                             x-model="field.placeholder" @input="updateHidden()">
+                      <input type="text" class="form-control" placeholder="Placeholder" x-model="field.placeholder"
+                        @input="updateHidden()">
                     </div>
                     <div class="col-md-1 text-end">
                       <button type="button" class="btn btn-danger btn-sm" @click="removeField(i)">✕</button>
@@ -234,12 +252,12 @@
                     <template x-for="(opt, j) in field.options" :key="j">
                       <div class="row mb-2">
                         <div class="col-md-5">
-                          <input type="text" class="form-control" placeholder="Option Name"
-                                 x-model="opt.name" @input="updateHidden()">
+                          <input type="text" class="form-control" placeholder="Option Name" x-model="opt.name"
+                            @input="updateHidden()">
                         </div>
                         <div class="col-md-5">
-                          <input type="text" class="form-control" placeholder="Option Value"
-                                 x-model="opt.value" @input="updateHidden()">
+                          <input type="text" class="form-control" placeholder="Option Value" x-model="opt.value"
+                            @input="updateHidden()">
                         </div>
                         <div class="col-md-2">
                           <button type="button" class="btn btn-sm btn-danger" @click="removeOption(i,j)">✕</button>
@@ -256,41 +274,40 @@
 
             {{-- Hidden input untuk simpan JSON --}}
             <input type="hidden" name="input_format" id="input_format_input"
-                   value="{{ old('input_format', $product->input_format ?? '[]') }}">
+              value="{{ old('input_format', $product->input_format ?? '[]') }}">
 
             @include('alerts.feedback', ['field' => 'input_format'])
           </div>
 
-           <div class="form-group" id="how-to-order-group">
-             <label for="how_to_order_input" class="required">
-               How to Order
-               (
-               <label class="form-check-label" for="is_raw_how_to_order_input">Raw</label>
-               <input type="checkbox" class="form-check-input mt-0" id="is_raw_how_to_order_input"
-                      name="is_raw_how_to_order" value="1"
-                 {{ old('is_raw_how_to_order', $product->is_raw_how_to_order ?? false) ? 'checked' : '' }}>
-               )
-             </label>
+          <div class="form-group" id="how-to-order-group">
+            <label for="how_to_order_input" class="required">
+              How to Order
+              (
+              <label class="form-check-label" for="is_raw_how_to_order_input">Raw</label>
+              <input type="checkbox" class="form-check-input mt-0" id="is_raw_how_to_order_input"
+                name="is_raw_how_to_order" value="1"
+                {{ old('is_raw_how_to_order', $product->is_raw_how_to_order ?? false) ? 'checked' : '' }}>
+              )
+            </label>
 
-             {{-- Raw textarea --}}
-             <textarea class="form-control {{ $errors->has('how_to_order') ? ' is-invalid' : '' }}"
-                       id="how_to_order_textarea"
-                       rows="10">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
+            {{-- Raw textarea --}}
+            <textarea class="form-control {{ $errors->has('how_to_order') ? ' is-invalid' : '' }}" id="how_to_order_textarea"
+              rows="10">{{ old('how_to_order', $product->how_to_order ?? '') }}</textarea>
 
-              {{-- Quill editor --}}
-              <div id="how-to-order-quill-wrapper">
-                <div class="quill-editor">
-                  @if(old('is_raw_how_to_order', $product->is_raw_how_to_order ?? false))
-                    {{ old('how_to_order', $product->how_to_order ?? '') }}
-                  @else
-                    {!! old('how_to_order', $product->how_to_order ?? '') !!}
-                  @endif
-                </div>
-                <textarea class="d-none quill-editor-hidden" id="how_to_order_input"></textarea>
+            {{-- Quill editor --}}
+            <div id="how-to-order-quill-wrapper">
+              <div class="quill-editor">
+                @if (old('is_raw_how_to_order', $product->is_raw_how_to_order ?? false))
+                  {{ old('how_to_order', $product->how_to_order ?? '') }}
+                @else
+                  {!! old('how_to_order', $product->how_to_order ?? '') !!}
+                @endif
               </div>
+              <textarea class="d-none quill-editor-hidden" id="how_to_order_input"></textarea>
+            </div>
 
-             @include('alerts.feedback', ['field' => 'how_to_order'])
-           </div>
+            @include('alerts.feedback', ['field' => 'how_to_order'])
+          </div>
 
           <div class="form-group">
             <label for="cover">Cover</label>
@@ -364,8 +381,7 @@
           <div class="form-group">
             <label for="ordering_input">Ordering</label>
             <input type="number" class="form-control {{ $errors->has('ordering') ? ' is-invalid' : '' }}"
-                   name="ordering" id="ordering_input"
-                   value="{{ old('ordering', $product->ordering ?? '') }}">
+              name="ordering" id="ordering_input" value="{{ old('ordering', $product->ordering ?? '') }}">
             @include('alerts.feedback', ['field' => 'ordering'])
           </div>
 
@@ -381,7 +397,7 @@
 
 @push('js')
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
       // Description toggle
       const descCheckbox = document.getElementById("is_raw_description_input");
       const descRawTextarea = document.getElementById("description_textarea");
@@ -464,7 +480,10 @@
         },
 
         addOption(i) {
-          this.fields[i].options.push({ name: "", value: "" });
+          this.fields[i].options.push({
+            name: "",
+            value: ""
+          });
           this.updateHidden();
         },
 
