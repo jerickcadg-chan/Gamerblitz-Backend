@@ -64,8 +64,6 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $gdsService = new DynastyDgsService();
-
         $title = $this->title;
 
         $mutations = BalanceHistory::latest()
