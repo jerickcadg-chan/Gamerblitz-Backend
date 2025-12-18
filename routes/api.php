@@ -125,9 +125,7 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
 
 Route::middleware('partner-api')->group(function () {
     Route::group(['prefix' => 'partner'], function () {
-        Route::get('/me', [AuthController::class, 'me']);
-        Route::get('/balance', [AuthController::class, 'balance']);
-        Route::get('/order', [PartnerOrderController::class, 'index']);
+        Route::get('/balance', [AuthController::class, 'myBalance']);
         Route::get('/order/{code}', [PartnerOrderController::class, 'show']);
         Route::post('/order', [PartnerOrderController::class, 'store']);
         Route::get('/product', [ProductController::class, 'index']);

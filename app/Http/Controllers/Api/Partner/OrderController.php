@@ -9,21 +9,11 @@ use App\Models\Order;
 use App\Services\OrderService;
 use App\Transformers\Partner\OrderTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
-    public function index()
-    {
-        $orders = Order::with('user', 'productItem.product')->latest()
-            ->where('user_id', auth()->id)
-            ->when(request('order_code'), function ($query) {
-                return $query->where('code', 'like', '%' . request('order_code') . '%');
-            });
-
-        return api_status_ok(paginateTransformer($orders, new OrderTransformer(), [], \request('limit') ?? 10));
-    }
-
     public function show($order)
     {
         $order = Order::with('user', 'productItem.product')->where('code', $order)->first();
@@ -32,8 +22,8 @@ class OrderController extends Controller
             return api_status_warning('Order not found');
         }
 
-        if (auth()->id != null) {
-            if ($order->user_id != auth()->id) {
+        if (Auth::id() != null) {
+            if ($order->user_id != Auth::id()) {
                 return api_status_warning('User id not match!');
             }
         }
