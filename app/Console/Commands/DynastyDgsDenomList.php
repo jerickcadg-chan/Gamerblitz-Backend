@@ -2,18 +2,18 @@
 
 namespace App\Console\Commands;
 
-use App\Services\DynastyGdsService;
+use App\Services\DynastyDgsService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
-class DynastyGdsDenomList extends Command
+class DynastyDgsDenomList extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dynasty-gds:denom-list {product_code}';
+    protected $signature = 'dynasty-dgs:denom-list {product_code}';
 
     /**
      * The console command description.
@@ -29,13 +29,13 @@ class DynastyGdsDenomList extends Command
     {
         $productCode = $this->argument('product_code');
 
-        $dynastyGdsService = new DynastyGdsService();
+        $dynastyGdsService = new DynastyDgsService();
         $data = $dynastyGdsService->productInfo($productCode);
 
-        $path = "dynasty-gds/game-list-{$productCode}.json";
+        $path = "dynasty-dgs/game-list-{$productCode}.json";
 
         Storage::put($path, json_encode($data, JSON_PRETTY_PRINT));
 
-        $this->info("Dynasty GDS game list saved to storage/{$path}");
+        $this->info("Dynasty DGS game list saved to storage/{$path}");
     }
 }

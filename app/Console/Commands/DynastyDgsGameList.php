@@ -2,25 +2,25 @@
 
 namespace App\Console\Commands;
 
-use App\Services\DynastyGdsService;
+use App\Services\DynastyDgsService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
-class DynastyGdsGameList extends Command
+class DynastyDgsGameList extends Command
 {
     /**
      * @var string
      */
-    protected $signature = 'dynasty-gds:game-list';
+    protected $signature = 'dynasty-dgs:game-list';
 
     /**
      * @var string
      */
-    protected $description = 'Get Dynasty GDS game list with balance info';
+    protected $description = 'Get Dynasty DGS game list with balance info';
 
     public function handle()
     {
-        $dynastyGdsService = new DynastyGdsService();
+        $dynastyGdsService = new DynastyDgsService();
         
         $productList = $dynastyGdsService->productList();
         $balanceInfo = $dynastyGdsService->balance(); 
@@ -31,7 +31,7 @@ class DynastyGdsGameList extends Command
             'products'     => $productList,
         ];
 
-        $path = 'dynasty-gds/game-list.json';
+        $path = 'dynasty-dgs/game-list.json';
 
         Storage::put($path, json_encode($data, JSON_PRETTY_PRINT));
 

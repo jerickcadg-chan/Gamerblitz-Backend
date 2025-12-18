@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Constants\StatusConst;
 use App\Models\Order;
-use App\Services\DynastyGdsService;
+use App\Services\DynastyDgsService;
 use App\Services\OrderService;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,12 +20,12 @@ class DynastyGdsOrderHandler implements ShouldQueue
     /**
      * Execute the job.
      * 
-     * @param DynastyGdsService $dynasty
+     * @param DynastyDgsService $dynasty
      * @param OrderService $orderService
      * 
      * @return void
      */
-    public function handle(DynastyGdsService $dynasty, OrderService $orderService): void
+    public function handle(DynastyDgsService $dynasty, OrderService $orderService): void
     {
         $order = $this->order;
 
@@ -117,7 +117,7 @@ class DynastyGdsOrderHandler implements ShouldQueue
                 ])
             );
         } catch (Exception $e) {
-            Log::channel('dynasty_gds')->error(
+            Log::channel('dynasty_dgs')->error(
                 "💥 Exception while processing order {$order->id}: {$e->getMessage()}"
             );
             $orderService->updateStatus($order, StatusConst::DELAY, $e->getMessage());
