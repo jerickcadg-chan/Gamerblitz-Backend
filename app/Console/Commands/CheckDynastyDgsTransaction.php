@@ -30,7 +30,7 @@ class CheckDynastyDgsTransaction extends Command
      */
     public function handle()
     {
-        $orders = Order::where('provider', ProviderConstant::VEXAGAME)
+        $orders = Order::where('provider', ProviderConstant::DYNASTY_DGS)
             ->where('status', StatusConst::ON_PROCESS)
             ->get();
 
