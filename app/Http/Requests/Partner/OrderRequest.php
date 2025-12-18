@@ -27,24 +27,7 @@ class OrderRequest extends FormRequest
             'partner_ref' => 'required',
             'item_code' => 'required',
             'cust_account' => 'required',
-            'qty' => 'required',
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function fieldInputs(): object
-    {
-        $paymentMethod = PaymentMethod::where('slug', PaymentMethod::BALANCE)->first();
-
-        return (object) [
-            'partner_ref' => $this->partner_ref,
-            'product_item_id' => $this->item_code,
-            'cust_account' => $this->cust_account,
-            'qty' => $this->qty,
-            'payment_method_id' => $paymentMethod->id,
-            'platform' => PlatformConstant::B2B,
+            'qty' => 'required|integer|min:1',
         ];
     }
 }

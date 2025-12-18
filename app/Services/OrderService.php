@@ -8,6 +8,7 @@ use App\Constants\ProductConstant;
 use App\Constants\ProviderConstant;
 use App\Constants\StatusConst;
 use App\Http\Requests\OrderRequest;
+use App\Http\Requests\Partner\OrderRequest as PartnerOrderRequest;
 use App\Jobs\DynastyGdsOrderHandler;
 use App\Jobs\LapakGamingOrderHandler;
 use App\Jobs\VexaGameOrderHandler;
@@ -45,7 +46,7 @@ class OrderService
     /**
      * @throws Exception|Throwable
      */
-    public function store($request): Order|string|array
+    public function store(OrderRequest|PartnerOrderRequest $request): Order|string|array
     {
         try {
             DB::beginTransaction();
@@ -218,7 +219,7 @@ class OrderService
         }
     }
 
-    private function calculatePrice(OrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, float $exchangeRate, int $qty = 1, Discount $discount = null): array
+    private function calculatePrice(OrderRequest|PartnerOrderRequest $request, ProductItem $productItem, PaymentMethod $paymentMethod, float $exchangeRate, int $qty = 1, Discount $discount = null): array
     {
         $price = $productItem->real_price * $qty;
         $capital = $productItem->capital * $qty;
@@ -333,10 +334,10 @@ class OrderService
 
         if ($status === StatusConst::SUCCESS && $order->affiliate_id) {
             $this->rewardAffiliator($order);
+        }
 
-            if ($order->platform == PlatformConstant::B2B) {
-                $this->sendCallback($order);
-            }
+        if (in_array($status, [StatusConst::FAILED, StatusConst::SUCCESS]) && $order->platform == PlatformConstant::B2B) {
+            $this->sendCallback($order);
         }
 
         if ($status === StatusConst::ON_PROCESS && $order->provider === ProviderConstant::MANUAL) {

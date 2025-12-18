@@ -129,6 +129,6 @@ Route::middleware('partner-api')->group(function () {
         Route::get('/order/{code}', [PartnerOrderController::class, 'show']);
         Route::post('/order', [PartnerOrderController::class, 'store']);
         Route::get('/product', [ProductController::class, 'index']);
-        Route::get('/product-item/{productId}', [ProductController::class, 'getProductItems']);
+        Route::get('/product-item/{productId}', [PartnerOrderController::class, 'getProductItems']);
     });
 });
