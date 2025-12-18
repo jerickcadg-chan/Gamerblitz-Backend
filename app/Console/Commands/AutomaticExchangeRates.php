@@ -67,13 +67,8 @@ class AutomaticExchangeRates extends Command
                     $newRate->save();
 
                     // Only sync item when idr to php changed
-                    if ($exchangeRate->currency_code == 'IDR') {
-                        $status = FetchVarianJob::create([
-                            'command_name' => 'app:sync-lapak-gaming',
-                            'status' => 'PENDING',
-                        ]);
-
-                        FetchVarianHandle::dispatch($status->id);
+                    if ($exchangeRate->currency_code == 'IDR' || $exchangeRate->currency_code == 'MYR') {
+                        FetchVarianHandle::dispatch();
                     }
                 }
             }
