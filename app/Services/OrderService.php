@@ -7,7 +7,7 @@ use App\Constants\ProductConstant;
 use App\Constants\ProviderConstant;
 use App\Constants\StatusConst;
 use App\Http\Requests\OrderRequest;
-use App\Jobs\DynastyGdsOrderHandler;
+use App\Jobs\DynastyDgsOrderHandler;
 use App\Jobs\LapakGamingOrderHandler;
 use App\Jobs\VexaGameOrderHandler;
 use App\Mail\OrderAccountSucceed;
@@ -314,9 +314,9 @@ class OrderService
             }
         } elseif ($provider === ProviderConstant::DYNASTY_DGS) {
             if ($sync) {
-                return DynastyGdsOrderHandler::dispatchSync($order);
+                return DynastyDgsOrderHandler::dispatchSync($order);
             } else {
-                DynastyGdsOrderHandler::dispatch($order);
+                DynastyDgsOrderHandler::dispatch($order);
             }
         }
 

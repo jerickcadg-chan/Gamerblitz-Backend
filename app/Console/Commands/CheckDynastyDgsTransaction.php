@@ -4,26 +4,26 @@ namespace App\Console\Commands;
 
 use App\Constants\ProviderConstant;
 use App\Constants\StatusConst;
-use App\Jobs\DynastyGdsOrderHandler;
+use App\Jobs\DynastyDgsOrderHandler;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class CheckDynastyGdsTransaction extends Command
+class CheckDynastyDgsTransaction extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:check-dynasty-gds-transaction';
+    protected $signature = 'app:check-dynasty-dgs-trx';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Command to check transaction from dynasty dgs';
 
     /**
      * Execute the console command.
@@ -38,7 +38,7 @@ class CheckDynastyGdsTransaction extends Command
             $orderTime = Carbon::parse($order->created_at);
 
             if (Carbon::now()->diffInMinutes($orderTime) >= 2) {
-                DynastyGdsOrderHandler::dispatch($order);
+                DynastyDgsOrderHandler::dispatch($order);
             }
         }
     }
