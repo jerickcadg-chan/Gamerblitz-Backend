@@ -14,7 +14,7 @@ class BalanceService
 
         $balanceCheck = $balance->histories()->latest()->first();
 
-        if ($balanceCheck->amount == $latestBalance) {
+        if ($balanceCheck->amount == $request['amount']) {
             return $balance;
         }
 
