@@ -66,6 +66,12 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'dynasty_gds' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/dynasty_gds.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],        
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
