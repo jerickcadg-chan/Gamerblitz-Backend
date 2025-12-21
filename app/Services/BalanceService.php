@@ -9,17 +9,10 @@ class BalanceService
 {
     public static function update(Balance $balance, $request): Balance
     {
-        // balance log check
-        $latestBalance = $balance->amount + $request['amount'];
-
-        $balanceCheck = $balance->histories()->latest()->first();
-
-        if ($balanceCheck->amount == $request['amount']) {
-            return $balance;
-        }
+        $request['latest_balance'] = $balance->amount + $request['amount'];
 
         $balance->update([
-            'amount' => $latestBalance
+            'amount' => $request['latest_balance']
         ]);
 
         self::createBalanceLog($balance, $request);
