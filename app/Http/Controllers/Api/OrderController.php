@@ -389,11 +389,11 @@ class OrderController extends Controller
 
         // Handle Order
         if ($order) {
-            if ($statusCode == '03') {
+            if ($statusCode == '03' && $order->status !== StatusConst::SUCCESS) {
                 $orderService->updateStatus($order, StatusConst::EXPIRED);
             }
 
-            if ($statusCode == '01' && $status == 'PAID') {
+            if ($statusCode == '01' && $status == 'PAID' && $order->status !== StatusConst::SUCCESS) {
                 $orderService->updateStatus($order, StatusConst::ON_PROCESS);
                 $orderService->processOrder($order);
             }
