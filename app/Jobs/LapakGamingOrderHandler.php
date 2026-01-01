@@ -113,6 +113,6 @@ class LapakGamingOrderHandler implements ShouldQueue
     {
         Log::channel('lapakgaming')->error("LapakGamingOrderHandler failed for Order {$this->order->id}: " . $exception->getMessage());
         $orderService = app(OrderService::class);
-        $orderService->updateStatus($this->order, StatusConst::PENDING, 'JOB_FAILED');
+        $orderService->updateStatus($this->order, StatusConst::DELAY, 'JOB_FAILED');
     }
 }
