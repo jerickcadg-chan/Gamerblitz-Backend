@@ -389,11 +389,11 @@ class OrderController extends Controller
 
         // Handle Order
         if ($order) {
-            if ($statusCode == '03' && $order->status !== StatusConst::SUCCESS) {
-                $orderService->updateStatus($order, StatusConst::EXPIRED);
-            }
+            // if ($statusCode == '03' && $order->status !== StatusConst::SUCCESS) {
+            //     $orderService->updateStatus($order, StatusConst::EXPIRED);
+            // }
 
-            if ($statusCode == '01' && $status == 'PAID' && $order->status !== StatusConst::SUCCESS) {
+            if ($status == 'PAID' && $order->status !== StatusConst::SUCCESS) {
                 $orderService->updateStatus($order, StatusConst::ON_PROCESS);
                 $orderService->processOrder($order);
             }
@@ -403,11 +403,11 @@ class OrderController extends Controller
 
         // Handle Deposit
         if ($deposit) {
-            if ($statusCode == '03') {
-                $depositService->handlePaymentExpired($deposit);
-            }
+            // if ($statusCode == '03') {
+            //     $depositService->handlePaymentExpired($deposit);
+            // }
 
-            if ($statusCode == '01' && $status == 'PAID') {
+            if ($status == 'PAID') {
                 $depositService->handlePaymentSettlement($deposit);
             }
 
