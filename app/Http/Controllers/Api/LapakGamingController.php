@@ -63,30 +63,29 @@ class LapakGamingController extends Controller
                     
                     break;
                 case "REFUNDED":
-                    if ($order->status != StatusConst::FAILED) {
-                        $transactions = collect($payload->data->transactions ?? []);
+                    $transactions = collect($payload->data->transactions ?? []);
 
-                        $order->note = $transactions->pluck('note')
-                            ->filter()
-                            ->implode(',');
+                    $order->note = $transactions->pluck('note')
+                        ->filter()
+                        ->implode(',');
 
-                        $order->save();
-                        $orderService->updateStatus($order, StatusConst::FAILED, $note);
-                        if ($order?->user?->balance) {
-                            $balance = Balance::where('user_id', $order->user_id)->first();
+                    $order->save();
+                    $orderService->updateStatus($order, StatusConst::DELAY, $note);
 
-                            BalanceService::update($balance, [
-                                'balanceable_type' => Order::class,
-                                'balanceable_id' => $order->id,
-                                'amount' => $order->turnover,
-                                'description' => "Refund $order->code"
-                            ]);
-                        }
-                    }
+                    // if ($order?->user?->balance) {
+                    //     $balance = Balance::where('user_id', $order->user_id)->first();
+
+                    //     BalanceService::update($balance, [
+                    //         'balanceable_type' => Order::class,
+                    //         'balanceable_id' => $order->id,
+                    //         'amount' => $order->turnover,
+                    //         'description' => "Refund $order->code"
+                    //     ]);
+                    // }
 
                     break;
                 case "PENDING":
-                    $orderService->updateStatus($order, StatusConst::DELAY, $note);
+                    $orderService->updateStatus($order, StatusConst::ON_PROCESS, $note);
                     $log->error("Order still pending on callback", [
                         'order_id' => $order->id,
                         'payload' => $payload->toArray(),
