@@ -114,6 +114,18 @@
                 </div>
               </div>
             @endif
+            @if (in_array('whitelabel', $supportProviders))
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="provider_code_whitelabel_input" class="">Provider Product Code ({{ env('PROVIDER_WHITELABEL', 'Whitelabel') }})</label>
+                  <input type="text"
+                    class="form-control {{ $errors->has('provider_code_whitelabel') ? ' is-invalid' : '' }}"
+                    name="provider_code_whitelabel" id="provider_code_whitelabel_input" placeholder="e.g. ML, VAL, FF, etc"
+                    value="{{ old('provider_code_whitelabel', $product->provider_code_whitelabel ?? '') }}">
+                  @include('alerts.feedback', ['field' => 'provider_code_whitelabel'])
+                </div>
+              </div>
+            @endif
           </div>
 
           <div class="form-group">

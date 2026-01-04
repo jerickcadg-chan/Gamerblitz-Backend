@@ -56,7 +56,7 @@ class ProductController extends Controller
 
         $supportProviders = explode(',', env('SUPPORTED_PROVIDER', 'lapakgaming'));
 
-        $providers = ProviderConstant::AVAILABLE_PROVIDER;
+        $providers = ProviderConstant::providers();
         $countries = CountryConstant::all();
 
         return view('products.form', compact('providers', 'supportProviders', 'countries', 'formAction', 'indexLink', 'title'));
@@ -168,7 +168,7 @@ class ProductController extends Controller
 
         $supportProviders = explode(',', env('SUPPORTED_PROVIDER', 'lapakgaming'));
 
-        $providers = ProviderConstant::AVAILABLE_PROVIDER;
+        $providers = ProviderConstant::providers();
         $countries = CountryConstant::all();
 
         return view('products.form', compact('providers', 'supportProviders', 'countries', 'formAction', 'indexLink', 'product', 'title'));

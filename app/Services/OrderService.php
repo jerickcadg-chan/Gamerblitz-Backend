@@ -12,6 +12,7 @@ use App\Http\Requests\Partner\OrderRequest as PartnerOrderRequest;
 use App\Jobs\DynastyDgsOrderHandler;
 use App\Jobs\LapakGamingOrderHandler;
 use App\Jobs\VexaGameOrderHandler;
+use App\Jobs\WhitelabelOrderHandler;
 use App\Mail\OrderAccountSucceed;
 use App\Mail\SendErrorNotif;
 use App\Mail\SendOrderNotif;
@@ -101,6 +102,21 @@ class OrderService
                 DB::rollBack();
 
                 return 'Invalid order total price';
+            }
+
+            // Cek duplicate partner_ref
+            if (isset($request->partner_ref)) {
+                $partnerRefIdCheck = Order::where('partner_ref', $request->partner_ref)->first();
+
+                if ($partnerRefIdCheck && $partnerRefIdCheck?->user_id === $authUser->id) {
+                    DB::rollBack();
+
+                    return [
+                        'status'     => false,
+                        'message'    => trans('transaction.trx_exist'),
+                        'exist_code' => $partnerRefIdCheck->code
+                    ];
+                }
             }
 
             if ($productItem->stock === 0) {
@@ -321,6 +337,12 @@ class OrderService
                 return DynastyDgsOrderHandler::dispatchSync($order);
             } else {
                 DynastyDgsOrderHandler::dispatch($order);
+            }
+        } elseif ($provider === ProviderConstant::WHITELABEL) {
+            if ($sync) {
+                return WhitelabelOrderHandler::dispatchSync($order);
+            } else {
+                WhitelabelOrderHandler::dispatch($order);
             }
         }
 

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Constants\ProductConstant;
 use App\Constants\ProductJoki;
+use App\Constants\ProviderConstant;
 use App\Mail\SentVerificationLink;
 use App\Models\FlashSaleProductItem;
 use App\Models\User;

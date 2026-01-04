@@ -46,6 +46,7 @@ class ProductItemTransformer extends TransformerAbstract
             'price' => $price,
             'category' => $meta?->productItemCategory->name,
             'picture' => $meta?->picture->url,
+            'input_format' => json_decode($productItem->product->input_format),
         ];
     }
 }

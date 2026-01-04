@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\VexaGameController;
+use App\Http\Controllers\Api\WhitelabelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -88,6 +89,7 @@ Route::get('blogs/{slug}', [BlogController::class, 'show']);
 Route::post('callback/lapakgaming/order', [LapakGamingController::class, 'orderCallback']);
 
 Route::post('callback/vexagame/order', [VexaGameController::class, 'orderCallback']);
+Route::post('callback/whitelabel/order', [WhitelabelController::class, 'orderCallback']);
 //     });
 // }
 
