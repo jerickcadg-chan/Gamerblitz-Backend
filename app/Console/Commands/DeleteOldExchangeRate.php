@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\ExchangeRate;
+use App\Models\FetchVarianJob;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -28,6 +29,12 @@ class DeleteOldExchangeRate extends Command
      */
     public function handle()
     {
+       $this->deleteOldCurrencies();
+       $this->deleteOldSync();
+    }
+
+    private function deleteOldCurrencies()
+    {
         $baseCurrency = Setting::getBaseCurrency();
 
         $currencies = ExchangeRate::where('currency_code', '!=', $baseCurrency)
@@ -44,5 +51,10 @@ class DeleteOldExchangeRate extends Command
                 ->where('effective_at', '<', Carbon::now()->subDays(7))
                 ->delete();
         }
+    }
+
+    private function deleteOldSync()
+    {
+        FetchVarianJob::where('created_at', '<', Carbon::now()->subDays(7))->delete();
     }
 }
