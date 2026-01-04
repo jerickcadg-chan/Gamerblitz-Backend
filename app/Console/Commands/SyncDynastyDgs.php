@@ -7,7 +7,7 @@ use App\Models\FetchVarianJob;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\Setting;
-use App\Services\DynastyGdsService;
+use App\Services\DynastyDgsService;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -114,7 +114,7 @@ class SyncDynastyDgs extends Command
      */
     private function syncProduct(Product $product, float $exchangeRate, array $fallbacks): void
     {
-        $dynasty = new DynastyGdsService();
+        $dynasty = new DynastyDgsService();
 
         $response = $dynasty->productInfo($product->provider_code_dynasty_dgs);
         $payload = $response['denoms'];

@@ -46,18 +46,21 @@ class LapakGamingController extends Controller
 
             switch ($payload->data->status) {
                 case "SUCCESS":
-                    $transactions = collect($payload->data->transactions ?? []);
+                    if ($order->status != StatusConst::SUCCESS) {
+                        $transactions = collect($payload->data->transactions ?? []);
 
-                    $order->serial_number = $transactions->pluck('voucher_code')
-                        ->filter()
-                        ->implode(',');
+                        $order->serial_number = $transactions->pluck('voucher_code')
+                            ->filter()
+                            ->implode(',');
 
-                    $order->note = $transactions->pluck('note')
-                        ->filter()
-                        ->implode(',');
+                        $order->note = $transactions->pluck('note')
+                            ->filter()
+                            ->implode(',');
 
-                    $order->save();
-                    $orderService->updateStatus($order, StatusConst::SUCCESS, $note);
+                        $order->save();
+                        $orderService->updateStatus($order, StatusConst::SUCCESS, $note);
+                    }
+                    
                     break;
                 case "REFUNDED":
                     $transactions = collect($payload->data->transactions ?? []);
@@ -67,20 +70,22 @@ class LapakGamingController extends Controller
                         ->implode(',');
 
                     $order->save();
-                    $orderService->updateStatus($order, StatusConst::FAILED, $note);
-                    if ($order?->user?->balance) {
-                        $balance = Balance::where('user_id', $order->user_id)->first();
+                    $orderService->updateStatus($order, StatusConst::DELAY, $note);
 
-                        BalanceService::update($balance, [
-                            'balanceable_type' => Order::class,
-                            'balanceable_id' => $order->id,
-                            'amount' => $order->turnover,
-                            'description' => "Refund $order->code"
-                        ]);
-                    }
+                    // if ($order?->user?->balance) {
+                    //     $balance = Balance::where('user_id', $order->user_id)->first();
+
+                    //     BalanceService::update($balance, [
+                    //         'balanceable_type' => Order::class,
+                    //         'balanceable_id' => $order->id,
+                    //         'amount' => $order->turnover,
+                    //         'description' => "Refund $order->code"
+                    //     ]);
+                    // }
+
                     break;
                 case "PENDING":
-                    $orderService->updateStatus($order, StatusConst::DELAY, $note);
+                    $orderService->updateStatus($order, StatusConst::ON_PROCESS, $note);
                     $log->error("Order still pending on callback", [
                         'order_id' => $order->id,
                         'payload' => $payload->toArray(),
