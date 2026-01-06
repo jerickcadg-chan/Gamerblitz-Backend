@@ -101,7 +101,7 @@ class LapakGamingOrderHandler implements ShouldQueue
             case 'INSUFFICIENT_BALANCE':
             default:
                 $orderService->updateStatus($order, StatusConst::DELAY, $orderResponse->code);
-                Log::channel('lapakgaming')->error("Order {$this->order->id} error: " . $orderResponse->code, $payloadArray);
+                // Log::channel('lapakgaming')->error("Order {$this->order->id} error: " . $orderResponse->code, $payloadArray);
                 break;
         };
     }
@@ -111,7 +111,7 @@ class LapakGamingOrderHandler implements ShouldQueue
      */
     public function failed(Throwable $exception): void
     {
-        Log::channel('lapakgaming')->error("LapakGamingOrderHandler failed for Order {$this->order->id}: " . $exception->getMessage());
+        // Log::channel('lapakgaming')->error("LapakGamingOrderHandler failed for Order {$this->order->id}: " . $exception->getMessage());
         $orderService = app(OrderService::class);
         $orderService->updateStatus($this->order, StatusConst::DELAY, 'JOB_FAILED');
     }
