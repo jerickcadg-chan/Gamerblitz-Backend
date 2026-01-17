@@ -130,7 +130,7 @@ Route::middleware('partner-api')->group(function () {
         Route::get('/balance', [AuthController::class, 'myBalance']);
         Route::get('/order/{code}', [PartnerOrderController::class, 'show']);
         Route::post('/order', [PartnerOrderController::class, 'store']);
-        Route::get('/product', [ProductController::class, 'index']);
+        Route::get('/product', [PartnerOrderController::class, 'getProducts']);
         Route::get('/product-item/{productId}', [PartnerOrderController::class, 'getProductItems']);
     });
 });
