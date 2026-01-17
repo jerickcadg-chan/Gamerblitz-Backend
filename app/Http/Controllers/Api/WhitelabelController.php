@@ -56,7 +56,7 @@ class WhitelabelController extends Controller
                 ], 404);
             }
 
-            $status = strtoupper($payload['status'] ?? '');
+            $status = $payload['status'] ?? '';
             $note   = json_encode($payload);
 
             switch ($status) {
@@ -116,7 +116,7 @@ class WhitelabelController extends Controller
 
         $orderService->updateStatus($order, StatusConst::SUCCESS, $note);
 
-        Log::channel('vexagame')->notice("✅ Order {$order->code} marked as SUCCESS");
+        Log::channel('whitelabel')->notice("✅ Order {$order->code} marked as SUCCESS");
     }
 
     /**

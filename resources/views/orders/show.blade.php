@@ -104,7 +104,9 @@
               </tr>
               <tr>
                 <th>Provider</th>
-                <td>{{ $order->provider }}</td>
+                <td>
+                  {{ $order->provider == 'whitelabel' ? env('PROVIDER_WHITELABEL') : $order->provider }}
+                </td>
               </tr>
               <tr>
                 <th>Serial Number</th>

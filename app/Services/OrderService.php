@@ -382,7 +382,7 @@ class OrderService
         $callback = [
             'name' => $order->user->name,
             'code' => $order->code,
-            'partner_ref_id' => $order->partner_ref_id,
+            'partner_ref_id' => $order->partner_ref,
             'status' => $order->status,
             'cust_account' => $order->cust_account,
             'item' => $order->productItem->full_name,

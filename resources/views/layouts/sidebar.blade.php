@@ -45,10 +45,12 @@
               </li>
             @endcan
             @can('View Product')
-              <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'lapakgaming.products' ? 'active' : null }}"
-                  href="{{ route('lapakgaming.products') }}"> Product (LapakGaming) </a>
-              </li>
+              @if (in_array('lapakgaming', explode(',', env('SUPPORTED_PROVIDER'))))
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'lapakgaming.products' ? 'active' : null }}"
+                    href="{{ route('lapakgaming.products') }}"> Product (LapakGaming) </a>
+                </li>
+              @endif
             @endcan
             @can('View Product Item')
               <li class="nav-item">

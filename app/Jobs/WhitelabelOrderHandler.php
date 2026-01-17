@@ -36,7 +36,7 @@ class WhitelabelOrderHandler implements ShouldQueue
 
         $payload = new OrderRequestData(
             item_code: $productItem->code,
-            cust_account: json_encode($order->cust_account_array),
+            cust_account: $order->cust_account_array,
             qty: $order->qty,
             partner_ref: $order->code
         );
