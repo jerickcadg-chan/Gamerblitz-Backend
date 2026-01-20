@@ -74,6 +74,46 @@
         </a>
       </li>
     @endcan
+    {{-- <CHANGE> Added eCommerce Menu --}}
+    @canany(['View Ecommerce Category', 'View Ecommerce Product', 'View Ecommerce Order'])
+      <li class="nav-item {{ in_array($activePage, ['ecommerce_dashboard', 'ecommerce_category', 'ecommerce_product', 'ecommerce_order']) ? 'active' : null }}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#ecommerce-pages" aria-expanded="false"
+          aria-controls="ecommerce-pages">
+          <span class="menu-title">eCommerce</span>
+          <i class="menu-arrow"></i>
+          <i class="mdi mdi-cart menu-icon"></i>
+        </a>
+        <div class="{{ in_array($activePage, ['ecommerce_dashboard', 'ecommerce_category', 'ecommerce_product', 'ecommerce_order']) ? 'show' : null }} collapse"
+          id="ecommerce-pages">
+          <ul class="nav flex-column sub-menu">
+            @can('View Ecommerce Order')
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'ecommerce_dashboard' ? 'active' : null }}"
+                  href="{{ route('ecommerce.dashboard') }}"> Dashboard </a>
+              </li>
+            @endcan
+            @can('View Ecommerce Order')
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'ecommerce_order' ? 'active' : null }}"
+                  href="{{ route('ecommerce_order.index') }}"> Orders </a>
+              </li>
+            @endcan
+            @can('View Ecommerce Product')
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'ecommerce_product' ? 'active' : null }}"
+                  href="{{ route('ecommerce_product.index') }}"> Products </a>
+              </li>
+            @endcan
+            @can('View Ecommerce Category')
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'ecommerce_category' ? 'active' : null }}"
+                  href="{{ route('ecommerce_category.index') }}"> Categories </a>
+              </li>
+            @endcan
+          </ul>
+        </div>
+      </li>
+    @endcan
     @canany(['View Discount', 'View Slider'])
       <li class="nav-item {{ in_array($activePage, config('array.menu.promo')) ? 'active' : null }}">
         <a class="nav-link" data-bs-toggle="collapse" href="#promo-pages" aria-expanded="false"
@@ -150,6 +190,10 @@
             <li class="nav-item">
               <a class="nav-link {{ $activePage == 'statistic_product' ? 'active' : null }}"
                 href="{{ route('statistic.product') }}"> Statistic Product </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ $activePage == 'statistic_affiliate' ? 'active' : null }}"
+                href="{{ route('statistic.affiliate') }}"> Statistic Affiliate </a>
             </li>
           </ul>
         </div>

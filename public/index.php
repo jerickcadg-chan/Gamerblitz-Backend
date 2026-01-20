@@ -1,7 +1,13 @@
 <?php
 
+ini_set('memory_limit', '512M');
+ini_set('max_execution_time', '120');
+
+
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
+
+
 
 define('LARAVEL_START', microtime(true));
 

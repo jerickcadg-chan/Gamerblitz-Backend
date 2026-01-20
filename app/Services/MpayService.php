@@ -21,9 +21,13 @@ class MpayService
         $externalId = $order->code;
         $method = $order->paymentMethod;
 
+        // <CHANGE> Add returnUrl using FRONTEND_URL environment variable
+        $frontendUrl = env('FRONTEND_URL', 'https://gpdsgameshop.com');
+
         $payload = [
             'amount'            => (int) $amount * 100,
             'notifyUrl'         => route('callback.mpay'),
+            'returnUrl'         => $frontendUrl . '/payment/' . $externalId,
             'customerPhone'     => $this->normalizePhone($order->cust_phone_number),
             'customerName'      => $this->emailToName($order->cust_email),
             'customerEmail'     => $order->cust_email,
@@ -62,9 +66,13 @@ class MpayService
         $externalId = $deposit->code;
         $method = $deposit->paymentMethod;
 
+        // <CHANGE> Add returnUrl using FRONTEND_URL environment variable
+        $frontendUrl = env('FRONTEND_URL', 'https://gpdsgameshop.com');
+
         $payload = [
             'amount'            => (int) $amount,
             'notifyUrl'         => route('callback.mpay'),
+            'returnUrl'         => $frontendUrl . '/payment/' . $externalId,
             'customerPhone'     => $this->normalizePhone($deposit->user->phone_number),
             'customerName'      => $deposit->user->name,
             'customerEmail'     => $deposit->user->email,

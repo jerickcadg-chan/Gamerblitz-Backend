@@ -100,6 +100,12 @@ class Order extends Model implements IsFilterable
         });
     }
 
+    // <CHANGE> Add ecommerce order relationship
+    public function ecommerceOrder(): BelongsTo
+    {
+        return $this->belongsTo(EcommerceOrder::class);
+    }
+
     public function productItem(): BelongsTo
     {
         return $this->belongsTo(ProductItem::class);

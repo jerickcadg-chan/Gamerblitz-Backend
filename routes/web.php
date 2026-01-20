@@ -96,6 +96,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('statistic/order', [StatisticController::class, 'showOrderStatistic'])->name('statistic.order');
     Route::get('statistic/user', [StatisticController::class, 'showUserStatistic'])->name('statistic.user');
     Route::get('statistic/product', [StatisticController::class, 'showProductStatistic'])->name('statistic.product');
+    Route::get('statistic/affiliate', [StatisticController::class, 'showAffiliateStatistic'])->name('statistic.affiliate');
 
     // product
     Route::get('product/sync/lapak-gaming', [ProductController::class, 'createFromLG'])->name('product.sync.lapak-gaming');
@@ -114,6 +115,8 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         Route::put('/{product_item_category}/meta/{meta}', [ProductItemCategoryController::class, 'metaUpdate'])->name('metas.update');
         Route::delete('/meta/{meta}', [ProductItemCategoryController::class, 'metaDestroy'])->name('metas.destroy');
     });
+    
+    
 
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
     Route::put('/setting', [SettingController::class, 'update'])->name('setting.update');
@@ -128,7 +131,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         return response()->json(['id'=>$cat->id, 'name'=>$cat->name]);
     })->name('blog-categories.quick-store');
 
-    // Resource router
+        // Resource router
     Route::resources([
         'product_category' => ProductCategoryController::class,
         'product' => ProductController::class,
@@ -148,5 +151,15 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'app-log' => AppLogController::class,
         'banned-ip' => BannedIpController::class,
         'user-activity-logs' => \App\Http\Controllers\UserActivityLogController::class,
+        // <CHANGE> Added eCommerce routes
+        'ecommerce_category' => \App\Http\Controllers\EcommerceCategoryController::class,
+        'ecommerce_product' => \App\Http\Controllers\EcommerceProductController::class,
+        'ecommerce_order' => \App\Http\Controllers\EcommerceOrderController::class,
+
     ]);
+
+    // <CHANGE> eCommerce Dashboard routes
+    Route::get('/ecommerce/dashboard', [\App\Http\Controllers\EcommerceDashboardController::class, 'index'])->name('ecommerce.dashboard');
+    Route::post('/ecommerce/toggle-maintenance', [\App\Http\Controllers\EcommerceDashboardController::class, 'toggleMaintenance'])->name('ecommerce.toggle-maintenance');
 });
+

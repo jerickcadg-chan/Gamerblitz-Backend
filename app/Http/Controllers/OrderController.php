@@ -29,6 +29,8 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::latest()
+            // <CHANGE> Filter out ecommerce payment orders from top-up orders list
+            ->whereNull('ecommerce_order_id')
             ->with('productItem', 'user', 'updater')
             ->when(request('cust_account'), function ($query) {
                 return $query->where('cust_account', 'like', '%'. request('cust_account') .'%');

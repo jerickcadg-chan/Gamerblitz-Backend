@@ -34,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Force HTTPS for all URLs
+        URL::forceScheme('https');
+
         Paginator::useBootstrap();
         Blade::directive('loadProductFlashSaleItem', function ($productFlashSaleItems) {
             $div = '';

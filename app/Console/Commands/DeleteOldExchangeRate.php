@@ -55,6 +55,6 @@ class DeleteOldExchangeRate extends Command
 
     private function deleteOldSync()
     {
-        FetchVarianJob::where('created_at', '<', Carbon::now()->subDays(7))->delete();
+        FetchVarianJob::truncate();
     }
 }
