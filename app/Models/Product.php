@@ -52,6 +52,7 @@ class Product extends Model
         'provider_code',
         'provider_code_vexa',
         'provider_code_dynasty_dgs',
+        'provider_code_whitelabel',
         'provider_country',
         'check_uid',
         'meta_title',

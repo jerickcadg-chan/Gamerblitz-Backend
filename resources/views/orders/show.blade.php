@@ -24,6 +24,12 @@
                 <th>Invoice Code</th>
                 <td>{{ $order->code }}</td>
               </tr>
+              @if($order->partner_ref)
+                <tr>
+                  <th>Partner Ref</th>
+                  <td>{{ $order->partner_ref }}</td>
+                </tr>
+              @endif
               <tr>
                 <th>Created At</th>
                 <td>{{ parse_date_time_full($order->created_at) }}</td>
@@ -93,8 +99,14 @@
                 <td>{{ strtoupper($order->paymentMethod?->name) }}</td>
               </tr>
               <tr>
+                <th>Platform</th>
+                <td>{{ $order->platform }}</td>
+              </tr>
+              <tr>
                 <th>Provider</th>
-                <td>{{ $order->provider }}</td>
+                <td>
+                  {{ $order->provider == 'whitelabel' ? env('PROVIDER_WHITELABEL') : $order->provider }}
+                </td>
               </tr>
               <tr>
                 <th>Serial Number</th>

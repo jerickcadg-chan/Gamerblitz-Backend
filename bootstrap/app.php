@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'only_verified' => \App\Http\Middleware\OnlyVerifiedUserCan::class,
             'basic_auth' => \App\Http\Middleware\BasicAuth::class,
             'ip.whitelist' => \App\Http\Middleware\IpWhitelist::class,
+            'partner-api' => \App\Http\Middleware\PartnerApi::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

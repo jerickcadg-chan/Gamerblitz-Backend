@@ -61,7 +61,7 @@ class ProductItemController extends Controller
         $title = $this->title;
 
         $products = Product::all();
-        $providers = ProviderConstant::AVAILABLE_PROVIDER;
+        $providers = ProviderConstant::providers();
 
         return view('product_items.form', compact('products', 'providers', 'actionLink', 'indexLink', 'title'));
     }
@@ -106,7 +106,7 @@ class ProductItemController extends Controller
         $title = $this->title;
 
         $products = Product::all();
-        $providers = ProviderConstant::AVAILABLE_PROVIDER;
+        $providers = ProviderConstant::providers();
 
         return view('product_items.form', compact('products', 'providers', 'actionLink', 'indexLink', 'productItem', 'title'));
     }

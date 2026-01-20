@@ -316,7 +316,7 @@
             <div class="form-group">
               <label>API Url</label>
               <input type="text" class="form-control" name="settings[vexagame_api_url]"
-                placeholder="e.g. https://dev.lapakgaming.com"
+                placeholder="e.g. https://dev.vexagame.com"
                 value="{{ old('settings.vexagame_api_url', $settings['vexagame_api_url'] ?? '') }}">
             </div>
 
@@ -341,7 +341,7 @@
             <div class="form-group">
               <label>API Url</label>
               <input type="text" class="form-control" name="settings[dynasty_gds_api_url]"
-                placeholder="e.g. https://dev.lapakgaming.com"
+                placeholder="e.g. https://dev.dynastydgs.com"
                 value="{{ old('settings.dynasty_gds_api_url', $settings['dynasty_gds_api_url'] ?? '') }}">
             </div>
 
@@ -355,6 +355,31 @@
               <label>Password</label>
               <input type="password" class="form-control" name="settings[dynasty_gds_password]"
                 value="{{ old('settings.dynasty_gds_password', $settings['dynasty_gds_password'] ?? '') }}">
+            </div>
+          @endif
+
+          {{-- Whitelabel --}}
+          @if (in_array('whitelabel', $supportProviders))
+            <h4 class="mb-2 mt-5">{{ env('PROVIDER_WHITELABEL', 'Whitelabel') }}</h4>
+            <hr class="mb-4">
+
+            <div class="form-group">
+              <label>API Url</label>
+              <input type="text" class="form-control" name="settings[whitelabel_api_url]"
+                placeholder="e.g. https://dev.whitelabel.com"
+                value="{{ old('settings.whitelabel_api_url', $settings['whitelabel_api_url'] ?? '') }}">
+            </div>
+
+            <div class="form-group">
+              <label>API Key (Token)</label>
+              <input type="text" class="form-control" name="settings[whitelabel_api_token]"
+                value="{{ old('settings.whitelabel_api_token', $settings['whitelabel_api_token'] ?? '') }}">
+            </div>
+
+            <div class="form-group">
+              <label>Callback Token</label>
+              <input type="text" class="form-control" name="settings[whitelabel_callback_token]"
+                value="{{ old('settings.whitelabel_callback_token', $settings['whitelabel_callback_token'] ?? '') }}">
             </div>
           @endif
 

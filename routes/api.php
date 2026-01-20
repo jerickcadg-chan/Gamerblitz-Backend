@@ -14,12 +14,14 @@ use App\Http\Controllers\Api\ForgotPassword;
 use App\Http\Controllers\Api\LapakGamingController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PageDescriptionController;
+use App\Http\Controllers\Api\Partner\OrderController as PartnerOrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductItemCategoryController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\VexaGameController;
+use App\Http\Controllers\Api\WhitelabelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -87,6 +89,7 @@ Route::get('blogs/{slug}', [BlogController::class, 'show']);
 Route::post('callback/lapakgaming/order', [LapakGamingController::class, 'orderCallback']);
 
 Route::post('callback/vexagame/order', [VexaGameController::class, 'orderCallback']);
+Route::post('callback/whitelabel/order', [WhitelabelController::class, 'orderCallback']);
 //     });
 // }
 
@@ -120,4 +123,14 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::get('order/{order}/auth', [OrderController::class, 'show']);
 
     Route::get('product-items/{productId}/auth', [ProductController::class, 'getProductItems']);
+});
+
+Route::middleware('partner-api')->group(function () {
+    Route::group(['prefix' => 'partner'], function () {
+        Route::get('/balance', [AuthController::class, 'myBalance']);
+        Route::get('/order/{code}', [PartnerOrderController::class, 'show']);
+        Route::post('/order', [PartnerOrderController::class, 'store']);
+        Route::get('/product', [PartnerOrderController::class, 'getProducts']);
+        Route::get('/product-item/{productId}', [PartnerOrderController::class, 'getProductItems']);
+    });
 });

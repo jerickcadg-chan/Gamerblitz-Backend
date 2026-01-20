@@ -81,6 +81,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::post('user/affiliate-withdraw/{affiliateWithdraw}', [AffiliateWithdrawController::class, 'process'])->name('user.affiliate-withdraw.process');
     Route::get('user/top-up-manual/{user}', [UserController::class, 'topUpManual'])->name('user.top-up-manual');
     Route::post('user/top-up-manual/{user}', [UserController::class, 'topUpManualStore'])->name('user.top-up-manual.store');
+    Route::post('user/update-api/{user}', [UserController::class, 'updateApi'])->name('user.update-api');
 
     // 2FA router
     Route::get('2fa', [App\Http\Controllers\Auth\TwoFactorAuthController::class, 'show'])->name('2fa.show');

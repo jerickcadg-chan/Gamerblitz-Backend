@@ -9,6 +9,7 @@ use App\Models\AffiliateHistory;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
 use App\Models\User;
+use App\Models\UserApi;
 use App\Services\BalanceService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -318,6 +319,26 @@ class UserController extends Controller
 
             return redirect()->back();
         }
+    }
+
+    public function updateApi(Request $request, User $user)
+    {
+        $request->validate([
+            'token' => 'required',
+            'callback_url' => 'required',
+            'callback_token' => 'required',
+        ]);
+
+        UserApi::updateOrCreate(
+            [
+                'user_id' => $user->id
+            ],
+            $request->all()
+        );
+
+        toast('User API Updated!', 'success');
+
+        return redirect()->back();
     }
 
     private function getUserIpBanReason(User $user, string $reason): string
