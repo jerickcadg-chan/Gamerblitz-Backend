@@ -106,7 +106,7 @@ class SyncLapakGaming extends Command
                     if (!$matchProduct) {
                         $msg = "LapakGaming: Product not found: name={$product->name} code={$product->provider_code} country={$product->provider_country}";
                         $this->line($msg);
-                        // $log->warning($msg);
+                        $log->warning($msg);
                         continue; // skip products not in provider's response
                     }
 
