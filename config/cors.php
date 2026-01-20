@@ -19,12 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'https://gpdsgameshop.com',
-        'https://chantest.gpdsgameshop.com',
-        'http://chantest.gpdsgameshop.com',
-        'https://test.gpdsgameshop.com',  // <CHANGE> Added test frontend domain
-    ],
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 

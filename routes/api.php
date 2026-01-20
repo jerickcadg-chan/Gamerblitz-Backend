@@ -17,7 +17,6 @@ use App\Http\Controllers\Api\PageDescriptionController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductItemCategoryController;
 use App\Http\Controllers\Api\ReviewController;
-use App\Http\Controllers\Api\Admin\AgentRankingController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\VexaGameController;
@@ -96,9 +95,6 @@ Route::post('app-log', [AppLogController::class, 'store']);
 Route::get('/page-description', [PageDescriptionController::class, 'index']);
 Route::get('/page-description/{slug}', [PageDescriptionController::class, 'show']);
 
-Route::get('agent-ranking', [AgentRankingController::class, 'index']);
-
-
 Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::put('me', [AuthController::class, 'updateMe']);
     Route::get('me', [AuthController::class, 'me']);
@@ -124,20 +120,4 @@ Route::middleware(['auth:sanctum', 'only_verified'])->group(function () {
     Route::get('order/{order}/auth', [OrderController::class, 'show']);
 
     Route::get('product-items/{productId}/auth', [ProductController::class, 'getProductItems']);
-});
-
-// <CHANGE> Ecommerce API routes
-Route::prefix('ecommerce')->group(function () {
-    Route::get('/categories', [\App\Http\Controllers\Api\EcommerceApiController::class, 'categories']);
-    Route::get('/products', [\App\Http\Controllers\Api\EcommerceApiController::class, 'products']);
-    Route::get('/products/{slug}', [\App\Http\Controllers\Api\EcommerceApiController::class, 'product']);
-    // <CHANGE> Add maintenance check route
-    Route::get('/maintenance-status', [\App\Http\Controllers\Api\EcommerceApiController::class, 'checkMaintenance']);
-});
-
-// Ecommerce Orders (requires auth)
-Route::middleware(['auth:sanctum'])->prefix('ecommerce')->group(function () {
-    Route::post('/orders', [\App\Http\Controllers\Api\EcommerceApiController::class, 'createOrder']);
-    Route::get('/orders', [\App\Http\Controllers\Api\EcommerceApiController::class, 'getUserOrders']);
-    Route::get('/orders/{orderNumber}', [\App\Http\Controllers\Api\EcommerceApiController::class, 'getOrder']);
 });

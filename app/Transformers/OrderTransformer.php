@@ -32,8 +32,7 @@ class OrderTransformer extends TransformerAbstract
      */
     public function transform(Order $order): array
     {
-        // <CHANGE> Handle ecommerce orders - include ecommerce data if available
-        $data = [
+        return [
             'id' => $order->id,
             'code' => $order->code,
             'created_at' => parse_date_time_full($order->created_at),
@@ -69,31 +68,16 @@ class OrderTransformer extends TransformerAbstract
             'expired_at' => $order->expired_at,
             'expired_at_raw' => $order->expired_at,
             'note' => $order->note,
-            // <CHANGE> Add ecommerce order flag
-            'is_ecommerce_order' => !empty($order->ecommerce_order_id),
-            'ecommerce_order_id' => $order->ecommerce_order_id,
         ];
-
-        return $data;
     }
 
-    // <CHANGE> Handle null productItem for ecommerce orders
-    public function includeProductItem(Order $order): Item|NullResource
+    public function includeProductItem(Order $order): Item
     {
-        // Skip productItem for ecommerce orders or if productItem is null
-        if (!empty($order->ecommerce_order_id) || !$order->productItem) {
-            return $this->null();
-        }
         return $this->item($order->productItem, new ProductItemTransformer);
     }
 
-    // <CHANGE> Handle null product for ecommerce orders
-    public function includeProduct(Order $order): Item|NullResource
+    public function includeProduct(Order $order): Item
     {
-        // Skip product for ecommerce orders or if productItem/product is null
-        if (!empty($order->ecommerce_order_id) || !$order->productItem || !$order->productItem->product) {
-            return $this->null();
-        }
         return $this->item($order->productItem->product, new ProductTransformer);
     }
 
@@ -106,13 +90,9 @@ class OrderTransformer extends TransformerAbstract
         return $this->null();
     }
 
-    // <CHANGE> Handle null paymentMethod
-    public function includePaymentMethod(Order $order): Item|NullResource
+    public function includePaymentMethod(Order $order): Item
     {
-        if ($order->paymentMethod) {
-            return $this->item($order->paymentMethod, new PaymentMethodTransformer());
-        }
-        return $this->null();
+        return $this->item($order->paymentMethod, new PaymentMethodTransformer());
     }
 
     public function includeUser(Order $order): NullResource|Item

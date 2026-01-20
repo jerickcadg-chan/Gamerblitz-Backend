@@ -297,19 +297,6 @@ class OrderService
 
     public function processOrder(Order $order, bool $sync = false)
     {
-        // Skip game processing for ecommerce orders - mark as on-process (not success until delivered)
-        if ($order->ecommerce_order_id) {
-            // Update ecommerce order status to processing
-            $ecommerceOrder = \App\Models\EcommerceOrder::find($order->ecommerce_order_id);
-            if ($ecommerceOrder) {
-                $ecommerceOrder->update(['status' => 'processing']);
-                \App\Http\Controllers\EcommerceOrderController::logStatusChange($ecommerceOrder, 'processing', 'Payment received');
-            }
-            // Mark payment order as on-process (not success - success is only when delivered)
-            $this->updateStatus($order, StatusConst::ON_PROCESS);
-            return;
-        }
-
         $productItem = $order->productItem;
         $provider = $productItem?->provider ?? $productItem->product->provider;
 

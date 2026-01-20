@@ -15,10 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // <CHANGE> Fix command name from set:expired to expired:order
-        $schedule->command('expired:order')->everyMinute();
-        // Add ecommerce order expiration
-        $schedule->command('ecommerce:cancel-expired-orders')->everyFiveMinutes();
+        $schedule->command('set:expired')->everyMinute();
+        // $schedule->command('app:sync-lapak-gaming')->everyMinute();
     }
 
     /**

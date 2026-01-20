@@ -6,10 +6,6 @@ use App\Constants\StatusConst;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-use App\Models\AffiliateHistory;
-
 
 class StatisticController extends Controller
 {
@@ -115,37 +111,4 @@ class StatisticController extends Controller
 
         return view('statistics.product', compact('orders', 'startDate', 'endDate'));
     }
-    
-
-
-public function showAffiliateStatistic()
-{
-    $affiliates = DB::table('affiliates as a')
-        ->join('users as u', 'u.id', '=', 'a.user_id')
-
-        ->leftJoin('affiliate_histories as ah', function ($join) {
-            $join->on('ah.affiliate_id', '=', 'a.id')
-                 ->where('ah.affiliateable_type', '=', 'App\\Models\\Order');
-        })
-
-        ->selectRaw('
-            a.id AS affiliate_id,
-            u.name AS affiliate_name,
-            u.email AS affiliate_email,
-            COALESCE(SUM(ah.amount), 0) AS net_total,
-            a.balance AS current_balance
-        ')
-
-        ->groupBy('a.id', 'u.name', 'u.email', 'a.balance')
-        ->havingRaw('net_total > 0')
-        ->orderByDesc('net_total')
-        ->get();
-
-    return view('statistics.affiliate', compact('affiliates'));
-}
-
-
-
-
-
 }
