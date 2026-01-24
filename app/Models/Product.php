@@ -96,6 +96,8 @@ class Product extends Model
         return match ($this->provider) {
             ProviderConstant::LAPAKGAMING => $this->provider_code,
             ProviderConstant::VEXAGAME => $this->provider_code_vexa,
+            ProviderConstant::DYNASTY_DGS => $this->provider_code_dynasty_dgs,
+            ProviderConstant::WHITELABEL => $this->provider_code_whitelabel,
             default => $this->provider_code,
         };
     }
