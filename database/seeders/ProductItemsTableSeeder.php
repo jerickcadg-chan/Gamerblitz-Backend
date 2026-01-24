@@ -18,7 +18,7 @@ class ProductItemsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = database_path('imports/product_items.sql');
+        $path = database_path('imports/product_items_v2.sql');
 
         if (! file_exists($path)) {
             $this->command->warn("SQL file not found at: {$path}");
