@@ -185,12 +185,14 @@ class SyncWhitelabel extends Command
             ->where('provider', ProviderConstant::WHITELABEL)
             ->first();
 
+        $priceRaw = (float) str_replace([',', '₱', ' '], '', $item['price']);
+
         $baseData = [
             'name'         => $item['name'],
             'status'       => 'active',
             'country_code' => 'ID',
             'provider'     => ProviderConstant::WHITELABEL,
-            'capital'      => $item['price'] * $exchangeRate,
+            'capital'      => $priceRaw * $exchangeRate,
             'sync_at'      => now(),
         ];
 
