@@ -156,7 +156,7 @@ class ProductController extends Controller
                 'name'             => $category['name'],
                 'slug'             => Str::slug($category['name']),
                 'code'             => $category['slug'],
-                'provider_code'    => $category['id'],
+                'provider_code_whitelabel'    => $category['id'],
                 'input_format'     => json_encode($category['input_format']),
             ];
 
