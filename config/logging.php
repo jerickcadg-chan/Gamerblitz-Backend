@@ -72,6 +72,12 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],        
 
+        'whitelabel' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/whitelabel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],        
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
