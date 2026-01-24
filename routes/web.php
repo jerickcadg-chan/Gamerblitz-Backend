@@ -26,6 +26,7 @@ use App\Http\Controllers\SliderController;
 use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\WhitelabelController;
 use App\Models\BlogCategory;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/lapakgaming/products', [LapakGamingController::class, 'index'])->name('lapakgaming.products');
+    Route::get('/whitelabel/products', [WhitelabelController::class, 'index'])->name('whitelabel.products');
 
     // Voucher router
     Route::get('/voucher/import', [VoucherController::class, 'import'])->name('voucher.import');
@@ -100,6 +102,7 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
 
     // product
     Route::get('product/sync/lapak-gaming', [ProductController::class, 'createFromLG'])->name('product.sync.lapak-gaming');
+    Route::get('product/sync/whitelabel', [ProductController::class, 'createFromWL'])->name('product.sync.whitelabel');
 
     // product item
     Route::get('product-item/price-form', [ProductItemPriceController::class, 'index'])->name('product-item.price-form');

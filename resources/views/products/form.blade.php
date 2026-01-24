@@ -79,7 +79,7 @@
           </div>
 
           <div class="row">
-            @if (in_array('lapakgaming', $supportProviders) || $providerName === 'manual')
+            @if (in_array('lapakgaming', $supportProviders))
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="provider_code_input" class="required">Provider Product Code (Lapakgaming)</label>

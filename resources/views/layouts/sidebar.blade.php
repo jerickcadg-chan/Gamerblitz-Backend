@@ -51,6 +51,12 @@
                     href="{{ route('lapakgaming.products') }}"> Product (LapakGaming) </a>
                 </li>
               @endif
+              @if (in_array('whitelabel', explode(',', env('SUPPORTED_PROVIDER'))))
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'whitelabel.products' ? 'active' : null }}"
+                    href="{{ route('whitelabel.products') }}"> Product ({{ env('PROVIDER_WHITELABEL', 'Whitelabel') }}) </a>
+                </li>
+              @endif
             @endcan
             @can('View Product Item')
               <li class="nav-item">

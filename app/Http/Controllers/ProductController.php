@@ -6,6 +6,7 @@ use App\Constants\CountryConstant;
 use App\Constants\ProviderConstant;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Services\PictureService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -127,6 +128,44 @@ class ProductController extends Controller
         }
 
         toast('Failed to create from LapakGaming', 'error');
+        return redirect()->back();
+    }
+
+    public function createFromWL(Request $request)
+    {
+        $whitelabelCode = $request->whitelabel_code;
+
+        if ($whitelabelCode) {
+            $whitelabelCategories = collect(Cache::get("whitelabel_categories"));
+
+            if (!$whitelabelCategories) {
+                toast('Data not found, please filter again and retry the process', 'error');
+                return back();
+            }
+
+            $category = $whitelabelCategories
+                ->where('id', $whitelabelCode)
+                ->first();
+
+            if (!$category) {
+                toast('Data not found, please filter again and retry the process', 'error');
+                return back();
+            }
+
+            $defaults = [
+                'name'             => $category['name'],
+                'slug'             => Str::slug($category['name']),
+                'code'             => $category['slug'],
+                'provider_code'    => $category['id'],
+                'input_format'     => json_encode($category['input_format']),
+            ];
+
+            return redirect()
+                ->route('product.create')
+                ->withInput($defaults);
+        }
+
+        toast('Failed to create from ' . env('PROVIDER_WHITELABEL', 'Whitelabel'), 'error');type: 
         return redirect()->back();
     }
 
