@@ -18,12 +18,10 @@
       <div class="card-body table-responsive">
         <form method="get">
           <div class="row mb-2">
-            @if (request('country'))
-              <div class="col-md-4 mb-2">
-                <input type="text" class="form-control" id="searchInput" name="name"
-                  placeholder="Search product name" value="{{ request('name') }}">
-              </div>
-            @endif
+            <div class="col-md-4 mb-2">
+              <input type="text" class="form-control" id="searchInput" name="name"
+                placeholder="Search product name" value="{{ request('name') }}">
+            </div>
             <div class="col-md-4">
               <div class="pt-2">
                 <button type="submit" class="btn btn-primary btn-sm">Search</button>
