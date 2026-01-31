@@ -86,7 +86,7 @@ class OrderController extends Controller
             'status',
             // 'provider',
             // 'provider_code',
-            // 'provider_country',
+            'provider_country',
             // 'markup_user',
             // 'markup_reseller_silver',
             // 'markup_reseller_gold',
