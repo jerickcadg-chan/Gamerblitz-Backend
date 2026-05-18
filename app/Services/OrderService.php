@@ -351,6 +351,28 @@ class OrderService
 
     public function updateStatus(Order $order, $status, $note = null): void
     {
+        $order->refresh();
+
+        $staleDowngradeStatuses = [
+            StatusConst::PENDING,
+            StatusConst::PAID,
+            StatusConst::ON_PROCESS,
+            StatusConst::DELAY,
+            StatusConst::EXPIRED,
+        ];
+
+        if ($order->status === StatusConst::SUCCESS && in_array($status, $staleDowngradeStatuses, true)) {
+            Log::warning('Skipped stale order status downgrade after success', [
+                'order_id' => $order->id,
+                'order_code' => $order->code,
+                'current_status' => $order->status,
+                'attempted_status' => $status,
+                'note' => $note,
+            ]);
+
+            return;
+        }
+
         $order->status = $status;
         $order->save();
 
