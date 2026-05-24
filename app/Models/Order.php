@@ -148,6 +148,16 @@ class Order extends Model implements IsFilterable
         return $this->belongsTo(PaymentMethod::class);
     }
 
+    public function affiliate(): BelongsTo
+    {
+        return $this->belongsTo(Affiliate::class);
+    }
+
+    public function affiliateHistory(): HasOne
+    {
+        return $this->hasOne(AffiliateHistory::class, 'affiliateable_id')->where('affiliateable_type', self::class);
+    }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);

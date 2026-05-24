@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Constants\StatusConst;
 use App\Events\UserActivityLogged;
-use App\Mail\SendOrderNotif;
-use App\Models\Balance;
-use App\Models\BalanceHistory;
+use App\Models\Order;
 use App\Models\PaymentMethod;
-use App\Services\BalanceService;
+use App\Services\OrderService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Models\Order;
-use App\Services\DynastyDgsService;
-use App\Services\OrderService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -24,12 +22,13 @@ class OrderController extends Controller
         $this->title = 'Order';
 
         $this->middleware(['permission:View Order'])->only('index', 'show');
+        $this->middleware(['permission:Process Order'])->only('setStatus');
     }
 
     public function index()
     {
         $orders = Order::latest()
-            ->with('productItem', 'user', 'updater')
+            ->with('productItem', 'user', 'updater', 'paymentMethod', 'affiliate.user', 'affiliateHistory')
             ->when(request('cust_account'), function ($query) {
                 return $query->where('cust_account', 'like', '%'. request('cust_account') .'%');
             })
@@ -59,19 +58,53 @@ class OrderController extends Controller
 
         $title = $this->title;
 
-        return view('orders.index', compact('orders', 'title'));
+        // Calculate order statistics - wrapped in try-catch for safety
+        $orderStats = $this->getOrderStats();
+
+        return view('orders.index', compact('orders', 'title', 'orderStats'));
     }
 
     public function show(Order $order)
     {
         $title = $this->title;
+        $order->loadMissing('paymentMethod', 'affiliate.user', 'affiliateHistory');
 
-        $mutations = BalanceHistory::latest()
-            ->where('balanceable_id', $order->id)
-            ->where('balanceable_type', 'App\Models\Order')
-            ->get();
+        // Calculate profit breakdown for this order with gateway fees and affiliate bonus
+        $balancePaymentMethods = ['gpds coin', 'gpds_coin', 'balance', 'wallet'];
+        $paymentMethodName = strtolower($order->paymentMethod?->name ?? '');
+        $hasGatewayFee = !in_array($paymentMethodName, $balancePaymentMethods) && $order->turnover > 0;
 
-        return view('orders.show', compact('order', 'mutations', 'title'));
+        $gatewayFeeRate = $hasGatewayFee ? $this->getGatewayFeeRate($paymentMethodName) : 0;
+
+        $gatewayFee = $order->turnover * $gatewayFeeRate;
+        $vatOnFee = $gatewayFee * 0.12;
+        $affiliateBonus = $order->affiliateHistory?->amount ?? 0;
+        $netProfit = $order->total_income - $gatewayFee - $vatOnFee - $affiliateBonus;
+
+        $profitBreakdown = [
+            'gross_profit' => $order->total_income,
+            'gateway_fee' => $gatewayFee,
+            'vat_on_fee' => $vatOnFee,
+            'affiliate_bonus' => $affiliateBonus,
+            'net_profit' => $netProfit,
+            'has_gateway_fee' => $hasGatewayFee,
+        ];
+
+        // Try to get balance mutations if model exists
+        $mutations = collect();
+        try {
+            $balanceHistoryClass = 'App\\Models\\BalanceHistory';
+            if (class_exists($balanceHistoryClass)) {
+                $mutations = $balanceHistoryClass::latest()
+                    ->where('balanceable_id', $order->id)
+                    ->where('balanceable_type', 'App\Models\Order')
+                    ->get();
+            }
+        } catch (\Exception $e) {
+            Log::warning('BalanceHistory not available: ' . $e->getMessage());
+        }
+
+        return view('orders.show', compact('order', 'mutations', 'title', 'profitBreakdown'));
     }
 
     public function setStatus(Request $request, OrderService $orderService)
@@ -87,19 +120,24 @@ class OrderController extends Controller
         $order->save();
 
         // Log user action
-        event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'order_updated:' . $order->code));
+        if (class_exists('App\Events\UserActivityLogged')) {
+            event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'order_updated:' . $order->code));
+        }
 
         $orderService->updateStatus($order, $request->status);
 
         if ($order->paymentMethod->slug == PaymentMethod::BALANCE && in_array($order->status, [StatusConst::FAILED, StatusConst::REFUNDED])) {
-            $balance = Balance::where('user_id', $order->user_id)->first();
-
-            BalanceService::update($balance, [
-                'balanceable_type' => Order::class,
-                'balanceable_id' => $order->id,
-                'amount' => $order->total_price,
-                'description' => "Refund $order->code"
-            ]);
+            try {
+                $balance = \App\Models\Balance::where('user_id', $order->user_id)->first();
+                \App\Services\BalanceService::update($balance, [
+                    'balanceable_type' => Order::class,
+                    'balanceable_id' => $order->id,
+                    'amount' => $order->total_price,
+                    'description' => "Refund $order->code"
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Balance refund failed: ' . $e->getMessage());
+            }
         }
 
         toast('Changed order status to '. $order->status, 'success');
@@ -115,8 +153,9 @@ class OrderController extends Controller
             return redirect()->back();
         }
 
-        // Log user action
-        event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'order_processed:' . $order->code));
+        if (class_exists('App\Events\UserActivityLogged')) {
+            event(new UserActivityLogged(auth()->user()->id, request()->ip(), 'order_processed:' . $order->code));
+        }
 
         $order->updated_by = auth()->user()->id;
         $order->save();
@@ -126,5 +165,195 @@ class OrderController extends Controller
 
         toast('Order is being processed', 'success');
         return redirect()->back();
+    }
+
+    /**
+     * Get gateway fee rate based on payment method name
+     */
+    private function getGatewayFeeRate(string $paymentMethodName): float
+    {
+        if (str_contains($paymentMethodName, 'gcash')) {
+            return 0.023;
+        } elseif (str_contains($paymentMethodName, 'grab') || str_contains($paymentMethodName, 'shopee')) {
+            return 0.02;
+        } elseif (str_contains($paymentMethodName, 'maya') || str_contains($paymentMethodName, 'paymaya')) {
+            return 0.018;
+        } elseif (str_contains($paymentMethodName, 'card') || str_contains($paymentMethodName, 'credit') || str_contains($paymentMethodName, 'debit')) {
+            return 0.032;
+        } elseif (str_contains($paymentMethodName, 'bank') || str_contains($paymentMethodName, 'transfer')) {
+            return 0.01;
+        } else {
+            return 0.023;
+        }
+    }
+
+    /**
+     * Get order statistics for the index page
+     */
+    private function getOrderStats(): array
+    {
+        try {
+            $todayStart = Carbon::today()->startOfDay();
+            $todayEnd = Carbon::today()->endOfDay();
+            $yesterdayStart = Carbon::yesterday()->startOfDay();
+            $yesterdayEnd = Carbon::yesterday()->endOfDay();
+            $weekStart = Carbon::now()->startOfWeek();
+            $weekEnd = Carbon::now()->endOfWeek();
+            $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
+            $lastWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+            $monthStart = Carbon::now()->startOfMonth();
+            $monthEnd = Carbon::now()->endOfMonth();
+            $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+            $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
+
+            $ordersToday = Order::whereBetween('created_at', [$todayStart, $todayEnd])->where('status', 'success')->count();
+            $ordersYesterday = Order::whereBetween('created_at', [$yesterdayStart, $yesterdayEnd])->where('status', 'success')->count();
+            $ordersThisWeek = Order::whereBetween('created_at', [$weekStart, $weekEnd])->where('status', 'success')->count();
+            $ordersLastWeek = Order::whereBetween('created_at', [$lastWeekStart, $lastWeekEnd])->where('status', 'success')->count();
+            $ordersThisMonth = Order::whereBetween('created_at', [$monthStart, $monthEnd])->where('status', 'success')->count();
+            $ordersLastMonth = Order::whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->where('status', 'success')->count();
+            $mustActionOrders = Order::whereIn('status', ['pending', 'on-process', 'delayed'])->count();
+
+            // Most ordered products this month
+            $mostOrderedProducts = Order::whereBetween('orders.created_at', [$monthStart, $monthEnd])
+                ->where('orders.status', 'success')
+                ->join('product_items', 'orders.product_item_id', '=', 'product_items.id')
+                ->join('products', 'product_items.product_id', '=', 'products.id')
+                ->select('products.id', 'products.name', DB::raw('COUNT(*) as order_count'))
+                ->groupBy('products.id', 'products.name')
+                ->orderByDesc('order_count')
+                ->limit(3)
+                ->get();
+
+            // Highest earning products
+            $highestEarningProducts = $this->getHighestEarningProducts($monthStart, $monthEnd, 3);
+
+            // Top user by amount
+            $topUserMonthByAmount = Order::whereBetween('orders.created_at', [$monthStart, $monthEnd])
+                ->where('orders.status', 'success')
+                ->join('users', 'orders.user_id', '=', 'users.id')
+                ->select('users.id', 'users.name', DB::raw('SUM(orders.turnover) as total_amount'), DB::raw('COUNT(*) as order_count'))
+                ->groupBy('users.id', 'users.name')
+                ->orderByDesc('total_amount')
+                ->first();
+
+            // Top user by orders
+            $topUserMonthByOrders = Order::whereBetween('orders.created_at', [$monthStart, $monthEnd])
+                ->where('orders.status', 'success')
+                ->join('users', 'orders.user_id', '=', 'users.id')
+                ->select('users.id', 'users.name', DB::raw('COUNT(*) as order_count'))
+                ->groupBy('users.id', 'users.name')
+                ->orderByDesc('order_count')
+                ->first();
+
+            // Status breakdown
+            $orderStatusCounts = Order::whereBetween('created_at', [$monthStart, $monthEnd])
+                ->select('status', DB::raw('COUNT(*) as count'))
+                ->groupBy('status')
+                ->pluck('count', 'status')
+                ->toArray();
+
+            $allStatuses = config('array.order.status', ['success', 'failed', 'on-process', 'pending', 'delayed', 'expired']);
+            $statusBreakdown = [];
+            foreach ($allStatuses as $status) {
+                $statusBreakdown[$status] = $orderStatusCounts[$status] ?? 0;
+            }
+
+            $totalOrdersThisMonth = array_sum($statusBreakdown);
+            $successRate = $totalOrdersThisMonth > 0
+                ? round(($statusBreakdown['success'] ?? 0) / $totalOrdersThisMonth * 100, 1)
+                : 0;
+
+            return [
+                'orders_today' => $ordersToday,
+                'orders_yesterday' => $ordersYesterday,
+                'orders_today_change' => $ordersYesterday > 0 ? round((($ordersToday - $ordersYesterday) / $ordersYesterday) * 100, 1) : ($ordersToday > 0 ? 100 : 0),
+                'orders_this_week' => $ordersThisWeek,
+                'orders_last_week' => $ordersLastWeek,
+                'orders_week_change' => $ordersLastWeek > 0 ? round((($ordersThisWeek - $ordersLastWeek) / $ordersLastWeek) * 100, 1) : ($ordersThisWeek > 0 ? 100 : 0),
+                'orders_this_month' => $ordersThisMonth,
+                'orders_last_month' => $ordersLastMonth,
+                'orders_month_change' => $ordersLastMonth > 0 ? round((($ordersThisMonth - $ordersLastMonth) / $ordersLastMonth) * 100, 1) : ($ordersThisMonth > 0 ? 100 : 0),
+                'must_action_orders' => $mustActionOrders,
+                'most_ordered_products' => $mostOrderedProducts,
+                'highest_earning_products' => $highestEarningProducts,
+                'top_user_month_amount' => $topUserMonthByAmount,
+                'top_user_month_orders' => $topUserMonthByOrders,
+                'success_rate' => $successRate,
+                'status_breakdown' => $statusBreakdown,
+                'total_orders_this_month' => $totalOrdersThisMonth,
+            ];
+        } catch (\Exception $e) {
+            Log::error('getOrderStats failed: ' . $e->getMessage());
+            return [
+                'orders_today' => 0, 'orders_yesterday' => 0, 'orders_today_change' => 0,
+                'orders_this_week' => 0, 'orders_last_week' => 0, 'orders_week_change' => 0,
+                'orders_this_month' => 0, 'orders_last_month' => 0, 'orders_month_change' => 0,
+                'must_action_orders' => 0,
+                'most_ordered_products' => collect(),
+                'highest_earning_products' => [],
+                'top_user_month_amount' => null,
+                'top_user_month_orders' => null,
+                'success_rate' => 0,
+                'status_breakdown' => [],
+                'total_orders_this_month' => 0,
+            ];
+        }
+    }
+
+    /**
+     * Get highest earning products with gateway fee calculations
+     */
+    private function getHighestEarningProducts($startDate, $endDate, $limit = 3)
+    {
+        try {
+            $orders = Order::whereBetween('orders.created_at', [$startDate, $endDate])
+                ->where('orders.status', 'success')
+                ->join('product_items', 'orders.product_item_id', '=', 'product_items.id')
+                ->join('products', 'product_items.product_id', '=', 'products.id')
+                ->leftJoin('payment_methods', 'orders.payment_method_id', '=', 'payment_methods.id')
+                ->select(
+                    'products.id',
+                    'products.name',
+                    'orders.total_income',
+                    'orders.turnover',
+                    'payment_methods.name as payment_method_name'
+                )
+                ->get();
+
+            $productProfits = [];
+            $balancePaymentMethods = ['gpds coin', 'gpds_coin', 'balance', 'wallet'];
+
+            foreach ($orders as $order) {
+                $productId = $order->id;
+                $productName = $order->name;
+                $paymentMethodName = strtolower($order->payment_method_name ?? '');
+
+                $hasGatewayFee = !in_array($paymentMethodName, $balancePaymentMethods) && $order->turnover > 0;
+                $gatewayFeeRate = $hasGatewayFee ? $this->getGatewayFeeRate($paymentMethodName) : 0;
+
+                $gatewayFee = $order->turnover * $gatewayFeeRate;
+                $vatOnFee = $gatewayFee * 0.12;
+                $netProfit = $order->total_income - $gatewayFee - $vatOnFee;
+
+                if (!isset($productProfits[$productId])) {
+                    $productProfits[$productId] = [
+                        'id' => $productId,
+                        'name' => $productName,
+                        'total_profit' => 0,
+                    ];
+                }
+                $productProfits[$productId]['total_profit'] += $netProfit;
+            }
+
+            usort($productProfits, function ($a, $b) {
+                return $b['total_profit'] <=> $a['total_profit'];
+            });
+
+            return array_slice($productProfits, 0, $limit);
+        } catch (\Exception $e) {
+            Log::error('getHighestEarningProducts failed: ' . $e->getMessage());
+            return [];
+        }
     }
 }

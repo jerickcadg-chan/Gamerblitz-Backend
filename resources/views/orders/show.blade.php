@@ -72,7 +72,53 @@
               </tr>
               <tr>
                 <th>Discount</th>
-                <td>{{ currency_format($order->discount_price) }}</td>
+                <td>
+                  @php
+                    // Calculate actual discount from price difference if discount_price is 0
+                    $actualDiscount = $order->discount_price > 0 
+                        ? $order->discount_price 
+                        : round(($order->price * $order->qty) - $order->turnover - $order->admin_fee, 2);
+                    $actualDiscount = max(0, $actualDiscount); // Ensure non-negative
+                    
+                    // Get streamer code - try relationship first, then direct query
+                    $streamerCode = null;
+                    if ($order->streamer_id) {
+                        if ($order->streamer) {
+                            $streamerCode = $order->streamer->code;
+                        } else {
+                            // Query directly without soft delete scope
+                            $streamerRecord = \DB::table('streamers')->where('id', $order->streamer_id)->first();
+                            $streamerCode = $streamerRecord?->code;
+                        }
+                    }
+                    
+                    // Get voucher code - try relationship first, then direct query
+                    $voucherCode = null;
+                    if ($order->discount_id) {
+                        if ($order->discount) {
+                            $voucherCode = $order->discount->code;
+                        } else {
+                            // Query directly without soft delete scope
+                            $discountRecord = \DB::table('discounts')->where('id', $order->discount_id)->first();
+                            $voucherCode = $discountRecord?->code;
+                        }
+                    }
+                  @endphp
+                  {{ currency_format($actualDiscount) }}
+                  @if($order->streamer_id)
+                    @if($streamerCode)
+                      <span class="badge bg-info ms-2">Streamercode ({{ $streamerCode }})</span>
+                    @else
+                      <span class="badge bg-secondary ms-2">Streamercode (ID: {{ $order->streamer_id }})</span>
+                    @endif
+                  @elseif($order->discount_id)
+                    @if($voucherCode)
+                      <span class="badge bg-primary ms-2">Voucher ({{ $voucherCode }})</span>
+                    @else
+                      <span class="badge bg-secondary ms-2">Voucher (ID: {{ $order->discount_id }})</span>
+                    @endif
+                  @endif
+                </td>
               </tr>
               <tr>
                 <th>Turnover</th>
@@ -91,9 +137,32 @@
                 <td>{{ currency_format($order->capital) }}</td>
               </tr>
               <tr>
-                <th>Profit</th>
+                <th>Gross Profit</th>
                 <td>{{ currency_format($order->total_income) }}</td>
               </tr>
+              {{-- Gateway Fee, VAT, Net Profit --}}
+              <tr class="table-warning">
+                <th>Gateway Fee</th>
+                <td class="text-danger">-{{ currency_format($profitBreakdown['gateway_fee']) }}</td>
+              </tr>
+              <tr class="table-warning">
+                <th>VAT on Fee (12%)</th>
+                <td class="text-danger">-{{ currency_format($profitBreakdown['vat_on_fee']) }}</td>
+              </tr>
+              <tr class="table-warning">
+                <th>
+                  Affiliate Bonus
+                  @if($order->affiliate)
+                    ({{ $order->affiliate->code }} - {{ $order->affiliate->user?->name ?? '-' }})
+                  @endif
+                </th>
+                <td class="text-danger">-{{ currency_format($profitBreakdown['affiliate_bonus'] ?? 0) }}</td>
+              </tr>
+              <tr class="table-success">
+                <th><strong>Net Profit</strong></th>
+                <td><strong class="text-success">{{ currency_format($profitBreakdown['net_profit']) }}</strong></td>
+              </tr>
+              {{-- END --}}
               <tr>
                 <th>Payment Method</th>
                 <td>{{ strtoupper($order->paymentMethod?->name) }}</td>
