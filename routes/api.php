@@ -90,6 +90,8 @@ Route::post('callback/lapakgaming/order', [LapakGamingController::class, 'orderC
 
 Route::post('callback/vexagame/order', [VexaGameController::class, 'orderCallback']);
 Route::post('callback/whitelabel/order', [WhitelabelController::class, 'orderCallback']);
+
+Route::get('reseller-stats', [\App\Http\Controllers\Api\ResellerStatsController::class, 'stats']);
 //     });
 // }
 

@@ -50,11 +50,11 @@ class SyncLapakGaming extends Command
 
         try {
             if (!$token) {
-                throw new \Exception('Missing LapakGaming api token in setting');
+                $log->warning('SyncLapakGaming: Missing API token. Skipping.'); $this->warn('Missing LapakGaming API token. Skipping.'); Cache::forget('lapakgaming-sync'); return;
             }
 
             if (!$baseUrl) {
-                throw new \Exception('Missing LapakGaming api url in setting');
+                $log->warning('SyncLapakGaming: Missing API URL. Skipping.'); $this->warn('Missing LapakGaming API URL. Skipping.'); Cache::forget('lapakgaming-sync'); return;
             }
 
             $categoriesUrl = $baseUrl . '/api/category';       // e.g., Mobile Legends, Genshin Impact

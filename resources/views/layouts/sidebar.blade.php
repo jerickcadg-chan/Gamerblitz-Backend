@@ -82,6 +82,48 @@
         </a>
       </li>
     @endcan
+    {{-- eCommerce Menu - Only show if routes exist --}}
+    @if(Route::has('ecommerce.dashboard'))
+      @canany(['View Ecommerce Category', 'View Ecommerce Product', 'View Ecommerce Order'])
+        <li class="nav-item {{ in_array($activePage, ['ecommerce_dashboard', 'ecommerce_category', 'ecommerce_product', 'ecommerce_order']) ? 'active' : null }}">
+          <a class="nav-link" data-bs-toggle="collapse" href="#ecommerce-pages" aria-expanded="false"
+            aria-controls="ecommerce-pages">
+            <span class="menu-title">eCommerce</span>
+            <i class="menu-arrow"></i>
+            <i class="mdi mdi-cart menu-icon"></i>
+          </a>
+          <div class="{{ in_array($activePage, ['ecommerce_dashboard', 'ecommerce_category', 'ecommerce_product', 'ecommerce_order']) ? 'show' : null }} collapse"
+            id="ecommerce-pages">
+            <ul class="nav flex-column sub-menu">
+              @can('View Ecommerce Order')
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'ecommerce_dashboard' ? 'active' : null }}"
+                    href="{{ route('ecommerce.dashboard') }}"> Dashboard </a>
+                </li>
+              @endcan
+              @can('View Ecommerce Order')
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'ecommerce_order' ? 'active' : null }}"
+                    href="{{ route('ecommerce_order.index') }}"> Orders </a>
+                </li>
+              @endcan
+              @can('View Ecommerce Product')
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'ecommerce_product' ? 'active' : null }}"
+                    href="{{ route('ecommerce_product.index') }}"> Products </a>
+                </li>
+              @endcan
+              @can('View Ecommerce Category')
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'ecommerce_category' ? 'active' : null }}"
+                    href="{{ route('ecommerce_category.index') }}"> Categories </a>
+                </li>
+              @endcan
+            </ul>
+          </div>
+        </li>
+      @endcan
+    @endif
     @canany(['View Discount', 'View Slider'])
       <li class="nav-item {{ in_array($activePage, config('array.menu.promo')) ? 'active' : null }}">
         <a class="nav-link" data-bs-toggle="collapse" href="#promo-pages" aria-expanded="false"
@@ -104,17 +146,21 @@
                   Slider </a>
               </li>
             @endcan
-            @can('View Flash Sales')
-              <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'flash_sale' ? 'active' : null }}"
-                  href="{{ route('flash_sale.index') }}">Flash Sales</a>
-              </li>
-            @endcan
+            @if(Route::has('flash_sale.index'))
+              @can('View Flash Sales')
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'flash_sale' ? 'active' : null }}"
+                    href="{{ route('flash_sale.index') }}">Flash Sales</a>
+                </li>
+              @endcan
+            @endif
             @can('View Blog')
-              <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'page_description' ? 'active' : null }}"
-                  href="{{ route('page-descriptions.index') }}"> Page Description </a>
-              </li>
+              @if(Route::has('page-descriptions.index'))
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'page_description' ? 'active' : null }}"
+                    href="{{ route('page-descriptions.index') }}"> Page Description </a>
+                </li>
+              @endif
             @endcan
           </ul>
         </div>
@@ -151,14 +197,24 @@
               <a class="nav-link {{ $activePage == 'statistic_order' ? 'active' : null }}"
                 href="{{ route('statistic.order') }}"> Statistic Order </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}"
-                href="{{ route('statistic.user') }}"> Statistic User </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {{ $activePage == 'statistic_product' ? 'active' : null }}"
-                href="{{ route('statistic.product') }}"> Statistic Product </a>
-            </li>
+            @if(Route::has('statistic.user'))
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'statistic_user' ? 'active' : null }}"
+                  href="{{ route('statistic.user') }}"> Statistic User </a>
+              </li>
+            @endif
+            @if(Route::has('statistic.product'))
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'statistic_product' ? 'active' : null }}"
+                  href="{{ route('statistic.product') }}"> Statistic Product </a>
+              </li>
+            @endif
+            @if(Route::has('statistic.affiliate'))
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'statistic_affiliate' ? 'active' : null }}"
+                  href="{{ route('statistic.affiliate') }}"> Statistic Affiliate </a>
+              </li>
+            @endif
           </ul>
         </div>
       </li>
@@ -191,16 +247,54 @@
                   Permissions </a>
               </li>
             @endcan
-            @can('View User')
-              <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'affiliate_withdraw' ? 'active' : null }}"
-                  href="{{ route('user.affiliate-withdraw') }}"> Affiliate Withdraw </a>
-              </li>
-            @endcan
+            @if(Route::has('user.affiliate-withdraw'))
+              @can('View User')
+                <li class="nav-item">
+                  <a class="nav-link {{ $activePage == 'affiliate_withdraw' ? 'active' : null }}"
+                    href="{{ route('user.affiliate-withdraw') }}"> Affiliate Withdraw </a>
+                </li>
+              @endcan
+            @endif
           </ul>
         </div>
       </li>
     @endcan
+    {{-- Streamer Program - Only show if routes exist --}}
+    @if(Route::has('streamer.index'))
+      <li class="nav-item {{ in_array($activePage, ["streamer", "streamer_withdraw"]) ? "active" : null }}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#streamer-menu" aria-expanded="false"
+          aria-controls="streamer-menu">
+          <span class="menu-title">Streamer Program</span>
+          <i class="menu-arrow"></i>
+          <i class="mdi mdi-video menu-icon"></i>
+        </a>
+        <div class="collapse {{ in_array($activePage, ["streamer", "streamer_withdraw"]) ? "show" : null }}" id="streamer-menu">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item">
+              <a class="nav-link {{ $activePage == "streamer" ? "active" : null }}"
+                href="{{ route("streamer.index") }}"> Streamers </a>
+            </li>
+            @if(Route::has('streamer-withdraw.index'))
+              <li class="nav-item">
+                <a class="nav-link {{ $activePage == "streamer_withdraw" ? "active" : null }}"
+                  href="{{ route("streamer-withdraw.index") }}"> Streamer Withdraw </a>
+              </li>
+            @endif
+          </ul>
+        </div>
+      </li>
+    @endif
+    {{-- Resellers - Only show if route exists --}}
+    @if(Route::has('reseller.index'))
+      @can('View Reseller')
+        <li class="nav-item {{ $activePage == 'reseller' ? 'active' : null }}">
+          <a class="nav-link" href="{{ route('reseller.index') }}">
+            <span class="menu-title">Resellers</span>
+            <i class="mdi mdi-account-group menu-icon"></i>
+          </a>
+        </li>
+      @endcan
+    @endif
     @can('View Payment Methods')
       <li class="nav-item {{ $activePage == 'payment_method' ? 'active' : null }}">
         <a class="nav-link" href="{{ route('payment_method.index') }}">
@@ -249,11 +343,13 @@
         </a>
       </li>
     @endcan
-    <li class="nav-item {{ $activePage == '2fa' ? 'active' : null }}">
-      <a class="nav-link" href="{{ route('2fa.show') }}">
-        <span class="menu-title">Two-Factor Auth</span>
-        <i class="mdi mdi-shield menu-icon"></i>
-      </a>
-    </li>
+    @if(Route::has('2fa.show'))
+      <li class="nav-item {{ $activePage == '2fa' ? 'active' : null }}">
+        <a class="nav-link" href="{{ route('2fa.show') }}">
+          <span class="menu-title">Two-Factor Auth</span>
+          <i class="mdi mdi-shield menu-icon"></i>
+        </a>
+      </li>
+    @endif
   </ul>
 </nav>

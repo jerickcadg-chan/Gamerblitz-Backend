@@ -15,8 +15,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('set:expired')->everyMinute();
-        // $schedule->command('app:sync-lapak-gaming')->everyMinute();
+        $schedule->command('expired:order')->everyMinute();
+
+        // Sync whitelabel item prices & status every 5 minutes
+        $schedule->command('app:sync-whitelabel')->everyFiveMinutes();
     }
 
     /**

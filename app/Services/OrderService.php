@@ -55,8 +55,14 @@ class OrderService
             $authUser = Auth::user();
 
             $affiliate = null;
-            if ($request->query('affiliate')) {
-                $affiliate = Affiliate::where('code', $request->query('affiliate'))->first();
+            $affiliateCode = $request->query('affiliate')
+                ?? $request->input('affiliate')
+                ?? request()->cookie('affiliate');
+
+            if ($affiliateCode) {
+                $affiliate = Affiliate::where('code', $affiliateCode)
+                    ->where('status', 'active')
+                    ->first();
             }
 
             $productItem = ProductItem::with('product')->find($request->product_item_id);
@@ -436,6 +442,13 @@ class OrderService
 
         try {
             DB::beginTransaction();
+
+            if (AffiliateHistory::where('affiliateable_type', Order::class)
+                ->where('affiliateable_id', $order->id)
+                ->exists()) {
+                DB::commit();
+                return;
+            }
 
             $affiliate = Affiliate::lockForUpdate()->where('status', 'active')->findOrFail($order->affiliate_id);
 

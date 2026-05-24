@@ -2,97 +2,246 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\GatewayFeeConstant;
 use App\Constants\StatusConst;
+use App\Models\Deposit;
 use App\Models\Order;
-use Illuminate\Contracts\View\View;
+use App\Models\Product;
+use App\Models\Setting;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function index()
     {
-        $this->middleware('auth');
-    }
+        $selectedMonth = request('month', Carbon::now()->month);
+        $selectedYear = request('year', Carbon::now()->year);
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return View
-     */
-    public function index(): View
-    {
-        $selectedMonth = request('month') ?? today()->format('m');
-        $selectedYear = request('year') ?? today()->format('Y');
+        $startDate = Carbon::createFromDate($selectedYear, $selectedMonth, 1)->startOfMonth();
+        $endDate = Carbon::createFromDate($selectedYear, $selectedMonth, 1)->endOfMonth();
 
-        $orderToday = $this->getOrderToday();
-        $orderSum = $this->getOrderSum($selectedMonth, $selectedYear);
-        $orderPastWeek = $this->getOrderPastWeek();
+        $todayStart = Carbon::today()->startOfDay();
+        $todayEnd = Carbon::today()->endOfDay();
 
-        $data = compact('orderSum', 'orderToday', 'orderPastWeek', 'selectedYear', 'selectedMonth');
+        // Orders for selected month
+        $orderSum = Order::where('status', StatusConst::SUCCESS)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('COUNT(*) as total, COALESCE(SUM(turnover), 0) as turnover, COALESCE(SUM(total_income), 0) as profit')
+            ->first();
 
-        return view('home', $data);
-    }
+        $orderSum['profitMargin'] = $orderSum['turnover'] > 0 
+            ? round(($orderSum['profit'] / $orderSum['turnover']) * 100, 1) 
+            : 0;
 
-    protected function getOrderPastWeek()
-    {
-        $query = Order::where('status', StatusConst::SUCCESS)
-            ->selectRaw('DATE(created_at) as date, SUM(turnover) as turnover, SUM(total_income) as total_income')
-            ->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()])
-            ->groupBy('date')
-            ->orderBy('date');
-        $turnover = $query->pluck('turnover')->map(
-            function ($total) {
-                return $total;
-            }
-        );
-        $profit = $query->pluck('total_income')->map(
-            function($total) {
-                return $total;
-            }
-        );
-        $days = $query->pluck('date');
-        return compact('turnover', 'profit', 'days');
-    }
+        // Orders for today
+        $orderToday = Order::where('status', StatusConst::SUCCESS)
+            ->whereBetween('created_at', [$todayStart, $todayEnd])
+            ->selectRaw('COUNT(*) as total, COALESCE(SUM(turnover), 0) as turnover, COALESCE(SUM(total_income), 0) as profit')
+            ->first();
 
-    protected function getOrderSum($month, $year)
-    {
-        $orderSumQuery = Order::query()
-            ->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year)
-            ->where('status', StatusConst::SUCCESS);
+        // Monthly gateway fees
+        $orderGatewayFees = $this->calculateOrderGatewayFeesAccurate($startDate, $endDate);
+        $depositGatewayFees = $this->calculateDepositGatewayFees($startDate, $endDate);
+        $gatewayFees = $orderGatewayFees + $depositGatewayFees;
+        $vatOnFees = GatewayFeeConstant::calculateVatOnFee($gatewayFees);
+        $netProfit = $orderSum['profit'] - $orderGatewayFees - ($orderGatewayFees * 0.12);
+        $netMargin = $orderSum['turnover'] > 0 
+            ? round(($netProfit / $orderSum['turnover']) * 100, 1) 
+            : 0;
 
-        $turnover = $orderSumQuery->sum('turnover');
-        $profit = $orderSumQuery->sum('total_income');
-        $profitMargin = $turnover === 0 ? 0 : round(($profit / $turnover) * 100);
+        // Today's gateway fees - only order fees for net profit calculation
+        $orderGatewayFeesToday = $this->calculateOrderGatewayFeesAccurate($todayStart, $todayEnd);
+        $vatOnFeesToday = $orderGatewayFeesToday * 0.12;
+        $netProfitTodayValue = $orderToday['profit'] - $orderGatewayFeesToday - $vatOnFeesToday;
 
-        return [
-            'total' => $orderSumQuery->count(),
-            'turnover' => $turnover,
-            'profit' => $profit,
-            'profitMargin' => $profitMargin,
+        $netProfitStats = [
+            'gateway_fees' => $gatewayFees,
+            'vat_on_fees' => $vatOnFees,
+            'net_profit' => $netProfit,
+            'net_margin' => $netMargin,
+            'order_gateway_fees' => $orderGatewayFees,
+            'deposit_gateway_fees' => $depositGatewayFees,
         ];
-    }
-    /**
-     * @return array<string,mixed>
-     */
-    protected function getOrderToday()
-    {
-        $orderTodayQuery = Order::query()
-            ->whereRaw('DATE(created_at) = ?', [today()])
-            ->where('status', StatusConst::SUCCESS);
 
-
-        $turnoverToday = $orderTodayQuery->sum('turnover');
-        $profitToday = $orderTodayQuery->sum('total_income');
-
-        return [
-            'total' => $orderTodayQuery->count(),
-            'turnover' => $turnoverToday,
-            'profit' => $profitToday,
+        // Today's summary - show only order gateway fees (not deposits) since we're calculating order profit
+        $netProfitToday = [
+            'gateway_fees' => $orderGatewayFeesToday,
+            'vat_on_fees' => $vatOnFeesToday,
+            'net_profit' => $netProfitTodayValue,
         ];
+
+        // Past week data
+        $orderPastWeek = [
+            'days' => [],
+            'turnover' => [],
+            'profit' => [],
+        ];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+            $dayOrders = Order::where('status', StatusConst::SUCCESS)
+                ->whereDate('created_at', $date)
+                ->selectRaw('COALESCE(SUM(turnover), 0) as turnover, COALESCE(SUM(total_income), 0) as profit')
+                ->first();
+            
+            $orderPastWeek['days'][] = $date->format('D');
+            $orderPastWeek['turnover'][] = (float) $dayOrders->turnover;
+            $orderPastWeek['profit'][] = (float) $dayOrders->profit;
+        }
+
+        // Orders by status
+        $ordersByStatus = Order::whereBetween('created_at', [$startDate, $endDate])
+            ->select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        // Recent orders
+        $recentOrders = Order::with('productItem')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Pending orders
+        $pendingOrders = Order::where('status', StatusConst::PENDING)->count();
+
+        // User stats
+        $userStats = [
+            'total' => User::count(),
+            'newThisMonth' => User::whereBetween('created_at', [$startDate, $endDate])->count(),
+        ];
+
+        // Product stats
+        $productStats = [
+            'total' => Product::count(),
+            'active' => Product::where('status', 'active')->count(),
+        ];
+
+        // GPDS Reseller Balance
+        $gpdsBalance = $this->fetchGpdsBalance();
+
+        return view('home', compact(
+            'selectedMonth',
+            'selectedYear',
+            'orderSum',
+            'orderToday',
+            'orderPastWeek',
+            'ordersByStatus',
+            'recentOrders',
+            'pendingOrders',
+            'userStats',
+            'productStats',
+            'netProfitStats',
+            'netProfitToday',
+            'gpdsBalance'
+        ));
+    }
+
+    /**
+     * Fetch the reseller's GPDS wallet balance via the whitelabel API
+     */
+    private function fetchGpdsBalance(): array
+    {
+        try {
+            $baseUrl = Setting::getByKey('whitelabel_api_url');
+            $token = Setting::getByKey('whitelabel_api_token');
+            $currencyCode = strtoupper(env('PROVIDER_CURRENCY', 'PHP'));
+
+            if (empty($baseUrl) || empty($token)) {
+                return ['balance' => 0, 'currency' => $currencyCode, 'error' => 'GPDS API not configured'];
+            }
+
+            $response = Http::timeout(5)
+                ->withHeaders(['Authorization' => $token])
+                ->get("{$baseUrl}/partner/balance", [
+                    'currency_code' => $currencyCode,
+                ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                // GPDS returns: {"method":"GET","code":200,"message":"...","payload":472.125}
+                $balance = $data['payload'] ?? $data['data'] ?? $data['balance'] ?? 0;
+                if (is_array($balance)) {
+                    $balance = 0;
+                }
+                return ['balance' => (float) $balance, 'currency' => $currencyCode, 'error' => null];
+            }
+
+            return ['balance' => 0, 'currency' => $currencyCode, 'error' => 'API returned: ' . $response->status()];
+        } catch (\Exception $e) {
+            return ['balance' => 0, 'currency' => env('PROVIDER_CURRENCY', 'PHP'), 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Calculate gateway fees using same logic as OrderController
+     */
+    private function calculateOrderGatewayFeesAccurate($startDate, $endDate): float
+    {
+        $balancePaymentMethods = ['gpds coin', 'gpds_coin', 'balance', 'wallet'];
+
+        $orders = Order::where('status', StatusConst::SUCCESS)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->with('paymentMethod')
+            ->get();
+
+        $totalFees = 0;
+        foreach ($orders as $order) {
+            $paymentMethodName = strtolower($order->paymentMethod->name ?? '');
+            $hasGatewayFee = !in_array($paymentMethodName, $balancePaymentMethods) && $order->turnover > 0;
+            
+            if ($hasGatewayFee) {
+                $gatewayFeeRate = $this->getGatewayFeeRate($paymentMethodName);
+                $totalFees += $order->turnover * $gatewayFeeRate;
+            }
+        }
+
+        return round($totalFees, 2);
+    }
+
+    /**
+     * Get gateway fee rate based on payment method name
+     */
+    private function getGatewayFeeRate(string $paymentMethodName): float
+    {
+        if (str_contains($paymentMethodName, 'gcash')) {
+            return 0.023;
+        } elseif (str_contains($paymentMethodName, 'grab') || str_contains($paymentMethodName, 'shopee')) {
+            return 0.02;
+        } elseif (str_contains($paymentMethodName, 'maya') || str_contains($paymentMethodName, 'paymaya')) {
+            return 0.018;
+        } elseif (str_contains($paymentMethodName, 'card') || str_contains($paymentMethodName, 'credit') || str_contains($paymentMethodName, 'debit')) {
+            return 0.032;
+        } elseif (str_contains($paymentMethodName, 'bank') || str_contains($paymentMethodName, 'transfer')) {
+            return 0.01;
+        } else {
+            return 0.023;
+        }
+    }
+
+    /**
+     * Calculate gateway fees for deposits
+     */
+    private function calculateDepositGatewayFees($startDate, $endDate): float
+    {
+        $deposits = Deposit::where('status', 'paid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->with('paymentMethod')
+            ->select('total_amount', 'payment_method_id')
+            ->get();
+
+        $totalFees = 0;
+        foreach ($deposits as $deposit) {
+            if ($deposit->paymentMethod) {
+                $vendor = $deposit->paymentMethod->vendor ?? 'xendit';
+                $slug = $deposit->paymentMethod->slug ?? $deposit->paymentMethod->name ?? '';
+                $totalFees += GatewayFeeConstant::calculateGatewayFee($deposit->total_amount, $vendor, $slug);
+            }
+        }
+
+        return round($totalFees, 2);
     }
 }
