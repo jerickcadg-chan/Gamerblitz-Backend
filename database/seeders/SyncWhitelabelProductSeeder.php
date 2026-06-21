@@ -392,7 +392,8 @@ class SyncWhitelabelProductSeeder extends Seeder
      */
     private function logAndOutput(string $level, string $message): void
     {
-        Log::channel('whitelabel')->{$level}($message);
+        $logLevel = $level === 'warn' ? 'warning' : $level;
+        Log::channel('whitelabel')->{$logLevel}($message);
 
         match ($level) {
             'error' => $this->command->error($message),
