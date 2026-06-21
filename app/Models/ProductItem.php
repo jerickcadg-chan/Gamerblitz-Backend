@@ -38,6 +38,7 @@ class ProductItem extends Model implements IsFilterable
         'status',
         'provider',
         'is_locked',
+        'sync_at',
     ];
 
     protected $appends = [

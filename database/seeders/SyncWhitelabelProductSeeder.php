@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Constants\ProviderConstant;
 use App\Models\Product;
+use App\Models\ProductItem;
 use App\Models\ProductCategory;
 use App\Models\Setting;
 use App\Services\PictureService;
@@ -70,8 +71,13 @@ class SyncWhitelabelProductSeeder extends Seeder
 
         $successCount = 0;
         $errorCount = 0;
+        $sourceProviderCodes = [];
 
         foreach ($products as $productData) {
+            if (!empty($productData['id'])) {
+                $sourceProviderCodes[] = (string) $productData['id'];
+            }
+
             try {
                 $this->syncProduct($productData);
                 $successCount++;
@@ -81,6 +87,8 @@ class SyncWhitelabelProductSeeder extends Seeder
                 $this->logAndOutput('error', "Failed to sync product '{$productData['name']}': " . $e->getMessage());
             }
         }
+
+        $this->deactivateProductsMissingFromSource(array_values(array_unique($sourceProviderCodes)));
 
         $this->command->info("Sync completed. Success: {$successCount}, Errors: {$errorCount}");
     }
@@ -172,7 +180,7 @@ class SyncWhitelabelProductSeeder extends Seeder
                 'provider' => ProviderConstant::WHITELABEL,
                 'provider_code_whitelabel' => $providerCodeWhitelabel,
                 'provider_country' => $productData['provider_country'] ?? 'PH',
-                'status' => $productData['status'] ?? Product::INACTIVE,
+                'status' => $this->normalizeProductStatus($productData['status'] ?? null),
             ];
 
             // Only update picture/cover if we successfully downloaded new ones
@@ -218,6 +226,45 @@ class SyncWhitelabelProductSeeder extends Seeder
         );
 
         return $category->id;
+    }
+
+    /**
+     * Deactivate whitelabel products that are no longer returned by the source API.
+     */
+    private function deactivateProductsMissingFromSource(array $sourceProviderCodes): void
+    {
+        if (empty($sourceProviderCodes)) {
+            return;
+        }
+
+        $staleProducts = Product::where('provider', ProviderConstant::WHITELABEL)
+            ->whereNotNull('provider_code_whitelabel')
+            ->whereNotIn('provider_code_whitelabel', $sourceProviderCodes)
+            ->get();
+
+        foreach ($staleProducts as $product) {
+            $product->update(['status' => Product::INACTIVE]);
+
+            $affectedItems = ProductItem::where('product_id', $product->id)
+                ->where('provider', ProviderConstant::WHITELABEL)
+                ->where('status', ProductItem::STATUS_ACTIVE)
+                ->where('is_locked', 0)
+                ->update(['status' => ProductItem::STATUS_EMPTY]);
+
+            $this->logAndOutput('warn', "Deactivated missing whitelabel product '{$product->name}' and {$affectedItems} active items.");
+        }
+    }
+
+    /**
+     * Convert provider product status values into local visibility values.
+     */
+    private function normalizeProductStatus(mixed $status): string
+    {
+        $normalized = strtolower(trim((string) ($status ?? 'inactive')));
+
+        return in_array($normalized, ['active', '1', 'true', 'available', 'ready', 'enabled', 'in_stock'], true)
+            ? Product::ACTIVE
+            : Product::INACTIVE;
     }
 
     /**

@@ -80,8 +80,8 @@ class SyncWhitelabel extends Command
 
             foreach ($products as $product) {
                 try {
-                    $this->syncProduct($product, $apiUrl, $token, $exchangeRate, $fallbacks);
-                    $this->disableInactiveProductItems($product);
+                    $syncedWhitelabelCodes = $this->syncProduct($product, $apiUrl, $token, $exchangeRate, $fallbacks);
+                    $this->disableInactiveProductItems($product, $syncedWhitelabelCodes);
                 } catch (Exception $e) {
                     $this->error("\n💥 Error syncing {$product->name}: {$e->getMessage()}");
                 }
@@ -103,16 +103,21 @@ class SyncWhitelabel extends Command
 
     /**
      * Sync a single product and its items.
-     * 
+     *
+     * A null return means the API request failed and stale cleanup must be skipped
+     * for this product to avoid disabling valid items during provider outages.
+     * An empty array means the provider returned no items, so existing whitelabel
+     * items for the product should be marked unavailable.
+     *
      * @param Product $product
      * @param string $apiUrl
      * @param string $token
      * @param float $exchangeRate
      * @param array $fallbacks
      * 
-     * @return void
+     * @return array<int, string>|null
      */
-    private function syncProduct(Product $product, string $apiUrl, string $token, float $exchangeRate, array $fallbacks): void
+    private function syncProduct(Product $product, string $apiUrl, string $token, float $exchangeRate, array $fallbacks): ?array
     {
         $log      = Log::channel('whitelabel');
         $response = Http::withHeaders(['Authorization' => $token])
@@ -124,48 +129,85 @@ class SyncWhitelabel extends Command
 
             $log->error("⚠️ {$message}");
             $this->warn("\n⚠️ {$message}");
-            return;
+            return null;
         }
 
         $payload = $response->json()['payload'] ?? [];
         if (empty($payload)) {
             $this->warn("\n⚠️  No product items found for: {$product->name}");
-            return;
+            return [];
         }
 
-        // Update input format by provider
-        $product->update([
-            'input_format' => $response->json()['payload'][0]['input_format']
-        ]);
+        // Update input format by provider when available.
+        if (isset($payload[0]['input_format'])) {
+            $product->update([
+                'input_format' => $payload[0]['input_format']
+            ]);
+        }
 
         $this->updateProductDefaultMargins($product, $fallbacks);
 
         $updatedCount = 0;
+        $syncedWhitelabelCodes = [];
+
         foreach ($payload as $item) {
+            if (empty($item['code'])) {
+                continue;
+            }
+
+            $syncedWhitelabelCodes[] = (string) $item['code'];
             $this->syncProductItem($product, $item, $exchangeRate);
             $updatedCount++;
         }
 
         $this->line("\n✅ Synced {$updatedCount} items for {$product->name}.");
+
+        return array_values(array_unique($syncedWhitelabelCodes));
     }
 
     /**
-     * Disable all product items not from Whitelabel.
-     * 
+     * Disable local product items that should no longer be sold.
+     *
+     * This keeps non-whitelabel items hidden for whitelabel products and also
+     * marks whitelabel items as empty when they are no longer returned by GPDS.
+     *
      * @param Product $product
+     * @param array<int, string>|null $syncedWhitelabelCodes
      * 
      * @return void
      */
-    private function disableInactiveProductItems(Product $product): void
+    private function disableInactiveProductItems(Product $product, ?array $syncedWhitelabelCodes): void
     {
         $affected = ProductItem::where('product_id', $product->id)
             ->where('provider', '!=', ProviderConstant::WHITELABEL)
-            ->where('status', 'active')
+            ->where('status', ProductItem::STATUS_ACTIVE)
             ->where('is_locked', 0)
-            ->update(['status' => 'empty']);
+            ->update(['status' => ProductItem::STATUS_EMPTY]);
 
         if ($affected > 0) {
-            $this->line("🧹 Marked {$affected} inactive items as 'empty' for {$product->name}.");
+            $this->line("🧹 Marked {$affected} non-whitelabel items as 'empty' for {$product->name}.");
+        }
+
+        if ($syncedWhitelabelCodes === null) {
+            return;
+        }
+
+        $staleQuery = ProductItem::where('product_id', $product->id)
+            ->where('provider', ProviderConstant::WHITELABEL)
+            ->where('status', ProductItem::STATUS_ACTIVE)
+            ->where('is_locked', 0);
+
+        if (!empty($syncedWhitelabelCodes)) {
+            $staleQuery->whereNotIn('code', $syncedWhitelabelCodes);
+        }
+
+        $staleAffected = $staleQuery->update([
+            'status' => ProductItem::STATUS_EMPTY,
+            'sync_at' => now(),
+        ]);
+
+        if ($staleAffected > 0) {
+            $this->line("🧹 Marked {$staleAffected} stale whitelabel items as 'empty' for {$product->name}.");
         }
     }
 
@@ -189,7 +231,7 @@ class SyncWhitelabel extends Command
 
         $baseData = [
             'name'         => $item['name'],
-            'status'       => 'active',
+            'status'       => $this->normalizeItemStatus($item),
             'country_code' => 'ID',
             'provider'     => ProviderConstant::WHITELABEL,
             'capital'      => $priceRaw * $exchangeRate,
@@ -197,7 +239,7 @@ class SyncWhitelabel extends Command
         ];
 
         if ($productItem) {
-            if (in_array($productItem->status, ['active', 'empty'])) {
+            if (in_array($productItem->status, [ProductItem::STATUS_ACTIVE, ProductItem::STATUS_EMPTY])) {
                 $productItem->update($baseData);
             } else {
                 return;
@@ -213,6 +255,19 @@ class SyncWhitelabel extends Command
                 'margin_vip'    => $product->markup_reseller_vip,
             ]));
         }
+    }
+
+    /**
+     * Convert provider item status values into local availability values.
+     */
+    private function normalizeItemStatus(array $item): string
+    {
+        $rawStatus = $item['status'] ?? $item['is_active'] ?? $item['active'] ?? 'active';
+        $status = strtolower(trim((string) $rawStatus));
+
+        return in_array($status, ['active', '1', 'true', 'available', 'ready', 'enabled', 'in_stock'], true)
+            ? ProductItem::STATUS_ACTIVE
+            : ProductItem::STATUS_EMPTY;
     }
 
     /**
