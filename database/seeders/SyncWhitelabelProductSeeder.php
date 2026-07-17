@@ -195,7 +195,7 @@ class SyncWhitelabelProductSeeder extends Seeder
             $existingProduct = Product::where('provider_code_whitelabel', $providerCodeWhitelabel)->first();
 
             if ($existingProduct) {
-                // Update existing product - preserve images if new ones failed to download
+                // Preserve images if new ones failed to download
                 if (!$picturePath && $existingProduct->default_picture) {
                     unset($productFields['default_picture']);
                 }
@@ -203,9 +203,32 @@ class SyncWhitelabelProductSeeder extends Seeder
                     unset($productFields['default_cover']);
                 }
 
+                // Smart status sync:
+                // - If GPDS says active AND product was previously auto-disabled by sync: re-enable it.
+                // - If GPDS says active AND product was manually disabled by admin: keep it disabled.
+                // - If GPDS says inactive: disable it and mark as auto-disabled.
+                $gpdsStatus = $productFields['status'];
+
+                if ($gpdsStatus === Product::ACTIVE) {
+                    if ($existingProduct->is_auto_disabled) {
+                        // Was auto-disabled before, GPDS re-enabled it — re-enable on our side too
+                        $productFields['status'] = Product::ACTIVE;
+                        $productFields['is_auto_disabled'] = false;
+                    } else {
+                        // Respect the current local status (could be manually disabled or already active)
+                        unset($productFields['status']);
+                        unset($productFields['is_auto_disabled']);
+                    }
+                } else {
+                    // GPDS says inactive — auto-disable it
+                    $productFields['status'] = Product::INACTIVE;
+                    $productFields['is_auto_disabled'] = true;
+                }
+
                 $existingProduct->update($productFields);
             } else {
-                // Create new product
+                // New product — use GPDS status directly
+                $productFields['is_auto_disabled'] = ($productFields['status'] === Product::INACTIVE);
                 Product::create($productFields);
             }
         });
@@ -230,6 +253,7 @@ class SyncWhitelabelProductSeeder extends Seeder
 
     /**
      * Deactivate whitelabel products that are no longer returned by the source API.
+     * Marks them as auto-disabled so they can be re-enabled if GPDS re-enables them.
      */
     private function deactivateProductsMissingFromSource(array $sourceProviderCodes): void
     {
@@ -240,10 +264,14 @@ class SyncWhitelabelProductSeeder extends Seeder
         $staleProducts = Product::where('provider', ProviderConstant::WHITELABEL)
             ->whereNotNull('provider_code_whitelabel')
             ->whereNotIn('provider_code_whitelabel', $sourceProviderCodes)
+            ->where('status', Product::ACTIVE) // Only deactivate currently active products
             ->get();
 
         foreach ($staleProducts as $product) {
-            $product->update(['status' => Product::INACTIVE]);
+            $product->update([
+                'status'          => Product::INACTIVE,
+                'is_auto_disabled' => true,
+            ]);
 
             $affectedItems = ProductItem::where('product_id', $product->id)
                 ->where('provider', ProviderConstant::WHITELABEL)
@@ -251,7 +279,7 @@ class SyncWhitelabelProductSeeder extends Seeder
                 ->where('is_locked', 0)
                 ->update(['status' => ProductItem::STATUS_EMPTY]);
 
-            $this->logAndOutput('warn', "Deactivated missing whitelabel product '{$product->name}' and {$affectedItems} active items.");
+            $this->logAndOutput('warn', "Auto-disabled missing GPDS product '{$product->name}' and {$affectedItems} active items.");
         }
     }
 
