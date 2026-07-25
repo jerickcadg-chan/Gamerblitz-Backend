@@ -42,12 +42,13 @@ class HomeController extends Controller
             ->selectRaw('COUNT(*) as total, COALESCE(SUM(turnover), 0) as turnover, COALESCE(SUM(total_income), 0) as profit')
             ->first();
 
-        // Monthly gateway fees
+        // Monthly gateway fees — only order fees are deducted from profit
+        // Deposit fees are informational only (they are a cost of wallet funding, not order profit)
         $orderGatewayFees = $this->calculateOrderGatewayFeesAccurate($startDate, $endDate);
         $depositGatewayFees = $this->calculateDepositGatewayFees($startDate, $endDate);
-        $gatewayFees = $orderGatewayFees + $depositGatewayFees;
-        $vatOnFees = GatewayFeeConstant::calculateVatOnFee($gatewayFees);
-        $netProfit = $orderSum['profit'] - $orderGatewayFees - ($orderGatewayFees * 0.12);
+        $gatewayFees = $orderGatewayFees; // Only order fees shown as deduction
+        $vatOnFees = GatewayFeeConstant::calculateVatOnFee($orderGatewayFees);
+        $netProfit = $orderSum['profit'] - $orderGatewayFees - $vatOnFees;
         $netMargin = $orderSum['turnover'] > 0 
             ? round(($netProfit / $orderSum['turnover']) * 100, 1) 
             : 0;
@@ -177,12 +178,11 @@ class HomeController extends Controller
     }
 
     /**
-     * Calculate gateway fees using same logic as OrderController
+     * Calculate order gateway fees using GatewayFeeConstant (vendor + slug based)
+     * This replaces the old name-based heuristic with accurate per-method rates.
      */
     private function calculateOrderGatewayFeesAccurate($startDate, $endDate): float
     {
-        $balancePaymentMethods = ['gpds coin', 'gpds_coin', 'balance', 'wallet'];
-
         $orders = Order::where('status', StatusConst::SUCCESS)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->with('paymentMethod')
@@ -190,36 +190,19 @@ class HomeController extends Controller
 
         $totalFees = 0;
         foreach ($orders as $order) {
-            $paymentMethodName = strtolower($order->paymentMethod->name ?? '');
-            $hasGatewayFee = !in_array($paymentMethodName, $balancePaymentMethods) && $order->turnover > 0;
-            
-            if ($hasGatewayFee) {
-                $gatewayFeeRate = $this->getGatewayFeeRate($paymentMethodName);
-                $totalFees += $order->turnover * $gatewayFeeRate;
+            if (!$order->paymentMethod || $order->turnover <= 0) {
+                continue;
             }
+            $vendor = strtolower($order->paymentMethod->vendor ?? '');
+            // Manual / GamerBlitz Coin payments have zero gateway fee
+            if ($vendor === 'manual') {
+                continue;
+            }
+            $slug = $order->paymentMethod->slug ?? $order->paymentMethod->name ?? '';
+            $totalFees += GatewayFeeConstant::calculateGatewayFee($order->turnover, $vendor, $slug);
         }
 
         return round($totalFees, 2);
-    }
-
-    /**
-     * Get gateway fee rate based on payment method name
-     */
-    private function getGatewayFeeRate(string $paymentMethodName): float
-    {
-        if (str_contains($paymentMethodName, 'gcash')) {
-            return 0.023;
-        } elseif (str_contains($paymentMethodName, 'grab') || str_contains($paymentMethodName, 'shopee')) {
-            return 0.02;
-        } elseif (str_contains($paymentMethodName, 'maya') || str_contains($paymentMethodName, 'paymaya')) {
-            return 0.018;
-        } elseif (str_contains($paymentMethodName, 'card') || str_contains($paymentMethodName, 'credit') || str_contains($paymentMethodName, 'debit')) {
-            return 0.032;
-        } elseif (str_contains($paymentMethodName, 'bank') || str_contains($paymentMethodName, 'transfer')) {
-            return 0.01;
-        } else {
-            return 0.023;
-        }
     }
 
     /**
