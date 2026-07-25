@@ -8,8 +8,19 @@
     {{-- FILTER SECTION --}}
     <div class="card mb-3 mb-md-4">
       <div class="card-body py-3">
-        <form class="row align-items-end g-2 g-md-3">
-          <div class="col-6 col-md-3">
+        <form class="row align-items-end g-2 g-md-3" id="dashboard-filter-form">
+          {{-- Filter Mode Selector --}}
+          <div class="col-12 col-md-3">
+            <label for="filter-mode" class="form-label mb-1">View By</label>
+            <select id="filter-mode" class="form-control form-control-sm" name="filter_mode" onchange="updateFilterUI(this.value)">
+              <option value="lifetime" {{ $filterMode === 'lifetime' ? 'selected' : '' }}>Lifetime (All Time)</option>
+              <option value="year"     {{ $filterMode === 'year'     ? 'selected' : '' }}>By Year</option>
+              <option value="month"    {{ $filterMode === 'month'    ? 'selected' : '' }}>By Month</option>
+            </select>
+          </div>
+
+          {{-- Month selector (only shown for "month" mode) --}}
+          <div class="col-6 col-md-2" id="month-col" style="{{ $filterMode !== 'month' ? 'display:none;' : '' }}">
             <label for="month-input" class="form-label mb-1">Month</label>
             <select id="month-input" class="form-control form-control-sm" name="month">
               @foreach(get_months() as $monthIndex => $month)
@@ -17,7 +28,9 @@
               @endforeach
             </select>
           </div>
-          <div class="col-6 col-md-3">
+
+          {{-- Year selector (shown for "month" and "year" modes) --}}
+          <div class="col-6 col-md-2" id="year-col" style="{{ $filterMode === 'lifetime' ? 'display:none;' : '' }}">
             <label for="year-input" class="form-label mb-1">Year</label>
             <select id="year-input" class="form-control form-control-sm" name="year">
               @foreach(get_years_reversed() as $year)
@@ -25,9 +38,10 @@
               @endforeach
             </select>
           </div>
+
           <div class="col-12 col-md-2 mt-2 mt-md-0">
             <button type="submit" class="btn btn-primary btn-sm w-100">
-              <i class="mdi mdi-filter-outline me-1"></i> Filter
+              <i class="mdi mdi-filter-outline me-1"></i> Apply
             </button>
           </div>
         </form>
@@ -36,8 +50,8 @@
 
     {{-- GPDS RESELLER BALANCE --}}
     @if(isset($gpdsBalance))
-    <div class="row mb-3 mb-md-4">
-      <div class="col-12">
+    <div class="row mb-3 mb-md-4 p-0">
+      <div class="col-12 p-0">
         <div class="card" style="background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 50%, #0f1923 100%); border: 1px solid #FF8C00; box-shadow: 0 0 20px rgba(255, 140, 0, 0.15);">
           <div class="card-body p-3 p-md-4">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
@@ -78,7 +92,7 @@
 
     {{-- QUICK ACTIONS --}}
     <div class="row mb-4">
-      <div class="col-12">
+      <div class="col-12 p-0">
         <div class="card">
           <div class="card-body py-3">
             <div class="d-flex flex-wrap gap-2">
@@ -105,10 +119,17 @@
       </div>
     </div>
 
+    {{-- PERIOD LABEL --}}
+    <div class="mb-2 mb-md-3">
+      <span class="badge" style="background: rgba(255,140,0,0.15); color: #FF8C00; border: 1px solid rgba(255,140,0,0.4); font-size: 0.8rem; padding: 0.4em 0.8em;">
+        <i class="mdi mdi-calendar-range me-1"></i> Showing: {{ $filterLabel }}
+      </span>
+    </div>
+
     {{-- MAIN STATS ROW 1: Orders, Turnover, Gross Profit, Net Profit --}}
     <div class="row mb-3 mb-md-4 g-2 g-md-3">
       {{-- Orders Count Card --}}
-      <div class="col-6 col-lg-3">
+      <div class="col-6 col-lg-3 mr-0">
         <div class="card bg-gradient-primary h-100">
           <div class="card-body p-3 p-md-4">
             <div class="d-flex justify-content-between align-items-start">
@@ -199,7 +220,7 @@
                 <p class="text-muted mb-1 small">Gateway Fees</p>
                 <h4 class="text-danger fs-6 fs-md-5 mb-1 text-truncate">-{{ currency_format($netProfitStats['gateway_fees']) }}</h4>
                 <small class="text-muted d-block text-truncate">Orders: -{{ currency_format($netProfitStats['order_gateway_fees']) }}</small>
-                <small class="text-muted d-block text-truncate">Deposits: -{{ currency_format($netProfitStats['deposit_gateway_fees']) }}</small>
+                <small class="text-muted d-block text-truncate">Deposits (info): -{{ currency_format($netProfitStats['deposit_gateway_fees']) }}</small>
               </div>
               <div class="d-none d-md-flex align-items-center justify-content-center flex-shrink-0 ms-2" style="width: 44px; height: 44px; background: rgba(220, 53, 69, 0.2); border-radius: 10px;">
                 <i class="mdi mdi-bank-transfer text-danger" style="font-size: 24px;"></i>
@@ -269,7 +290,7 @@
 
     {{-- TODAY'S SUMMARY --}}
     <div class="row mb-3 mb-md-4">
-      <div class="col-12">
+      <div class="col-12 p-0">
         <div class="card">
           <div class="card-header py-2 py-md-3">
             <h5 class="card-title mb-0 fs-6 fs-md-5">Today's Summary</h5>
@@ -322,7 +343,7 @@
     @endif
 
     {{-- CHARTS ROW --}}
-    <div class="row mb-3 mb-md-4 g-2 g-md-3">
+    <div class="row mb-3 mb-md-4 g-2 g-md-3 p-0">
       <div class="col-12 col-lg-8 mb-3 mb-lg-0">
         <div class="card h-100">
           <div class="card-body p-2 p-md-3">
@@ -346,7 +367,7 @@
 
     {{-- RECENT ORDERS --}}
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 p-0">
         <div class="card">
           <div class="card-body p-2 p-md-3">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-2">
@@ -404,6 +425,23 @@
 
 @push('js')
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script>
+    // Dashboard filter mode toggle
+    function updateFilterUI(mode) {
+      var monthCol = document.getElementById('month-col');
+      var yearCol  = document.getElementById('year-col');
+      if (mode === 'lifetime') {
+        monthCol.style.display = 'none';
+        yearCol.style.display  = 'none';
+      } else if (mode === 'year') {
+        monthCol.style.display = 'none';
+        yearCol.style.display  = '';
+      } else {
+        monthCol.style.display = '';
+        yearCol.style.display  = '';
+      }
+    }
+  </script>
   <script>
     // Weekly Transactions Chart
     let weeklyOptions = {
