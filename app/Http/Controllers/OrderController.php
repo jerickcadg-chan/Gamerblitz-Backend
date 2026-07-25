@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\GatewayFeeConstant;
 use App\Constants\StatusConst;
 use App\Events\UserActivityLogged;
 use App\Models\Order;
@@ -70,16 +71,15 @@ class OrderController extends Controller
         $order->loadMissing('paymentMethod', 'affiliate.user', 'affiliateHistory');
 
         // Calculate profit breakdown for this order with gateway fees and affiliate bonus
-        $balancePaymentMethods = ['gpds coin', 'gpds_coin', 'balance', 'wallet'];
-        $paymentMethodName = strtolower($order->paymentMethod?->name ?? '');
-        $hasGatewayFee = !in_array($paymentMethodName, $balancePaymentMethods) && $order->turnover > 0;
-
-        $gatewayFeeRate = $hasGatewayFee ? $this->getGatewayFeeRate($paymentMethodName) : 0;
-
-        $gatewayFee = $order->turnover * $gatewayFeeRate;
-        $vatOnFee = $gatewayFee * 0.12;
+        $vendor     = strtolower($order->paymentMethod?->vendor ?? 'manual');
+        $slug       = $order->paymentMethod?->slug ?? $order->paymentMethod?->name ?? '';
+        $gatewayFee = ($vendor === 'manual' || $order->turnover <= 0)
+            ? 0
+            : GatewayFeeConstant::calculateGatewayFee($order->turnover, $vendor, $slug);
+        $vatOnFee      = $gatewayFee * 0.12;
         $affiliateBonus = $order->affiliateHistory?->amount ?? 0;
-        $netProfit = $order->total_income - $gatewayFee - $vatOnFee - $affiliateBonus;
+        $netProfit     = $order->total_income - $gatewayFee - $vatOnFee - $affiliateBonus;
+        $hasGatewayFee = $gatewayFee > 0;
 
         $profitBreakdown = [
             'gross_profit' => $order->total_income,
@@ -167,25 +167,7 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Get gateway fee rate based on payment method name
-     */
-    private function getGatewayFeeRate(string $paymentMethodName): float
-    {
-        if (str_contains($paymentMethodName, 'gcash')) {
-            return 0.023;
-        } elseif (str_contains($paymentMethodName, 'grab') || str_contains($paymentMethodName, 'shopee')) {
-            return 0.02;
-        } elseif (str_contains($paymentMethodName, 'maya') || str_contains($paymentMethodName, 'paymaya')) {
-            return 0.018;
-        } elseif (str_contains($paymentMethodName, 'card') || str_contains($paymentMethodName, 'credit') || str_contains($paymentMethodName, 'debit')) {
-            return 0.032;
-        } elseif (str_contains($paymentMethodName, 'bank') || str_contains($paymentMethodName, 'transfer')) {
-            return 0.01;
-        } else {
-            return 0.023;
-        }
-    }
+    // getGatewayFeeRate() removed — use GatewayFeeConstant::calculateGatewayFee() directly
 
     /**
      * Get order statistics for the index page
@@ -317,7 +299,9 @@ class OrderController extends Controller
                     'products.name',
                     'orders.total_income',
                     'orders.turnover',
-                    'payment_methods.name as payment_method_name'
+                    'payment_methods.name as payment_method_name',
+                    'payment_methods.vendor as payment_method_vendor',
+                    'payment_methods.slug as payment_method_slug'
                 )
                 ->get();
 
@@ -327,14 +311,14 @@ class OrderController extends Controller
             foreach ($orders as $order) {
                 $productId = $order->id;
                 $productName = $order->name;
-                $paymentMethodName = strtolower($order->payment_method_name ?? '');
+                $vendor     = strtolower($order->payment_method_vendor ?? 'manual');
+                $slug       = $order->payment_method_slug ?? $order->payment_method_name ?? '';
 
-                $hasGatewayFee = !in_array($paymentMethodName, $balancePaymentMethods) && $order->turnover > 0;
-                $gatewayFeeRate = $hasGatewayFee ? $this->getGatewayFeeRate($paymentMethodName) : 0;
-
-                $gatewayFee = $order->turnover * $gatewayFeeRate;
-                $vatOnFee = $gatewayFee * 0.12;
-                $netProfit = $order->total_income - $gatewayFee - $vatOnFee;
+                $gatewayFee = ($vendor === 'manual' || $order->turnover <= 0)
+                    ? 0
+                    : GatewayFeeConstant::calculateGatewayFee($order->turnover, $vendor, $slug);
+                $vatOnFee   = $gatewayFee * 0.12;
+                $netProfit  = $order->total_income - $gatewayFee - $vatOnFee;
 
                 if (!isset($productProfits[$productId])) {
                     $productProfits[$productId] = [
