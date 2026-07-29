@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\GatewayFeeConstant;
 use App\Events\UserActivityLogged;
 use App\Models\Balance;
 use App\Services\DepositService;
@@ -48,8 +49,30 @@ class DepositController extends Controller
     public function show(Deposit $deposit)
     {
         $title = $this->title;
+        $deposit->loadMissing('paymentMethod');
 
-        return view('deposits.show', compact('deposit', 'title'));
+        // Calculate gateway fee breakdown for this deposit
+        $vendor     = strtolower($deposit->paymentMethod?->vendor ?? 'manual');
+        $slug       = $deposit->paymentMethod?->slug ?? $deposit->paymentMethod?->name ?? '';
+        $isPaid     = $deposit->status === \App\Constants\StatusConst::PAID;
+
+        if ($isPaid && $vendor !== 'manual' && $deposit->total_amount > 0) {
+            $gatewayFee = GatewayFeeConstant::calculateGatewayFee($deposit->total_amount, $vendor, $slug);
+        } else {
+            $gatewayFee = 0;
+        }
+
+        $vatOnFee       = $gatewayFee * 0.12;
+        $netReceived    = $deposit->total_amount - $gatewayFee - $vatOnFee;
+
+        $feeBreakdown = [
+            'gateway_fee'  => $gatewayFee,
+            'vat_on_fee'   => $vatOnFee,
+            'net_received' => $netReceived,
+            'has_fee'      => $gatewayFee > 0,
+        ];
+
+        return view('deposits.show', compact('deposit', 'title', 'feeBreakdown'));
     }
 
     public function updateStatus(Deposit $deposit, Request $request)

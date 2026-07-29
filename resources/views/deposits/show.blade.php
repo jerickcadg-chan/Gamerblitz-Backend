@@ -67,6 +67,42 @@
           </tr>
         </table>
 
+        {{-- Fee Breakdown (only shown for paid deposits with a payment gateway) --}}
+        @if($deposit->status === \App\Constants\StatusConst::PAID)
+        <div class="mt-4">
+          <h5 class="mb-3" style="color: #aaa; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em;">Fee Breakdown</h5>
+          <table class="table table-nospace">
+            <tr>
+              <th width="200">Total Deposited</th>
+              <td>{{ currency_format($deposit->total_amount) }}</td>
+            </tr>
+            @if($feeBreakdown['has_fee'])
+            <tr style="background: rgba(220,53,69,0.08);">
+              <th width="200">Gateway Fee</th>
+              <td class="text-danger">-{{ currency_format($feeBreakdown['gateway_fee']) }}</td>
+            </tr>
+            <tr style="background: rgba(220,53,69,0.05);">
+              <th width="200">VAT on Fee (12%)</th>
+              <td class="text-danger">-{{ currency_format($feeBreakdown['vat_on_fee']) }}</td>
+            </tr>
+            <tr style="background: rgba(40,167,69,0.08);">
+              <th width="200"><strong>Net Amount Received</strong></th>
+              <td class="text-success"><strong>{{ currency_format($feeBreakdown['net_received']) }}</strong></td>
+            </tr>
+            @else
+            <tr>
+              <th width="200">Gateway Fee</th>
+              <td class="text-muted">₱0.00 <small>(no gateway fee)</small></td>
+            </tr>
+            <tr style="background: rgba(40,167,69,0.08);">
+              <th width="200"><strong>Net Amount Received</strong></th>
+              <td class="text-success"><strong>{{ currency_format($deposit->total_amount) }}</strong></td>
+            </tr>
+            @endif
+          </table>
+        </div>
+        @endif
+
         @if($deposit->status === \App\Constants\StatusConst::PENDING)
           <form method="POST" action="{{ route('deposit.update-status', $deposit) }}">
             @csrf @method('PUT')

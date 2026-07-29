@@ -64,12 +64,15 @@ class HomeController extends Controller
             ->selectRaw('COUNT(*) as total, COALESCE(SUM(turnover), 0) as turnover, COALESCE(SUM(total_income), 0) as profit')
             ->first();
 
-        // Period gateway fees — only order fees are deducted from profit
-        // Deposit fees are informational only (cost of wallet funding, not order profit)
+        // Gateway fees: both order AND deposit fees are real costs
+        // - Order fees: charged when customer pays directly via Xendit/mPay (not for GamerBlitz Coin)
+        // - Deposit fees: charged when customer tops up their wallet via Xendit/mPay
+        // Both reduce actual profit
         $orderGatewayFees   = $this->calculateOrderGatewayFeesAccurate($startDate, $endDate);
         $depositGatewayFees = $this->calculateDepositGatewayFees($startDate, $endDate);
-        $vatOnFees          = GatewayFeeConstant::calculateVatOnFee($orderGatewayFees);
-        $netProfit          = $orderSum['profit'] - $orderGatewayFees - $vatOnFees;
+        $totalGatewayFees   = $orderGatewayFees + $depositGatewayFees;
+        $vatOnFees          = GatewayFeeConstant::calculateVatOnFee($totalGatewayFees);
+        $netProfit          = $orderSum['profit'] - $totalGatewayFees - $vatOnFees;
         $netMargin          = $orderSum['turnover'] > 0
             ? round(($netProfit / $orderSum['turnover']) * 100, 1)
             : 0;
@@ -80,11 +83,11 @@ class HomeController extends Controller
         $netProfitTodayValue   = $orderToday['profit'] - $orderGatewayFeesToday - $vatOnFeesToday;
 
         $netProfitStats = [
-            'gateway_fees'       => $orderGatewayFees,
-            'vat_on_fees'        => $vatOnFees,
-            'net_profit'         => $netProfit,
-            'net_margin'         => $netMargin,
-            'order_gateway_fees' => $orderGatewayFees,
+            'gateway_fees'         => $totalGatewayFees,
+            'vat_on_fees'          => $vatOnFees,
+            'net_profit'           => $netProfit,
+            'net_margin'           => $netMargin,
+            'order_gateway_fees'   => $orderGatewayFees,
             'deposit_gateway_fees' => $depositGatewayFees,
         ];
 
