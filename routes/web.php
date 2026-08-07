@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AffiliateWithdrawController;
+use App\Http\Controllers\StreamerController;
+use App\Http\Controllers\StreamerWithdrawController;
 use App\Http\Controllers\AppLogController;
 use App\Http\Controllers\BannedIpController;
 use App\Http\Controllers\BlogController;
@@ -53,8 +55,12 @@ Auth::routes([
 ]);
 
 Route::post('login/verify-2fa', [App\Http\Controllers\Auth\LoginController::class, 'verify2fa'])->name('login.verify2fa');
+Route::post('admin/verify-2fa-action', [App\Http\Controllers\Auth\TwoFactorController::class, 'verifyAction'])->name('login.verify.action.2fa');
+Route::post('admin/verify-credentials', [App\Http\Controllers\Auth\TwoFactorController::class, 'verifyCredentials'])->name('login.verify.credentials');
 
-Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
+// 2FA re-prompt routes removed — replaced by 3-hour session timeout logout
+
+Route::middleware(['web', 'auth', 'not_customer', \App\Http\Middleware\SessionTimeout::class])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/lapakgaming/products', [LapakGamingController::class, 'index'])->name('lapakgaming.products');
@@ -84,6 +90,12 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
     Route::get('user/top-up-manual/{user}', [UserController::class, 'topUpManual'])->name('user.top-up-manual');
     Route::post('user/top-up-manual/{user}', [UserController::class, 'topUpManualStore'])->name('user.top-up-manual.store');
     Route::post('user/update-api/{user}', [UserController::class, 'updateApi'])->name('user.update-api');
+
+    // Streamer Management
+    Route::resource("streamer", StreamerController::class);
+    Route::get("streamer-withdraw", [StreamerWithdrawController::class, "index"])->name("streamer-withdraw.index");
+    Route::post("streamer-withdraw/{withdraw}/approve", [StreamerWithdrawController::class, "approve"])->name("streamer-withdraw.approve");
+    Route::post("streamer-withdraw/{withdraw}/reject", [StreamerWithdrawController::class, "reject"])->name("streamer-withdraw.reject");
 
     // 2FA router
     Route::get('2fa', [App\Http\Controllers\Auth\TwoFactorAuthController::class, 'show'])->name('2fa.show');
@@ -154,3 +166,4 @@ Route::middleware(['web', 'auth', 'not_customer'])->group(function () {
         'user-activity-logs' => \App\Http\Controllers\UserActivityLogController::class,
     ]);
 });
+
