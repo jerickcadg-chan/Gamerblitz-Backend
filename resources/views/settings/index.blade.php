@@ -11,6 +11,35 @@
           <h4 class="mb-2">Website Setting</h4>
           <hr class="mb-4">
 
+          {{-- Maintenance Mode Toggle --}}
+          @php $maintenanceOn = old('settings.maintenance_mode', $settings['maintenance_mode'] ?? 'off') === 'on'; @endphp
+          <div class="form-group">
+            <label class="font-weight-bold d-block mb-2">
+              Maintenance Mode
+              <span class="badge {{ $maintenanceOn ? 'badge-danger' : 'badge-success' }} ms-2">
+                {{ $maintenanceOn ? 'ON' : 'OFF' }}
+              </span>
+            </label>
+            <div class="p-3 rounded d-flex align-items-center gap-3"
+              style="background:{{ $maintenanceOn ? '#fff3cd' : '#d4edda' }}; border:1px solid {{ $maintenanceOn ? '#ffc107' : '#28a745' }};">
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch"
+                  id="maintenance_mode_toggle"
+                  name="settings[maintenance_mode]"
+                  value="on"
+                  {{ $maintenanceOn ? 'checked' : '' }}
+                  onchange="this.form.submit()">
+                <label class="form-check-label" for="maintenance_mode_toggle">
+                  {{ $maintenanceOn
+                    ? '⚠️ Website is currently in Maintenance Mode — customers cannot access the site'
+                    : '✅ Website is live and accessible to customers' }}
+                </label>
+              </div>
+            </div>
+            <small class="text-muted mt-1 d-block">When enabled, all customer-facing pages show a maintenance notice. The admin panel stays accessible.</small>
+          </div>
+          <hr class="mb-4">
+
           <div class="form-group">
             <label>Brand Name</label>
             <input type="text" class="form-control {{ $errors->has('settings.brand_name') ? 'is-invalid' : '' }}"
@@ -360,26 +389,32 @@
 
           {{-- Whitelabel --}}
           @if (in_array('whitelabel', $supportProviders))
-            <h4 class="mb-2 mt-5">{{ env('PROVIDER_WHITELABEL', 'Whitelabel') }}</h4>
+            <h4 class="mb-2 mt-5">{{ config('app.provider_whitelabel', 'Whitelabel') }}</h4>
             <hr class="mb-4">
-
-            <div class="form-group">
-              <label>API Url</label>
-              <input type="text" class="form-control" name="settings[whitelabel_api_url]"
-                placeholder="e.g. https://dev.whitelabel.com"
-                value="{{ old('settings.whitelabel_api_url', $settings['whitelabel_api_url'] ?? '') }}">
+            {{-- Locked reveal button --}}
+            <div id="gpds-locked" class="text-center py-3">
+              <button type="button" class="btn btn-outline-primary btn-reveal-credentials" data-section="gpds">
+                <i class="fas fa-lock me-2"></i> View {{ config('app.provider_whitelabel', 'GPDS') }} Credentials
+              </button>
             </div>
-
-            <div class="form-group">
-              <label>API Key (Token)</label>
-              <input type="text" class="form-control" name="settings[whitelabel_api_token]"
-                value="{{ old('settings.whitelabel_api_token', $settings['whitelabel_api_token'] ?? '') }}">
-            </div>
-
-            <div class="form-group">
-              <label>Callback Token</label>
-              <input type="text" class="form-control" name="settings[whitelabel_callback_token]"
-                value="{{ old('settings.whitelabel_callback_token', $settings['whitelabel_callback_token'] ?? '') }}">
+            {{-- Hidden credentials (revealed after auth) --}}
+            <div id="gpds-credentials" style="display:none;">
+              <div class="form-group">
+                <label>API Url</label>
+                <input type="text" class="form-control" name="settings[whitelabel_api_url]"
+                  placeholder="e.g. https://dev.whitelabel.com"
+                  value="{{ old('settings.whitelabel_api_url', $settings['whitelabel_api_url'] ?? '') }}">
+              </div>
+              <div class="form-group">
+                <label>API Key (Token)</label>
+                <input type="text" class="form-control" name="settings[whitelabel_api_token]"
+                  value="{{ old('settings.whitelabel_api_token', $settings['whitelabel_api_token'] ?? '') }}">
+              </div>
+              <div class="form-group">
+                <label>Callback Token</label>
+                <input type="text" class="form-control" name="settings[whitelabel_callback_token]"
+                  value="{{ old('settings.whitelabel_callback_token', $settings['whitelabel_callback_token'] ?? '') }}">
+              </div>
             </div>
           @endif
 
@@ -387,21 +422,29 @@
           @if (in_array('xendit', $supportPayments))
             <h4 class="mb-2 mt-5">Xendit</h4>
             <hr class="mb-4">
-
-            <div class="form-group">
-              <label>API Url</label>
-              <input type="text" class="form-control" name="settings[xendit_api_url]"
-                value="{{ old('settings.xendit_api_url', $settings['xendit_api_url'] ?? '') }}">
+            {{-- Locked reveal button --}}
+            <div id="xendit-locked" class="text-center py-3">
+              <button type="button" class="btn btn-outline-primary btn-reveal-credentials" data-section="xendit">
+                <i class="fas fa-lock me-2"></i> View Xendit Credentials
+              </button>
             </div>
-            <div class="form-group">
-              <label>Secret Api Key</label>
-              <input type="text" class="form-control" name="settings[xendit_secret_key]"
-                value="{{ old('settings.xendit_secret_key', $settings['xendit_secret_key'] ?? '') }}">
-            </div>
-            <div class="form-group">
-              <label>Callback Key</label>
-              <input type="text" class="form-control" name="settings[xendit_callback_key]"
-                value="{{ old('settings.xendit_callback_key', $settings['xendit_callback_key'] ?? '') }}">
+            {{-- Hidden credentials (revealed after auth) --}}
+            <div id="xendit-credentials" style="display:none;">
+              <div class="form-group">
+                <label>API Url</label>
+                <input type="text" class="form-control" name="settings[xendit_api_url]"
+                  value="{{ old('settings.xendit_api_url', $settings['xendit_api_url'] ?? '') }}">
+              </div>
+              <div class="form-group">
+                <label>Secret Api Key</label>
+                <input type="text" class="form-control" name="settings[xendit_secret_key]"
+                  value="{{ old('settings.xendit_secret_key', $settings['xendit_secret_key'] ?? '') }}">
+              </div>
+              <div class="form-group">
+                <label>Callback Key</label>
+                <input type="text" class="form-control" name="settings[xendit_callback_key]"
+                  value="{{ old('settings.xendit_callback_key', $settings['xendit_callback_key'] ?? '') }}">
+              </div>
             </div>
           @endif
 
@@ -453,21 +496,29 @@
           @if (in_array('mpay', $supportPayments))
             <h4 class="mb-2 mt-5">Mpay</h4>
             <hr class="mb-4">
-
-            <div class="form-group">
-              <label>Mpay API Url</label>
-              <input type="text" class="form-control" name="settings[mpay_api_url]"
-                value="{{ old('settings.mpay_api_url', $settings['mpay_api_url'] ?? '') }}">
+            {{-- Locked reveal button --}}
+            <div id="mpay-locked" class="text-center py-3">
+              <button type="button" class="btn btn-outline-primary btn-reveal-credentials" data-section="mpay">
+                <i class="fas fa-lock me-2"></i> View Mpay Credentials
+              </button>
             </div>
-            <div class="form-group">
-              <label>Mpay App ID</label>
-              <input type="text" class="form-control" name="settings[mpay_app_id]"
-                value="{{ old('settings.mpay_app_id', $settings['mpay_app_id'] ?? '') }}">
-            </div>
-            <div class="form-group">
-              <label>Mpay Sign Key</label>
-              <input type="text" class="form-control" name="settings[mpay_sign_key]"
-                value="{{ old('settings.mpay_sign_key', $settings['mpay_sign_key'] ?? '') }}">
+            {{-- Hidden credentials (revealed after auth) --}}
+            <div id="mpay-credentials" style="display:none;">
+              <div class="form-group">
+                <label>Mpay API Url</label>
+                <input type="text" class="form-control" name="settings[mpay_api_url]"
+                  value="{{ old('settings.mpay_api_url', $settings['mpay_api_url'] ?? '') }}">
+              </div>
+              <div class="form-group">
+                <label>Mpay App ID</label>
+                <input type="text" class="form-control" name="settings[mpay_app_id]"
+                  value="{{ old('settings.mpay_app_id', $settings['mpay_app_id'] ?? '') }}">
+              </div>
+              <div class="form-group">
+                <label>Mpay Sign Key</label>
+                <input type="text" class="form-control" name="settings[mpay_sign_key]"
+                  value="{{ old('settings.mpay_sign_key', $settings['mpay_sign_key'] ?? '') }}">
+              </div>
             </div>
           @endif
 
@@ -652,4 +703,123 @@
       toggleDescription(); // initial load
     });
   </script>
+@endpush
+
+
+{{-- ============================================================
+     Credentials Reveal Modal (Password + 2FA)
+     ============================================================ --}}
+<div class="modal fade" id="credentialsAuthModal" tabindex="-1" aria-labelledby="credentialsAuthModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="credentialsAuthModalLabel">
+          <i class="fas fa-shield-alt me-2 text-warning"></i> Verify Identity
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted small mb-3">Enter your account password and 2FA code to view these credentials.</p>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Password</label>
+          <input type="password" id="cred-password" class="form-control" placeholder="Your account password" autocomplete="current-password">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">2FA Code</label>
+          <input type="text" id="cred-otp" class="form-control" placeholder="6-digit authenticator code" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+        </div>
+        <div id="cred-error" class="alert alert-danger py-2 small" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="cred-verify-btn">
+          <i class="fas fa-unlock me-1"></i> Verify &amp; View
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@push('js')
+<script>
+(function () {
+  var currentSection = null;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Open modal when any "View ... Credentials" button is clicked
+    document.querySelectorAll('.btn-reveal-credentials').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        currentSection = this.dataset.section;
+        document.getElementById('cred-password').value = '';
+        document.getElementById('cred-otp').value = '';
+        document.getElementById('cred-error').style.display = 'none';
+        var modal = new bootstrap.Modal(document.getElementById('credentialsAuthModal'));
+        modal.show();
+        setTimeout(function () { document.getElementById('cred-password').focus(); }, 400);
+      });
+    });
+
+    // Verify on button click
+    document.getElementById('cred-verify-btn').addEventListener('click', function () {
+      var password = document.getElementById('cred-password').value.trim();
+      var otp      = document.getElementById('cred-otp').value.trim();
+      var errEl    = document.getElementById('cred-error');
+      var btn      = this;
+
+      if (!password || !otp) {
+        errEl.textContent = 'Please enter both your password and 2FA code.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Verifying...';
+      errEl.style.display = 'none';
+
+      fetch('/admin/verify-credentials', {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ password: password, one_time_password: otp }),
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-unlock me-1"></i> Verify &amp; View';
+
+        if (data.success) {
+          var lockedEl = document.getElementById(currentSection + '-locked');
+          var credsEl  = document.getElementById(currentSection + '-credentials');
+          if (lockedEl) lockedEl.style.display = 'none';
+          if (credsEl)  credsEl.style.display  = 'block';
+          bootstrap.Modal.getInstance(document.getElementById('credentialsAuthModal')).hide();
+        } else {
+          errEl.textContent = data.message || 'Verification failed. Please try again.';
+          errEl.style.display = 'block';
+        }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-unlock me-1"></i> Verify &amp; View';
+        errEl.textContent = 'An error occurred. Please try again.';
+        errEl.style.display = 'block';
+      });
+    });
+
+    // Allow Enter key to submit
+    ['cred-password', 'cred-otp'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') document.getElementById('cred-verify-btn').click();
+        });
+      }
+    });
+  });
+})();
+</script>
 @endpush
