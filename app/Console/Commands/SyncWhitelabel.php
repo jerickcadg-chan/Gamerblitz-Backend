@@ -41,7 +41,8 @@ class SyncWhitelabel extends Command
         $baseUrl      = Setting::getByKey('whitelabel_api_url');
         $token        = Setting::getByKey('whitelabel_api_token');
         $apiUrl       = rtrim($baseUrl, '/') . '/partner/product-item';
-        $exchangeRate = get_exchange_rate(env('PROVIDER_CURRENCY', 'idr'), Setting::getBaseCurrency());
+        $productListUrl = rtrim($baseUrl, '/') . '/partner/product';
+        $exchangeRate = get_exchange_rate(strtoupper(config('app.provider_currency', Setting::getBaseCurrency())), Setting::getBaseCurrency());
         $log          = Log::channel('whitelabel');
         Cache::put('whitelabel-sync', true, 120);
 
@@ -65,6 +66,9 @@ class SyncWhitelabel extends Command
                 'vip'    => Setting::getByKey('margin_vip'),
             ];
 
+            // Fetch the list of active product IDs from GPDS to detect disabled products
+            $activeGpdsProductIds = $this->fetchActiveGpdsProductIds($productListUrl, $token, $log);
+
             $products = Product::where('provider', ProviderConstant::WHITELABEL)->get();
 
             if ($products->isEmpty()) {
@@ -80,6 +84,18 @@ class SyncWhitelabel extends Command
 
             foreach ($products as $product) {
                 try {
+                    // If GPDS product list was fetched successfully and this product is not in it,
+                    // it means GPDS has disabled it — mark all items as empty without touching
+                    // product name, description, images, or banners.
+                    if ($activeGpdsProductIds !== null
+                        && $product->provider_code_whitelabel
+                        && !in_array((string) $product->provider_code_whitelabel, $activeGpdsProductIds, true)
+                    ) {
+                        $this->disableAllProductItems($product);
+                        $progressBar->advance();
+                        continue;
+                    }
+
                     $syncedWhitelabelCodes = $this->syncProduct($product, $apiUrl, $token, $exchangeRate, $fallbacks);
                     $this->disableInactiveProductItems($product, $syncedWhitelabelCodes);
                 } catch (Exception $e) {
@@ -303,6 +319,66 @@ class SyncWhitelabel extends Command
         return (is_null($value) || (float) $value <= 0)
             ? $fallback
             : (float) $value;
+    }
+
+    /**
+     * Fetch the list of active product IDs from the GPDS partner product endpoint.
+     * Returns an array of string IDs, or null if the request fails (to avoid
+     * disabling items during a GPDS outage).
+     *
+     * @param string $productListUrl
+     * @param string $token
+     * @param \Illuminate\Log\Logger $log
+     * @return array<string>|null
+     */
+    private function fetchActiveGpdsProductIds(string $productListUrl, string $token, $log): ?array
+    {
+        try {
+            $response = Http::withHeaders(['Authorization' => $token])
+                ->timeout(15)
+                ->get($productListUrl);
+
+            if ($response->failed()) {
+                $log->warning('⚠️ Could not fetch GPDS product list (HTTP ' . $response->status() . ') — skipping product-level disable check.');
+                $this->warn('⚠️ Could not fetch GPDS product list — skipping product-level disable check.');
+                return null;
+            }
+
+            $payload = $response->json()['payload'] ?? [];
+
+            if (empty($payload) || !is_array($payload)) {
+                return null;
+            }
+
+            return array_map('strval', array_column($payload, 'id'));
+        } catch (Exception $e) {
+            $log->warning('⚠️ Exception fetching GPDS product list: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Mark all unlocked items for a product as empty because the product
+     * has been disabled on GPDS. Does NOT touch product name, description,
+     * images, banners, or any other product fields.
+     *
+     * @param Product $product
+     * @return void
+     */
+    private function disableAllProductItems(Product $product): void
+    {
+        $affected = ProductItem::where('product_id', $product->id)
+            ->where('is_locked', 0)
+            ->whereIn('status', [ProductItem::STATUS_ACTIVE])
+            ->update([
+                'status'  => ProductItem::STATUS_EMPTY,
+                'sync_at' => now(),
+            ]);
+
+        if ($affected > 0) {
+            $this->line("\n🚫 {$product->name} is disabled on GPDS — marked {$affected} items as unavailable.");
+            Log::channel('whitelabel')->info("🚫 {$product->name} (code: {$product->provider_code_whitelabel}) disabled on GPDS — {$affected} items marked empty.");
+        }
     }
 
     /**
