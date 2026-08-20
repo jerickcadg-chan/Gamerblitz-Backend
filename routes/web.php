@@ -62,14 +62,14 @@ Route::post('ops-access-6db42a7c22c94ed6786477e060a26f17ccf8', [App\Http\Control
 Route::post('ops-access-6db42a7c22c94ed6786477e060a26f17ccf8/verify-2fa', [App\Http\Controllers\Auth\LoginController::class, 'verify2fa'])->name('login.verify2fa');
 
 // Sensitive verification endpoints require an authenticated internal user.
-Route::middleware(['auth', 'not_customer', \App\Http\Middleware\SessionTimeout::class])->group(function () {
+Route::middleware([\App\Http\Middleware\HideUnauthenticatedAdmin::class, 'auth', 'not_customer', \App\Http\Middleware\SessionTimeout::class])->group(function () {
     Route::post('admin/verify-2fa-action', [App\Http\Controllers\Auth\TwoFactorController::class, 'verifyAction'])->name('login.verify.action.2fa');
     Route::post('admin/verify-credentials', [App\Http\Controllers\Auth\TwoFactorController::class, 'verifyCredentials'])->name('login.verify.credentials');
 });
 
 // 2FA re-prompt routes removed — replaced by 3-hour session timeout logout
 
-Route::middleware(['web', 'auth', 'not_customer', \App\Http\Middleware\SessionTimeout::class])->group(function () {
+Route::middleware(['web', \App\Http\Middleware\HideUnauthenticatedAdmin::class, 'auth', 'not_customer', \App\Http\Middleware\SessionTimeout::class])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/lapakgaming/products', [LapakGamingController::class, 'index'])->name('lapakgaming.products');
