@@ -48,15 +48,24 @@ Route::get('/email/verify/{id}/mail/{mailhash}', function ($id, $mailhash) {
     return redirect(config('app.fe_url') . '/login?verification=success');
 })->middleware('signed')->name('verification');
 
+// Disable Laravel's predictable /login routes. Admin access is exposed only at the private URL below.
 Auth::routes([
+    'login' => false,
     'register' => false,
     'reset' => false,
     'verify' => true,
 ]);
 
-Route::post('login/verify-2fa', [App\Http\Controllers\Auth\LoginController::class, 'verify2fa'])->name('login.verify2fa');
-Route::post('admin/verify-2fa-action', [App\Http\Controllers\Auth\TwoFactorController::class, 'verifyAction'])->name('login.verify.action.2fa');
-Route::post('admin/verify-credentials', [App\Http\Controllers\Auth\TwoFactorController::class, 'verifyCredentials'])->name('login.verify.credentials');
+// Keep this URL private. Do not link it in public navigation, documentation, or redirects.
+Route::get('ops-access-6db42a7c22c94ed6786477e060a26f17ccf8', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::post('ops-access-6db42a7c22c94ed6786477e060a26f17ccf8', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.attempt');
+Route::post('ops-access-6db42a7c22c94ed6786477e060a26f17ccf8/verify-2fa', [App\Http\Controllers\Auth\LoginController::class, 'verify2fa'])->name('login.verify2fa');
+
+// Sensitive verification endpoints require an authenticated internal user.
+Route::middleware(['auth', 'not_customer', \App\Http\Middleware\SessionTimeout::class])->group(function () {
+    Route::post('admin/verify-2fa-action', [App\Http\Controllers\Auth\TwoFactorController::class, 'verifyAction'])->name('login.verify.action.2fa');
+    Route::post('admin/verify-credentials', [App\Http\Controllers\Auth\TwoFactorController::class, 'verifyCredentials'])->name('login.verify.credentials');
+});
 
 // 2FA re-prompt routes removed — replaced by 3-hour session timeout logout
 

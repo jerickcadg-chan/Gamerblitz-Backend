@@ -14,29 +14,32 @@
           {{-- Maintenance Mode Toggle --}}
           @php $maintenanceOn = old('settings.maintenance_mode', $settings['maintenance_mode'] ?? 'off') === 'on'; @endphp
           <div class="form-group">
-            <label class="font-weight-bold d-block mb-2">
-              Maintenance Mode
-              <span class="badge {{ $maintenanceOn ? 'badge-danger' : 'badge-success' }} ms-2">
-                {{ $maintenanceOn ? 'ON' : 'OFF' }}
-              </span>
-            </label>
-            <div class="p-3 rounded d-flex align-items-center gap-3"
-              style="background:{{ $maintenanceOn ? '#fff3cd' : '#d4edda' }}; border:1px solid {{ $maintenanceOn ? '#ffc107' : '#28a745' }};">
-              <div class="form-check form-switch mb-0">
-                <input class="form-check-input" type="checkbox" role="switch"
+            <p style="font-weight:700; color:#fff; margin-bottom:8px;">
+              Maintenance Mode &nbsp;
+              @if($maintenanceOn)
+                <span style="background:#dc3545;color:#fff;padding:2px 10px;border-radius:4px;font-size:12px;">ON</span>
+              @else
+                <span style="background:#28a745;color:#fff;padding:2px 10px;border-radius:4px;font-size:12px;">OFF</span>
+              @endif
+            </p>
+            <div style="background:{{ $maintenanceOn ? '#fff3cd' : '#d4edda' }}; border:2px solid {{ $maintenanceOn ? '#ffc107' : '#28a745' }}; border-radius:8px; padding:16px; display:flex; align-items:center; gap:16px;">
+              <label style="display:flex;align-items:center;gap:12px;cursor:pointer;margin:0;">
+                <input type="hidden" name="settings[maintenance_mode]" value="off">
+                <input type="checkbox"
                   id="maintenance_mode_toggle"
                   name="settings[maintenance_mode]"
                   value="on"
                   {{ $maintenanceOn ? 'checked' : '' }}
-                  onchange="this.form.submit()">
-                <label class="form-check-label" for="maintenance_mode_toggle">
+                  onchange="this.form.submit()"
+                  style="width:20px;height:20px;cursor:pointer;flex-shrink:0;">
+                <span style="color:#1a1a1a;font-weight:600;font-size:14px;">
                   {{ $maintenanceOn
                     ? '⚠️ Website is currently in Maintenance Mode — customers cannot access the site'
                     : '✅ Website is live and accessible to customers' }}
-                </label>
-              </div>
+                </span>
+              </label>
             </div>
-            <small class="text-muted mt-1 d-block">When enabled, all customer-facing pages show a maintenance notice. The admin panel stays accessible.</small>
+            <p style="color:#aaa;font-size:12px;margin-top:6px;">When enabled, all customer-facing pages show a maintenance notice. The admin panel stays accessible.</p>
           </div>
           <hr class="mb-4">
 

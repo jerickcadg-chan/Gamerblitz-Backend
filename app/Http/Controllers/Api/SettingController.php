@@ -38,6 +38,7 @@ class SettingController extends Controller
             'social_instagram',
             'social_telegram',
             'social_tiktok',
+            'maintenance_mode',
         ])->pluck('value', 'key');
 
         foreach (['logo', 'logo_alt','favicon','popup_image', 'meta_image'] as $fileKey) {
