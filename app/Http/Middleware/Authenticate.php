@@ -2,18 +2,21 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
 {
     /**
-     * Do not disclose the private login route to unauthenticated visitors.
-     * Browser requests for protected admin pages receive a normal 404 instead.
+     * Never redirect unauthenticated browser visitors to the private admin URL.
+     * Protected admin pages deliberately appear not to exist instead.
      */
-    protected function redirectTo($request)
+    protected function unauthenticated($request, array $guards)
     {
-        if (! $request->expectsJson()) {
-            abort(404);
+        if ($request->expectsJson()) {
+            throw new AuthenticationException('Unauthenticated.', $guards);
         }
+
+        abort(404);
     }
 }
